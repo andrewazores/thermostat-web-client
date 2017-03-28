@@ -1,0 +1,210 @@
+Overview of the dependencies declared in bower.json
+---------------------------------------------------
+- angular:
+- - https://www.npmjs.com/package/angular
+- - Framework for writing client-side web applications
+- - HTML as a template language, and automatically sync data
+- - from views and models through 2-way data binding
+
+- angular-animate:
+- - https://www.npmjs.com/package/angular-animate
+- - Allows for animations three-ways:
+- - - CSS3 Transitions, CSS3 Animations, Javascript
+- - See http://www.nganimate.org/ for more information
+
+- angular-aria:
+- - https://docs.angularjs.org/api/ngAria
+- - Accessible Rich Internet Applications (ARIA)
+- - Attributes that convey state or semantic information about the app
+- - for users of assistive technologies, such as screen readers
+
+- angular-bootstrap:
+- - https://angular-ui.github.io/bootstrap/
+- - Native AngularJS directives for Bootstrap
+
+- angular-patternfly:
+- - https://www.npmjs.com/package/angular-patternfly
+- - http://www.patternfly.org/angular-patternfly/#/api
+- - A set of common AngularJS directives for use with the PatternFly reference implementation
+
+- angular-resource:
+- - https://docs.angularjs.org/api/ngResource
+- - Provides interaction support with RESTful services
+
+- angular-route:
+- - https://docs.angularjs.org/api/ngRoute
+- - Provides routing and deeplinking services and directives
+
+- angular-sanitize:
+- - https://docs.angularjs.org/api/ngSanitize
+- - Provides functionality to sanitize HTML
+
+- angular-translate:
+- - https://www.npmjs.com/package/angular-translate
+- - Translating Angular 1.X apps
+- - Allows the app to be easier to localize for different languages
+- - Internationalization (i18n), or localization (l10n)
+
+- angular-translate-loader-static-files:
+- - https://www.npmjs.com/package/angular-translate-loader-static-files
+- - Is a subset of the above package, used for static files
+
+- c3:
+- - https://www.npmjs.com/package/c3
+- - D3-based reusable chart library that enables deeper integration of charts into web apps
+
+- jquery:
+- - https://www.npmjs.com/package/jquery
+- - jQuery is a fast, small, and feature-rich JavaScript library
+- - API: http://api.jquery.com/
+
+- lodash:
+- - https://www.npmjs.com/package/lodash
+- - A modern JavaScript utility library delivering modularity, performance & extras
+- - Lodash's modular methods are great for:
+- - - Iterating arrays, objects, & strings
+- - - Manipulating & testing values
+- - - Creating composite functions
+- - https://lodash.com/docs/4.17.4
+
+- moment:
+- - https://www.npmjs.com/package/moment
+- - A lightweight JS library for parsing, validating, manipulating, and formatting dates
+- - http://momentjs.com/docs/
+
+- patternfly:
+- - https://www.npmjs.com/package/patternfly
+- - "Skinned" version of Bootstrap (v3) with additional components and customizations
+- - https://github.com/patternfly/patternfly/blob/master/QUICKSTART.md
+
+- angular-mocks:
+- - https://www.npmjs.com/package/angular-mocks
+- - Provides support to inject and mock AngularJS services into unit tests
+- - https://docs.angularjs.org/api/ngMock
+
+Overview of the dependencies declared in package.json
+-----------------------------------------------------
+
+- grunt:
+- - https://gruntjs.com/
+- - JavaScript task runner tool, used to perform frequently used tasks
+- - - e.g., minification, compiliation, unit testing, linting, etc.
+
+- grunt-angular-file-loader:
+- - https://www.npmjs.com/package/grunt-angular-file-loader
+- - Automatically sort and inject AngularJS app files depending on module definitions and usage
+
+- grunt-angular-templates:
+- - https://www.npmjs.com/package/grunt-angular-templates
+- - Speed up your AngularJS app by automatically minifying, combining, and caching your HTML templates with $templateCache
+
+- grunt-cli:
+- - https://www.npmjs.com/package/grunt-cli
+- - Extension to allow the execution of custom tasks outlined in the gruntfile
+
+- grunt-connect-proxy:
+- - https://www.npmjs.com/package/grunt-connect-proxy
+- - Provides a http proxy as middleware for the grunt-contrib-connect plugin
+
+- grunt-contrib-clean:
+- - https://www.npmjs.com/package/grunt-contrib-clean
+- - Clean files and folders
+- - Can be run via the command "grunt clean"
+
+- grunt-contrib-concat:
+- - https://www.npmjs.com/package/grunt-contrib-concat
+- - Concatenate files
+- - Source files should be concatenated to a single source before minifying
+
+- grunt-contrib-connect:
+- - https://www.npmjs.com/package/grunt-contrib-connect
+- - Start a connect web server
+- - Create a (node-based) web-server to view the application
+
+- grunt-contrib-copy:
+- - https://www.npmjs.com/package/grunt-contrib-copy
+- - Copy files and folders (during builds)
+
+- grunt-contrib-cssmin:
+- - https://www.npmjs.com/package/grunt-contrib-copy
+- - Minify CSS
+- - Compresses all the CSS files into a single stylesheet
+
+- grunt-contrib-htmlmin: 
+- - https://www.npmjs.com/package/grunt-contrib-htmlmin
+- - Minify HTML
+
+- grunt-contrib-jshint:
+- - https://www.npmjs.com/package/grunt-contrib-jshint
+- - Validate files with JSHint
+- - Checks for JS-related syntax errors
+
+- grunt-contrib-less:
+- - https://www.npmjs.com/package/grunt-contrib-less
+- - Compile LESS files to CSS
+- - LESS is a CSS pre-processor
+- - - Extends CSS language adding features such as variables, mixins & functions
+
+- grunt-contrib-uglify:
+- - https://www.npmjs.com/package/grunt-contrib-uglify
+- - Minify JavaScript files
+- - Removes whitespace, renames variables & functions to shortest possible names
+
+- grunt-contrib-watch:
+- - https://www.npmjs.com/package/grunt-contrib-watch
+- - Run predefined tasks whenever watched file patterns are added, changed, or deleted
+- - i.e., could be used to run jshint whenever a JS file is added/deleted/modified
+
+- grunt-eslint:
+- - https://www.npmjs.com/package/grunt-eslint
+- - Validate files with ESLint
+- - Concise validation of JS files
+
+- grunt-htmlhint:
+- - https://www.npmjs.com/package/grunt-htmlhint
+- - Lint html files
+
+- grunt-exec:
+- - https://www.npmjs.com/package/grunt-exec
+- - Grunt plugin for executing shell commands
+- - Allows for the use of commands (cwd, stdout, etc) in the gruntfile
+
+- grunt-newer:
+- - https://www.npmjs.com/package/grunt-newer
+- - Configure Grunt tasks to run with newer files only
+- - Useful paired with contrib-watch to always launch the newest update
+
+- grunt-ngmin:
+- - https://www.npmjs.com/package/grunt-ngmin
+- - Grunt plugin for pre-minifying Angular apps
+
+- grunt-rev:
+- - https://www.npmjs.com/package/grunt-rev
+- - Static file asset revisioning through content hashing
+- - Allows for long-term caching of assets
+
+- grunt-usemin: 
+- - https://www.npmjs.com/package/grunt-usemin
+- - Replaces references from non-optimized scripts, stylesheets and other assets
+- - to their optimized version within a set of HTML files (or any templates/views)
+
+- load-grunt-tasks:
+- - https://www.npmjs.com/package/load-grunt-tasks
+- - Load multiple grunt tasks using globbing patterns
+- - Aggregates tasks so they don't need to be loaded one-by-one
+
+- protractor:
+- - https://www.npmjs.com/package/protractor
+- - End-to-end test framework for Angular and AngularJS applications
+- - Runs tests against your application running in a real browser
+
+- request:
+- - https://www.npmjs.com/package/request
+- - Request is designed to be the simplest way possible to make http calls
+- - It supports HTTPS and follows redirects by default
+
+Some interesting reads related to Grunt (and how to use it)
+-----------------------------------------------------------
+- https://scotch.io/tutorials/a-simple-guide-to-getting-started-with-grunt
+- https://24ways.org/2013/grunt-is-not-weird-and-hard/
+- http://www.designsuperbuild.com/blog/getting_started_with_grunt/
