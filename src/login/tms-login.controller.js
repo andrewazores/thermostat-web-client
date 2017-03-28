@@ -1,8 +1,7 @@
 angular
   .module('tms.loginModule')
-  .controller([
+  .controller('tms.loginController', [
     function () {
       'use strict';
-      alert('up');
     }
   ]);
