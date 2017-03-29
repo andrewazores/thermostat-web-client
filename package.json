@@ -34,7 +34,13 @@
     "grunt-rev": "0.1.0",
     "grunt-usemin": "2.1.1",
     "load-grunt-tasks": "0.4.0",
+    "mocha": "^3.2.0",
     "protractor": "1.4.0",
-    "request": "2.42.0"
+    "request": "2.42.0",
+    "should": "^11.2.1",
+    "sinon": "^2.1.0"
+  },
+  "scripts": {
+      "test": "mocha"
   }
 }
