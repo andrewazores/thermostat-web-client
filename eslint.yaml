@@ -11,6 +11,9 @@ globals:
   angular: true
   _: true
   $: true
+  inject: true
+  should: true
+  sinon: true
 
 parserOptions:
   ecmaVersion: 5
