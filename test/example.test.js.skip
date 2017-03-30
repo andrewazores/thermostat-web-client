@@ -1,4 +1,5 @@
 describe('Example Testsuite', function () {
+  'use strict';
 
   describe('Pass, Skip', function () {
     it('should pass', function (done) {
@@ -19,7 +20,7 @@ describe('Example Testsuite', function () {
           sum = sum + nums[i];
         }
         return sum / nums.length;
-      }
+      };
 
       it('avg([]) = NaN', function () {
         avg([]).should.be.NaN();
@@ -36,7 +37,7 @@ describe('Example Testsuite', function () {
         it('avg(' + test.nums + ') = ' + test.exp, function () {
           avg(test.nums).should.equal(test.exp);
         });
-      })
+      });
     });
   });
 

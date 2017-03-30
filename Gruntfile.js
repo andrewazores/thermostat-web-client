@@ -12,6 +12,7 @@ module.exports = function (grunt) {
     projectSettings: {
       // configurable paths
       src:      require( './bower.json' ).appPath || 'src',
+      test:     'test',
       dist:     'dist',
       deploy:   'deploy',
       mockData: 'mock_data',
@@ -53,7 +54,14 @@ module.exports = function (grunt) {
     // Live Reload is too slow, need to figure out how to stop reloading of npm modules
     watch:    {
       all: {
-        files: ['Gruntfile.js', 'template.html', 'src/**/*.js', 'src/**/*.html', 'src/styles/**/*.css'],
+        files: [
+          'Gruntfile.js',
+          'template.html',
+          '<%= projectSettings.src %>/**/*.js',
+          '<%= projectSettings.src %>/**/*.html',
+          '<%= projectSettings.src %>/styles/**/*.css',
+          '<%= projectSettings.test %>/**/*.test.js'
+        ],
         tasks: ['build'],
         options: {
           livereload: 37830
@@ -119,7 +127,8 @@ module.exports = function (grunt) {
       },
       src:     [
         'Gruntfile.js',
-        '<%= projectSettings.src %>/**/*.js'
+        '<%= projectSettings.src %>/**/*.js',
+        '<%= projectSettings.test %>/**/*.test.js'
       ]
     },
 
@@ -240,7 +249,8 @@ module.exports = function (grunt) {
       },
       target: [
         'Gruntfile.js',
-        'src/**/*.js'
+        '<%= projectSettings.src %>/**/*.js',
+        '<%= projectSettings.test %>/**/*.test.js'
       ]
     }
   } );
