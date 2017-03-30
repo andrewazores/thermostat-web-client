@@ -134,11 +134,6 @@ Overview of the dependencies declared in package.json
 - - https://www.npmjs.com/package/grunt-contrib-htmlmin
 - - Minify HTML
 
-- grunt-contrib-jshint:
-- - https://www.npmjs.com/package/grunt-contrib-jshint
-- - Validate files with JSHint
-- - Checks for JS-related syntax errors
-
 - grunt-contrib-less:
 - - https://www.npmjs.com/package/grunt-contrib-less
 - - Compile LESS files to CSS

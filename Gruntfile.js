@@ -126,18 +126,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // Make sure code styles are up to par and there are no obvious mistakes
-    jshint:   {
-      options: {
-        jshintrc: '.jshintrc'
-      },
-      src:     [
-        'Gruntfile.js',
-        '<%= projectSettings.src %>/**/*.js',
-        '<%= projectSettings.test %>/**/*.test.js'
-      ]
-    },
-
     // Template
     ngtemplates:     {
       options:               {
@@ -260,10 +248,6 @@ module.exports = function (grunt) {
       ]
     }
   } );
-
-  grunt.registerTask( 'jshintRun', [
-    'jshint'
-  ] );
 
   grunt.registerTask( 'server', function (target) {
     grunt.task.run( [
