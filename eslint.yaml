@@ -41,7 +41,7 @@ rules:
   no-loop-func: 2
   vars-on-top: 0
   no-debugger: 1
-  no-cond-assign: [2, 'exceptParens']
+  no-cond-assign: 2
   no-extra-parens: 0
   no-console: 1
   no-extra-semi: 2
