@@ -4,7 +4,10 @@ describe('Example Testsuite', function () {
     it('should pass', function (done) {
       done();
     });
-    it.skip('should skip', function() {});
+    it('should also pass', function () {});
+    it.skip('should skip', function () {});
+    it('is pending');
+    // it('would fail', function (done) { done('non-empty param list'); });
   });
 
   describe('Arithmetic', function () {
@@ -18,7 +21,7 @@ describe('Example Testsuite', function () {
         return sum / nums.length;
       }
 
-      it(`avg([]) = NaN`, function () {
+      it('avg([]) = NaN', function () {
         avg([]).should.be.NaN();
       });
 
@@ -30,7 +33,7 @@ describe('Example Testsuite', function () {
       ];
 
       tests.forEach(function (test) {
-        it(`avg(${test.nums}) = ${test.exp}`, function () {
+        it('avg(' + test.nums + ') = ' + test.exp, function () {
           avg(test.nums).should.equal(test.exp);
         });
       })
