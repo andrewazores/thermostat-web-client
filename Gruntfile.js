@@ -249,7 +249,7 @@ module.exports = function (grunt) {
     }
   } );
 
-  grunt.registerTask( 'server', function (target) {
+  grunt.registerTask( 'server', function () {
     grunt.task.run( [
       'clean:server',
       'build',
@@ -262,7 +262,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('lint', ['eslint', 'htmlhint']);
 
-  grunt.registerTask( 'build', function (target) {
+  grunt.registerTask( 'build', function () {
 
     var buildTasks = [
       'clean:dist',
