@@ -4,6 +4,8 @@ module.exports = function (grunt) {
   // Load grunt tasks automatically
   require( 'load-grunt-tasks' )( grunt );
 
+  grunt.loadNpmTasks('grunt-karma');
+
   // Define the configuration for all the tasks
   grunt.initConfig( {
     // Project settings
@@ -33,6 +35,18 @@ module.exports = function (grunt) {
       sass: {
         src: ['<%= projectSettings.src %>/styles/{,*/}*.{scss,sass}'],
         ignorePath: /(\.\.\/){1,2}bower_components\//
+      }
+    },
+    karma: {
+      unit: {
+        configFile: 'karma.conf.js'
+      },
+      continuous: {
+        configFile: 'karma.conf.js',
+        browsers: ['PhantomJS'],
+        autoWatch: true,
+        singleRun: false,
+        background: true
       }
     },
     // Watches files for changes and runs tasks based on the changed files
@@ -241,7 +255,8 @@ module.exports = function (grunt) {
       'build',
       'configureProxies:server', // added just before connect
       'connect:livereload',
-      'watch'
+      'karma:continuous',
+      'watch',
     ] );
   } );
 
