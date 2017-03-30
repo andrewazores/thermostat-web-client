@@ -13,15 +13,21 @@ module.exports = function (grunt) {
       // configurable paths
       src:      require( './bower.json' ).appPath || 'src',
       test:     'test',
+      fonts:    'fonts',
+      content:  'content',
+      images:   'content/images',
+      styles:   'styles',
+      templates:'templates',
       dist:     'dist',
       deploy:   'deploy',
+      serverDir:'.tmp',
       mockData: 'mock_data',
       pkg:      grunt.file.readJSON( 'package.json' )
     },
 
     angularFileLoader: {
       options: {
-        scripts: ['src/**/*.js']
+        scripts: ['<%= projectSettings.src %>/**/*.js']
       },
       index: {
         src: 'index.html'
@@ -68,7 +74,7 @@ module.exports = function (grunt) {
         }
       },
       mockData: {
-        files: ['mock_data/**/*'],
+        files: ['<%= projectSettings.mockData %>/**/*'],
         tasks: ['copy:mockdata'],
         options: {
           livereload: 37830
@@ -80,8 +86,8 @@ module.exports = function (grunt) {
         },
         files:   [
           '<%= projectSettings.src %>**/*',
-          '.tmp/bower_components/{,*/}*.css',
-          '.tmp/styles/{,*/}*.css',
+          '<%= projectSettings.serverDir %>/bower_components/{,*/}*.css',
+          '<%= projectSettings.serverDir %>/styles/{,*/}*.css',
           '<%= projectSettings.mockData %>/**/*'
         ]
       }
@@ -99,7 +105,7 @@ module.exports = function (grunt) {
         options: {
           open:       true,
           base:       [
-            '.tmp',
+            '<%= projectSettings.serverDir %>',
             '<%= projectSettings.dist %>'
           ]
         }
@@ -108,7 +114,7 @@ module.exports = function (grunt) {
         options: {
           port: 9001,
           base: [
-            '.tmp',
+            '<%= projectSettings.serverDir %>',
             '<%= projectSettings.dist %>'
           ]
         }
@@ -147,9 +153,9 @@ module.exports = function (grunt) {
         // this is the part we want to strip from the URL, though not the path
         cwd:  '.',
         // this is the part we want actually in the URL (i.e. modules/foo/bar)
-        src:  'src/**/*.html',
+        src:  '<%= projectSettings.src %>/**/*.html',
         // this is where it goes
-        dest: '<%= projectSettings.src %>/templates/appModuleTemplates.js'
+        dest: '<%= projectSettings.src %>/<%= projectSettings.templates %>/appModuleTemplates.js'
       }
     },
     // Empties folders to start fresh
@@ -158,7 +164,7 @@ module.exports = function (grunt) {
         files: [{
           dot: true,
           src: [
-            '.tmp',
+            '<%= projectSettings.serverDir %>',
             '<%= projectSettings.dist %>/*'
           ]
         }]
@@ -171,7 +177,7 @@ module.exports = function (grunt) {
           ]
         }]
       },
-      server: '.tmp'
+      server: '<%= projectSettings.serverDir %>'
     },
 
     // Copies remaining files to places other tasks can use
@@ -185,59 +191,59 @@ module.exports = function (grunt) {
         expand: true,
         cwd: '.',
         src: ['index.html'],
-        dest: 'dist'
+        dest: '<%= projectSettings.dist %>/'
       },
       js: {
         cwd:  '.',
-        src:  ['src/**/*.js'],
-        dest: 'dist/'
+        src:  ['<%= projectSettings.src %>/**/*.js'],
+        dest: '<%= projectSettings.dist %>/'
       },
       fonts: {
         expand: true,
         cwd: 'bower_components/patternfly/dist/',
-        src: ['fonts/**'],
-        dest: 'dist/styles/'
+        src: ['<%= projectSettings.fonts %>/**'],
+        dest: '<%= projectSettings.dist %>/styles/'
       },
       fontawesome: {
         expand: true,
         cwd: 'bower_components/patternfly/components/font-awesome',
-        src: ['fonts/**'],
-        dest: 'dist/components/font-awesome/'
+        src: ['<%= projectSettings.fonts %>/**'],
+        dest: '<%= projectSettings.dist %>/components/font-awesome/'
       },
       img: {
         expand: true,
-        cwd: 'src',
-        src: ['content/images/**'],
-        dest: 'dist'
+        cwd: '<%= projectSettings.src %>',
+        src: ['<%= projectSettings.images %>/**'],
+        dest: '<%= projectSettings.dist %>/'
       },
       styles: {
         expand: true,
-        cwd: 'src',
-        src: ['styles/**'],
-        dest: 'dist'
+        cwd: '<%= projectSettings.src %>',
+        src: ['<%= projectSettings.styles %>/**'],
+        dest: '<%= projectSettings.dist %>/'
       },
       bower: {
         expand: true,
         cwd: '.',
         src: ['bower_components/**/*'],
-        dest: 'dist'
+        dest: '<%= projectSettings.dist %>/'
       },
       templates: {
         expand: true,
-        cwd: 'src',
-        src: ['templates/appModuleTemplates.js'],
-        dest: 'dist'
+        cwd: '<%= projectSettings.src %>',
+        src: ['<%= projectSettings.templates %>/appModuleTemplates.js'],
+        dest: '<%= projectSettings.dist %>/'
       },
       mockdata: {
         expand: true,
-        cwd: 'mock_data',
+        cwd: '<%= projectSettings.mockData %>',
         src: ['**'],
-        dest: 'dist/mock_data'
+        dest: '<%= projectSettings.dist %>/<%= projectSettings.mockData %>'
       }
     },
     htmlhint: {
       html: {
-        src: ['src/**/*.html'],
+        src: ['<%= projectSettings.src %>/**/*.html'],
         options: {
           htmlhintrc: '.htmlhintrc'
         }
