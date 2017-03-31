@@ -5,6 +5,7 @@ module.exports = function (grunt) {
   require( 'load-grunt-tasks' )( grunt );
 
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-banner');
 
   // Define the configuration for all the tasks
   grunt.initConfig( {
@@ -24,6 +25,7 @@ module.exports = function (grunt) {
       mockData: 'mock_data',
       pkg:      grunt.file.readJSON( 'package.json' )
     },
+    licenseText: grunt.file.read('license_templates/LICENSE.js'),
 
     angularFileLoader: {
       options: {
@@ -246,6 +248,43 @@ module.exports = function (grunt) {
         '<%= projectSettings.src %>/**/*.js',
         '<%= projectSettings.test %>/**/*.test.js'
       ]
+    },
+    usebanner: {
+      check: {
+        options: {
+          position: 'top',
+          replace: true,
+          licenseText: grunt.file.read('license_templates/LICENSE.js'),
+          linebreak: false,
+          process: function (filepath) {
+            var content = grunt.file.read(filepath);
+            if (!content.includes(this.licenseText)) {
+              throw new Error('Missing license header in file: ' + filepath);
+            }
+            return this.licenseText;
+          }
+        },
+        files: {
+          src: [
+            'src/**/*.js',
+            'test/**/*.test.js'
+          ]
+        }
+      },
+      format: {
+        options: {
+          position: 'top',
+          replace: true,
+          banner: '<%= licenseText %>',
+          linebreak: false
+        },
+        files: {
+          src: [
+            'src/**/*.js',
+            'test/**/*.test.js'
+          ]
+        }
+      }
     }
   } );
 
@@ -262,10 +301,23 @@ module.exports = function (grunt) {
 
   grunt.registerTask('lint', ['eslint', 'htmlhint']);
 
+  grunt.registerTask('license', 'Check for or apply license headers to project files', function (target) {
+    if (target === 'check') {
+      grunt.task.run('usebanner:check');
+    } else if (target === 'format') {
+      // run usebanner:format twice due to a quirk in newline handling
+      grunt.task.run(['usebanner:format', 'usebanner:format', 'usebanner:check']);
+    } else {
+      return false;
+    }
+    return true;
+  });
+
   grunt.registerTask( 'build', function () {
 
     var buildTasks = [
       'clean:dist',
+      'usebanner:check',
       'lint',
       'ngtemplates',
       'copy:indexHtml',
