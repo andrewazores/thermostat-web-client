@@ -3,3 +3,4 @@ bower_components
 index.html
 dist
 src/templates/appModuleTemplates.js
+.eslintcache

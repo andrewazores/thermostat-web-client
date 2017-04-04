@@ -33,8 +33,37 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
+import angular from 'angular';
 
-angular
-  .module('tms.appModule', [
-    'tms.loginModule'
+import 'patternfly/dist/css/patternfly.css';
+import 'patternfly/dist/css/patternfly-additions.css';
+import 'patternfly/dist/js/patternfly.js';
+import 'angular-patternfly/dist/angular-patternfly.js';
+import 'angular-patternfly/dist/styles/angular-patternfly.css';
+import 'angular-bootstrap/ui-bootstrap.js';
+import 'angular-bootstrap/ui-bootstrap-tpls.js';
+import 'angular-sanitize';
+import 'angular-route';
+import 'c3/c3.js';
+import 'c3/c3.css';
+import 'd3';
+import '../styles/app/app.css';
+
+export const APP_MODULE = 'tms.appModule';
+
+angular.module(APP_MODULE, ['ngRoute'])
+  .config(['$routeProvider',
+    function ($routeProvider) {
+      $routeProvider
+
+        .when('/login', {
+          template: require('./login.html')
+        });
+    }
   ]);
+
+import TmsAppController from './tms-app.controller.js';
+angular.module(APP_MODULE).controller(TmsAppController.controllerName(), TmsAppController);
+
+import TmsLoginController from './tms-login.controller.js';
+angular.module(APP_MODULE).controller(TmsLoginController.controllerName(), TmsLoginController);

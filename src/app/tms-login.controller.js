@@ -33,18 +33,15 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
+export default class TmsLoginController {
+  constructor ($scope) {
+    'ngInject';
+    $scope.login = function () {
+      console.log({username: $scope.username, password: $scope.password});
+    };
+  }
 
-var loginModule = angular.module('tms.loginModule', ['ngRoute']);
-
-loginModule.config(
-  ['$routeProvider',
-    function ($routeProvider) {
-      'use strict';
-      $routeProvider
-
-        .when('/login', {
-          templateUrl: 'src/login/login.html'
-        });
-    }
-  ]
-);
+  static controllerName () {
+    return 'tms.loginController';
+  }
+}

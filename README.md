@@ -4,19 +4,14 @@ AngularJS & Patternfly Application: Thermostat UI
 
 ## How to use
 
-Two shell scripts are included to help launch or clean this project.
+Live-reload development:
 
-> sh setup.sh
+`npm start`, then point a web browser at localhost:8080.
 
-This should take care of gathering/installing the dependencies, creating the distribution folder (& contents), and actually launching the application.
+One-time build:
 
-Once the dependencies and packages are locally installed, subsequent launches can be done via:
+`npm run build`
 
-> grunt server
+Run tests:
 
-A script for teardown has also been included, and may useful when wanting a fresh install, or to clean up old files:
-
-> sh teardown.sh
-
-Note that this removes the node modules and bower components, so to restart the project you'll need to run the setup.sh script again.
-
+`npm test` (one-time) or `npm run test-watch` (live-reload)

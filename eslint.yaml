@@ -16,7 +16,8 @@ globals:
   sinon: true
 
 parserOptions:
-  ecmaVersion: 5
+  ecmaVersion: 2015
+  sourceType: module
 
 rules:
   strict: [2, 'function']
