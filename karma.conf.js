@@ -10,7 +10,8 @@ module.exports = function (config) {
     ],
 
     preprocessors: {
-      'src/tests.webpack.js': ['webpack', 'sourcemap']
+      'src/tests.webpack.js': ['webpack', 'sourcemap'],
+      'test/**.test.js': ['babel']
     },
 
     reporters: ['mocha', 'beep'],
@@ -22,12 +23,6 @@ module.exports = function (config) {
     colors: true,
 
     browsers: ['PhantomJS'],
-
-    plugins: [
-      require('karma-sinon'),
-      require('karma-should'),
-      require('karma-should-sinon')
-    ],
 
     webpack: require('./webpack.config'),
 
