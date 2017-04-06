@@ -14,7 +14,11 @@ module.exports = function (config) {
       'test/**.test.js': ['babel']
     },
 
-    reporters: ['mocha', 'beep'],
+    reporters: ['mocha', 'beep', 'junit'],
+
+    junitReporter: {
+      outputDir: 'test-reports'
+    },
 
     exclude: [],
 
