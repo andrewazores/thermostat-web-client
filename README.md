@@ -2,6 +2,10 @@
 
 AngularJS & Patternfly Application: Thermostat UI
 
+## Dependencies:
+
+`npm`, which will pull down all other dependencies
+
 ## How to use
 
 Live-reload development:
