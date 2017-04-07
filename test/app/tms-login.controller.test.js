@@ -81,7 +81,7 @@ describe('TmsLoginController', () => {
 
       authLogin.should.be.calledOnce();
       let fn = authLogin.args[0][2];
-      should(fn).be.not.undefined();
+      should.exist(fn);
       fn.should.be.a.Function();
       locationPath.should.be.calledWith('/');
     });

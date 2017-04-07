@@ -46,9 +46,7 @@ describe('TmsAppController', () => {
 
         scope = $rootScope.$new();
         location = $location;
-        environment = {
-          env: env
-        };
+        environment = env;
         authService = AuthService;
 
         $controller('tmsAppController', {
@@ -78,9 +76,7 @@ describe('TmsAppController', () => {
 
       scope = $rootScope.$new();
       location = $location;
-      environment = {
-        env: 'testing'
-      };
+      environment = 'testing';
       authService = AuthService;
 
       authStatus = sinon.stub(authService, 'status').returns(true);
@@ -112,9 +108,7 @@ describe('TmsAppController', () => {
 
       scope = $rootScope.$new();
       location = $location;
-      environment = {
-        env: 'testing'
-      };
+      environment = 'testing';
       authService = AuthService;
 
       authStatus = sinon.stub(authService, 'status').returns(false);

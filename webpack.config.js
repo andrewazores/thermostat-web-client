@@ -62,6 +62,13 @@ module.exports = function () {
     })
   );
 
+  config.plugins.push(
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development',
+      DEBUG: false
+    })
+  );
+
   if (!isTest) {
     config.plugins.push(
       new HtmlWebpackPlugin({

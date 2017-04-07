@@ -37,7 +37,7 @@ export default class TmsAppController {
   constructor ($scope, $location, Environment, AuthService) {
     'ngInject';
 
-    $scope.env = Environment.env;
+    $scope.env = Environment;
     $scope.displayEnvHeader = ($scope.env !== 'production');
 
     if (!AuthService.status()) {

@@ -33,18 +33,52 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-export default class TmsLoginController {
-  constructor ($scope, $location, AuthService) {
-    'ngInject';
+describe('tmsConfigModule', () => {
 
-    if (AuthService.status()) {
-      $location.path('/');
-    }
+  beforeEach(angular.mock.module('tmsConfigModule'));
 
-    $scope.login = () => {
-      AuthService.login($scope.username, $scope.password, () => {
-        $location.path('/');
-      });
-    };
-  }
-}
+  describe('Environment', () => {
+    let environment;
+    beforeEach(inject(Environment => {
+      'ngInject';
+
+      environment = Environment;
+    }));
+
+    it('should be exported', () => {
+      should.exist(environment);
+    });
+
+    it('should be readonly', done => {
+      try {
+        environment.foo = 'bar';
+      } catch (e) {
+        e.message.should.equal('Attempted to assign to readonly property.');
+        done();
+      }
+    });
+  });
+
+  describe('Debug', () => {
+    let debug;
+    beforeEach(inject(Debug => {
+      'ngInject';
+
+      debug = Debug;
+    }));
+
+    it('should be exported', () => {
+      should.exist(debug);
+    });
+
+    it('should be readonly', done => {
+      try {
+        debug.foo = 'bar';
+      } catch (e) {
+        e.message.should.equal('Attempted to assign to readonly property.');
+        done();
+      }
+    });
+  });
+
+});
