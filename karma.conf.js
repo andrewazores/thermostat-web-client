@@ -6,12 +6,12 @@ module.exports = function (config) {
 
     files: [
       'src/tests.webpack.js',
-      'test/**.test.js'
+      'test/**/*.test.js'
     ],
 
     preprocessors: {
       'src/tests.webpack.js': ['webpack', 'sourcemap'],
-      'test/**.test.js': ['babel']
+      'test/**/*.test.js': ['webpack']
     },
 
     reporters: ['mocha', 'beep', 'junit'],

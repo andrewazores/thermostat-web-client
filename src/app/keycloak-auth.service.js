@@ -33,16 +33,34 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-export default class TmsAppController {
-  constructor ($scope, $location, Environment, AuthService) {
-    'ngInject';
+export default class KeycloakAuthService {
+  constructor (keycloak) {
+    this.keycloak = keycloak;
 
-    $scope.env = Environment.env;
-    $scope.displayEnvHeader = ($scope.env !== 'production');
+    this.init = () => {
+      return this.keycloak.init({ onLoad: 'login-required' });
+    };
 
-    if (!AuthService.status()) {
-      $location.path('/login');
-    }
+    this.logout = (callback) => {
+      this.keycloak.logout();
+      if (callback) {
+        callback();
+      }
+    };
 
+    this.status = () => {
+      return this.keycloak.authenticated;
+    };
+
+    return {
+      init: this.init,
+      status: this.status,
+      logout: this.logout,
+      login: (user, pass, callback) => {
+        if (callback) {
+          callback();
+        }
+      },
+    };
   }
 }

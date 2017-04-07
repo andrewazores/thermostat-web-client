@@ -34,14 +34,18 @@
  */
 
 export default class TmsLoginController {
-  constructor ($scope) {
+  constructor ($scope, $location, AuthService) {
     'ngInject';
-    $scope.login = function () {
-      console.log({username: $scope.username, password: $scope.password});
-    };
-  }
 
-  static controllerName () {
-    return 'tms.loginController';
+    if (AuthService.status()) {
+      $location.path('/');
+    }
+
+    $scope.login = () => {
+      AuthService.login($scope.username, $scope.password, () => {
+        alert('(mock) Logged in');
+        $location.path('/');
+      });
+    };
   }
 }

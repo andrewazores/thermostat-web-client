@@ -1,0 +1,5 @@
+{
+  "url": "http://localhost:31000/auth",
+  "realm": "prototype",
+  "clientId": "thermostat-web-client"
+}

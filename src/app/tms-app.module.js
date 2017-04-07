@@ -49,21 +49,57 @@ import 'c3/c3.css';
 import 'd3';
 import '../styles/app/app.css';
 
+import KeycloakAuthService from './keycloak-auth.service.js';
+import StubAuthService from './stub-auth.service.js';
+import TmsAppController from './tms-app.controller.js';
+import TmsLoginController from './tms-login.controller.js';
+
+import Keycloak from 'keycloak-js/dist/keycloak.js';
+
 export const APP_MODULE = 'tms.appModule';
 
-angular.module(APP_MODULE, ['ngRoute'])
-  .config(['$routeProvider',
-    function ($routeProvider) {
-      $routeProvider
+let appModule = angular.module(APP_MODULE, ['ngRoute']);
 
-        .when('/login', {
-          template: require('./login.html')
-        });
-    }
-  ]);
+let environment = require('./environment.json');
 
-import TmsAppController from './tms-app.controller.js';
-angular.module(APP_MODULE).controller(TmsAppController.controllerName(), TmsAppController);
+if (environment.env === 'production') {
 
-import TmsLoginController from './tms-login.controller.js';
-angular.module(APP_MODULE).controller(TmsLoginController.controllerName(), TmsLoginController);
+  let keycloak = Keycloak(require('./keycloak.json'));
+  let keycloakAuthService = new KeycloakAuthService(keycloak);
+  appModule.value('AuthService', keycloakAuthService);
+
+  keycloakAuthService.init({ onLoad: 'login-required' })
+    .success(() => {
+      angular.element(() => {
+        angular.bootstrap(document, [APP_MODULE]);
+      });
+    })
+    .error(() => {
+      window.location.refresh();
+    });
+
+} else {
+
+  appModule.value('AuthService', new StubAuthService());
+
+  angular.element(function () {
+    angular.bootstrap(document, [APP_MODULE]);
+  });
+}
+
+appModule.config(['$routeProvider',
+  function ($routeProvider) {
+    $routeProvider.when('/login', {
+      template: require('./login.html')
+    });
+  }
+]);
+
+appModule.controller('tmsAppController', TmsAppController);
+appModule.controller('tmsLoginController', TmsLoginController);
+
+appModule.factory('Environment', [
+  function Environment () {
+    return Object.assign({}, environment);
+  }
+]);

@@ -33,16 +33,41 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-export default class TmsAppController {
-  constructor ($scope, $location, Environment, AuthService) {
-    'ngInject';
+// AuthServices are set up before Angular is bootstrapped, so we manually import rather than
+// using Angular DI
+import StubAuthService from '../../src/app/stub-auth.service.js';
 
-    $scope.env = Environment.env;
-    $scope.displayEnvHeader = ($scope.env !== 'production');
+describe('StubAuthService', () => {
+  let stubAuthService;
+  beforeEach(() => {
+    stubAuthService = new StubAuthService();
+  });
 
-    if (!AuthService.status()) {
-      $location.path('/login');
-    }
+  it('should be initially logged out', () => {
+    stubAuthService.status().should.equal(false);
+  });
 
-  }
-}
+  describe('#login()', () => {
+    it('should set logged in status', () => {
+      stubAuthService.login();
+      stubAuthService.status().should.equal(true);
+    });
+
+    it('should call callback if provided', done => {
+      stubAuthService.login('', '', done);
+    });
+  });
+
+  describe('#logout()', () => {
+    it('should set logged out status', () => {
+      stubAuthService.login();
+      stubAuthService.status().should.equal(true);
+      stubAuthService.logout();
+      stubAuthService.status().should.equal(false);
+    });
+
+    it('should call callback if provided', done => {
+      stubAuthService.logout(done);
+    });
+  });
+});

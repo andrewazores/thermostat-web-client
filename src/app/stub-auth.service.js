@@ -33,16 +33,32 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-export default class TmsAppController {
-  constructor ($scope, $location, Environment, AuthService) {
-    'ngInject';
+export default class StubAuthService {
+  constructor () {
+    this.state = false;
 
-    $scope.env = Environment.env;
-    $scope.displayEnvHeader = ($scope.env !== 'production');
+    this.logout = (callback) => {
+      if (this.state) {
+        this.state = false;
+      }
+      if (callback) {
+        callback();
+      }
+    };
 
-    if (!AuthService.status()) {
-      $location.path('/login');
-    }
+    this.login = (user, pass, callback) => {
+      if (!this.state) {
+        this.state = true;
+      }
+      if (callback) {
+        callback();
+      }
+    };
 
+    return {
+      status: () => { return this.state; },
+      logout: this.logout,
+      login: this.login
+    };
   }
 }
