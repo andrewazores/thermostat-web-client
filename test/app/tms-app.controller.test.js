@@ -37,7 +37,7 @@ describe('TmsAppController', () => {
 
   beforeEach(angular.mock.module('tms.appModule'));
 
-  let appController, scope, location, environment, authService;
+  let scope, location, environment, authService;
 
   ['testing', 'development', 'production'].forEach(env => {
     describe(env + ' $scope', () => {
@@ -51,7 +51,7 @@ describe('TmsAppController', () => {
         };
         authService = AuthService;
 
-        appController = $controller('tmsAppController', {
+        $controller('tmsAppController', {
           $scope: scope,
           $location: location,
           Environment: environment,
@@ -86,7 +86,7 @@ describe('TmsAppController', () => {
       authStatus = sinon.stub(authService, 'status').returns(true);
       locationPath = sinon.spy(location, 'path');
 
-      appController = $controller('tmsAppController', {
+      $controller('tmsAppController', {
         $scope: scope,
         $location: location,
         Environment: environment,
@@ -120,7 +120,7 @@ describe('TmsAppController', () => {
       authStatus = sinon.stub(authService, 'status').returns(false);
       locationPath = sinon.spy(location, 'path');
 
-      appController = $controller('tmsAppController', {
+      $controller('tmsAppController', {
         $scope: scope,
         $location: location,
         Environment: environment,

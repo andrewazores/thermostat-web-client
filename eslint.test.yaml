@@ -1,14 +1,16 @@
 env:
-  browser: true
-  node: true
-  phantomjs: true
+  mocha: true
+  protractor: true
 
 extends: 'eslint:recommended'
 
+plugins: ['mocha']
+
 globals:
   angular: true
-  _: true
-  $: true
+  inject: true
+  should: true
+  sinon: true
 
 parserOptions:
   ecmaVersion: 2015
@@ -51,3 +53,11 @@ rules:
   comma-dangle:
     - 1
     - only-multiline
+  mocha/handle-done-callback: 2
+  mocha/max-top-level-suites: [1, {limit: 1}]
+  mocha/no-exclusive-tests: 2
+  mocha/no-global-tests: 2
+  mocha/no-nested-tests: 2
+  mocha/no-pending-tests: 1
+  mocha/no-skipped-tests: 1
+  mocha/no-top-level-hooks: 2

@@ -37,7 +37,7 @@ describe('TmsLoginController', () => {
 
   beforeEach(angular.mock.module('tms.appModule'));
 
-  let scope, location, authService, loginController;
+  let scope, location, authService;
 
   describe('$scope.login()', () => {
     let authStatus, authLogin, locationPath;
@@ -52,7 +52,7 @@ describe('TmsLoginController', () => {
       authLogin = sinon.spy(authService, 'login');
       locationPath = sinon.spy(location, 'path');
 
-      loginController = $controller('tmsLoginController', {
+      $controller('tmsLoginController', {
         $scope: scope,
         $location: location,
         AuthService: authService
@@ -99,7 +99,7 @@ describe('TmsLoginController', () => {
       authStatus = sinon.stub(authService, 'status').returns(true);
       locationPath = sinon.spy(location, 'path');
 
-      loginController = $controller('tmsLoginController', {
+      $controller('tmsLoginController', {
         $scope: scope,
         $location: location,
         AuthService: authService
@@ -129,7 +129,7 @@ describe('TmsLoginController', () => {
       authStatus = sinon.stub(authService, 'status').returns(false);
       locationPath = sinon.spy(location, 'path');
 
-      loginController = $controller('tmsLoginController', {
+      $controller('tmsLoginController', {
         $scope: scope,
         $location: location,
         AuthService: authService
