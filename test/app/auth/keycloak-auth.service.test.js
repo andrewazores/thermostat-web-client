@@ -33,34 +33,61 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-export default class KeycloakAuthService {
-  constructor (keycloak) {
-    this.keycloak = keycloak;
+// AuthServices are set up before Angular is bootstrapped, so we manually import rather than
+// using Angular DI
+import KeycloakAuthService from '../../../src/app/auth/keycloak-auth.service.js';
 
-    this.init = () => {
-      return this.keycloak.init({ onLoad: 'login-required' });
-    };
+describe('KeycloakAuthService', () => {
+  let keycloakAuthService;
+  let init;
+  let logout;
+  let promise;
 
-    this.logout = (callback) => {
-      this.keycloak.logout();
-      if (callback) {
-        callback();
-      }
+  beforeEach(() => {
+    promise = sinon.spy();
+    init = sinon.stub().returns(promise);
+    logout = sinon.spy();
+    let mockCloak = {
+      init: init,
+      logout: logout,
+      authenticated: true
     };
+    keycloakAuthService = new KeycloakAuthService(mockCloak);
+  });
 
-    this.status = () => {
-      return this.keycloak.authenticated;
-    };
+  describe('#init()', () => {
+    it('should delegate to keycloak object', () => {
+      keycloakAuthService.init();
+      init.should.be.calledOnce();
+      init.should.be.calledWith({ onLoad: 'login-required' });
+    });
 
-    return {
-      init: this.init,
-      status: this.status,
-      logout: this.logout,
-      login: (user, pass, callback) => {
-        if (callback) {
-          callback();
-        }
-      },
-    };
-  }
-}
+    it('should return a promise', () => {
+      let res = keycloakAuthService.init();
+      res.should.equal(promise);
+    });
+  });
+
+  describe('#login()', () => {
+    it('should call callback', done => {
+      keycloakAuthService.login('', '', done);
+    });
+
+    it('should not interact with keycloak object', done => {
+      keycloakAuthService.login('', '', done);
+      init.should.not.be.called();
+      logout.should.not.be.called();
+    });
+  });
+
+  describe('#logout()', () => {
+    it('should call callback', done => {
+      keycloakAuthService.logout(done);
+    });
+
+    it('should delegate to keycloak object', () => {
+      keycloakAuthService.logout();
+      logout.should.be.calledOnce();
+    });
+  });
+});

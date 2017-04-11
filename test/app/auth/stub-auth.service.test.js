@@ -33,16 +33,41 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import angular from 'angular';
+// AuthServices are set up before Angular is bootstrapped, so we manually import rather than
+// using Angular DI
+import StubAuthService from '../../../src/app/auth/stub-auth.service.js';
 
-let MOD_NAME = 'tmsConfigModule';
-export default MOD_NAME;
+describe('StubAuthService', () => {
+  let stubAuthService;
+  beforeEach(() => {
+    stubAuthService = new StubAuthService();
+  });
 
-var config = () => {
-  let mod = angular.module(MOD_NAME, []);
+  it('should be initially logged out', () => {
+    stubAuthService.status().should.equal(false);
+  });
 
-  mod.constant('CFG_MODULE', MOD_NAME);
-  mod.constant('Environment', process.env.NODE_ENV);
-  mod.constant('Debug', process.env.DEBUG);
-};
-config();
+  describe('#login()', () => {
+    it('should set logged in status', () => {
+      stubAuthService.login();
+      stubAuthService.status().should.equal(true);
+    });
+
+    it('should call callback if provided', done => {
+      stubAuthService.login('', '', done);
+    });
+  });
+
+  describe('#logout()', () => {
+    it('should set logged out status', () => {
+      stubAuthService.login();
+      stubAuthService.status().should.equal(true);
+      stubAuthService.logout();
+      stubAuthService.status().should.equal(false);
+    });
+
+    it('should call callback if provided', done => {
+      stubAuthService.logout(done);
+    });
+  });
+});

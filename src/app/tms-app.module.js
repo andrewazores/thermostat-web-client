@@ -50,51 +50,25 @@ import 'd3';
 import '../styles/app/app.css';
 
 import {default as CFG_MODULE} from './cfg/app-cfg.module.js';
+import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './auth/auth.module.js';
 
-import KeycloakAuthService from './keycloak-auth.service.js';
-import StubAuthService from './stub-auth.service.js';
 import TmsAppController from './tms-app.controller.js';
-import TmsLoginController from './tms-login.controller.js';
-
-import Keycloak from 'keycloak-js/dist/keycloak.js';
 
 export const APP_MODULE = 'tms.appModule';
 
-let appModule = angular.module(APP_MODULE, ['ngRoute', CFG_MODULE]);
-appModule.constant('AppModule', APP_MODULE);
-
-appModule.config($routeProvider => {
-  'ngInject';
-  $routeProvider.when('/login', {
-    template: require('./login.html')
-  });
-}
+let appModule = angular.module(APP_MODULE,
+  [
+    CFG_MODULE,
+    AUTH_MODULE,
+  ]
 );
 
+appModule.constant('AppModule', APP_MODULE);
+
 appModule.controller('tmsAppController', TmsAppController);
-appModule.controller('tmsLoginController', TmsLoginController);
 
-if (process.env.NODE_ENV === 'production') {
-
-  let keycloak = Keycloak(require('./keycloak.json'));
-  let keycloakAuthService = new KeycloakAuthService(keycloak);
-  appModule.value('AuthService', keycloakAuthService);
-
-  keycloakAuthService.init({ onLoad: 'login-required' })
-    .success(() => {
-      angular.element(() => {
-        angular.bootstrap(document, [APP_MODULE]);
-      });
-    })
-    .error(() => {
-      window.location.refresh();
-    });
-
-} else {
-
-  appModule.value('AuthService', new StubAuthService());
-
+AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => {
   angular.element(() => {
     angular.bootstrap(document, [APP_MODULE]);
   });
-}
+});

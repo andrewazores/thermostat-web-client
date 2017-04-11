@@ -33,41 +33,51 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-// AuthServices are set up before Angular is bootstrapped, so we manually import rather than
-// using Angular DI
-import StubAuthService from '../../src/app/stub-auth.service.js';
+describe('tms.appModule', () => {
 
-describe('StubAuthService', () => {
-  let stubAuthService;
-  beforeEach(() => {
-    stubAuthService = new StubAuthService();
-  });
+  beforeEach(angular.mock.module('tms.appModule'));
 
-  it('should be initially logged out', () => {
-    stubAuthService.status().should.equal(false);
-  });
+  // this is actually provided by the auth.module pseudo-module - see auth.module.test.js
+  describe('Auth bootstrap', () => {
+    it('should provide an AuthService', () => {
+      inject(AuthService => {
+        'ngInject';
+        should.exist(AuthService);
 
-  describe('#login()', () => {
-    it('should set logged in status', () => {
-      stubAuthService.login();
-      stubAuthService.status().should.equal(true);
-    });
+        AuthService.should.have.property('init');
+        AuthService.should.have.property('status');
+        AuthService.should.have.property('login');
+        AuthService.should.have.property('logout');
 
-    it('should call callback if provided', done => {
-      stubAuthService.login('', '', done);
-    });
-  });
-
-  describe('#logout()', () => {
-    it('should set logged out status', () => {
-      stubAuthService.login();
-      stubAuthService.status().should.equal(true);
-      stubAuthService.logout();
-      stubAuthService.status().should.equal(false);
-    });
-
-    it('should call callback if provided', done => {
-      stubAuthService.logout(done);
+        AuthService.init.should.be.a.Function();
+        AuthService.status.should.be.a.Function();
+        AuthService.login.should.be.a.Function();
+        AuthService.logout.should.be.a.Function();
+      });
     });
   });
+
+  it('should provide tmsAppController', () => {
+    inject(($controller, $rootScope) => {
+      'ngInject';
+      should.exist($controller('tmsAppController', { $scope: $rootScope.$new() }));
+    });
+  });
+
+  it('should provide tmsConfigModule', () => {
+    inject(CFG_MODULE => {
+      'ngInject';
+      should.exist(CFG_MODULE);
+      should.exist(angular.module(CFG_MODULE));
+    });
+  });
+
+  it('should provide tmsAuthModule', () => {
+    inject(AUTH_MODULE => {
+      'ngInject';
+      should.exist(AUTH_MODULE);
+      should.exist(angular.module(AUTH_MODULE));
+    });
+  });
+
 });

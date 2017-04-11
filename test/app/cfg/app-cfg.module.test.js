@@ -37,6 +37,13 @@ describe('tmsConfigModule', () => {
 
   beforeEach(angular.mock.module('tmsConfigModule'));
 
+  it('should export CFG_MODULE constant', () => {
+    inject(CFG_MODULE => {
+      'ngInject';
+      should.exist(CFG_MODULE);
+    });
+  });
+
   describe('Environment', () => {
     let environment;
     beforeEach(inject(Environment => {

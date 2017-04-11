@@ -33,16 +33,32 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import angular from 'angular';
+export default class KeycloakAuthService {
+  constructor (keycloak) {
+    this.init = () => {
+      return keycloak.init({ onLoad: 'login-required' });
+    };
 
-let MOD_NAME = 'tmsConfigModule';
-export default MOD_NAME;
+    this.logout = (callback) => {
+      keycloak.logout();
+      if (callback) {
+        callback();
+      }
+    };
 
-var config = () => {
-  let mod = angular.module(MOD_NAME, []);
+    this.status = () => {
+      return keycloak.authenticated;
+    };
 
-  mod.constant('CFG_MODULE', MOD_NAME);
-  mod.constant('Environment', process.env.NODE_ENV);
-  mod.constant('Debug', process.env.DEBUG);
-};
-config();
+    return {
+      init: this.init,
+      status: this.status,
+      logout: this.logout,
+      login: (user, pass, callback) => {
+        if (callback) {
+          callback();
+        }
+      },
+    };
+  }
+}

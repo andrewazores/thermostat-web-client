@@ -33,61 +33,49 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-// AuthServices are set up before Angular is bootstrapped, so we manually import rather than
-// using Angular DI
-import KeycloakAuthService from '../../src/app/keycloak-auth.service.js';
+// not a 'real' angular module since this is used for bootstrapping Angular to begin with
+import {config} from '../../../src/app/auth/auth.module.js';
 
-describe('KeycloakAuthService', () => {
-  let keycloakAuthService;
-  let init;
-  let logout;
-  let promise;
+describe('tmsAuthModule', () => {
 
-  beforeEach(() => {
-    promise = sinon.spy();
-    init = sinon.stub().returns(promise);
-    logout = sinon.spy();
-    let mockCloak = {
-      init: init,
-      logout: logout,
-      authenticated: true
-    };
-    keycloakAuthService = new KeycloakAuthService(mockCloak);
-  });
-
-  describe('#init()', () => {
-    it('should delegate to keycloak object', () => {
-      keycloakAuthService.init();
-      init.should.be.calledOnce();
-      init.should.be.calledWith({ onLoad: 'login-required' });
+  describe('#config()', () => {
+    it('should be exposed', () => {
+      should.exist(config);
+      should(config).be.a.Function();
     });
 
-    it('should return a promise', () => {
-      let res = keycloakAuthService.init();
-      res.should.equal(promise);
-    });
-  });
-
-  describe('#login()', () => {
-    it('should call callback', done => {
-      keycloakAuthService.login('', '', done);
+    it('should invoke callback', done => {
+      config('testing', done, () => {});
     });
 
-    it('should not interact with keycloak object', done => {
-      keycloakAuthService.login('', '', done);
-      init.should.not.be.called();
-      logout.should.not.be.called();
+    describe('keycloak environments', () => {
+
+      it('should not use keycloak in testing', () => {
+        let keycloakProvider = sinon.spy();
+        config('testing', () => {}, keycloakProvider);
+        keycloakProvider.should.not.be.called();
+      });
+
+      it('should not use keycloak in development', () => {
+        let keycloakProvider = sinon.spy();
+        config('development', () => {}, keycloakProvider);
+        keycloakProvider.should.not.be.called();
+      });
+
+      it('should use keycloak in production', () => {
+        let errorSpy = sinon.spy();
+        let successSpy = sinon.stub().returns({error: errorSpy});
+        let initSpy = sinon.stub().returns({success: successSpy});
+        let keycloakProvider = sinon.stub().returns({init: initSpy});
+
+        config('production', () => {}, keycloakProvider);
+
+        keycloakProvider.should.be.calledOnce();
+        initSpy.should.be.calledWith({onLoad: 'login-required'});
+        successSpy.should.be.calledOnce();
+        errorSpy.should.be.calledOnce();
+      });
     });
   });
 
-  describe('#logout()', () => {
-    it('should call callback', done => {
-      keycloakAuthService.logout(done);
-    });
-
-    it('should delegate to keycloak object', () => {
-      keycloakAuthService.logout();
-      logout.should.be.calledOnce();
-    });
-  });
 });

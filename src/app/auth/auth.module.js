@@ -35,14 +35,38 @@
 
 import angular from 'angular';
 
-let MOD_NAME = 'tmsConfigModule';
+import Keycloak from 'keycloak-js/dist/keycloak.js';
+
+import KeycloakAuthService from './keycloak-auth.service.js';
+import StubAuthService from './stub-auth.service.js';
+import TmsLoginController from './tms-login.controller.js';
+
+let MOD_NAME = 'tmsAuthModule';
 export default MOD_NAME;
 
-var config = () => {
-  let mod = angular.module(MOD_NAME, []);
+export function config (env, done = () => {}, keycloakProvider = () => { return Keycloak(require('./keycloak.json')); }) {
+  let mod = angular.module(MOD_NAME, ['ngRoute']);
 
-  mod.constant('CFG_MODULE', MOD_NAME);
-  mod.constant('Environment', process.env.NODE_ENV);
-  mod.constant('Debug', process.env.DEBUG);
-};
-config();
+  mod.constant('AUTH_MODULE', MOD_NAME);
+  mod.controller('tmsLoginController', TmsLoginController);
+  mod.config($routeProvider => {
+    'ngInject';
+    $routeProvider.when('/login', {
+      template: require('./login.html')
+    });
+  });
+
+  if (env === 'production') {
+    let keycloakAuthService = new KeycloakAuthService(keycloakProvider());
+    mod.value('AuthService', keycloakAuthService);
+
+    keycloakAuthService.init({ onLoad: 'login-required' })
+      .success(done)
+      .error(() => {
+        window.location.refresh();
+      });
+  } else {
+    mod.value('AuthService', new StubAuthService());
+    done();
+  }
+}
