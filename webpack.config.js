@@ -23,7 +23,6 @@ module.exports = function () {
 
   config.output = isTest ? {} : {
     path: __dirname + '/dist',
-    publicPath: 'http://localhost:8080/',
     filename: '[name].bundle.js',
     chunkFilename: '[name].bundle.js'
   };
@@ -79,8 +78,11 @@ module.exports = function () {
   }
 
   config.devServer = {
+    host: '0.0.0.0',
     contentBase: './src/content',
-    stats: 'minimal'
+    stats: 'minimal',
+    inline: true,
+    historyApiFallback: true
   };
 
   return config;

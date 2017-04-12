@@ -55,7 +55,7 @@
     "build": "webpack --bail --progress --profile",
     "postbuild": "npm test",
     "preserver": "npm run prebuild",
-    "server": "webpack-dev-server --history-api-fallback --inline --progress",
+    "server": "webpack-dev-server --progress",
     "pretest": "npm run lint-tests",
     "test": "karma start",
     "pretest-watch": "npm run pretest",
