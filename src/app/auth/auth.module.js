@@ -44,7 +44,15 @@ import TmsLoginController from './tms-login.controller.js';
 let MOD_NAME = 'tmsAuthModule';
 export default MOD_NAME;
 
-export function config (env, done = () => {}, keycloakProvider = () => { return Keycloak(require('./keycloak.json')); }) {
+export function config (env, done = () => {}, keycloakProvider = () => {
+  // allows for keycloak.json to be compile-time optional, so it can be missing in development
+  // and testing environments
+  let req = require.context('./', false, /^\.\/keycloak\.json$/);
+  if (req.keys().includes('./keycloak.json')) {
+    return Keycloak(req('./keycloak.json'));
+  }
+  throw 'keycloak.json expected but not found';
+}) {
   let mod = angular.module(MOD_NAME, ['ngRoute']);
 
   mod.constant('AUTH_MODULE', MOD_NAME);
