@@ -1,0 +1,10 @@
+#!/bin/sh
+
+mv /tmp/src/* "$HOME"
+mv /tmp/src/.{babelrc,eslintignore,htmlhintrc} "$HOME"
+
+pushd ${HOME}
+
+npm install
+
+popd

@@ -47,7 +47,7 @@
     "webpack-dev-server": "^2.4.2"
   },
   "scripts": {
-    "lint-js": "\"$(npm bin)/eslint\" -c eslint.yaml --cache src",
+    "lint-js": "\"$(npm bin)/eslint\" -c eslint.yaml src",
     "lint-html": "\"$(npm bin)/htmlhint\" -c .htmlhintrc 'src/**/*.html'",
     "lint-tests": "\"$(npm bin)/eslint\" -c eslint.test.yaml --cache test",
     "lint": "npm run lint-js && npm run lint-html",

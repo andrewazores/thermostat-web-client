@@ -17,7 +17,7 @@ module.exports = function () {
 
   config.resolve = {
     alias: {
-      "jquery": "angular-patternfly/node_modules/patternfly/node_modules/jquery"
+      "jquery": "patternfly/node_modules/jquery"
     }
   };
 
