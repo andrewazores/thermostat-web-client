@@ -1,12 +1,11 @@
 {
-  "name": "thermostat-web-playground",
+  "name": "thermostat-ng-web-client",
   "version": "0.0.1",
   "private": false,
   "description": "",
-  "main": "Gruntfile.js",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/aptmac/tms-web-playground"
+    "type": "hg",
+    "url": "https://icedtea.classpath.org/thermostat-ng/web-client"
   },
   "author": "",
   "license": "",
