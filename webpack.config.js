@@ -46,7 +46,7 @@ module.exports = function () {
       loader: 'file-loader'
     }, {
       test: /\.html$/,
-      loader: 'raw-loader'
+      loader: 'html-loader'
     }]
   };
 

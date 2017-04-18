@@ -1,7 +1,3 @@
 #!/bin/sh
 
-# "development" environment is intended to mean "on a developer's machine",
-# and we use "testing" environment for ex. continuous deployment
-export NODE_ENV=testing
-
 npm start

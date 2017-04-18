@@ -20,11 +20,20 @@ look like:
 
 Live-reload development:
 
-`npm start`, then point a web browser at localhost:8080.
+`npm run devserver`, then point a web browser at localhost:8080.
 
 One-time build:
 
 `npm run build`
+
+Non-live-reload web-server:
+
+`npm start`, then point a web browser at localhost:8080.
+
+In this case, you may run the server on a different port than the default 8080
+by setting the environment variable `PORT` to a port number of your choosing.
+The server also binds by default on `0.0.0.0`, which can be overridden with the
+environment variable `HOST`.
 
 Run tests:
 

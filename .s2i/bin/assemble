@@ -5,6 +5,15 @@ mv /tmp/src/.{babelrc,eslintignore,htmlhintrc} "$HOME"
 
 pushd ${HOME}
 
+# "development" environment is intended to mean "on a developer's machine",
+# and we use "testing" environment for ex. continuous deployment
+if [ -z "$NODE_ENV" ]; then
+    export NODE_ENV=testing
+fi
+
+echo "NODE_ENV=$NODE_ENV"
+
 npm install
+npm run build
 
 popd
