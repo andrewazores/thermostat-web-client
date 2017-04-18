@@ -2,6 +2,8 @@
 
 AngularJS & Patternfly Application: Thermostat UI
 
+[![Build Status](https://travis-ci.org/andrewazores/thermostat-web-client.svg?branch=master)](https://travis-ci.org/andrewazores/thermostat-web-client)
+
 ## Dependencies:
 
 `npm`, which will pull down all other dependencies.
