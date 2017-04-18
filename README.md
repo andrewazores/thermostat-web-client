@@ -3,7 +3,7 @@
 AngularJS & Patternfly Application: Thermostat UI
 
 [![Build Status](https://travis-ci.org/andrewazores/thermostat-web-client.svg?branch=master)](https://travis-ci.org/andrewazores/thermostat-web-client)
-[![Known Vulnerabilities](https://snyk.io/test/github/snyk/goof/badge.svg)](https://snyk.io/test/github/snyk/goof)
+[![Known Vulnerabilities](https://snyk.io/test/github/andrewazores/thermostat-web-client/badge.svg)](https://snyk.io/test/github/andrewazores/thermostat-web-client)
 
 ## Dependencies:
 
