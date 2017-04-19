@@ -47,6 +47,10 @@ module.exports = function () {
     }, {
       test: /\.html$/,
       loader: 'html-loader'
+    }, {
+      test: /\.js$/,
+      include: __dirname + '/src/app/',
+      loaders: ['istanbul-instrumenter-loader', 'babel-loader']
     }]
   };
 

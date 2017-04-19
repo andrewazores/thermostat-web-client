@@ -14,10 +14,21 @@ module.exports = function (config) {
       'test/**/*.test.js': ['webpack']
     },
 
-    reporters: ['mocha', 'beep', 'junit'],
+    reporters: ['mocha', 'beep', 'junit', 'coverage-istanbul'],
 
     junitReporter: {
       outputDir: 'test-reports'
+    },
+
+    coverageIstanbulReporter: {
+      reports: ['text-summary', 'html', 'cobertura'],
+      fixWebpackSourcePaths: true,
+
+      'report-config': {
+        html: {
+          subdir: 'html'
+        }
+      }
     },
 
     exclude: [],
