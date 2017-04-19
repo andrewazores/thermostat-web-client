@@ -2,6 +2,8 @@
 
 AngularJS & Patternfly Application: Thermostat UI
 
+[![Chat](https://img.shields.io/badge/chat-on%20freenode-brightgreen.svg)](https://webchat.freenode.net/?channels=#thermostat)
+
 ## Dependencies:
 
 `npm`, which will pull down all other dependencies.
