@@ -1,7 +1,9 @@
 node_modules
 dist
 test-reports
+checkstyle
 coverage
 src/app/auth/keycloak.json
 src/templates/appModuleTemplates.js
 .eslintcache
+npm-debug.log
