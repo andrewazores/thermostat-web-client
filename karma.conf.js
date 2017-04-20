@@ -5,11 +5,13 @@ module.exports = function (config) {
     frameworks: ['mocha', 'should-sinon', 'sinon', 'should'],
 
     files: [
+      'test/keycloak.stub.js',
       'src/tests.webpack.js',
       'test/**/*.test.js'
     ],
 
     preprocessors: {
+      'test/keycloak.stub.js': ['webpack'],
       'src/tests.webpack.js': ['webpack', 'sourcemap'],
       'test/**/*.test.js': ['webpack']
     },

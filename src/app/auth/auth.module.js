@@ -48,8 +48,11 @@ export function config (env, done = () => {}, keycloakProvider = () => {
   // allows for keycloak.json to be compile-time optional, so it can be missing in development
   // and testing environments
   let req = require.context('./', false, /^\.\/keycloak\.json$/);
-  if (req.keys().includes('./keycloak.json')) {
-    return Keycloak(req('./keycloak.json'));
+  if (req.keys().indexOf('./keycloak.json') !== -1) {
+    if (!angular.isDefined(window.Keycloak)) {
+      window.Keycloak = Keycloak;
+    }
+    return window.Keycloak(req('./keycloak.json'));
   }
   throw 'keycloak.json expected but not found';
 }) {
