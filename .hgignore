@@ -3,7 +3,6 @@ dist
 test-reports
 checkstyle
 coverage
-src/app/auth/keycloak.json
-src/templates/appModuleTemplates.js
+src/app/components/auth/keycloak.json
 .eslintcache
 npm-debug.log

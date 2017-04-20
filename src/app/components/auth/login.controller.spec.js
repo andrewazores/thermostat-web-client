@@ -33,29 +33,28 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-describe('TmsLoginController', () => {
+describe('LoginController', () => {
 
-  beforeEach(angular.mock.module('tms.appModule'));
+  beforeEach(angular.mock.module('appModule'));
 
-  let scope, location, authService;
+  let scope, location;
 
   describe('$scope.login()', () => {
     let authStatus, authLogin, locationPath;
-    beforeEach(inject(($controller, $rootScope, $location, AuthService) => {
+    beforeEach(inject(($controller, $rootScope, $location, authService) => {
       'ngInject';
 
       scope = $rootScope.$new();
       location = $location;
-      authService = AuthService;
 
       authStatus = sinon.stub(authService, 'status').returns(false);
       authLogin = sinon.spy(authService, 'login');
       locationPath = sinon.spy(location, 'path');
 
-      $controller('tmsLoginController', {
+      $controller('LoginController', {
         $scope: scope,
         $location: location,
-        AuthService: authService
+        authService: authService
       });
     }));
 
@@ -89,20 +88,19 @@ describe('TmsLoginController', () => {
 
   describe('when logged in', () => {
     let authStatus, locationPath;
-    beforeEach(inject(($controller, $rootScope, $location, AuthService) => {
+    beforeEach(inject(($controller, $rootScope, $location, authService) => {
       'ngInject';
 
       scope = $rootScope.$new();
       location = $location;
-      authService = AuthService;
 
       authStatus = sinon.stub(authService, 'status').returns(true);
       locationPath = sinon.spy(location, 'path');
 
-      $controller('tmsLoginController', {
+      $controller('LoginController', {
         $scope: scope,
         $location: location,
-        AuthService: authService
+        authService: authService
       });
     }));
 
@@ -119,20 +117,19 @@ describe('TmsLoginController', () => {
 
   describe('when logged out', () => {
     let authStatus, locationPath;
-    beforeEach(inject(($controller, $rootScope, $location, AuthService) => {
+    beforeEach(inject(($controller, $rootScope, $location, authService) => {
       'ngInject';
 
       scope = $rootScope.$new();
       location = $location;
-      authService = AuthService;
 
       authStatus = sinon.stub(authService, 'status').returns(false);
       locationPath = sinon.spy(location, 'path');
 
-      $controller('tmsLoginController', {
+      $controller('LoginController', {
         $scope: scope,
         $location: location,
-        AuthService: authService
+        authService: authService
       });
     }));
 

@@ -35,49 +35,14 @@
 
 import angular from 'angular';
 
-import Keycloak from 'keycloak-js/dist/keycloak.js';
-
-import KeycloakAuthService from './keycloak-auth.service.js';
-import StubAuthService from './stub-auth.service.js';
-import TmsLoginController from './tms-login.controller.js';
-
-let MOD_NAME = 'tmsAuthModule';
+let MOD_NAME = 'configModule';
 export default MOD_NAME;
 
-export function config (env, done = () => {}, keycloakProvider = () => {
-  // allows for keycloak.json to be compile-time optional, so it can be missing in development
-  // and testing environments
-  let req = require.context('./', false, /^\.\/keycloak\.json$/);
-  if (req.keys().indexOf('./keycloak.json') !== -1) {
-    if (!angular.isDefined(window.Keycloak)) {
-      window.Keycloak = Keycloak;
-    }
-    return window.Keycloak(req('./keycloak.json'));
-  }
-  throw 'keycloak.json expected but not found';
-}) {
-  let mod = angular.module(MOD_NAME, ['ngRoute']);
+var config = () => {
+  let mod = angular.module(MOD_NAME, []);
 
-  mod.constant('AUTH_MODULE', MOD_NAME);
-  mod.controller('tmsLoginController', TmsLoginController);
-  mod.config($routeProvider => {
-    'ngInject';
-    $routeProvider.when('/login', {
-      template: require('./login.html')
-    });
-  });
-
-  if (env === 'production') {
-    let keycloakAuthService = new KeycloakAuthService(keycloakProvider());
-    mod.value('AuthService', keycloakAuthService);
-
-    keycloakAuthService.init({ onLoad: 'login-required' })
-      .success(done)
-      .error(() => {
-        window.location.refresh();
-      });
-  } else {
-    mod.value('AuthService', new StubAuthService());
-    done();
-  }
-}
+  mod.constant('CFG_MODULE', MOD_NAME);
+  mod.constant('environment', process.env.NODE_ENV);
+  mod.constant('debug', process.env.DEBUG);
+};
+config();

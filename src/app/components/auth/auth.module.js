@@ -33,51 +33,51 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-describe('tms.appModule', () => {
+import angular from 'angular';
 
-  beforeEach(angular.mock.module('tms.appModule'));
+import Keycloak from 'keycloak-js/dist/keycloak.js';
 
-  // this is actually provided by the auth.module pseudo-module - see auth.module.test.js
-  describe('Auth bootstrap', () => {
-    it('should provide an AuthService', () => {
-      inject(AuthService => {
-        'ngInject';
-        should.exist(AuthService);
+import KeycloakAuthService from './keycloak-auth.service.js';
+import StubAuthService from './stub-auth.service.js';
+import LoginController from './login.controller.js';
 
-        AuthService.should.have.property('init');
-        AuthService.should.have.property('status');
-        AuthService.should.have.property('login');
-        AuthService.should.have.property('logout');
+let MOD_NAME = 'authModule';
+export default MOD_NAME;
 
-        AuthService.init.should.be.a.Function();
-        AuthService.status.should.be.a.Function();
-        AuthService.login.should.be.a.Function();
-        AuthService.logout.should.be.a.Function();
+export function config (env, done = () => {}, keycloakProvider = () => {
+  // allows for keycloak.json to be compile-time optional, so it can be missing in development
+  // and testing environments
+  let req = require.context('./', false, /^\.\/keycloak\.json$/);
+  if (req.keys().indexOf('./keycloak.json') !== -1) {
+    if (!angular.isDefined(window.Keycloak)) {
+      window.Keycloak = Keycloak;
+    }
+    return window.Keycloak(req('./keycloak.json'));
+  }
+  throw 'keycloak.json expected but not found';
+}) {
+  let mod = angular.module(MOD_NAME, ['ngRoute']);
+
+  mod.constant('AUTH_MODULE', MOD_NAME);
+  mod.controller('LoginController', LoginController);
+  mod.config($routeProvider => {
+    'ngInject';
+    $routeProvider.when('/login', {
+      template: require('./login.html')
+    });
+  });
+
+  if (env === 'production') {
+    let keycloakAuthService = new KeycloakAuthService(keycloakProvider());
+    mod.value('authService', keycloakAuthService);
+
+    keycloakAuthService.init({ onLoad: 'login-required' })
+      .success(done)
+      .error(() => {
+        window.location.refresh();
       });
-    });
-  });
-
-  it('should provide tmsAppController', () => {
-    inject(($controller, $rootScope) => {
-      'ngInject';
-      should.exist($controller('tmsAppController', { $scope: $rootScope.$new() }));
-    });
-  });
-
-  it('should provide tmsConfigModule', () => {
-    inject(CFG_MODULE => {
-      'ngInject';
-      should.exist(CFG_MODULE);
-      should.exist(angular.module(CFG_MODULE));
-    });
-  });
-
-  it('should provide tmsAuthModule', () => {
-    inject(AUTH_MODULE => {
-      'ngInject';
-      should.exist(AUTH_MODULE);
-      should.exist(angular.module(AUTH_MODULE));
-    });
-  });
-
-});
+  } else {
+    mod.value('authService', new StubAuthService());
+    done();
+  }
+}

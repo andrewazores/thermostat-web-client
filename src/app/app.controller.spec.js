@@ -33,27 +33,25 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-describe('TmsAppController', () => {
+describe('AppController', () => {
 
-  beforeEach(angular.mock.module('tms.appModule'));
+  beforeEach(angular.mock.module('appModule'));
 
-  let scope, location, environment, authService;
+  let scope, location;
 
   ['testing', 'development', 'production'].forEach(env => {
     describe(env + ' $scope', () => {
-      beforeEach(inject(($controller, $rootScope, $location, AuthService) => {
+      beforeEach(inject(($controller, $rootScope, $location, authService) => {
         'ngInject';
 
         scope = $rootScope.$new();
         location = $location;
-        environment = env;
-        authService = AuthService;
 
-        $controller('tmsAppController', {
+        $controller('AppController', {
           $scope: scope,
           $location: location,
-          Environment: environment,
-          AuthService: authService
+          environment: env,
+          authService: authService
         });
       }));
 
@@ -71,22 +69,20 @@ describe('TmsAppController', () => {
 
   describe('when logged in', () => {
     let authStatus, locationPath;
-    beforeEach(inject(($controller, $rootScope, $location, AuthService) => {
+    beforeEach(inject(($controller, $rootScope, $location, authService) => {
       'ngInject';
 
       scope = $rootScope.$new();
       location = $location;
-      environment = 'testing';
-      authService = AuthService;
 
       authStatus = sinon.stub(authService, 'status').returns(true);
       locationPath = sinon.spy(location, 'path');
 
-      $controller('tmsAppController', {
+      $controller('AppController', {
         $scope: scope,
         $location: location,
-        Environment: environment,
-        AuthService: authService
+        environment: 'testing',
+        authService: authService
       });
     }));
 
@@ -103,22 +99,19 @@ describe('TmsAppController', () => {
 
   describe('when logged out', () => {
     let authStatus, locationPath;
-    beforeEach(inject(($controller, $rootScope, $location, AuthService) => {
+    beforeEach(inject(($controller, $rootScope, $location, authService) => {
       'ngInject';
 
       scope = $rootScope.$new();
-      location = $location;
-      environment = 'testing';
-      authService = AuthService;
 
       authStatus = sinon.stub(authService, 'status').returns(false);
       locationPath = sinon.spy(location, 'path');
 
-      $controller('tmsAppController', {
+      $controller('AppController', {
         $scope: scope,
         $location: location,
-        Environment: environment,
-        AuthService: authService
+        environment: 'testing',
+        authService: authService
       });
     }));
 

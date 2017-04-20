@@ -33,61 +33,18 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-// AuthServices are set up before Angular is bootstrapped, so we manually import rather than
-// using Angular DI
-import KeycloakAuthService from '../../../src/app/auth/keycloak-auth.service.js';
+export default class LoginController {
+  constructor ($scope, $location, authService) {
+    'ngInject';
 
-describe('KeycloakAuthService', () => {
-  let keycloakAuthService;
-  let init;
-  let logout;
-  let promise;
+    if (authService.status()) {
+      $location.path('/');
+    }
 
-  beforeEach(() => {
-    promise = sinon.spy();
-    init = sinon.stub().returns(promise);
-    logout = sinon.spy();
-    let mockCloak = {
-      init: init,
-      logout: logout,
-      authenticated: true
+    $scope.login = () => {
+      authService.login($scope.username, $scope.password, () => {
+        $location.path('/');
+      });
     };
-    keycloakAuthService = new KeycloakAuthService(mockCloak);
-  });
-
-  describe('#init()', () => {
-    it('should delegate to keycloak object', () => {
-      keycloakAuthService.init();
-      init.should.be.calledOnce();
-      init.should.be.calledWith({ onLoad: 'login-required' });
-    });
-
-    it('should return a promise', () => {
-      let res = keycloakAuthService.init();
-      res.should.equal(promise);
-    });
-  });
-
-  describe('#login()', () => {
-    it('should call callback', done => {
-      keycloakAuthService.login('', '', done);
-    });
-
-    it('should not interact with keycloak object', done => {
-      keycloakAuthService.login('', '', done);
-      init.should.not.be.called();
-      logout.should.not.be.called();
-    });
-  });
-
-  describe('#logout()', () => {
-    it('should call callback', done => {
-      keycloakAuthService.logout(done);
-    });
-
-    it('should delegate to keycloak object', () => {
-      keycloakAuthService.logout();
-      logout.should.be.calledOnce();
-    });
-  });
-});
+  }
+}
