@@ -1,7 +1,7 @@
 #!/bin/sh
 
 mv /tmp/src/* "$HOME"
-mv /tmp/src/.{babelrc,eslintignore,htmlhintrc} "$HOME"
+mv /tmp/src/.{babelrc,eslintignore,eslintrc.yaml,eslintrc.test.yaml,htmlhintrc} "$HOME"
 
 pushd ${HOME}
 
