@@ -33,18 +33,42 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-export default class TmsLoginController {
-  constructor ($scope, $location, AuthService) {
-    'ngInject';
+import angular from 'angular';
 
-    if (AuthService.status()) {
-      $location.path('/');
-    }
+import 'patternfly/dist/css/patternfly.css';
+import 'patternfly/dist/css/patternfly-additions.css';
+import 'patternfly/dist/js/patternfly.js';
+import 'angular-patternfly/dist/angular-patternfly.js';
+import 'angular-patternfly/dist/styles/angular-patternfly.css';
+import 'angular-bootstrap/ui-bootstrap.js';
+import 'angular-bootstrap/ui-bootstrap-tpls.js';
+import 'angular-sanitize';
+import 'angular-route';
+import 'c3/c3.js';
+import 'c3/c3.css';
+import 'd3';
+import '../assets/css/app.css';
 
-    $scope.login = () => {
-      AuthService.login($scope.username, $scope.password, () => {
-        $location.path('/');
-      });
-    };
-  }
-}
+import {default as CFG_MODULE} from './shared/config/config.module.js';
+import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
+
+import AppController from './app.controller.js';
+
+export const APP_MODULE = 'appModule';
+
+let appModule = angular.module(APP_MODULE,
+  [
+    CFG_MODULE,
+    AUTH_MODULE,
+  ]
+);
+
+appModule.constant('appModule', APP_MODULE);
+
+appModule.controller('AppController', AppController);
+
+AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => {
+  angular.element(() => {
+    angular.bootstrap(document, [APP_MODULE]);
+  });
+});

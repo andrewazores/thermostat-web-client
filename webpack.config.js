@@ -12,7 +12,7 @@ module.exports = function () {
   var config = {};
 
   config.entry = isTest ? void 0 : {
-    app: './src/app/tms-app.module.js'
+    app: './src/app/app.module.js'
   };
 
   config.resolve = {
@@ -75,7 +75,8 @@ module.exports = function () {
   if (!isTest) {
     config.plugins.push(
       new HtmlWebpackPlugin({
-        template: './src/content/index.html',
+        template: './src/app/index.html',
+        favicon: './src/assets/images/favicon.png',
         inject: 'body'
       })
     )
@@ -83,7 +84,7 @@ module.exports = function () {
 
   config.devServer = {
     host: '0.0.0.0',
-    contentBase: './src/content',
+    contentBase: './src/assets',
     stats: 'minimal',
     inline: true,
     historyApiFallback: true

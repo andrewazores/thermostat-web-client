@@ -33,42 +33,49 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import angular from 'angular';
+// not a 'real' angular module since this is used for bootstrapping Angular to begin with
+import {config} from './auth.module.js';
 
-import 'patternfly/dist/css/patternfly.css';
-import 'patternfly/dist/css/patternfly-additions.css';
-import 'patternfly/dist/js/patternfly.js';
-import 'angular-patternfly/dist/angular-patternfly.js';
-import 'angular-patternfly/dist/styles/angular-patternfly.css';
-import 'angular-bootstrap/ui-bootstrap.js';
-import 'angular-bootstrap/ui-bootstrap-tpls.js';
-import 'angular-sanitize';
-import 'angular-route';
-import 'c3/c3.js';
-import 'c3/c3.css';
-import 'd3';
-import '../styles/app/app.css';
+describe('AuthModule', () => {
 
-import {default as CFG_MODULE} from './cfg/app-cfg.module.js';
-import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './auth/auth.module.js';
+  describe('#config()', () => {
+    it('should be exposed', () => {
+      should.exist(config);
+      should(config).be.a.Function();
+    });
 
-import TmsAppController from './tms-app.controller.js';
+    it('should invoke callback', done => {
+      config('testing', done, () => {});
+    });
 
-export const APP_MODULE = 'tms.appModule';
+    describe('keycloak environments', () => {
 
-let appModule = angular.module(APP_MODULE,
-  [
-    CFG_MODULE,
-    AUTH_MODULE,
-  ]
-);
+      it('should not use keycloak in testing', () => {
+        let keycloakProvider = sinon.spy();
+        config('testing', () => {}, keycloakProvider);
+        keycloakProvider.should.not.be.called();
+      });
 
-appModule.constant('AppModule', APP_MODULE);
+      it('should not use keycloak in development', () => {
+        let keycloakProvider = sinon.spy();
+        config('development', () => {}, keycloakProvider);
+        keycloakProvider.should.not.be.called();
+      });
 
-appModule.controller('tmsAppController', TmsAppController);
+      it('should use keycloak in production', () => {
+        let errorSpy = sinon.spy();
+        let successSpy = sinon.stub().returns({error: errorSpy});
+        let initSpy = sinon.stub().returns({success: successSpy});
+        let keycloakProvider = sinon.stub().returns({init: initSpy});
 
-AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => {
-  angular.element(() => {
-    angular.bootstrap(document, [APP_MODULE]);
+        config('production', () => {}, keycloakProvider);
+
+        keycloakProvider.should.be.calledOnce();
+        initSpy.should.be.calledWith({onLoad: 'login-required'});
+        successSpy.should.be.calledOnce();
+        errorSpy.should.be.calledOnce();
+      });
+    });
   });
+
 });

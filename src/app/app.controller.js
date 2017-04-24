@@ -33,41 +33,16 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-// AuthServices are set up before Angular is bootstrapped, so we manually import rather than
-// using Angular DI
-import StubAuthService from '../../../src/app/auth/stub-auth.service.js';
+export default class AppController {
+  constructor ($scope, $location, environment, authService) {
+    'ngInject';
 
-describe('StubAuthService', () => {
-  let stubAuthService;
-  beforeEach(() => {
-    stubAuthService = new StubAuthService();
-  });
+    $scope.env = environment;
+    $scope.displayEnvHeader = ($scope.env !== 'production');
 
-  it('should be initially logged out', () => {
-    stubAuthService.status().should.equal(false);
-  });
+    if (!authService.status()) {
+      $location.path('/login');
+    }
 
-  describe('#login()', () => {
-    it('should set logged in status', () => {
-      stubAuthService.login();
-      stubAuthService.status().should.equal(true);
-    });
-
-    it('should call callback if provided', done => {
-      stubAuthService.login('', '', done);
-    });
-  });
-
-  describe('#logout()', () => {
-    it('should set logged out status', () => {
-      stubAuthService.login();
-      stubAuthService.status().should.equal(true);
-      stubAuthService.logout();
-      stubAuthService.status().should.equal(false);
-    });
-
-    it('should call callback if provided', done => {
-      stubAuthService.logout(done);
-    });
-  });
-});
+  }
+}

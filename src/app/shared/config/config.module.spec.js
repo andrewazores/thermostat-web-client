@@ -33,9 +33,9 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-describe('tmsConfigModule', () => {
+describe('ConfigModule', () => {
 
-  beforeEach(angular.mock.module('tmsConfigModule'));
+  beforeEach(angular.mock.module('configModule'));
 
   it('should export CFG_MODULE constant', () => {
     inject(CFG_MODULE => {
@@ -44,21 +44,21 @@ describe('tmsConfigModule', () => {
     });
   });
 
-  describe('Environment', () => {
-    let environment;
-    beforeEach(inject(Environment => {
+  describe('environment', () => {
+    let _environment;
+    beforeEach(inject(environment => {
       'ngInject';
 
-      environment = Environment;
+      _environment = environment;
     }));
 
     it('should be exported', () => {
-      should.exist(environment);
+      should.exist(_environment);
     });
 
     it('should be readonly', done => {
       try {
-        environment.foo = 'bar';
+        _environment.foo = 'bar';
       } catch (e) {
         e.message.should.equal('Attempted to assign to readonly property.');
         done();
@@ -66,21 +66,21 @@ describe('tmsConfigModule', () => {
     });
   });
 
-  describe('Debug', () => {
-    let debug;
-    beforeEach(inject(Debug => {
+  describe('debug', () => {
+    let _debug;
+    beforeEach(inject(debug => {
       'ngInject';
 
-      debug = Debug;
+      _debug = debug;
     }));
 
     it('should be exported', () => {
-      should.exist(debug);
+      should.exist(_debug);
     });
 
     it('should be readonly', done => {
       try {
-        debug.foo = 'bar';
+        _debug.foo = 'bar';
       } catch (e) {
         e.message.should.equal('Attempted to assign to readonly property.');
         done();

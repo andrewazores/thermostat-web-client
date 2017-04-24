@@ -33,49 +33,41 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-// not a 'real' angular module since this is used for bootstrapping Angular to begin with
-import {config} from '../../../src/app/auth/auth.module.js';
+// AuthServices are set up before Angular is bootstrapped, so we manually import rather than
+// using Angular DI
+import StubAuthService from './stub-auth.service.js';
 
-describe('tmsAuthModule', () => {
+describe('StubAuthService', () => {
+  let stubAuthService;
+  beforeEach(() => {
+    stubAuthService = new StubAuthService();
+  });
 
-  describe('#config()', () => {
-    it('should be exposed', () => {
-      should.exist(config);
-      should(config).be.a.Function();
+  it('should be initially logged out', () => {
+    stubAuthService.status().should.equal(false);
+  });
+
+  describe('#login()', () => {
+    it('should set logged in status', () => {
+      stubAuthService.login();
+      stubAuthService.status().should.equal(true);
     });
 
-    it('should invoke callback', done => {
-      config('testing', done, () => {});
-    });
-
-    describe('keycloak environments', () => {
-
-      it('should not use keycloak in testing', () => {
-        let keycloakProvider = sinon.spy();
-        config('testing', () => {}, keycloakProvider);
-        keycloakProvider.should.not.be.called();
-      });
-
-      it('should not use keycloak in development', () => {
-        let keycloakProvider = sinon.spy();
-        config('development', () => {}, keycloakProvider);
-        keycloakProvider.should.not.be.called();
-      });
-
-      it('should use keycloak in production', () => {
-        let errorSpy = sinon.spy();
-        let successSpy = sinon.stub().returns({error: errorSpy});
-        let initSpy = sinon.stub().returns({success: successSpy});
-        let keycloakProvider = sinon.stub().returns({init: initSpy});
-
-        config('production', () => {}, keycloakProvider);
-
-        keycloakProvider.should.be.calledOnce();
-        initSpy.should.be.calledWith({onLoad: 'login-required'});
-        successSpy.should.be.calledOnce();
-        errorSpy.should.be.calledOnce();
-      });
+    it('should call callback if provided', done => {
+      stubAuthService.login('', '', done);
     });
   });
 
+  describe('#logout()', () => {
+    it('should set logged out status', () => {
+      stubAuthService.login();
+      stubAuthService.status().should.equal(true);
+      stubAuthService.logout();
+      stubAuthService.status().should.equal(false);
+    });
+
+    it('should call callback if provided', done => {
+      stubAuthService.logout(done);
+    });
+  });
 });
