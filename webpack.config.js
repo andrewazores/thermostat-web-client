@@ -76,6 +76,7 @@ module.exports = function () {
     config.plugins.push(
       new HtmlWebpackPlugin({
         template: './src/app/index.html',
+        favicon: './src/assets/images/favicon.png',
         inject: 'body'
       })
     )
