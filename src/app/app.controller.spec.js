@@ -67,6 +67,44 @@ describe('AppController', () => {
     });
   });
 
+  describe('$scope.logout()', () => {
+    let authService, locationPath;
+    beforeEach(inject(($controller, $rootScope) => {
+      'ngInject';
+
+      scope = $rootScope.$new();
+      locationPath = sinon.spy();
+      authService = {
+        status: sinon.stub().returns(true),
+        login: sinon.spy(),
+        logout: sinon.spy()
+      };
+
+      $controller('AppController', {
+        $scope: scope,
+        $location: { path: locationPath },
+        Environment: 'testing',
+        authService: authService
+      });
+    }));
+
+    it('should exist', () => {
+      scope.should.have.ownProperty('logout');
+      scope.logout.should.be.a.Function();
+    });
+
+    it('should delegate to AuthService', () => {
+      authService.logout.should.not.be.called();
+      scope.logout();
+      authService.logout.should.be.calledOnce();
+    });
+
+    it('should redirect to login', () => {
+      scope.logout();
+      locationPath.should.be.calledWith('/login');
+    });
+  });
+
   describe('when logged in', () => {
     let authStatus, locationPath;
     beforeEach(inject(($controller, $rootScope, $location, authService) => {

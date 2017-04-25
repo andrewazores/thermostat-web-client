@@ -48,7 +48,7 @@ module.exports = function () {
       test: /\.html$/,
       loader: 'html-loader'
     }, {
-      test: /\.js$/,
+      test: /^(?!.*\.spec\.js$).*\.js$/,
       include: __dirname + '/src/app/',
       loaders: ['istanbul-instrumenter-loader', 'babel-loader']
     }]

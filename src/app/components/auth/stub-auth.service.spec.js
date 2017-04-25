@@ -48,26 +48,37 @@ describe('StubAuthService', () => {
   });
 
   describe('#login()', () => {
-    it('should set logged in status', () => {
-      stubAuthService.login();
-      stubAuthService.status().should.equal(true);
+    it('should set logged in status on successful login', done => {
+      stubAuthService.login('test-user', 'test-pass', () => {
+        stubAuthService.status().should.equal(true);
+        done();
+      });
     });
 
-    it('should call callback if provided', done => {
-      stubAuthService.login('', '', done);
+    it('should not set logged in status on failed login', done => {
+      stubAuthService.login('', '', () => done('unexpected login success'), () => {
+        stubAuthService.status().should.equal(false);
+        done();
+      });
     });
   });
 
   describe('#logout()', () => {
-    it('should set logged out status', () => {
-      stubAuthService.login();
+    it('should set logged out status', done => {
+      stubAuthService.login('test-user', 'test-pass');
       stubAuthService.status().should.equal(true);
-      stubAuthService.logout();
-      stubAuthService.status().should.equal(false);
+      stubAuthService.logout(() => {
+        stubAuthService.status().should.equal(false);
+        done();
+      });
     });
 
     it('should call callback if provided', done => {
       stubAuthService.logout(done);
+    });
+
+    it('should not require callback', () => {
+      stubAuthService.logout();
     });
   });
 });

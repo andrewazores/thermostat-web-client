@@ -42,15 +42,17 @@ describe('KeycloakAuthService', () => {
   let init;
   let logout;
   let promise;
+  let authenticated;
 
   beforeEach(() => {
     promise = sinon.spy();
     init = sinon.stub().returns(promise);
     logout = sinon.spy();
+    authenticated = 'invalid-testing-token';
     let mockCloak = {
       init: init,
       logout: logout,
-      authenticated: true
+      authenticated: authenticated
     };
     keycloakAuthService = new KeycloakAuthService(mockCloak);
   });
@@ -73,6 +75,10 @@ describe('KeycloakAuthService', () => {
       keycloakAuthService.login('', '', done);
     });
 
+    it('should not require callback', () => {
+      keycloakAuthService.login('', '');
+    });
+
     it('should not interact with keycloak object', done => {
       keycloakAuthService.login('', '', done);
       init.should.not.be.called();
@@ -88,6 +94,13 @@ describe('KeycloakAuthService', () => {
     it('should delegate to keycloak object', () => {
       keycloakAuthService.logout();
       logout.should.be.calledOnce();
+    });
+  });
+
+  describe('#status()', () => {
+    it('should delegate to Keycloak object', () => {
+      let res = keycloakAuthService.status();
+      res.should.equal(authenticated);
     });
   });
 });

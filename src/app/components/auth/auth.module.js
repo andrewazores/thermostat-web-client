@@ -44,7 +44,8 @@ import LoginController from './login.controller.js';
 let MOD_NAME = 'authModule';
 export default MOD_NAME;
 
-export function config (env, done = () => {}, keycloakProvider = () => {
+/* istanbul ignore next */
+export function config (env, done = angular.noop, keycloakProvider = () => {
   // allows for keycloak.json to be compile-time optional, so it can be missing in development
   // and testing environments
   let req = require.context('./', false, /^\.\/keycloak\.json$/);
@@ -73,11 +74,9 @@ export function config (env, done = () => {}, keycloakProvider = () => {
 
     keycloakAuthService.init({ onLoad: 'login-required' })
       .success(done)
-      .error(() => {
-        window.location.refresh();
-      });
+      .error(() => window.location.refresh());
   } else {
-    mod.value('authService', new StubAuthService());
+    mod.service('authService', StubAuthService);
     done();
   }
 }

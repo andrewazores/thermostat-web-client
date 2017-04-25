@@ -40,7 +40,7 @@ describe('LoginController', () => {
   let scope, location;
 
   describe('$scope.login()', () => {
-    let authStatus, authLogin, locationPath;
+    let authStatus, authLogin, locationPath, alert;
     beforeEach(inject(($controller, $rootScope, $location, authService) => {
       'ngInject';
 
@@ -48,8 +48,9 @@ describe('LoginController', () => {
       location = $location;
 
       authStatus = sinon.stub(authService, 'status').returns(false);
-      authLogin = sinon.spy(authService, 'login');
+      authLogin = sinon.stub(authService, 'login');
       locationPath = sinon.spy(location, 'path');
+      alert = sinon.spy(window, 'alert');
 
       $controller('LoginController', {
         $scope: scope,
@@ -62,6 +63,7 @@ describe('LoginController', () => {
       authStatus.restore();
       authLogin.restore();
       locationPath.restore();
+      alert.restore();
     });
 
     it('should be supplied', () => {
@@ -82,7 +84,14 @@ describe('LoginController', () => {
       let fn = authLogin.args[0][2];
       should.exist(fn);
       fn.should.be.a.Function();
+      authLogin.yield();
       locationPath.should.be.calledWith('/');
+    });
+
+    it('should present an alert on failed login', () => {
+      authLogin.callsArg(3);
+      scope.login();
+      alert.should.be.calledWith('Login failed');
     });
   });
 

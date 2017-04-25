@@ -67,8 +67,6 @@ appModule.constant('appModule', APP_MODULE);
 
 appModule.controller('AppController', AppController);
 
-AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => {
-  angular.element(() => {
-    angular.bootstrap(document, [APP_MODULE]);
-  });
-});
+AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(
+  () => angular.bootstrap(document, [APP_MODULE])
+));

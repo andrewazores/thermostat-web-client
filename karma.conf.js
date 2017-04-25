@@ -10,8 +10,7 @@ module.exports = function (config) {
     ],
 
     preprocessors: {
-      'src/tests.webpack.js': ['webpack', 'sourcemap'],
-      'src/**/*.spec.js': ['webpack']
+      'src/tests.webpack.js': ['webpack', 'sourcemap']
     },
 
     reporters: ['mocha', 'beep', 'junit', 'coverage-istanbul'],
