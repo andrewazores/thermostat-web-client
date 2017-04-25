@@ -6,6 +6,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === 'test' || ENV === 'test-watch';
+var isProd = process.env.NODE_ENV === 'production';
 
 module.exports = function () {
 
@@ -29,6 +30,8 @@ module.exports = function () {
 
   if (isTest) {
     config.devtool = 'inline-source-map';
+  } else if (isProd) {
+    config.devtool = 'source-map';
   } else {
     config.devtool = 'eval-source-map';
   }
@@ -71,6 +74,14 @@ module.exports = function () {
       DEBUG: false
     })
   );
+
+  if (isProd) {
+    config.plugins.push(
+      new webpack.optimize.UglifyJsPlugin({
+        sourceMap: true
+      })
+    );
+  }
 
   if (!isTest) {
     config.plugins.push(
