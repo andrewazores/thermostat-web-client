@@ -34,31 +34,26 @@
  */
 
 export default class KeycloakAuthService {
+
   constructor (keycloak) {
-    this.init = () => {
-      return keycloak.init({ onLoad: 'login-required' });
-    };
-
-    this.logout = (callback) => {
-      keycloak.logout();
-      if (callback) {
-        callback();
-      }
-    };
-
-    this.status = () => {
-      return keycloak.authenticated;
-    };
-
-    return {
-      init: this.init,
-      status: this.status,
-      logout: this.logout,
-      login: (user, pass, callback) => {
-        if (callback) {
-          callback();
-        }
-      },
-    };
+    this.keycloak = keycloak;
   }
+
+  init () {
+    return this.keycloak.init({ onLoad: 'login-required' });
+  }
+
+  login (user, pass, success = angular.noop) {
+    success();
+  }
+
+  logout (callback = angular.noop) {
+    this.keycloak.logout();
+    callback();
+  }
+
+  status () {
+    return this.keycloak.authenticated;
+  }
+
 }

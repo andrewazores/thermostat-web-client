@@ -34,6 +34,7 @@
  */
 
 export default class AppController {
+
   constructor ($scope, $location, environment, authService) {
     'ngInject';
 
@@ -44,5 +45,11 @@ export default class AppController {
       $location.path('/login');
     }
 
+    $scope.logout = () => {
+      authService.logout();
+      $location.path('/login');
+    }
+
   }
+
 }

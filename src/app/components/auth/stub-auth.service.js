@@ -34,31 +34,27 @@
  */
 
 export default class StubAuthService {
+
   constructor () {
     this.state = false;
-
-    this.logout = (callback) => {
-      if (this.state) {
-        this.state = false;
-      }
-      if (callback) {
-        callback();
-      }
-    };
-
-    this.login = (user, pass, callback) => {
-      if (!this.state) {
-        this.state = true;
-      }
-      if (callback) {
-        callback();
-      }
-    };
-
-    return {
-      status: () => { return this.state; },
-      logout: this.logout,
-      login: this.login
-    };
   }
+
+  status () {
+    return this.state;
+  }
+
+  login (user, pass, success = angular.noop, failure = angular.noop) {
+    if (user === 'test-user' && pass === 'test-pass') {
+      this.state = true;
+      success();
+    } else {
+      this.logout(failure);
+    }
+  }
+
+  logout (callback = angular.noop) {
+    this.state = false;
+    callback();
+  }
+
 }

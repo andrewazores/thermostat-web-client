@@ -13,7 +13,7 @@ fi
 
 echo "NODE_ENV=$NODE_ENV"
 
-npm install
+NODE_ENV=development npm install
 npm run build
 
 popd

@@ -34,6 +34,7 @@
  */
 
 export default class LoginController {
+
   constructor ($scope, $location, authService) {
     'ngInject';
 
@@ -42,9 +43,8 @@ export default class LoginController {
     }
 
     $scope.login = () => {
-      authService.login($scope.username, $scope.password, () => {
-        $location.path('/');
-      });
+      authService.login($scope.username, $scope.password, () => $location.path('/'), () => alert('Login failed'));
     };
   }
+
 }
