@@ -55,15 +55,16 @@ describe('AppController', () => {
         });
       }));
 
-      it('should copy env to $scope', () => {
-        scope.should.have.ownProperty('env');
-        scope.env.should.equal(env);
-      });
-
-      it('should set $scope.displayEnvHeader appropriately', () => {
-        scope.should.have.ownProperty('displayEnvHeader');
-        scope.displayEnvHeader.should.equal(env !== 'production');
-      });
+      if (env === 'production') {
+        it('should not copy env to $scope', () => {
+          scope.should.not.have.ownProperty('env');
+        });
+      } else {
+        it('should copy env to $scope', () => {
+          scope.should.have.ownProperty('env');
+          scope.env.should.equal(env);
+        });
+      }
     });
   });
 
