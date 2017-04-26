@@ -15,5 +15,6 @@ echo "NODE_ENV=$NODE_ENV"
 
 NODE_ENV=development npm install
 npm run build
+npm prune --production
 
 popd
