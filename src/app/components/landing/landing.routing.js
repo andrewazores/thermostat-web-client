@@ -33,9 +33,27 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-var errorSpy = sinon.spy();
-var successSpy = sinon.stub().yields().returns({error: errorSpy});
-var initSpy = sinon.stub().returns({success: successSpy});
-var keycloakProvider = sinon.stub().returns({init: initSpy});
+import angular from 'angular';
+import 'angular-ui-router';
+import 'oclazyload';
 
-window.Keycloak = keycloakProvider;
+function config($stateProvider, $urlRouterProvider) {
+  'ngInject';
+
+  $stateProvider.state('landing', {
+    url: '/landing',
+    templateProvider: $q => {
+      'ngInject';
+      return $q(resolve =>
+        require.ensure([], () => resolve(require('./landing.html'))
+        )
+      );
+    }
+  });
+
+  $urlRouterProvider.otherwise('landing');
+}
+
+export { config };
+
+export default angular.module('landing.routing', []).config(config);

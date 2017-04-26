@@ -34,7 +34,9 @@
  */
 
 import angular from 'angular';
-
+import 'angular-ui-router';
+import 'oclazyload';
+import 'es6-promise/auto';
 import 'patternfly/dist/css/patternfly.css';
 import 'patternfly/dist/css/patternfly-additions.css';
 import 'patternfly/dist/js/patternfly.js';
@@ -51,15 +53,18 @@ import '../assets/css/app.css';
 
 import {default as CFG_MODULE} from './shared/config/config.module.js';
 import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
-
+import './components/landing/landing.routing.js';
 import AppController from './app.controller.js';
 
 export const APP_MODULE = 'appModule';
 
 let appModule = angular.module(APP_MODULE,
   [
+    'ui.router',
     CFG_MODULE,
     AUTH_MODULE,
+    // non-core modules
+    'landing.routing'
   ]
 );
 
