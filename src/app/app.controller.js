@@ -44,6 +44,10 @@ export default class AppController {
       angular.element('envHeader').removeAttr('hidden');
     }
 
+    $scope.loginStatus = () => {
+      return authService.status();
+    }
+
     if (!authService.status()) {
       $state.go('login');
     } else {

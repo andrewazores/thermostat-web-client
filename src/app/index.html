@@ -18,7 +18,7 @@
         <a href="/" class="navbar-brand">
           <img class="navbar-brand-icon" src="../assets/images/thermostat_logo_white_600px.png" height="57" alt="Thermostat"/>
         </a>
-        <button hidden id="logoutButton" class="navbar-text btn btn-primary btn-sm" ng-click="logout()">Logout</button>
+        <button hidden id="logoutButton" ng-show="loginStatus();" class="navbar-text btn btn-primary btn-sm" ng-click="logout()">Logout</button>
         <p hidden id="envHeader" class="navbar-text label label-info infotip">{{env}}</p>
       </div>
     </nav>

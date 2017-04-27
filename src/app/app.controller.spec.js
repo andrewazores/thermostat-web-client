@@ -39,11 +39,16 @@ describe('AppController', () => {
 
   ['testing', 'development', 'production'].forEach(env => {
     describe(env + ' $scope', () => {
-      let scope;
-      beforeEach(inject(($controller, $rootScope, authService) => {
+      let scope, authService;
+      beforeEach(inject(($controller, $rootScope) => {
         'ngInject';
 
         scope = $rootScope.$new();
+        authService = {
+          status: sinon.stub().returns(true),
+          login: sinon.spy(),
+          logout: sinon.spy()
+        };
 
         $controller('AppController', {
           $scope: scope,
@@ -52,6 +57,15 @@ describe('AppController', () => {
           authService: authService
         });
       }));
+
+      it('should set loginStatus', () => {
+        scope.should.have.ownProperty('loginStatus');
+        scope.loginStatus.should.be.a.Function();
+
+        authService.status.should.be.calledOnce();
+        scope.loginStatus();
+        authService.status.should.be.calledTwice();
+      });
 
       if (env === 'production') {
         it('should not copy env to $scope', () => {
