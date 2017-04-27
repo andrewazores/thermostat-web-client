@@ -1,4 +1,4 @@
-# Thermostat Web UI
+# Thermostat Web-Client
 
 AngularJS & Patternfly Application: Thermostat UI
 
@@ -17,6 +17,25 @@ look like:
         "realm": "FooRealm",
         "clientId": "BarClientId"
     }
+
+## Environments
+
+Expected values for `NODE_ENV`:
+
+- `production` for production environments, which produces a smaller application
+bundle and expects Keycloak configuration
+
+- `testing` for test environments, ex. CI
+
+- `development` for individual developers' machines
+
+In `testing` and `development`, one hard-coded user exists. The username is
+`test-user` and the password is `test-pass`. This is intended _only_ for
+development and testing, never for deployments.
+
+When building with `npm run build`, these values should be set via a standard
+shell environment variable. When building with `s2i build`, the file `.s2i/environment`
+should exist and contain ex. `NODE_ENV=production`.
 
 ## How to use
 
@@ -40,3 +59,31 @@ environment variable `HOST`.
 Run tests:
 
 `npm test` (one-time) or `npm run test-watch` (live-reload)
+
+### Source-to-Image
+
+`s2i` can also be used to produce an application image. The expected base image
+is `centos/nodejs-4-centos7`, although others may also work. The build invocation
+will look like `s2i build . centos/nodejs-4-centos7 thermostat-web-client` and
+running the image will look like `docker run -it --rm -p 8888:8080 thermostat-web-client`,
+which will bind the application to port 8888 on the host machine.
+
+The `PORT` and `HOST` variables outlined above may also be set in `.s2i/environment`.
+
+### OpenShift
+
+In order to deploy this web-client on OpenShift do:
+
+    $ oc new-app centos/nodejs-4-centos7~https://github.com/andrewazores/thermostat-web-client
+
+## Keycloak Configuration
+
+Follow the Thermostat Web-Gateway configuration guide for Keycloak. See the
+top of this file for where to place the generated `keycloak.json`.
+
+Additionally, configure the Client on the Keycloak Server with the following
+parameters:
+
+`Valid Redirect URIs: http://localhost:8080/*` (or similar)
+
+`Web Origins: +`
