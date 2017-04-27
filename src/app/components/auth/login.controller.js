@@ -33,17 +33,19 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
+import 'angular-ui-router';
+
 export default class LoginController {
 
-  constructor ($scope, $location, authService) {
+  constructor ($scope, $state, authService) {
     'ngInject';
 
     if (authService.status()) {
-      $location.path('/');
+      $state.go('landing');
     }
 
     $scope.login = () => {
-      authService.login($scope.username, $scope.password, () => $location.path('/'), () => alert('Login failed'));
+      authService.login($scope.username, $scope.password, () => $state.go('landing'), () => alert('Login failed'));
     };
   }
 

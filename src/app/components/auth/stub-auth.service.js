@@ -35,7 +35,9 @@
 
 export default class StubAuthService {
 
-  constructor () {
+  constructor ($state) {
+    'ngInject';
+    this.$state = $state;
     this.state = false;
   }
 
@@ -54,6 +56,7 @@ export default class StubAuthService {
 
   logout (callback = angular.noop) {
     this.state = false;
+    this.$state.go('login');
     callback();
   }
 

@@ -32,6 +32,7 @@
  * icon resource, distributed under the SIL OFL 1.1 (http://scripts.sil.org/OFL).
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
+
 import {config} from './components/auth/auth.module.js';
 
 describe('AppModule', () => {

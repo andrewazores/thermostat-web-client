@@ -34,7 +34,7 @@
  */
 
 import angular from 'angular';
-
+import 'angular-ui-router';
 import Keycloak from 'keycloak-js/dist/keycloak.js';
 
 import KeycloakAuthService from './keycloak-auth.service.js';
@@ -57,14 +57,16 @@ export function config (env, done = angular.noop, keycloakProvider = () => {
   }
   throw 'keycloak.json expected but not found';
 }) {
-  let mod = angular.module(MOD_NAME, ['ngRoute']);
+  let mod = angular.module(MOD_NAME, ['ui.router']);
 
   mod.constant('AUTH_MODULE', MOD_NAME);
   mod.controller('LoginController', LoginController);
-  mod.config($routeProvider => {
+  mod.config($stateProvider => {
     'ngInject';
-    $routeProvider.when('/login', {
-      template: require('./login.html')
+    $stateProvider.state('login', {
+      url: '/login',
+      template: require('./login.html'),
+      controller: 'LoginController'
     });
   });
 

@@ -35,19 +35,27 @@
 
 export default class AppController {
 
-  constructor ($scope, $location, environment, authService) {
+  constructor ($scope, $state, environment, authService) {
     'ngInject';
 
-    $scope.env = environment;
-    $scope.displayEnvHeader = ($scope.env !== 'production');
+    angular.element('logoutButton').removeAttr('hidden');
+    if (environment !== 'production') {
+      $scope.env = environment;
+      angular.element('envHeader').removeAttr('hidden');
+    }
+
+    $scope.loginStatus = () => {
+      return authService.status();
+    }
 
     if (!authService.status()) {
-      $location.path('/login');
+      $state.go('login');
+    } else {
+      $state.go('landing');
     }
 
     $scope.logout = () => {
       authService.logout();
-      $location.path('/login');
     }
 
   }

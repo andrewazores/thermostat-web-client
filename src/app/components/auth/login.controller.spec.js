@@ -37,24 +37,21 @@ describe('LoginController', () => {
 
   beforeEach(angular.mock.module('appModule'));
 
-  let scope, location;
-
   describe('$scope.login()', () => {
-    let authStatus, authLogin, locationPath, alert;
-    beforeEach(inject(($controller, $rootScope, $location, authService) => {
+    let scope, authStatus, authLogin, stateGo, alert;
+    beforeEach(inject(($controller, $rootScope, authService) => {
       'ngInject';
 
       scope = $rootScope.$new();
-      location = $location;
 
       authStatus = sinon.stub(authService, 'status').returns(false);
       authLogin = sinon.stub(authService, 'login');
-      locationPath = sinon.spy(location, 'path');
+      stateGo = sinon.spy();
       alert = sinon.spy(window, 'alert');
 
       $controller('LoginController', {
         $scope: scope,
-        $location: location,
+        $state: { go: stateGo },
         authService: authService
       });
     }));
@@ -62,7 +59,6 @@ describe('LoginController', () => {
     afterEach(() => {
       authStatus.restore();
       authLogin.restore();
-      locationPath.restore();
       alert.restore();
     });
 
@@ -76,7 +72,7 @@ describe('LoginController', () => {
 
     it('should perform a login', () => {
       authLogin.should.not.be.called();
-      locationPath.should.not.be.called();
+      stateGo.should.not.be.called();
 
       scope.login();
 
@@ -85,7 +81,7 @@ describe('LoginController', () => {
       should.exist(fn);
       fn.should.be.a.Function();
       authLogin.yield();
-      locationPath.should.be.calledWith('/');
+      stateGo.should.be.calledWith('landing');
     });
 
     it('should present an alert on failed login', () => {
@@ -96,60 +92,56 @@ describe('LoginController', () => {
   });
 
   describe('when logged in', () => {
-    let authStatus, locationPath;
-    beforeEach(inject(($controller, $rootScope, $location, authService) => {
+    let scope, authStatus, stateGo;
+    beforeEach(inject(($controller, $rootScope, authService) => {
       'ngInject';
 
       scope = $rootScope.$new();
-      location = $location;
 
       authStatus = sinon.stub(authService, 'status').returns(true);
-      locationPath = sinon.spy(location, 'path');
+      stateGo = sinon.spy();
 
       $controller('LoginController', {
         $scope: scope,
-        $location: location,
+        $state: { go: stateGo },
         authService: authService
       });
     }));
 
     afterEach(() => {
       authStatus.restore();
-      locationPath.restore();
     });
 
-    it('should redirect to / if already logged in', () => {
+    it('should redirect to landing if already logged in', () => {
       authStatus.should.be.calledOnce();
-      locationPath.should.be.calledWith('/');
+      stateGo.should.be.calledWith('landing');
     });
   });
 
   describe('when logged out', () => {
-    let authStatus, locationPath;
-    beforeEach(inject(($controller, $rootScope, $location, authService) => {
+    let scope, authStatus, stateGo;
+    beforeEach(inject(($controller, $rootScope, authService) => {
       'ngInject';
 
       scope = $rootScope.$new();
-      location = $location;
+      stateGo = sinon.spy();
 
       authStatus = sinon.stub(authService, 'status').returns(false);
-      locationPath = sinon.spy(location, 'path');
 
       $controller('LoginController', {
         $scope: scope,
-        $location: location,
+        $state: {go: stateGo},
         authService: authService
       });
     }));
 
     afterEach(() => {
       authStatus.restore();
-      locationPath.restore();
     });
 
     it('should do nothing if not logged in', () => {
       authStatus.should.be.calledOnce();
-      locationPath.should.not.be.called();
+      stateGo.should.not.be.called();
     });
   });
 

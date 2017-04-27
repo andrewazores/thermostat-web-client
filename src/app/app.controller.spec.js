@@ -37,43 +37,56 @@ describe('AppController', () => {
 
   beforeEach(angular.mock.module('appModule'));
 
-  let scope, location;
-
   ['testing', 'development', 'production'].forEach(env => {
     describe(env + ' $scope', () => {
-      beforeEach(inject(($controller, $rootScope, $location, authService) => {
+      let scope, authService;
+      beforeEach(inject(($controller, $rootScope) => {
         'ngInject';
 
         scope = $rootScope.$new();
-        location = $location;
+        authService = {
+          status: sinon.stub().returns(true),
+          login: sinon.spy(),
+          logout: sinon.spy()
+        };
 
         $controller('AppController', {
           $scope: scope,
-          $location: location,
+          $state: { go: angular.noop },
           environment: env,
           authService: authService
         });
       }));
 
-      it('should copy env to $scope', () => {
-        scope.should.have.ownProperty('env');
-        scope.env.should.equal(env);
+      it('should set loginStatus', () => {
+        scope.should.have.ownProperty('loginStatus');
+        scope.loginStatus.should.be.a.Function();
+
+        authService.status.should.be.calledOnce();
+        scope.loginStatus();
+        authService.status.should.be.calledTwice();
       });
 
-      it('should set $scope.displayEnvHeader appropriately', () => {
-        scope.should.have.ownProperty('displayEnvHeader');
-        scope.displayEnvHeader.should.equal(env !== 'production');
-      });
+      if (env === 'production') {
+        it('should not copy env to $scope', () => {
+          scope.should.not.have.ownProperty('env');
+        });
+      } else {
+        it('should copy env to $scope', () => {
+          scope.should.have.ownProperty('env');
+          scope.env.should.equal(env);
+        });
+      }
     });
   });
 
   describe('$scope.logout()', () => {
-    let authService, locationPath;
+    let scope, authService, stateGo;
     beforeEach(inject(($controller, $rootScope) => {
       'ngInject';
 
       scope = $rootScope.$new();
-      locationPath = sinon.spy();
+      stateGo = sinon.spy();
       authService = {
         status: sinon.stub().returns(true),
         login: sinon.spy(),
@@ -82,7 +95,7 @@ describe('AppController', () => {
 
       $controller('AppController', {
         $scope: scope,
-        $location: { path: locationPath },
+        $state: { go: stateGo },
         Environment: 'testing',
         authService: authService
       });
@@ -98,27 +111,21 @@ describe('AppController', () => {
       scope.logout();
       authService.logout.should.be.calledOnce();
     });
-
-    it('should redirect to login', () => {
-      scope.logout();
-      locationPath.should.be.calledWith('/login');
-    });
   });
 
   describe('when logged in', () => {
-    let authStatus, locationPath;
-    beforeEach(inject(($controller, $rootScope, $location, authService) => {
+    let scope, authStatus, stateGo;
+    beforeEach(inject(($controller, $rootScope, authService) => {
       'ngInject';
 
       scope = $rootScope.$new();
-      location = $location;
 
       authStatus = sinon.stub(authService, 'status').returns(true);
-      locationPath = sinon.spy(location, 'path');
+      stateGo = sinon.spy();
 
       $controller('AppController', {
         $scope: scope,
-        $location: location,
+        $state: { go: stateGo },
         environment: 'testing',
         authService: authService
       });
@@ -126,28 +133,27 @@ describe('AppController', () => {
 
     afterEach(() => {
       authStatus.restore();
-      locationPath.restore();
     });
 
-    it('should not redirect', () => {
+    it('should redirect to landing', () => {
       authStatus.should.be.calledOnce();
-      locationPath.should.not.be.called();
+      stateGo.should.be.calledWith('landing');
     });
   });
 
   describe('when logged out', () => {
-    let authStatus, locationPath;
-    beforeEach(inject(($controller, $rootScope, $location, authService) => {
+    let scope, authStatus, stateGo;
+    beforeEach(inject(($controller, $rootScope, authService) => {
       'ngInject';
 
       scope = $rootScope.$new();
 
       authStatus = sinon.stub(authService, 'status').returns(false);
-      locationPath = sinon.spy(location, 'path');
+      stateGo = sinon.spy();
 
       $controller('AppController', {
         $scope: scope,
-        $location: location,
+        $state: { go: stateGo },
         environment: 'testing',
         authService: authService
       });
@@ -155,12 +161,11 @@ describe('AppController', () => {
 
     afterEach(() => {
       authStatus.restore();
-      locationPath.restore();
     });
 
     it('should redirect to login', () => {
       authStatus.should.be.calledOnce();
-      locationPath.should.be.calledWith('/login');
+      stateGo.should.be.calledWith('login');
     });
   });
 

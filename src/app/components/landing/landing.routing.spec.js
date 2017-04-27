@@ -33,9 +33,58 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-var errorSpy = sinon.spy();
-var successSpy = sinon.stub().yields().returns({error: errorSpy});
-var initSpy = sinon.stub().returns({success: successSpy});
-var keycloakProvider = sinon.stub().returns({init: initSpy});
+describe('LandingModule', () => {
 
-window.Keycloak = keycloakProvider;
+  let module = require('./landing.routing.js');
+
+  let stateProvider, urlRouterProvider, args, q;
+  beforeEach(() => {
+    stateProvider = {
+      state: sinon.spy()
+    };
+    urlRouterProvider = {
+      otherwise: sinon.spy()
+    };
+    module.config(stateProvider, urlRouterProvider);
+    args = stateProvider.state.args[0];
+    q = sinon.spy();
+  });
+
+  describe('stateProvider', () => {
+    it('should call $stateProvider.state', () => {
+      stateProvider.state.should.be.calledOnce();
+      args[0].should.equal('landing');
+    });
+
+    it('should define a \'landing\' state', () => {
+      args[0].should.equal('landing');
+    });
+
+    it('should map to /landing', () => {
+      args[1].url.should.equal('/landing');
+    });
+
+    it('template provider should return landing.html', done => {
+      let providerFn = args[1].templateProvider[1];
+      providerFn.should.be.a.Function();
+      providerFn(q);
+      q.should.be.calledOnce();
+
+      let deferred = q.args[0][0];
+      deferred.should.be.a.Function();
+
+      let resolve = sinon.stub().callsFake(val => {
+        val.should.equal(require('./landing.html'));
+        done();
+      });
+      deferred(resolve);
+    });
+  });
+
+  describe('urlRouterProvider', () => {
+    it('should define the \'otherwise\' state as \'landing\'', () => {
+      urlRouterProvider.otherwise.should.be.calledWith('landing');
+    });
+  });
+
+});

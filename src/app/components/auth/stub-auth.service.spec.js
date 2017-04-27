@@ -38,9 +38,10 @@
 import StubAuthService from './stub-auth.service.js';
 
 describe('StubAuthService', () => {
-  let stubAuthService;
+  let stubAuthService, state;
   beforeEach(() => {
-    stubAuthService = new StubAuthService();
+    state = { go: sinon.spy() };
+    stubAuthService = new StubAuthService(state);
   });
 
   it('should be initially logged out', () => {
@@ -79,6 +80,14 @@ describe('StubAuthService', () => {
 
     it('should not require callback', () => {
       stubAuthService.logout();
+    });
+
+    it('should redirect to login', done => {
+      state.go.should.not.be.called();
+      stubAuthService.logout(() => {
+        state.go.should.be.calledOnce();
+        done();
+      });
     });
   });
 });
