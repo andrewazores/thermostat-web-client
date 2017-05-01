@@ -33,10 +33,6 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import angular from 'angular';
-import 'angular-ui-router';
-import 'oclazyload';
-
 function config($stateProvider, $urlRouterProvider) {
   'ngInject';
 

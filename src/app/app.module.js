@@ -33,19 +33,13 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import angular from 'angular';
+import 'angular-patternfly';
 import 'angular-ui-router';
 import 'oclazyload';
 import 'es6-promise/auto';
 import 'patternfly/dist/css/patternfly.css';
 import 'patternfly/dist/css/patternfly-additions.css';
-import 'patternfly/dist/js/patternfly.js';
-import 'angular-patternfly/dist/angular-patternfly.js';
 import 'angular-patternfly/dist/styles/angular-patternfly.css';
-import 'angular-bootstrap/ui-bootstrap.js';
-import 'angular-bootstrap/ui-bootstrap-tpls.js';
-import 'angular-sanitize';
-import 'angular-route';
 import 'c3/c3.js';
 import 'c3/c3.css';
 import 'd3';
@@ -61,6 +55,8 @@ export const APP_MODULE = 'appModule';
 let appModule = angular.module(APP_MODULE,
   [
     'ui.router',
+    'ui.bootstrap',
+    'patternfly',
     CFG_MODULE,
     AUTH_MODULE,
     // non-core modules
