@@ -40,7 +40,9 @@ import 'es6-promise/auto';
 
 import {default as CFG_MODULE} from './shared/config/config.module.js';
 import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
+import './shared/filters/filters.module.js';
 import './components/landing/landing.routing.js';
+import './components/jvm-list/jvm-list.routing.js';
 import AppController from './app.controller.js';
 
 require.ensure([], () => {
@@ -55,7 +57,8 @@ export const appModule = angular.module('appModule',
     CFG_MODULE,
     AUTH_MODULE,
     // non-core modules
-    'landing.routing'
+    'landing.routing',
+    'jvmList.routing'
   ]
 ).controller('AppController', AppController);
 

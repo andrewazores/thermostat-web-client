@@ -33,30 +33,28 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-function landingRouting($stateProvider, $urlRouterProvider) {
-  'ngInject';
+import unixToDateProvider from './unix-to-date.filter.js';
 
-  $stateProvider.state('landing', {
-    url: '/landing',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure(['./landing.html'], () => {
-          resolve(require('./landing.html'));
-        })
-      );
-    }
+describe('unixToDate filter', () => {
+  let formatSpy = sinon.spy();
+  let momentStub = sinon.stub().returns({ format: formatSpy });
+
+  it('should be exported', () => {
+    should.exist(unixToDateProvider);
   });
 
-  $urlRouterProvider.otherwise('landing');
-}
+  it('should provide a timestamp formatting function', () => {
+    let fn = unixToDateProvider();
+    should.exist(fn);
+    fn.should.be.a.Function();
+  });
 
-export { landingRouting };
+  it('should use the provided \'moment\'', () => {
+    let timestamp = 450000;
+    let fn = unixToDateProvider(momentStub);
+    fn(timestamp);
 
-export default angular
-  .module('landing.routing', [
-    'ui.router',
-    'ui.bootstrap',
-    'patternfly'
-  ])
-  .config(landingRouting);
+    momentStub.should.be.calledWith(timestamp);
+    formatSpy.should.be.calledWith('lll');
+  });
+});
