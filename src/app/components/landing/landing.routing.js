@@ -33,7 +33,7 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-function config($stateProvider, $urlRouterProvider) {
+function landingRouting($stateProvider, $urlRouterProvider) {
   'ngInject';
 
   $stateProvider.state('landing', {
@@ -41,8 +41,9 @@ function config($stateProvider, $urlRouterProvider) {
     templateProvider: $q => {
       'ngInject';
       return $q(resolve =>
-        require.ensure([], () => resolve(require('./landing.html'))
-        )
+        require.ensure(['./landing.html'], () => {
+          resolve(require('./landing.html'));
+        })
       );
     }
   });
@@ -50,6 +51,8 @@ function config($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('landing');
 }
 
-export { config };
+export { landingRouting };
 
-export default angular.module('landing.routing', []).config(config);
+export default angular
+  .module('landing.routing', [])
+  .config(landingRouting);
