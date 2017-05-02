@@ -33,8 +33,6 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import angular from 'angular';
-
 let MOD_NAME = 'configModule';
 export default MOD_NAME;
 

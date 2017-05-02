@@ -33,30 +33,42 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-function landingRouting($stateProvider, $urlRouterProvider) {
+function config($stateProvider) {
   'ngInject';
 
-  $stateProvider.state('landing', {
-    url: '/landing',
+  $stateProvider.state('jvmList', {
+    url: '/jvm-list',
     templateProvider: $q => {
       'ngInject';
       return $q(resolve =>
-        require.ensure(['./landing.html'], () => {
-          resolve(require('./landing.html'));
-        })
+        require.ensure([], () => resolve(require('./jvm-list.html'))
+        )
       );
+    },
+    controller: 'jvmListController as ctrl',
+    resolve: {
+      loadJvmList: ($q, $ocLazyLoad) => {
+        'ngInject';
+        return $q(resolve => {
+          require.ensure(['./jvm-list.module.js'], () => {
+            let module = require('./jvm-list.module.js');
+            $ocLazyLoad.load({ name: 'jvmList' });
+            resolve(module);
+          });
+        });
+      }
     }
   });
-
-  $urlRouterProvider.otherwise('landing');
 }
 
-export { landingRouting };
+export { config };
 
-export default angular
-  .module('landing.routing', [
+export default angular.module('jvmList.routing',
+  [
     'ui.router',
     'ui.bootstrap',
-    'patternfly'
-  ])
-  .config(landingRouting);
+    'oc.lazyLoad',
+    'patternfly',
+    'app.filters'
+  ]
+).config(config);

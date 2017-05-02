@@ -33,30 +33,73 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-function landingRouting($stateProvider, $urlRouterProvider) {
-  'ngInject';
+describe('JvmListService', () => {
 
-  $stateProvider.state('landing', {
-    url: '/landing',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure(['./landing.html'], () => {
-          resolve(require('./landing.html'));
-        })
-      );
-    }
+  beforeEach(angular.mock.module('jvmList.service'));
+
+  let httpBackend, scope, svc;
+  beforeEach(inject(($httpBackend, $rootScope, jvmListService) => {
+    'ngInject';
+    httpBackend = $httpBackend;
+
+    scope = $rootScope;
+    svc = jvmListService;
+  }));
+
+  afterEach(() => {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
   });
 
-  $urlRouterProvider.otherwise('landing');
-}
+  it('should exist', () => {
+    should.exist(svc);
+  });
 
-export { landingRouting };
+  describe('getSystems()', () => {
+    it('should resolve mock data', done => {
+      let expected = [
+        {
+          systemId: 'OpenShift Cartridge Foo',
+          jvms: [
+            {
+              mainClass: 'com.example.DemoApplication',
+              startTime: 100,
+              endTime: -1,
+              isAlive: true,
+              vmId: 'foo-vmId-1'
+            },
+            {
+              mainClass: 'com.redhat.thermostat.Thermostat',
+              startTime: 200,
+              endTime: -1,
+              isAlive: true,
+              vmId: 'foo-vmId-2'
+            }
+          ]
+        },
+        {
+          systemId: 'localhost',
+          jvms: [
+            {
+              mainClass: 'com.sun.java.javac',
+              startTime: 300,
+              endTime: 400,
+              isAlive: false,
+              vmId: 'bar-vmId-3'
+            }
+          ]
+        }
+      ];
+      httpBackend.when('GET', 'http://localhost:30000/jvm-list/0.0.1')
+        .respond(expected);
+      svc.getSystems().then(res => {
+        res.data.should.deepEqual(expected);
+        done();
+      });
+      httpBackend.expectGET('http://localhost:30000/jvm-list/0.0.1');
+      httpBackend.flush();
+      scope.$apply();
+    });
+  });
 
-export default angular
-  .module('landing.routing', [
-    'ui.router',
-    'ui.bootstrap',
-    'patternfly'
-  ])
-  .config(landingRouting);
+});

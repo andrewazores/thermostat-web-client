@@ -45,7 +45,7 @@ describe('LandingModule', () => {
     urlRouterProvider = {
       otherwise: sinon.spy()
     };
-    module.config(stateProvider, urlRouterProvider);
+    module.landingRouting(stateProvider, urlRouterProvider);
     args = stateProvider.state.args[0];
     q = sinon.spy();
   });

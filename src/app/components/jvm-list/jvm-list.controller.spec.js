@@ -33,30 +33,47 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-function landingRouting($stateProvider, $urlRouterProvider) {
-  'ngInject';
+describe('JvmListController', () => {
 
-  $stateProvider.state('landing', {
-    url: '/landing',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure(['./landing.html'], () => {
-          resolve(require('./landing.html'));
-        })
-      );
-    }
+  beforeEach(angular.mock.module('jvmList.controller'));
+
+  let ctrl, scope, promise;
+  beforeEach(inject(($q, $rootScope, $controller) => {
+    'ngInject';
+    scope = $rootScope;
+    promise = $q.defer();
+
+    let jvmListService = {
+      getSystems: () => promise.promise
+    };
+    ctrl = $controller('jvmListController', {
+      jvmListService: jvmListService
+    });
+  }));
+
+  it('should exist', () => {
+    should.exist(ctrl);
   });
 
-  $urlRouterProvider.otherwise('landing');
-}
+  it('should set a title', () => {
+    ctrl.title.should.equal('JVM Listing');
+  });
 
-export { landingRouting };
+  it('should set JVMs list when service resolves', done => {
+    promise.resolve({ data: ['foo', 'bar']});
+    scope.$apply();
+    ctrl.should.have.ownProperty('systems');
+    ctrl.systems.should.deepEqual(['foo', 'bar']);
+    ctrl.showErr.should.equal(false);
+    done();
+  });
 
-export default angular
-  .module('landing.routing', [
-    'ui.router',
-    'ui.bootstrap',
-    'patternfly'
-  ])
-  .config(landingRouting);
+  it('should set error flag when service rejects', done => {
+    promise.reject();
+    scope.$apply();
+    ctrl.should.have.ownProperty('showErr');
+    ctrl.showErr.should.equal(true);
+    done();
+  });
+
+});

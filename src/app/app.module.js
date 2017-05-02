@@ -33,45 +33,35 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import angular from 'angular';
+import 'angular-patternfly';
 import 'angular-ui-router';
 import 'oclazyload';
 import 'es6-promise/auto';
-import 'patternfly/dist/css/patternfly.css';
-import 'patternfly/dist/css/patternfly-additions.css';
-import 'patternfly/dist/js/patternfly.js';
-import 'angular-patternfly/dist/angular-patternfly.js';
-import 'angular-patternfly/dist/styles/angular-patternfly.css';
-import 'angular-bootstrap/ui-bootstrap.js';
-import 'angular-bootstrap/ui-bootstrap-tpls.js';
-import 'angular-sanitize';
-import 'angular-route';
-import 'c3/c3.js';
-import 'c3/c3.css';
-import 'd3';
-import '../assets/css/app.css';
 
 import {default as CFG_MODULE} from './shared/config/config.module.js';
 import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
+import './shared/filters/filters.module.js';
 import './components/landing/landing.routing.js';
+import './components/jvm-list/jvm-list.routing.js';
 import AppController from './app.controller.js';
 
-export const APP_MODULE = 'appModule';
+require.ensure([], () => {
+  require('patternfly/dist/css/patternfly.css');
+  require('patternfly/dist/css/patternfly-additions.css');
+  require('../assets/css/app.css');
+});
 
-let appModule = angular.module(APP_MODULE,
+export const appModule = angular.module('appModule',
   [
     'ui.router',
     CFG_MODULE,
     AUTH_MODULE,
     // non-core modules
-    'landing.routing'
+    'landing.routing',
+    'jvmList.routing'
   ]
-);
-
-appModule.constant('appModule', APP_MODULE);
-
-appModule.controller('AppController', AppController);
+).controller('AppController', AppController);
 
 AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(
-  () => angular.bootstrap(document, [APP_MODULE])
+  () => angular.bootstrap(document, [appModule.name])
 ));

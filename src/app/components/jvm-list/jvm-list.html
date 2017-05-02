@@ -1,0 +1,42 @@
+<div class="container-fluid container-cards-pf">
+  <ol class="breadcrumb" style="margin-bottom: 0px;">
+    <li><a ui-sref="landing">Thermostat</a></li>
+    <li><a ui-sref="jvmList">JVM List</a></li>
+  </ol>
+
+  <div ng-show="ctrl.showErr" class="alert alert-danger alert-dismissable">
+    <span class="pficon pficon-error-circle-o"></span>
+    <strong>Unable to retrieve data.</strong> Error while retrieving Thermostat JVM Listing.
+  </div>
+
+  <div ng-show="!ctrl.showErr" >
+    <uib-accordion pf-accordion close-others="true">
+
+      <uib-accordion-group class="cards-pf" ng-repeat="system in ctrl.systems" is-open="false" heading={{system.systemId}}>
+        <div class="container-fluid container-cards-pf">
+          <div class="row row-cards-pf">
+            <div ng-repeat="jvm in system.jvms">
+
+              <div class="col-md-4">
+                <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                  <div class="card-pf-top-element">
+                    <span class="pficon pficon-virtual-machine card-pf-icon-circle"></span>
+                  </div>
+                  <div class-"card-pf-body">
+                    <h2 class="card-pf-title text-center">
+                      {{jvm.mainClass}}
+                    </h2>
+                    <p class="card-pf-info text-center"><strong>Created On</strong> {{jvm.startTime | unixToDate}}</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div><!-- /row -->
+        </div>
+        </uib-accordion-group>
+
+        </uib-accordion>
+  </div>
+
+</div><!-- /container -->

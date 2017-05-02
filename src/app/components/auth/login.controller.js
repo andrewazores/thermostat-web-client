@@ -33,8 +33,6 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import 'angular-ui-router';
-
 export default class LoginController {
 
   constructor ($scope, $state, authService) {

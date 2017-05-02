@@ -1,7 +1,6 @@
 'use strict';
 
 var webpack = require('webpack');
-
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var ENV = process.env.npm_lifecycle_event;
@@ -9,7 +8,6 @@ var isTest = ENV === 'test' || ENV === 'test-watch';
 var isProd = process.env.NODE_ENV === 'production';
 
 module.exports = function () {
-
   var config = {};
 
   config.entry = isTest ? void 0 : {
@@ -18,7 +16,7 @@ module.exports = function () {
 
   config.resolve = {
     alias: {
-      "jquery": "patternfly/node_modules/jquery"
+      'jquery': 'patternfly/node_modules/jquery'
     }
   };
 
@@ -61,10 +59,10 @@ module.exports = function () {
 
   config.plugins.push(
     new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery",
-      "window.jquery": "jquery",
-      "window.jQuery": "jquery"
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jquery': 'jquery',
+      'window.jQuery': 'jquery'
     })
   );
 
@@ -90,7 +88,7 @@ module.exports = function () {
         favicon: './src/assets/images/favicon.png',
         inject: 'body'
       })
-    )
+    );
   }
 
   config.devServer = {

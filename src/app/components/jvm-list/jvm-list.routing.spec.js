@@ -33,30 +33,68 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-function landingRouting($stateProvider, $urlRouterProvider) {
-  'ngInject';
+describe('JvmListRouting', () => {
 
-  $stateProvider.state('landing', {
-    url: '/landing',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure(['./landing.html'], () => {
-          resolve(require('./landing.html'));
-        })
-      );
-    }
+  let module = require('./jvm-list.routing.js');
+
+  let stateProvider, args, q, ocLazyLoad;
+  beforeEach(() => {
+    stateProvider = {
+      state: sinon.spy()
+    };
+    module.config(stateProvider);
+    args = stateProvider.state.args[0];
+    q = sinon.spy();
+    ocLazyLoad = {
+      load: sinon.spy()
+    };
   });
 
-  $urlRouterProvider.otherwise('landing');
-}
+  describe('stateProvider', () => {
+    it('should call $stateProvider.state', () => {
+      stateProvider.state.should.be.calledOnce();
+    });
 
-export { landingRouting };
+    it('should define a \'jvmList\' state', () => {
+      args[0].should.equal('jvmList');
+    });
 
-export default angular
-  .module('landing.routing', [
-    'ui.router',
-    'ui.bootstrap',
-    'patternfly'
-  ])
-  .config(landingRouting);
+    it('should map to /jvm-list', () => {
+      args[1].url.should.equal('/jvm-list');
+    });
+
+    it('template provider should return jvm-list.html', done => {
+      let providerFn = args[1].templateProvider[1];
+      providerFn.should.be.a.Function();
+      providerFn(q);
+      q.should.be.calledOnce();
+
+      let deferred = q.args[0][0];
+      deferred.should.be.a.Function();
+
+      let resolve = sinon.stub().callsFake(val => {
+        val.should.equal(require('./jvm-list.html'));
+        done();
+      });
+      deferred(resolve);
+    });
+
+    it('resolve should load jvm-list module', done => {
+      let resolveFn = args[1].resolve.loadJvmList[2];
+      resolveFn.should.be.a.Function();
+      resolveFn(q, ocLazyLoad);
+      q.should.be.calledOnce();
+
+      let deferred = q.args[0][0];
+      deferred.should.be.a.Function();
+
+      let resolve = sinon.stub().callsFake(val => {
+        ocLazyLoad.load.should.be.calledWith({ name: 'jvmList' });
+        val.should.equal(require('./jvm-list.module.js'));
+        done();
+      });
+      deferred(resolve);
+    });
+  });
+
+});
