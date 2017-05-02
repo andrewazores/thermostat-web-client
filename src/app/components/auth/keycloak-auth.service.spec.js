@@ -38,36 +38,21 @@
 import KeycloakAuthService from './keycloak-auth.service.js';
 
 describe('KeycloakAuthService', () => {
-  let keycloakAuthService;
-  let init;
-  let logout;
-  let promise;
-  let authenticated;
 
+  let keycloakAuthService, login, logout, refresh, authenticated;
   beforeEach(() => {
-    promise = sinon.spy();
-    init = sinon.stub().returns(promise);
+    login = sinon.spy();
     logout = sinon.spy();
+
+    refresh = sinon.stub().returns('refresh-foo');
     authenticated = 'invalid-testing-token';
     let mockCloak = {
-      init: init,
+      login: login,
       logout: logout,
+      updateToken: refresh,
       authenticated: authenticated
     };
     keycloakAuthService = new KeycloakAuthService(mockCloak);
-  });
-
-  describe('#init()', () => {
-    it('should delegate to keycloak object', () => {
-      keycloakAuthService.init();
-      init.should.be.calledOnce();
-      init.should.be.calledWith({ onLoad: 'login-required' });
-    });
-
-    it('should return a promise', () => {
-      let res = keycloakAuthService.init();
-      res.should.equal(promise);
-    });
   });
 
   describe('#login()', () => {
@@ -79,18 +64,13 @@ describe('KeycloakAuthService', () => {
       keycloakAuthService.login('', '');
     });
 
-    it('should not interact with keycloak object', done => {
+    it('should delegate to Keycloak object', done => {
       keycloakAuthService.login('', '', done);
-      init.should.not.be.called();
-      logout.should.not.be.called();
+      logout.should.be.calledOnce();
     });
   });
 
   describe('#logout()', () => {
-    it('should call callback', done => {
-      keycloakAuthService.logout(done);
-    });
-
     it('should delegate to keycloak object', () => {
       keycloakAuthService.logout();
       logout.should.be.calledOnce();
@@ -101,6 +81,14 @@ describe('KeycloakAuthService', () => {
     it('should delegate to Keycloak object', () => {
       let res = keycloakAuthService.status();
       res.should.equal(authenticated);
+    });
+  });
+
+  describe('#refresh()', () => {
+    it('should delegate to Keycloak object', () => {
+      let res = keycloakAuthService.refresh();
+      res.should.equal('refresh-foo');
+      refresh.should.be.calledOnce();
     });
   });
 });

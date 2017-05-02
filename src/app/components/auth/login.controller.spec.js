@@ -35,6 +35,11 @@
 
 describe('LoginController', () => {
 
+  beforeEach(angular.mock.module($provide => {
+    'ngInject';
+    $provide.value('$transitions', { onBefore: angular.noop });
+  }));
+
   beforeEach(angular.mock.module('appModule'));
 
   describe('$scope.login()', () => {

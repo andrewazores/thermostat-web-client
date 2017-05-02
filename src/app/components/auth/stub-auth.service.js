@@ -39,6 +39,7 @@ export default class StubAuthService {
     'ngInject';
     this.$state = $state;
     this.state = false;
+    $state.go('login');
   }
 
   status () {
@@ -58,6 +59,18 @@ export default class StubAuthService {
     this.state = false;
     this.$state.go('login');
     callback();
+  }
+
+  refresh () {
+    return {
+      success: function (fn) {
+        fn();
+        return this;
+      },
+      error: function () {
+        return this
+      }
+    };
   }
 
 }

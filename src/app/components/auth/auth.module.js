@@ -69,12 +69,13 @@ export function config (env, done = angular.noop, keycloakProvider = () => {
   });
 
   if (env === 'production') {
-    let keycloakAuthService = new KeycloakAuthService(keycloakProvider());
+    let cloak = keycloakProvider();
+    let keycloakAuthService = new KeycloakAuthService(cloak);
     mod.value('authService', keycloakAuthService);
 
-    keycloakAuthService.init({ onLoad: 'login-required' })
+    cloak.init({ onLoad: 'login-required' })
       .success(done)
-      .error(() => window.location.refresh());
+      .error(() => window.location.reload());
   } else {
     mod.service('authService', StubAuthService);
     done();

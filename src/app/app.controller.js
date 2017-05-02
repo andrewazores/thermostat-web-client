@@ -35,7 +35,7 @@
 
 export default class AppController {
 
-  constructor ($scope, $state, environment, authService) {
+  constructor ($scope, environment, authService) {
     'ngInject';
 
     angular.element('logoutButton').removeAttr('hidden');
@@ -44,15 +44,7 @@ export default class AppController {
       angular.element('envHeader').removeAttr('hidden');
     }
 
-    $scope.loginStatus = () => {
-      return authService.status();
-    }
-
-    if (!authService.status()) {
-      $state.go('login');
-    } else {
-      $state.go('landing');
-    }
+    $scope.loginStatus = () => authService.status();
 
     $scope.logout = () => {
       authService.logout();

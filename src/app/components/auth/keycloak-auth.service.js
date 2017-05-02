@@ -39,21 +39,22 @@ export default class KeycloakAuthService {
     this.keycloak = keycloak;
   }
 
-  init () {
-    return this.keycloak.init({ onLoad: 'login-required' });
-  }
-
   login (user, pass, success = angular.noop) {
+    this.keycloak.login();
     success();
   }
 
-  logout (callback = angular.noop) {
+  logout () {
     this.keycloak.logout();
-    callback();
   }
 
   status () {
     return this.keycloak.authenticated;
+  }
+
+  refresh () {
+    // refresh the token if it expires within 300 seconds
+    return this.keycloak.updateToken(300);
   }
 
 }
