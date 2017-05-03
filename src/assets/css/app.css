@@ -1,5 +1,6 @@
-.control-label {
-    color: black;
+/* login container colour to thermostat blue */
+.login-pf .container {
+  background-color: #27426e;
 }
 
 /* line 1, scss/main.scss */
