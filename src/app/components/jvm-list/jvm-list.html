@@ -10,19 +10,19 @@
   </div>
 
   <div ng-show="!ctrl.showErr" >
-    <uib-accordion pf-accordion close-others="true">
+    <uib-accordion close-others="true">
 
       <uib-accordion-group class="cards-pf" ng-repeat="system in ctrl.systems" is-open="false" heading={{system.systemId}}>
         <div class="container-fluid container-cards-pf">
           <div class="row row-cards-pf">
             <div ng-repeat="jvm in system.jvms">
 
-              <div class="col-md-4">
+              <div class="col-xs-12 col-md-4 col-lg-3">
                 <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
                   <div class="card-pf-top-element">
                     <span class="pficon pficon-virtual-machine card-pf-icon-circle"></span>
                   </div>
-                  <div class-"card-pf-body">
+                  <div class="card-pf-body">
                     <h2 class="card-pf-title text-center">
                       {{jvm.mainClass}}
                     </h2>
@@ -34,9 +34,9 @@
             </div>
           </div><!-- /row -->
         </div>
-        </uib-accordion-group>
+      </uib-accordion-group>
 
-        </uib-accordion>
+    </uib-accordion>
   </div>
 
 </div><!-- /container -->
