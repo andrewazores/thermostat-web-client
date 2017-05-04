@@ -34,7 +34,7 @@
  */
 
 import 'angular-patternfly';
-import 'angular-ui-router';
+import '@uirouter/angularjs';
 import 'oclazyload';
 import 'es6-promise/auto';
 
