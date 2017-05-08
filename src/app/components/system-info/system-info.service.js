@@ -33,37 +33,18 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import 'angular-patternfly';
-import '@uirouter/angularjs';
-import 'oclazyload';
-import 'es6-promise/auto';
+class SystemInfoService {
+  constructor ($http) {
+    'ngInject';
+    this.http = $http;
+  }
 
-import {default as CFG_MODULE} from './shared/config/config.module.js';
-import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
-import './shared/filters/filters.module.js';
-import './components/landing/landing.routing.js';
-import './components/jvm-list/jvm-list.routing.js';
-import './components/system-info/system-info.routing.js';
-import AppController from './app.controller.js';
+  getSystemInfo (systemId) {
+    return this.http.get('http://localhost:8080/system-info/' + systemId);
+  }
+}
 
-require.ensure([], () => {
-  require('patternfly/dist/css/patternfly.css');
-  require('patternfly/dist/css/patternfly-additions.css');
-  require('../assets/css/app.css');
-});
-
-export const appModule = angular.module('appModule',
+export default angular.module('systemInfo.service',
   [
-    'ui.router',
-    CFG_MODULE,
-    AUTH_MODULE,
-    // non-core modules
-    'landing.routing',
-    'jvmList.routing',
-    'systemInfo.routing'
   ]
-).controller('AppController', AppController);
-
-AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(
-  () => angular.bootstrap(document, [appModule.name])
-));
+).service('systemInfoService', SystemInfoService);

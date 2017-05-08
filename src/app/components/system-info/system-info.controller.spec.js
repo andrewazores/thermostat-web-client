@@ -33,37 +33,52 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import 'angular-patternfly';
-import '@uirouter/angularjs';
-import 'oclazyload';
-import 'es6-promise/auto';
+describe('SystemInfoController', () => {
 
-import {default as CFG_MODULE} from './shared/config/config.module.js';
-import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
-import './shared/filters/filters.module.js';
-import './components/landing/landing.routing.js';
-import './components/jvm-list/jvm-list.routing.js';
-import './components/system-info/system-info.routing.js';
-import AppController from './app.controller.js';
+  beforeEach(angular.mock.module('systemInfo.controller'));
 
-require.ensure([], () => {
-  require('patternfly/dist/css/patternfly.css');
-  require('patternfly/dist/css/patternfly-additions.css');
-  require('../assets/css/app.css');
+  let ctrl, scope, promise;
+  beforeEach(inject(($q, $rootScope, $controller) => {
+    'ngInject';
+    scope = $rootScope;
+    promise = $q.defer();
+
+    let systemInfoService = {
+      getSystemInfo: () => promise.promise
+    };
+    ctrl = $controller('systemInfoController', {
+      systemId: 'foo-systemId',
+      systemInfoService: systemInfoService
+    });
+  }));
+
+  it('should exist', () => {
+    should.exist(ctrl);
+  });
+
+  it('should set systemInfo when service resolves', done => {
+    let response = {
+      osName: 'Linux',
+      osKernel: '4.10.11-200.fc25.x86_64'
+    };
+    promise.resolve({
+      data: {
+        response: response
+      }
+    });
+    scope.$apply();
+    ctrl.should.have.ownProperty('systemInfo');
+    ctrl.systemInfo.should.deepEqual(response);
+    ctrl.showErr.should.equal(false);
+    done();
+  });
+
+  it('should set error flag when service rejects', done => {
+    promise.reject();
+    scope.$apply();
+    ctrl.should.have.ownProperty('showErr');
+    ctrl.showErr.should.equal(true);
+    done();
+  });
+
 });
-
-export const appModule = angular.module('appModule',
-  [
-    'ui.router',
-    CFG_MODULE,
-    AUTH_MODULE,
-    // non-core modules
-    'landing.routing',
-    'jvmList.routing',
-    'systemInfo.routing'
-  ]
-).controller('AppController', AppController);
-
-AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(
-  () => angular.bootstrap(document, [appModule.name])
-));

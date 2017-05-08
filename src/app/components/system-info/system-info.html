@@ -1,0 +1,31 @@
+<div class="container-fluid container-cards-pf">
+  <ol class="breadcrumb" style="margin-bottom: 0px;">
+    <li><a ui-sref="landing">Thermostat</a></li>
+    <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">System Info ({{ctrl.systemInfo.hostName}})</a></li>
+  </ol>
+
+  <div ng-show="ctrl.showErr" class="alert alert-danger alert-dismissable">
+    <span class="pficon pficon-error-circle-o"></span>
+    <strong>Unable to retrieve data.</strong> Error while retrieving system information.
+  </div>
+
+  <div ng-show="!ctrl.showErr" class="row">
+    <div class="col-xs-12 col-lg-8">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="(key, value) in ctrl.systemInfo">
+            <td>{{key}}</td>
+            <td>{{value}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /container -->
