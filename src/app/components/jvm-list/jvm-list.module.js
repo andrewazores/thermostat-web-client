@@ -36,8 +36,10 @@
 import './jvm-list.controller.js';
 import './jvm-list.service.js';
 
-export default angular.module('jvmList', [
-  'app.filters',
-  'jvmList.controller',
-  'jvmList.service'
-]);
+export default angular.module('jvmList',
+  [
+    'app.filters',
+    'jvmList.controller',
+    'jvmList.service'
+  ]
+);

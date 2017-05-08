@@ -49,4 +49,8 @@ class JvmListController {
   }
 }
 
-export default angular.module('jvmList.controller', ['jvmList.service']).controller('jvmListController', JvmListController);
+export default angular.module('jvmList.controller',
+  [
+    'jvmList.service'
+  ]
+).controller('jvmListController', JvmListController);

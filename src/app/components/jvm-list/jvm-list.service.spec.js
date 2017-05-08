@@ -90,13 +90,13 @@ describe('JvmListService', () => {
           ]
         }
       ];
-      httpBackend.when('GET', 'http://localhost:30000/jvm-list/0.0.1')
+      httpBackend.when('GET', 'http://localhost:8080/jvm-list/')
         .respond(expected);
       svc.getSystems().then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://localhost:30000/jvm-list/0.0.1');
+      httpBackend.expectGET('http://localhost:8080/jvm-list/');
       httpBackend.flush();
       scope.$apply();
     });

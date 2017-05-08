@@ -34,15 +34,17 @@
  */
 
 class JvmListService {
-  constructor ($q, $http) {
+  constructor ($http) {
     'ngInject';
-    this.q = $q;
     this.http = $http;
   }
 
   getSystems() {
-    return this.http.get('http://localhost:30000/jvm-list/0.0.1');
+    return this.http.get('http://localhost:8080/jvm-list/');
   }
 }
 
-angular.module('jvmList.service', []).service('jvmListService', JvmListService);
+export default angular.module('jvmList.service',
+  [
+  ]
+).service('jvmListService', JvmListService);
