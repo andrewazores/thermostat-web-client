@@ -33,54 +33,15 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import 'angular-patternfly';
-import '@uirouter/angularjs';
-import 'oclazyload';
-import 'es6-promise/auto';
-
-import {default as CFG_MODULE} from './shared/config/config.module.js';
-import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
-import './shared/filters/filters.module.js';
-import './components/landing/landing.routing.js';
-import './components/jvm-list/jvm-list.routing.js';
-import './components/jvm-info/jvm-info.routing.js';
-import './components/system-info/system-info.routing.js';
-import AppController from './app.controller.js';
-
-require.ensure([], () => {
-  require('patternfly/dist/css/patternfly.css');
-  require('patternfly/dist/css/patternfly-additions.css');
-  require('../assets/css/app.css');
-});
-
-export const appModule = angular.module('appModule',
-  [
-    'ui.router',
-    CFG_MODULE,
-    AUTH_MODULE,
-    // non-core modules
-    'landing.routing',
-    'jvmList.routing',
-    'jvmInfo.routing',
-    'systemInfo.routing'
-  ]
-).controller('AppController', AppController);
-
-AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(
-  () => {
-    appModule.run(($q, $transitions, authService) => {
-      'ngInject';
-      $transitions.onBefore({}, () => {
-        let defer = $q.defer();
-        authService.refresh()
-          .success(() => defer.resolve())
-          .error(() => {
-            defer.reject('Keycloak token update failed');
-            authService.login();
-          });
-        return defer.promise;
-      });
-    });
-    angular.bootstrap(document, [appModule.name])
+class JvmInfoService {
+  constructor ($http) {
+    'ngInject';
+    this.http = $http;
   }
-));
+
+  getJvmInfo (jvmId) {
+    return this.http.get('http://localhost:8080/jvm-info/' + jvmId);
+  }
+}
+
+export default angular.module('jvmInfo.service', []).service('jvmInfoService', JvmInfoService);

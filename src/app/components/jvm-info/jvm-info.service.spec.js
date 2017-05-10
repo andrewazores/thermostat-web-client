@@ -33,54 +33,48 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import 'angular-patternfly';
-import '@uirouter/angularjs';
-import 'oclazyload';
-import 'es6-promise/auto';
+describe('JvmInfoService', () => {
 
-import {default as CFG_MODULE} from './shared/config/config.module.js';
-import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
-import './shared/filters/filters.module.js';
-import './components/landing/landing.routing.js';
-import './components/jvm-list/jvm-list.routing.js';
-import './components/jvm-info/jvm-info.routing.js';
-import './components/system-info/system-info.routing.js';
-import AppController from './app.controller.js';
+  beforeEach(angular.mock.module('jvmInfo.service'));
 
-require.ensure([], () => {
-  require('patternfly/dist/css/patternfly.css');
-  require('patternfly/dist/css/patternfly-additions.css');
-  require('../assets/css/app.css');
-});
+  let httpBackend, scope, svc;
+  beforeEach(inject(($httpBackend, $rootScope, jvmInfoService) => {
+    'ngInject';
+    httpBackend = $httpBackend;
 
-export const appModule = angular.module('appModule',
-  [
-    'ui.router',
-    CFG_MODULE,
-    AUTH_MODULE,
-    // non-core modules
-    'landing.routing',
-    'jvmList.routing',
-    'jvmInfo.routing',
-    'systemInfo.routing'
-  ]
-).controller('AppController', AppController);
+    scope = $rootScope;
+    svc = jvmInfoService;
+  }));
 
-AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(
-  () => {
-    appModule.run(($q, $transitions, authService) => {
-      'ngInject';
-      $transitions.onBefore({}, () => {
-        let defer = $q.defer();
-        authService.refresh()
-          .success(() => defer.resolve())
-          .error(() => {
-            defer.reject('Keycloak token update failed');
-            authService.login();
-          });
-        return defer.promise;
+  afterEach(() => {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
+  });
+
+  it('should exist', () => {
+    should.exist(svc);
+  });
+
+  describe('getJvmInfo(jvmId)', () => {
+    it('should resolve mock data', done => {
+      let expected = {
+        jvmId: 'foo-jvmId',
+        mainClass: 'c.r.t.A',
+        startTime: 45000,
+        endTime: -1,
+        isAlive: true,
+        jvmOptions: []
+      };
+      httpBackend.when('GET', 'http://localhost:8080/jvm-info/foo-jvmId')
+        .respond(expected);
+      svc.getJvmInfo('foo-jvmId').then(res => {
+        res.data.should.deepEqual(expected);
+        done();
       });
+      httpBackend.expectGET('http://localhost:8080/jvm-info/foo-jvmId');
+      httpBackend.flush();
+      scope.$apply();
     });
-    angular.bootstrap(document, [appModule.name])
-  }
-));
+  });
+
+});

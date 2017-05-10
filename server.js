@@ -158,6 +158,24 @@ app.get('/jvm-list/', function (req, res, next) {
   next();
 });
 
+app.get('/jvm-info/:jvmId', function (req, res, next) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify({
+    response: {
+      jvmId: req.params.jvmId,
+      mainClass: 'c.r.t.A',
+      startTime: 45000,
+      endTime: -1,
+      isAlive: true,
+      jvmOptions: [
+        '-foo',
+        '-XX:SomeOption'
+      ]
+    }
+  }));
+  next();
+});
+
 app.listen(app.get('port'), app.get('host'), function () {
   console.log('Server started on http://' + app.get('host') + ':' + app.get('port'));
 });

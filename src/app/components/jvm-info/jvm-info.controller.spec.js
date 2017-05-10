@@ -33,54 +33,60 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
-import 'angular-patternfly';
-import '@uirouter/angularjs';
-import 'oclazyload';
-import 'es6-promise/auto';
+describe('JvmInfoController', () => {
 
-import {default as CFG_MODULE} from './shared/config/config.module.js';
-import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
-import './shared/filters/filters.module.js';
-import './components/landing/landing.routing.js';
-import './components/jvm-list/jvm-list.routing.js';
-import './components/jvm-info/jvm-info.routing.js';
-import './components/system-info/system-info.routing.js';
-import AppController from './app.controller.js';
+  beforeEach(angular.mock.module('jvmInfo.controller'));
 
-require.ensure([], () => {
-  require('patternfly/dist/css/patternfly.css');
-  require('patternfly/dist/css/patternfly-additions.css');
-  require('../assets/css/app.css');
-});
+  let svc, ctrl, promise;
+  beforeEach(inject($controller => {
+    'ngInject';
 
-export const appModule = angular.module('appModule',
-  [
-    'ui.router',
-    CFG_MODULE,
-    AUTH_MODULE,
-    // non-core modules
-    'landing.routing',
-    'jvmList.routing',
-    'jvmInfo.routing',
-    'systemInfo.routing'
-  ]
-).controller('AppController', AppController);
+    promise = {
+      then: sinon.spy()
+    };
+    svc = {
+      getJvmInfo: sinon.stub().returns(promise)
+    };
 
-AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(
-  () => {
-    appModule.run(($q, $transitions, authService) => {
-      'ngInject';
-      $transitions.onBefore({}, () => {
-        let defer = $q.defer();
-        authService.refresh()
-          .success(() => defer.resolve())
-          .error(() => {
-            defer.reject('Keycloak token update failed');
-            authService.login();
-          });
-        return defer.promise;
-      });
+    ctrl = $controller('jvmInfoController', {
+      jvmId: 'foo-jvmId',
+      jvmInfoService: svc
     });
-    angular.bootstrap(document, [appModule.name])
-  }
-));
+  }));
+
+  it('should exist', () => {
+    should.exist(ctrl);
+  });
+
+  it('should call jvmInfoService with jvmId foo-jvmId', () => {
+    svc.getJvmInfo.should.be.calledWith('foo-jvmId');
+  });
+
+  it('should provide promise callbacks', () => {
+    promise.then.should.be.called();
+    promise.then.args[0].length.should.equal(2);
+    promise.then.args[0][0].should.be.a.Function();
+    promise.then.args[0][1].should.be.a.Function();
+  });
+
+  it('should have an empty jvmInfo property', () => {
+    ctrl.should.have.property('jvmInfo');
+    ctrl.jvmInfo.should.deepEqual({});
+  });
+
+  it('should assign jvmInfo object on promise resolve', () => {
+    let expected = ['foo', 'bar'];
+    promise.then.args[0][0]({
+      data: {
+        response: expected
+      }
+    });
+    ctrl.jvmInfo.should.equal(expected);
+  });
+
+  it('should assign empty jvmInfo on promise reject', () => {
+    promise.then.args[0][1]();
+    ctrl.jvmInfo.should.deepEqual({});
+  });
+
+});

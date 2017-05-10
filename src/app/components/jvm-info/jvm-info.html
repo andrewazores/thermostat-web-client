@@ -1,0 +1,45 @@
+<div class="container-fluid container-cards-pf">
+  <ol class="breadcrumb" style="margin-bottom: 0px;">
+    <li><a ui-sref="landing">Thermostat</a></li>
+    <li><a ui-sref="jvmList">JVM List</a></li>
+    <li><a ui-sref="jvmInfo({jvmId: ctrl.jvmId})">{{ctrl.jvmId}}</a></li>
+  </ol>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-8">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>JVM ID</td>
+            <td>{{ctrl.jvmInfo.jvmId}}</td>
+          </tr>
+          <tr>
+            <td>Main Class</td>
+            <td>{{ctrl.jvmInfo.mainClass}}</td>
+          </tr>
+          <tr>
+            <td>Start Time</td>
+            <td>{{ctrl.jvmInfo.startTime | unixToDate}}</td>
+          </tr>
+          <tr ng-show="!ctrl.jvmInfo.isAlive">
+            <td>End Time</td>
+            <td>{{ctrl.jvmInfo.endTime | unixToDate}}</td>
+          </tr>
+          <tr>
+            <td>JVM Options</td>
+            <td>
+              <div ng-repeat="opt in ctrl.jvmInfo.jvmOptions">{{opt}}<br/></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /container -->

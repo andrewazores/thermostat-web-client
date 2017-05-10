@@ -33,7 +33,7 @@
             <div ng-repeat="jvm in system.jvms">
 
               <div class="col-xs-12 col-md-4 col-lg-3">
-                <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                <div ui-sref="jvmInfo({ jvmId: jvm.jvmId })" class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
                   <div class="card-pf-top-element">
                     <span class="pficon pficon-virtual-machine card-pf-icon-circle"></span>
                   </div>
