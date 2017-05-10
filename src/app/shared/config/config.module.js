@@ -36,11 +36,23 @@
 let MOD_NAME = 'configModule';
 export default MOD_NAME;
 
-var config = () => {
+let config = () => {
   let mod = angular.module(MOD_NAME, []);
 
   mod.constant('CFG_MODULE', MOD_NAME);
   mod.constant('environment', process.env.NODE_ENV);
   mod.constant('debug', process.env.DEBUG);
+
+  let setFromFile = key => {
+    let cfg = require('./config.json');
+    if (!cfg.hasOwnProperty(key)) {
+      throw 'Required configuration property \'' + key + '\' not provided in config.json';
+    }
+    mod.constant(key, cfg[key]);
+  };
+
+  [
+    'gatewayUrl'
+  ].forEach(setFromFile);
 };
 config();

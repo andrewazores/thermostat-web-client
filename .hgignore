@@ -4,6 +4,7 @@ test-reports
 checkstyle
 coverage
 src/app/components/auth/keycloak.json
+src/app/shared/config/config.json
 .eslintcache
 npm-debug.log
 .s2i/environment

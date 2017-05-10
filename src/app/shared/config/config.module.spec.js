@@ -35,7 +35,29 @@
 
 describe('ConfigModule', () => {
 
-  beforeEach(angular.mock.module('configModule'));
+  describe('config.json missing', () => {
+    it('should throw an exception when gatewayUrl missing', done => {
+      try {
+        require('inject-loader!./config.module.js')({
+          './config.json': {}
+        });
+      } catch (e) {
+        should.exist(e);
+        e.should.equal('Required configuration property \'gatewayUrl\' not provided in config.json');
+        done();
+      }
+    });
+  });
+
+  beforeEach(() => {
+    let mockCfg = {
+      gatewayUrl: 'http://example.com:1234'
+    };
+    require('inject-loader!./config.module.js')({
+      './config.json': mockCfg
+    });
+    angular.mock.module('configModule');
+  });
 
   it('should export CFG_MODULE constant', () => {
     inject(CFG_MODULE => {

@@ -33,14 +33,17 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
+import urlJoin from 'url-join';
+
 class SystemInfoService {
-  constructor ($http) {
+  constructor ($http, gatewayUrl) {
     'ngInject';
     this.http = $http;
+    this.gatewayUrl = gatewayUrl;
   }
 
   getSystemInfo (systemId) {
-    return this.http.get('http://localhost:8080/system-info/' + systemId);
+    return this.http.get(urlJoin(this.gatewayUrl, 'system-info', systemId));
   }
 }
 

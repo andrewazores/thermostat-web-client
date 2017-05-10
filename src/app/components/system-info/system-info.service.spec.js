@@ -35,6 +35,11 @@
 
 describe('SystemInfoService', () => {
 
+  beforeEach(angular.mock.module($provide => {
+    'ngInject';
+    $provide.value('gatewayUrl', 'http://example.com:1234');
+  }));
+
   beforeEach(angular.mock.module('systemInfo.service'));
 
   let httpBackend, scope, svc;
@@ -61,13 +66,13 @@ describe('SystemInfoService', () => {
         osName: 'Linux',
         osKernel: '4.10.11-200.fc25.x86_64'
       };
-      httpBackend.when('GET', 'http://localhost:8080/system-info/foo-systemId')
+      httpBackend.when('GET', 'http://example.com:1234/system-info/foo-systemId')
         .respond(expected);
       svc.getSystemInfo('foo-systemId').then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://localhost:8080/system-info/foo-systemId');
+      httpBackend.expectGET('http://example.com:1234/system-info/foo-systemId');
       httpBackend.flush();
       scope.$apply();
     });

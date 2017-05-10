@@ -18,6 +18,10 @@ look like:
         "clientId": "BarClientId"
     }
 
+`config.json` placed in `src/app/shared/config/`. The following keys are required:
+
+`gatewayUrl`: the URL of the `Thermostat Web-Gateway` endpoint
+
 ## Environments
 
 Expected values for `NODE_ENV`:

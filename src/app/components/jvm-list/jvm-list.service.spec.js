@@ -35,6 +35,11 @@
 
 describe('JvmListService', () => {
 
+  beforeEach(angular.mock.module($provide => {
+    'ngInject';
+    $provide.value('gatewayUrl', 'http://example.com:1234');
+  }));
+
   beforeEach(angular.mock.module('jvmList.service'));
 
   let httpBackend, scope, svc;
@@ -90,13 +95,13 @@ describe('JvmListService', () => {
           ]
         }
       ];
-      httpBackend.when('GET', 'http://localhost:8080/jvm-list/')
+      httpBackend.when('GET', 'http://example.com:1234/jvm-list')
         .respond(expected);
       svc.getSystems().then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://localhost:8080/jvm-list/');
+      httpBackend.expectGET('http://example.com:1234/jvm-list');
       httpBackend.flush();
       scope.$apply();
     });
