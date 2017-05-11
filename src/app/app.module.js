@@ -50,7 +50,7 @@ import AppController from './app.controller.js';
 require.ensure([], () => {
   require('patternfly/dist/css/patternfly.css');
   require('patternfly/dist/css/patternfly-additions.css');
-  require('../assets/css/app.css');
+  require('../assets/scss/app.scss');
 });
 
 export const appModule = angular.module('appModule',
