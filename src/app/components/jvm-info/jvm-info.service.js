@@ -33,15 +33,21 @@
  * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
+import urlJoin from 'url-join';
+
 class JvmInfoService {
-  constructor ($http) {
+  constructor ($http, gatewayUrl) {
     'ngInject';
     this.http = $http;
+    this.gatewayUrl = gatewayUrl;
   }
 
   getJvmInfo (jvmId) {
-    return this.http.get('http://localhost:8080/jvm-info/' + jvmId);
+    return this.http.get(urlJoin(this.gatewayUrl, 'jvm-info', jvmId));
   }
 }
 
-export default angular.module('jvmInfo.service', []).service('jvmInfoService', JvmInfoService);
+export default angular.module('jvmInfo.service',
+  [
+  ]
+).service('jvmInfoService', JvmInfoService);

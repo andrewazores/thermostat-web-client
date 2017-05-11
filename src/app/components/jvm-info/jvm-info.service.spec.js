@@ -35,6 +35,12 @@
 
 describe('JvmInfoService', () => {
 
+  beforeEach(angular.mock.module($provide => {
+    'ngInject';
+
+    $provide.value('gatewayUrl', 'http://example.com:1234');
+  }));
+
   beforeEach(angular.mock.module('jvmInfo.service'));
 
   let httpBackend, scope, svc;
@@ -65,13 +71,13 @@ describe('JvmInfoService', () => {
         isAlive: true,
         jvmOptions: []
       };
-      httpBackend.when('GET', 'http://localhost:8080/jvm-info/foo-jvmId')
+      httpBackend.when('GET', 'http://example.com:1234/jvm-info/foo-jvmId')
         .respond(expected);
       svc.getJvmInfo('foo-jvmId').then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://localhost:8080/jvm-info/foo-jvmId');
+      httpBackend.expectGET('http://example.com:1234/jvm-info/foo-jvmId');
       httpBackend.flush();
       scope.$apply();
     });
