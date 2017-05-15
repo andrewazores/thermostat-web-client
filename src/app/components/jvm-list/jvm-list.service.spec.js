@@ -23,17 +23,14 @@
  * extend this exception to your version of the software, but you are
  * not obligated to do so.  If you do not wish to do so, delete this
  * exception statement from your version.
- *
- * --------------------------------------------------------------------------------
- * Additional files and licenses
- * --------------------------------------------------------------------------------
- *
- * Thermostat uses Font Awesome by Dave Gandy (http://fontawesome.io) as primary
- * icon resource, distributed under the SIL OFL 1.1 (http://scripts.sil.org/OFL).
- * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
 describe('JvmListService', () => {
+
+  beforeEach(angular.mock.module($provide => {
+    'ngInject';
+    $provide.value('gatewayUrl', 'http://example.com:1234');
+  }));
 
   beforeEach(angular.mock.module('jvmList.service'));
 
@@ -90,13 +87,13 @@ describe('JvmListService', () => {
           ]
         }
       ];
-      httpBackend.when('GET', 'http://localhost:30000/jvm-list/0.0.1')
+      httpBackend.when('GET', 'http://example.com:1234/jvm-list')
         .respond(expected);
       svc.getSystems().then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://localhost:30000/jvm-list/0.0.1');
+      httpBackend.expectGET('http://example.com:1234/jvm-list');
       httpBackend.flush();
       scope.$apply();
     });

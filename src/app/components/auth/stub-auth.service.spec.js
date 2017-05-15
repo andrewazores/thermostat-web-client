@@ -23,14 +23,6 @@
  * extend this exception to your version of the software, but you are
  * not obligated to do so.  If you do not wish to do so, delete this
  * exception statement from your version.
- *
- * --------------------------------------------------------------------------------
- * Additional files and licenses
- * --------------------------------------------------------------------------------
- *
- * Thermostat uses Font Awesome by Dave Gandy (http://fontawesome.io) as primary
- * icon resource, distributed under the SIL OFL 1.1 (http://scripts.sil.org/OFL).
- * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
 // AuthServices are set up before Angular is bootstrapped, so we manually import rather than
@@ -83,11 +75,42 @@ describe('StubAuthService', () => {
     });
 
     it('should redirect to login', done => {
-      state.go.should.not.be.called();
+      let callCount = state.go.callCount;
       stubAuthService.logout(() => {
-        state.go.should.be.calledOnce();
+        state.go.callCount.should.equal(callCount + 1);
         done();
       });
+    });
+  });
+
+  describe('#refresh()', () => {
+    it('should return an object', () => {
+      let res = stubAuthService.refresh();
+      should.exist(res);
+      res.should.be.an.Object();
+    });
+
+    it('should return an object with a success callback handler', () => {
+      let res = stubAuthService.refresh();
+      res.should.have.ownProperty('success');
+      res.success.should.be.a.Function();
+    });
+
+    it('should return an object with an error callback handler', () => {
+      let res = stubAuthService.refresh();
+      res.should.have.ownProperty('error');
+      res.error.should.be.a.Function();
+    });
+
+    it('should call success callbacks', done => {
+      stubAuthService.refresh().success(done);
+    });
+
+    it('should not call error callbacks', done => {
+      stubAuthService.refresh().error(() => {
+        done('should not reach here');
+      });
+      done();
     });
   });
 });

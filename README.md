@@ -20,6 +20,10 @@ look like:
         "clientId": "BarClientId"
     }
 
+`config.json` placed in `src/app/shared/config/`. The following keys are required:
+
+`gatewayUrl`: the URL of the `Thermostat Web-Gateway` endpoint
+
 ## Environments
 
 Expected values for `NODE_ENV`:
@@ -41,24 +45,39 @@ should exist and contain ex. `NODE_ENV=production`.
 
 ## How to use
 
-Live-reload development:
+**Live-reload development:**
 
 `npm run devserver`, then point a web browser at localhost:8080.
 
-One-time build:
+**One-time build:**
 
 `npm run build`
 
-Non-live-reload web-server:
+**Non-live-reload web-server:**
 
 `npm start`, then point a web browser at localhost:8080.
 
-In this case, you may run the server on a different port than the default 8080
+In this case, you may run the server on a different port than the default `8080`
 by setting the environment variable `PORT` to a port number of your choosing.
 The server also binds by default on `0.0.0.0`, which can be overridden with the
 environment variable `HOST`.
 
-Run tests:
+**Mock API endpoints:**
+
+`npm run start-mockapi`
+
+This will bring up the mock API endpoint server, which by default will run on
+port `8888` and bind to `0.0.0.0`. These can be overridden with the environment
+variables `MOCKAPI_HOST` and `MOCKAPI_PORT`.
+
+Note: the mock-api server is run as a daemon so that it easily co-exists with
+the webservers mentioned above. When you exit the webserver process and end the
+Node script, the mockapi server will still be running. You can see this using
+`./node_modules/.bin/forever list`. Please see the documentation for
+[Forever](https://www.npmjs.com/package/forever). This process can be killed
+with `npm run stop-mockapi`. It will also be cleaned during `npm run clean`.
+
+**Run tests:**
 
 `npm test` (one-time) or `npm run test-watch` (live-reload)
 

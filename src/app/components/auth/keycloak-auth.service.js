@@ -23,14 +23,6 @@
  * extend this exception to your version of the software, but you are
  * not obligated to do so.  If you do not wish to do so, delete this
  * exception statement from your version.
- *
- * --------------------------------------------------------------------------------
- * Additional files and licenses
- * --------------------------------------------------------------------------------
- *
- * Thermostat uses Font Awesome by Dave Gandy (http://fontawesome.io) as primary
- * icon resource, distributed under the SIL OFL 1.1 (http://scripts.sil.org/OFL).
- * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
 export default class KeycloakAuthService {
@@ -39,21 +31,22 @@ export default class KeycloakAuthService {
     this.keycloak = keycloak;
   }
 
-  init () {
-    return this.keycloak.init({ onLoad: 'login-required' });
-  }
-
   login (user, pass, success = angular.noop) {
+    this.keycloak.login();
     success();
   }
 
-  logout (callback = angular.noop) {
+  logout () {
     this.keycloak.logout();
-    callback();
   }
 
   status () {
     return this.keycloak.authenticated;
+  }
+
+  refresh () {
+    // refresh the token if it expires within 300 seconds
+    return this.keycloak.updateToken(300);
   }
 
 }

@@ -23,17 +23,14 @@
  * extend this exception to your version of the software, but you are
  * not obligated to do so.  If you do not wish to do so, delete this
  * exception statement from your version.
- *
- * --------------------------------------------------------------------------------
- * Additional files and licenses
- * --------------------------------------------------------------------------------
- *
- * Thermostat uses Font Awesome by Dave Gandy (http://fontawesome.io) as primary
- * icon resource, distributed under the SIL OFL 1.1 (http://scripts.sil.org/OFL).
- * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
 describe('AppController', () => {
+
+  beforeEach(angular.mock.module($provide => {
+    'ngInject';
+    $provide.value('$transitions', { onBefore: angular.noop });
+  }));
 
   beforeEach(angular.mock.module('appModule'));
 
@@ -52,7 +49,6 @@ describe('AppController', () => {
 
         $controller('AppController', {
           $scope: scope,
-          $state: { go: angular.noop },
           environment: env,
           authService: authService
         });
@@ -62,9 +58,8 @@ describe('AppController', () => {
         scope.should.have.ownProperty('loginStatus');
         scope.loginStatus.should.be.a.Function();
 
-        authService.status.should.be.calledOnce();
         scope.loginStatus();
-        authService.status.should.be.calledTwice();
+        authService.status.should.be.calledOnce();
       });
 
       if (env === 'production') {
@@ -81,12 +76,11 @@ describe('AppController', () => {
   });
 
   describe('$scope.logout()', () => {
-    let scope, authService, stateGo;
+    let scope, authService;
     beforeEach(inject(($controller, $rootScope) => {
       'ngInject';
 
       scope = $rootScope.$new();
-      stateGo = sinon.spy();
       authService = {
         status: sinon.stub().returns(true),
         login: sinon.spy(),
@@ -95,7 +89,6 @@ describe('AppController', () => {
 
       $controller('AppController', {
         $scope: scope,
-        $state: { go: stateGo },
         Environment: 'testing',
         authService: authService
       });
@@ -110,62 +103,6 @@ describe('AppController', () => {
       authService.logout.should.not.be.called();
       scope.logout();
       authService.logout.should.be.calledOnce();
-    });
-  });
-
-  describe('when logged in', () => {
-    let scope, authStatus, stateGo;
-    beforeEach(inject(($controller, $rootScope, authService) => {
-      'ngInject';
-
-      scope = $rootScope.$new();
-
-      authStatus = sinon.stub(authService, 'status').returns(true);
-      stateGo = sinon.spy();
-
-      $controller('AppController', {
-        $scope: scope,
-        $state: { go: stateGo },
-        environment: 'testing',
-        authService: authService
-      });
-    }));
-
-    afterEach(() => {
-      authStatus.restore();
-    });
-
-    it('should redirect to landing', () => {
-      authStatus.should.be.calledOnce();
-      stateGo.should.be.calledWith('landing');
-    });
-  });
-
-  describe('when logged out', () => {
-    let scope, authStatus, stateGo;
-    beforeEach(inject(($controller, $rootScope, authService) => {
-      'ngInject';
-
-      scope = $rootScope.$new();
-
-      authStatus = sinon.stub(authService, 'status').returns(false);
-      stateGo = sinon.spy();
-
-      $controller('AppController', {
-        $scope: scope,
-        $state: { go: stateGo },
-        environment: 'testing',
-        authService: authService
-      });
-    }));
-
-    afterEach(() => {
-      authStatus.restore();
-    });
-
-    it('should redirect to login', () => {
-      authStatus.should.be.calledOnce();
-      stateGo.should.be.calledWith('login');
     });
   });
 

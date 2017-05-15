@@ -40,6 +40,10 @@ module.exports = function () {
       loader: 'babel-loader',
       exclude: /node_modules/
     }, {
+      test: /\.scss$/,
+      loader: ['style-loader', 'css-loader', 'sass-loader'],
+      exclude: /node_modules/
+    }, {
       test: /\.css$/,
       use: ['style-loader', 'css-loader']
     }, {

@@ -23,19 +23,11 @@
  * extend this exception to your version of the software, but you are
  * not obligated to do so.  If you do not wish to do so, delete this
  * exception statement from your version.
- *
- * --------------------------------------------------------------------------------
- * Additional files and licenses
- * --------------------------------------------------------------------------------
- *
- * Thermostat uses Font Awesome by Dave Gandy (http://fontawesome.io) as primary
- * icon resource, distributed under the SIL OFL 1.1 (http://scripts.sil.org/OFL).
- * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
 export default class AppController {
 
-  constructor ($scope, $state, environment, authService) {
+  constructor ($scope, environment, authService) {
     'ngInject';
 
     angular.element('logoutButton').removeAttr('hidden');
@@ -44,15 +36,7 @@ export default class AppController {
       angular.element('envHeader').removeAttr('hidden');
     }
 
-    $scope.loginStatus = () => {
-      return authService.status();
-    }
-
-    if (!authService.status()) {
-      $state.go('login');
-    } else {
-      $state.go('landing');
-    }
+    $scope.loginStatus = () => authService.status();
 
     $scope.logout = () => {
       authService.logout();

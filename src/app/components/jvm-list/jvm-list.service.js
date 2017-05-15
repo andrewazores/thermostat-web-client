@@ -23,26 +23,23 @@
  * extend this exception to your version of the software, but you are
  * not obligated to do so.  If you do not wish to do so, delete this
  * exception statement from your version.
- *
- * --------------------------------------------------------------------------------
- * Additional files and licenses
- * --------------------------------------------------------------------------------
- *
- * Thermostat uses Font Awesome by Dave Gandy (http://fontawesome.io) as primary
- * icon resource, distributed under the SIL OFL 1.1 (http://scripts.sil.org/OFL).
- * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
+import urlJoin from 'url-join';
+
 class JvmListService {
-  constructor ($q, $http) {
+  constructor ($http, gatewayUrl) {
     'ngInject';
-    this.q = $q;
     this.http = $http;
+    this.gatewayUrl = gatewayUrl;
   }
 
   getSystems() {
-    return this.http.get('http://localhost:30000/jvm-list/0.0.1');
+    return this.http.get(urlJoin(this.gatewayUrl, 'jvm-list'));
   }
 }
 
-angular.module('jvmList.service', []).service('jvmListService', JvmListService);
+export default angular.module('jvmList.service',
+  [
+  ]
+).service('jvmListService', JvmListService);

@@ -23,14 +23,6 @@
  * extend this exception to your version of the software, but you are
  * not obligated to do so.  If you do not wish to do so, delete this
  * exception statement from your version.
- *
- * --------------------------------------------------------------------------------
- * Additional files and licenses
- * --------------------------------------------------------------------------------
- *
- * Thermostat uses Font Awesome by Dave Gandy (http://fontawesome.io) as primary
- * icon resource, distributed under the SIL OFL 1.1 (http://scripts.sil.org/OFL).
- * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
 import {config} from './components/auth/auth.module.js';
@@ -39,28 +31,128 @@ describe('AppModule', () => {
 
   beforeEach(angular.mock.module('appModule'));
 
-  // this is actually provided by the auth.module pseudo-module - see auth.module.test.js
+  let state, rootScope, q, transitions, mockSvc, svcRefreshSuccess, svcRefreshError;
+  beforeEach(angular.mock.module($provide => {
+    'ngInject';
+
+    svcRefreshError = sinon.stub();
+    svcRefreshSuccess = sinon.stub().returns({ error: svcRefreshError });
+    mockSvc = {
+      login: sinon.spy(),
+      logout: sinon.spy(),
+      refresh: sinon.stub().returns({
+        success: svcRefreshSuccess
+      }),
+      status: () => true
+    };
+
+    state = {
+      go: sinon.spy(),
+      href: sinon.spy(),
+      current: {
+        name: 'fooState'
+      },
+      params: {}
+    };
+
+    rootScope = {
+      $on: sinon.spy(),
+      $apply: sinon.spy(),
+      $new: sinon.stub().returns({}),
+      $watch: sinon.spy()
+    };
+
+    transitions = {
+      onBefore: sinon.spy()
+    };
+
+    let defer = {
+      resolve: sinon.spy(),
+      reject: sinon.spy(),
+      promise: {}
+    };
+    q = {
+      defer: () => defer
+    };
+
+    $provide.value('$state', state);
+    $provide.value('$rootScope', rootScope);
+    $provide.value('authService', mockSvc);
+    $provide.value('$transitions', transitions);
+    $provide.value('$q', q);
+  }));
+
+  // this is actually provided by the auth.module pseudo-module - see auth.module.spec.js
   describe('auth bootstrap', () => {
-    it('should provide an authService', () => {
-      let errorSpy = sinon.spy();
-      let successSpy = sinon.stub().returns({error: errorSpy});
-      let initSpy = sinon.stub().returns({success: successSpy});
-      let keycloakProvider = sinon.stub().returns({init: initSpy});
-      config('production', () => {}, keycloakProvider);
+
+    let error, success, init, provider, svc;
+    beforeEach(() => {
+      error = sinon.spy();
+      success = sinon.stub().returns({error: error});
+      init = sinon.stub().returns({success: success});
+      provider = sinon.stub().returns({init: init});
+      config('production', () => {}, provider);
+
       inject(authService => {
         'ngInject';
-        should.exist(authService);
-
-        authService.should.have.property('init');
-        authService.should.have.property('status');
-        authService.should.have.property('login');
-        authService.should.have.property('logout');
-
-        authService.init.should.be.a.Function();
-        authService.status.should.be.a.Function();
-        authService.login.should.be.a.Function();
-        authService.logout.should.be.a.Function();
+        svc = authService;
       });
+    });
+
+    it('should provide an authService', () => {
+      should.exist(svc);
+
+      svc.should.have.property('status');
+      svc.should.have.property('login');
+      svc.should.have.property('logout');
+      svc.should.have.property('refresh');
+
+      svc.status.should.be.a.Function();
+      svc.login.should.be.a.Function();
+      svc.logout.should.be.a.Function();
+      svc.refresh.should.be.a.Function();
+    });
+  });
+
+  describe('state change hook', () => {
+    it('should be on state change start', () => {
+      transitions.onBefore.should.be.calledOnce();
+    });
+
+    it('should match all transitions', () => {
+      transitions.onBefore.args[0][0].should.deepEqual({});
+    });
+
+    it('should provide a transition function', () => {
+      transitions.onBefore.args[0][1].should.be.a.Function();
+    });
+
+    it('should call authService.refresh()', () => {
+      mockSvc.refresh.should.not.be.called();
+
+      transitions.onBefore.args[0][1]();
+
+      mockSvc.refresh.should.be.calledOnce();
+    });
+
+    it('should resolve on success', () => {
+      q.defer().resolve.should.not.be.called();
+
+      svcRefreshSuccess.yields();
+      transitions.onBefore.args[0][1]();
+
+      q.defer().resolve.should.be.calledOnce();
+    });
+
+    it('should reject on error', () => {
+      q.defer().reject.should.not.be.called();
+      mockSvc.login.should.not.be.called();
+
+      svcRefreshError.yields();
+      transitions.onBefore.args[0][1]();
+
+      q.defer().reject.should.be.calledOnce();
+      mockSvc.login.should.be.calledOnce();
     });
   });
 

@@ -23,24 +23,28 @@
  * extend this exception to your version of the software, but you are
  * not obligated to do so.  If you do not wish to do so, delete this
  * exception statement from your version.
- *
- * --------------------------------------------------------------------------------
- * Additional files and licenses
- * --------------------------------------------------------------------------------
- *
- * Thermostat uses Font Awesome by Dave Gandy (http://fontawesome.io) as primary
- * icon resource, distributed under the SIL OFL 1.1 (http://scripts.sil.org/OFL).
- * A copy of the OFL 1.1 license is also included and distributed with Thermostat.
  */
 
 let MOD_NAME = 'configModule';
 export default MOD_NAME;
 
-var config = () => {
+let config = () => {
   let mod = angular.module(MOD_NAME, []);
 
   mod.constant('CFG_MODULE', MOD_NAME);
   mod.constant('environment', process.env.NODE_ENV);
   mod.constant('debug', process.env.DEBUG);
+
+  let setFromFile = key => {
+    let cfg = require('./config.json');
+    if (!cfg.hasOwnProperty(key)) {
+      throw 'Required configuration property \'' + key + '\' not provided in config.json';
+    }
+    mod.constant(key, cfg[key]);
+  };
+
+  [
+    'gatewayUrl'
+  ].forEach(setFromFile);
 };
 config();
