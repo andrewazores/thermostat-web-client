@@ -2,4 +2,8 @@ language: node_js
 node_js:
     - "6"
 
-script: npm run build
+script:
+    - pushd src/app/shared/config
+    - cp config.json.template config.json
+    - popd
+    - npm run build
