@@ -25,22 +25,41 @@
  * exception statement from your version.
  */
 
-import './system-info.controller.js';
-import './system-cpu.controller.js';
-import './system-memory.controller.js';
-import './system-info.service.js';
+class SystemCpuController {
+  constructor (systemInfoService, $scope, $interval) {
+    this.svc = systemInfoService;
+    this.scope = $scope;
 
-require.ensure([], () => {
-  require('patternfly/node_modules/c3/c3.min.css');
-});
+    this.data = {
+      used: 0,
+      total: 0
+    };
 
-export default angular.module('systemInfo',
+    this.config = {
+      chartId: 'cpuChart',
+      units: '%'
+    };
+
+    this.refresh = $interval(() => {
+      this.svc.getCpuInfo(this.scope.systemId).then(resp => {
+        let cpuInfo = resp.data.response;
+        this.data = {
+          used: cpuInfo.percent,
+          total: 100
+        };
+      });
+    }, 2000);
+
+    $scope.$on('$destroy', () => {
+      if (angular.isDefined(this.refresh)) {
+        $interval.cancel(this.refresh);
+      }
+    });
+  }
+}
+
+export default angular.module('systemCpu.controller',
   [
-    'patternfly.charts',
-    'app.filters',
-    'systemInfo.controller',
-    'systemCpu.controller',
-    'systemMemory.controller',
     'systemInfo.service'
   ]
-);
+).controller('systemCpuController', SystemCpuController);

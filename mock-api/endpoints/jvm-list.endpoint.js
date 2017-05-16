@@ -1,9 +1,7 @@
-function jvmList (app) {
-  console.log('mock jvmList endpoint up');
-  app.get('/jvm-list/', function (req, res, next) {
-    console.log('jvm-list requested');
-    console.log(req.params);
-    console.log('~~~~');
+function jvmList (server) {
+  server.init('jvmList');
+  server.app.get('/jvm-list/', function (req, res, next) {
+    server.logRequest('jvm-list', req);
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(
       [

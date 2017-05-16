@@ -15,10 +15,21 @@ app.set('host', host);
 
 var endpoints = path.resolve(__dirname, 'endpoints');
 fs.readdir(endpoints, function (err, files) {
+  var server = {
+    app: app,
+    init: function (svc) {
+      console.log('mock ' + svc + ' up');
+    },
+    logRequest: function (svc, req) {
+      console.log('[' + svc + '] requested');
+      console.log(req.params);
+      console.log('~~~~\n');
+    }
+  };
   for (var i = 0; i < files.length; i++) {
     var file = files[i];
     if (_.endsWith(file, '.endpoint.js')) {
-      require(path.resolve(endpoints, file))(app);
+      require(path.resolve(endpoints, file))(server);
     }
   }
 });

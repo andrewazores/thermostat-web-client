@@ -26,10 +26,11 @@
  */
 
 class SystemInfoController {
-  constructor (systemId, systemInfoService) {
+  constructor (systemId, systemInfoService, $interval, $scope) {
     'ngInject';
     this.systemId = systemId;
     this.showErr = false;
+    $scope.systemId = systemId;
     systemInfoService.getSystemInfo(systemId).then(
       resp => {
         this.systemInfo = resp.data.response;

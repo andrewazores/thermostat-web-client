@@ -25,22 +25,37 @@
  * exception statement from your version.
  */
 
-import './system-info.controller.js';
-import './system-cpu.controller.js';
-import './system-memory.controller.js';
-import './system-info.service.js';
+class SystemMemoryController {
+  constructor (systemInfoService, $scope, $interval) {
+    this.svc = systemInfoService;
+    this.scope = $scope;
 
-require.ensure([], () => {
-  require('patternfly/node_modules/c3/c3.min.css');
-});
+    this.data = {
+      used: 0,
+      total: 0
+    };
 
-export default angular.module('systemInfo',
+    this.config = {
+      chartId: 'memoryChart',
+      units: 'MiB'
+    };
+
+    this.refresh = $interval(() => {
+      this.svc.getMemoryInfo(this.scope.systemId).then(resp => {
+        this.data = resp.data.response;
+      });
+    }, 2000);
+
+    $scope.$on('$destroy', () => {
+      if (angular.isDefined(this.refresh)) {
+        $interval.cancel(this.refresh);
+      }
+    });
+  }
+}
+
+export default angular.module('systemMemory.controller',
   [
-    'patternfly.charts',
-    'app.filters',
-    'systemInfo.controller',
-    'systemCpu.controller',
-    'systemMemory.controller',
     'systemInfo.service'
   ]
-);
+).controller('systemMemoryController', SystemMemoryController);

@@ -16,7 +16,9 @@ module.exports = function () {
 
   config.resolve = {
     alias: {
-      'jquery': 'patternfly/node_modules/jquery'
+      'jquery': 'patternfly/node_modules/jquery',
+      'd3': 'patternfly/node_modules/d3',
+      'c3': 'patternfly/node_modules/c3'
     }
   };
 
@@ -66,7 +68,9 @@ module.exports = function () {
       $: 'jquery',
       jQuery: 'jquery',
       'window.jquery': 'jquery',
-      'window.jQuery': 'jquery'
+      'window.jQuery': 'jquery',
+      d3: 'd3',
+      c3: 'c3'
     })
   );
 
