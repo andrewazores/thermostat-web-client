@@ -89,6 +89,10 @@ which will bind the application to port 8888 on the host machine.
 
 The `PORT` and `HOST` variables outlined above may also be set in `.s2i/environment`.
 
+`config.json` should also be created as outlined in the source repository
+before beginning an s2i build, or else the built image will contain incorrect
+configurations and paths as provided by config.json.template.
+
 ### OpenShift
 
 In order to deploy this web-client on OpenShift do:

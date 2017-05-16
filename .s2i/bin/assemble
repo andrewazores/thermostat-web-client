@@ -11,6 +11,12 @@ if [ -z "$NODE_ENV" ]; then
     export NODE_ENV=testing
 fi
 
+if [ ! -f src/app/shared/config/config.json ]; then
+    pushd src/app/shared/config
+    cp config.json.template config.json
+    popd
+fi
+
 echo "NODE_ENV=$NODE_ENV"
 
 NODE_ENV=development npm install

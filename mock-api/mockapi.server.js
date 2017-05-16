@@ -14,7 +14,7 @@ app.set('port', port);
 app.set('host', host);
 
 var endpoints = path.resolve(__dirname, 'endpoints');
-fs.readdir(endpoints, 'UTF-8', function (err, files) {
+fs.readdir(endpoints, function (err, files) {
   for (var i = 0; i < files.length; i++) {
     var file = files[i];
     if (_.endsWith(file, '.endpoint.js')) {
