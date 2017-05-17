@@ -39,7 +39,6 @@ function landingRouting($stateProvider, $urlRouterProvider) {
       );
     }
   });
-
   $urlRouterProvider.otherwise('landing');
 }
 

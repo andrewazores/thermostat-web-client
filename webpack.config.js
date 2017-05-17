@@ -16,10 +16,10 @@ module.exports = function () {
 
   config.resolve = {
     alias: {
-      'jquery': 'patternfly/node_modules/jquery',
+      'jquery': 'angular-patternfly/node_modules/patternfly/node_modules/jquery',
       'angular': 'angular-patternfly/node_modules/angular',
-      'd3': 'patternfly/node_modules/d3',
-      'c3': 'patternfly/node_modules/c3'
+      'd3': 'angular-patternfly/node_modules/patternfly/node_modules/d3',
+      'c3': 'angular-patternfly/node_modules/patternfly/node_modules/c3'
     }
   };
 

@@ -31,7 +31,7 @@ import './system-memory.controller.js';
 import './system-info.service.js';
 
 require.ensure([], () => {
-  require('patternfly/node_modules/c3/c3.min.css');
+  require('c3');
 });
 
 export default angular.module('systemInfo',
