@@ -89,8 +89,9 @@ describe('SystemMemoryController', () => {
     it('should call service.getMemoryInfo', () => {
       let func = interval.args[0][0];
       func.should.be.a.Function();
-      service.getMemoryInfo.should.not.be.called();
+      service.getMemoryInfo.should.be.calledOnce(); // on initial load
       func();
+      service.getMemoryInfo.should.be.calledTwice();
       service.getMemoryInfo.should.be.calledWith(scope.systemId);
     });
 

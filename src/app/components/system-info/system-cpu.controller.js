@@ -40,20 +40,24 @@ class SystemCpuController {
       units: '%'
     };
 
-    this.refresh = $interval(() => {
-      this.svc.getCpuInfo(this.scope.systemId).then(resp => {
-        let cpuInfo = resp.data.response;
-        this.data = {
-          used: cpuInfo.percent,
-          total: 100
-        };
-      });
-    }, 2000);
+    this.refresh = $interval(() => this.update(), 2000);
 
     $scope.$on('$destroy', () => {
       if (angular.isDefined(this.refresh)) {
         $interval.cancel(this.refresh);
       }
+    });
+
+    this.update();
+  }
+
+  update () {
+    this.svc.getCpuInfo(this.scope.systemId).then(resp => {
+      let cpuInfo = resp.data.response;
+      this.data = {
+        used: cpuInfo.percent,
+        total: 100
+      };
     });
   }
 }

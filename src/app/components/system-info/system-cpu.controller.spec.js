@@ -89,8 +89,9 @@ describe('SystemCpuController', () => {
     it('should call service.getCpuInfo', () => {
       let func = interval.args[0][0];
       func.should.be.a.Function();
-      service.getCpuInfo.should.not.be.called();
+      service.getCpuInfo.should.be.calledOnce(); // on initial load
       func();
+      service.getCpuInfo.should.be.calledTwice();
       service.getCpuInfo.should.be.calledWith(scope.systemId);
     });
 

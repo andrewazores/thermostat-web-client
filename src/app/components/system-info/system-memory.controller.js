@@ -40,16 +40,20 @@ class SystemMemoryController {
       units: 'MiB'
     };
 
-    this.refresh = $interval(() => {
-      this.svc.getMemoryInfo(this.scope.systemId).then(resp => {
-        this.data = resp.data.response;
-      });
-    }, 2000);
+    this.refresh = $interval(() => this.update(), 2000);
 
     $scope.$on('$destroy', () => {
       if (angular.isDefined(this.refresh)) {
         $interval.cancel(this.refresh);
       }
+    });
+
+    this.update();
+  }
+
+  update () {
+    this.svc.getMemoryInfo(this.scope.systemId).then(resp => {
+      this.data = resp.data.response;
     });
   }
 }
