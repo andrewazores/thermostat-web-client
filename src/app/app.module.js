@@ -33,11 +33,12 @@ import 'es6-promise/auto';
 import {default as CFG_MODULE} from './shared/config/config.module.js';
 import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
 import './shared/filters/filters.module.js';
-import './components/landing/landing.routing.js';
-import './components/jvm-list/jvm-list.routing.js';
-import './components/jvm-info/jvm-info.routing.js';
-import './components/system-info/system-info.routing.js';
 import AppController from './app.controller.js';
+
+(function requireModuleRoutings () {
+  let req = require.context('./components', true, /\.routing\.js/);
+  req.keys().map(req);
+})();
 
 require.ensure([], () => {
   require('angular-patternfly/node_modules/patternfly/dist/css/patternfly.css');
