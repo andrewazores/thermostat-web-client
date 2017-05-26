@@ -25,46 +25,37 @@
  * exception statement from your version.
  */
 
-import './jvm-memory/jvm-memory.routing.js';
-
-function config($stateProvider) {
+function config ($stateProvider) {
   'ngInject';
 
-  $stateProvider.state('jvmInfo', {
-    url: '/jvm-info/{jvmId}',
+  $stateProvider.state('jvmInfo.jvmMemory', {
+    url: '/memory',
+    controller: 'jvmMemoryController as ctrl',
     templateProvider: $q => {
       'ngInject';
       return $q(resolve =>
-        require.ensure([], () => resolve(require('./jvm-info.html'))
+        require.ensure([], () => resolve(require('./jvm-memory.html'))
         )
       );
     },
-    controller: 'jvmInfoController as ctrl',
     resolve: {
-      loadJvmInfo: ($q, $ocLazyLoad) => {
+      loadJvmMemory: ($q, $ocLazyLoad) => {
         'ngInject';
         return $q(resolve => {
-          require.ensure(['./jvm-info.module.js'], () => {
-            let module = require('./jvm-info.module.js');
-            $ocLazyLoad.load({ name: 'jvmInfo' });
+          require.ensure(['./jvm-memory.module.js'], () => {
+            let module = require('./jvm-memory.module.js');
+            $ocLazyLoad.load({ name: 'jvmMemory' });
             resolve(module);
           });
         });
-      },
-      jvmId: $stateParams => $stateParams.jvmId
+      }
     }
   });
 }
 
 export { config };
 
-export default angular.module('jvmInfo.routing',
+export default angular.module('jvmMemory.routing',
   [
-    'ui.router',
-    'ui.bootstrap',
-    'oc.lazyLoad',
-    'patternfly',
-    'app.filters',
-    'jvmMemory.routing'
   ]
 ).config(config);

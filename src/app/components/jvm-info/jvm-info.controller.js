@@ -26,7 +26,7 @@
  */
 
 class JvmInfoController {
-  constructor (jvmId, jvmInfoService) {
+  constructor ($scope, $state, jvmId, jvmInfoService) {
     'ngInject';
     this.jvmId = jvmId;
     this.jvmInfo = {};
@@ -38,7 +38,18 @@ class JvmInfoController {
         this.jvmInfo = {};
       }
     );
+
+    $scope.$watch('comboValue', (cur, prev) => {
+      if (cur === '') {
+        $state.go('jvmInfo', { jvmId: jvmId });
+      } else {
+        $state.go('jvmInfo.' + cur, { jvmId: jvmId });
+      }
+    });
   }
 }
 
-export default angular.module('jvmInfo.controller', []).controller('jvmInfoController', JvmInfoController);
+export default angular.module('jvmInfo.controller',
+  [
+  ]
+).controller('jvmInfoController', JvmInfoController);

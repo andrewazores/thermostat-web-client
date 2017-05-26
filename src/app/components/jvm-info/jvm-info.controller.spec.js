@@ -29,9 +29,17 @@ describe('JvmInfoController', () => {
 
   beforeEach(angular.mock.module('jvmInfo.controller'));
 
-  let svc, ctrl, promise;
+  let scope, state, svc, ctrl, promise;
   beforeEach(inject($controller => {
     'ngInject';
+
+    scope = {
+      $watch: sinon.spy()
+    };
+
+    state = {
+      go: sinon.spy()
+    };
 
     promise = {
       then: sinon.spy()
@@ -41,6 +49,8 @@ describe('JvmInfoController', () => {
     };
 
     ctrl = $controller('jvmInfoController', {
+      $scope: scope,
+      $state: state,
       jvmId: 'foo-jvmId',
       jvmInfoService: svc
     });
@@ -79,6 +89,26 @@ describe('JvmInfoController', () => {
   it('should assign empty jvmInfo on promise reject', () => {
     promise.then.args[0][1]();
     ctrl.jvmInfo.should.deepEqual({});
+  });
+
+  describe('combobox state navigation', () => {
+    it('should register a scope-watcher for comboValue', () => {
+      scope.$watch.should.be.calledWith(sinon.match('comboValue'), sinon.match.func);
+    });
+
+    it('should go to root jvm-info state on empty selection', () => {
+      let func = scope.$watch.args[0][1];
+      state.go.should.not.be.called();
+      func('', '');
+      state.go.should.be.calledWith(sinon.match('jvmInfo'), sinon.match.has('jvmId', 'foo-jvmId'));
+    });
+
+    it('should go to specified jvm-info child state on non-empty selection', () => {
+      let func = scope.$watch.args[0][1];
+      state.go.should.not.be.called();
+      func('fooState', '');
+      state.go.should.be.calledWith(sinon.match('jvmInfo.fooState'), sinon.match.has('jvmId', 'foo-jvmId'));
+    });
   });
 
 });

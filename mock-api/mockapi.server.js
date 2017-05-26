@@ -22,7 +22,8 @@ fs.readdir(endpoints, function (err, files) {
     },
     logRequest: function (svc, req) {
       console.log('[' + svc + '] requested');
-      console.log(req.params);
+      console.log('params: ' + JSON.stringify(req.params));
+      console.log('query: ' + JSON.stringify(req.query));
       console.log('~~~~\n');
     }
   };

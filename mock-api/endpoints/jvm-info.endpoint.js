@@ -8,7 +8,7 @@ function jvmInfo (server) {
         response: {
           jvmId: req.params.jvmId,
           mainClass: 'c.r.t.A',
-          startTime: 45000,
+          startTime: Date.now(),
           endTime: -1,
           isAlive: true,
           jvmOptions: [

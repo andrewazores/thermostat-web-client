@@ -25,46 +25,12 @@
  * exception statement from your version.
  */
 
-import './jvm-memory/jvm-memory.routing.js';
+import './jvm-memory.controller.js';
+import './jvm-memory.service.js';
 
-function config($stateProvider) {
-  'ngInject';
-
-  $stateProvider.state('jvmInfo', {
-    url: '/jvm-info/{jvmId}',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => resolve(require('./jvm-info.html'))
-        )
-      );
-    },
-    controller: 'jvmInfoController as ctrl',
-    resolve: {
-      loadJvmInfo: ($q, $ocLazyLoad) => {
-        'ngInject';
-        return $q(resolve => {
-          require.ensure(['./jvm-info.module.js'], () => {
-            let module = require('./jvm-info.module.js');
-            $ocLazyLoad.load({ name: 'jvmInfo' });
-            resolve(module);
-          });
-        });
-      },
-      jvmId: $stateParams => $stateParams.jvmId
-    }
-  });
-}
-
-export { config };
-
-export default angular.module('jvmInfo.routing',
+export default angular.module('jvmMemory',
   [
-    'ui.router',
-    'ui.bootstrap',
-    'oc.lazyLoad',
-    'patternfly',
-    'app.filters',
-    'jvmMemory.routing'
+    'jvmMemory.controller',
+    'jvmMemory.service'
   ]
-).config(config);
+);
