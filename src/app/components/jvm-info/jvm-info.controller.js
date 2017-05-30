@@ -26,11 +26,12 @@
  */
 
 class JvmInfoController {
-  constructor ($scope, $state, jvmId, jvmInfoService) {
+  constructor ($scope, $state, systemId, jvmId, jvmInfoService) {
     'ngInject';
+    this.systemId = systemId;
     this.jvmId = jvmId;
     this.jvmInfo = {};
-    jvmInfoService.getJvmInfo(jvmId).then(
+    jvmInfoService.getJvmInfo(systemId, jvmId).then(
       res => {
         this.jvmInfo = res.data.response;
       },
@@ -41,9 +42,9 @@ class JvmInfoController {
 
     $scope.$watch('comboValue', (cur, prev) => {
       if (cur === '') {
-        $state.go('jvmInfo', { jvmId: jvmId });
+        $state.go('jvmInfo', { systemId: systemId, jvmId: jvmId });
       } else {
-        $state.go('jvmInfo.' + cur, { jvmId: jvmId });
+        $state.go('jvmInfo.' + cur, { systemId: systemId, jvmId: jvmId });
       }
     });
   }

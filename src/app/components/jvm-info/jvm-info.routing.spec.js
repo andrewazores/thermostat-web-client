@@ -51,8 +51,8 @@ describe('JvmInfoRouting', () => {
       args[0].should.equal('jvmInfo');
     });
 
-    it('should map to /jvm-info/{jvmId}', () => {
-      args[1].url.should.equal('/jvm-info/{jvmId}');
+    it('should map to /jvm-info/{systemId}/{jvmId}', () => {
+      args[1].url.should.equal('/jvm-info/{systemId}/{jvmId}');
     });
 
     it('template provider should return jvm-info.html', done => {
@@ -87,6 +87,16 @@ describe('JvmInfoRouting', () => {
       });
       deferred(resolve);
     });
+  });
+
+  it('should resolve systemId state parameter', () => {
+    let resolveFn = args[1].resolve.systemId[1];
+    should.exist(resolveFn);
+    resolveFn.should.be.a.Function();
+
+    let expected = 'bar-systemId';
+    let res = resolveFn({ systemId: expected});
+    res.should.equal(expected);
   });
 
   it('should resolve jvmId state parameter', () => {
