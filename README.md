@@ -49,7 +49,11 @@ should exist and contain ex. `NODE_ENV=production`.
 
 **One-time build:**
 
-`npm run build`
+`npm run build` for a build with unit tests but *not* integration tests, or
+
+`npm run verify` for a build with unit tests and integration tests. This
+requires the embedded webserver and mockapi-server to be able to run and bind
+on their respective ports, as described below.
 
 **Non-live-reload web-server:**
 
@@ -60,24 +64,24 @@ by setting the environment variable `PORT` to a port number of your choosing.
 The server also binds by default on `0.0.0.0`, which can be overridden with the
 environment variable `HOST`.
 
-**Mock API endpoints:**
+This will also bring up the mock API endpoint server, which by default will run
+on port `8888` and bind to `0.0.0.0`. These can be overridden with the
+environment variables `MOCKAPI_PORT` and `MOCKAPI_HOST`.
 
-`npm run start-mockapi`
+The webserver and mockapi-server are both run as daemons. They can be stopped
+using `npm stop`.
 
-This will bring up the mock API endpoint server, which by default will run on
-port `8888` and bind to `0.0.0.0`. These can be overridden with the environment
-variables `MOCKAPI_HOST` and `MOCKAPI_PORT`.
+**Testing**
 
-Note: the mock-api server is run as a daemon so that it easily co-exists with
-the webservers mentioned above. When you exit the webserver process and end the
-Node script, the mockapi server will still be running. You can see this using
-`./node_modules/.bin/forever list`. Please see the documentation for
-[Forever](https://www.npmjs.com/package/forever). This process can be killed
-with `npm run stop-mockapi`. It will also be cleaned during `npm run clean`.
+Unit tests are run with both `npm run build` and `npm run verify`, but
+integration tests are only run on `npm run verify`.
 
-**Run tests:**
+To run unit tests separately from a build, use `npm test` for a one-shot test
+suite execution, or `npm run test-watch` to monitor test files and rerun the
+suite when any test file changes.
 
-`npm test` (one-time) or `npm run test-watch` (live-reload)
+To run integration tests separately, use `npm run integration-test`. This will
+require the embedded webserver to be running, using ex. `npm start`.
 
 ### Source-to-Image
 
