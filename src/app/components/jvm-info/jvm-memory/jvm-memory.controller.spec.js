@@ -34,7 +34,8 @@ describe('JvmMemory controller', () => {
     'ngInject';
 
     scope = {
-      $on: sinon.spy()
+      $on: sinon.spy(),
+      $watch: sinon.spy()
     };
 
     interval = sinon.stub().returns('interval-sentinel');
@@ -54,11 +55,15 @@ describe('JvmMemory controller', () => {
       jvmMemoryService: svc
     });
 
+    sinon.spy(ctrl, 'setRefreshRate');
     sinon.spy(ctrl, 'update');
+    sinon.spy(ctrl, 'cancel');
   }));
 
   afterEach(() => {
+    ctrl.setRefreshRate.restore();
     ctrl.update.restore();
+    ctrl.cancel.restore();
   });
 
   it('should exist', () => {
@@ -85,20 +90,35 @@ describe('JvmMemory controller', () => {
     svc.getJvmMemory.should.be.calledWith('foo-jvmId');
   });
 
-  it('should have a refresh property', () => {
+  it('should reset interval on refreshRate change', () => {
+    ctrl.should.not.have.ownProperty('refresh');
+    ctrl.setRefreshRate(1);
+    interval.should.be.calledWith(sinon.match.func, sinon.match(1));
     ctrl.should.have.ownProperty('refresh');
     ctrl.refresh.should.equal('interval-sentinel');
   });
 
-  it('should refresh every 2 seconds', () => {
-    interval.should.be.calledWith(sinon.match.func, sinon.match(2000));
+  it('should disable when setRefreshRate is called with a non-positive value', () => {
+    ctrl.cancel.should.not.be.called();
+    ctrl.setRefreshRate.should.not.be.called();
+    ctrl.update.should.not.be.called();
+
+    ctrl.setRefreshRate(-1);
+
+    ctrl.cancel.should.be.calledOnce();
+    ctrl.setRefreshRate.should.be.calledOnce(); // the call we just made manually
+    ctrl.update.should.not.be.called();
+    ctrl.should.not.have.ownProperty('refresh');
   });
 
   it('should call controller#update() on refresh', () => {
+    scope.$watch.should.be.calledWith(sinon.match('refreshRate'), sinon.match.func);
+    let f = scope.$watch.args[0][1];
+    f(1);
     let func = interval.args[0][0];
-    ctrl.update.should.not.be.called();
+    let callCount = ctrl.update.callCount;
     func();
-    ctrl.update.should.be.calledOnce();
+    ctrl.update.callCount.should.equal(callCount + 1);
   });
 
   describe('ondestroy handler', () => {
@@ -107,6 +127,7 @@ describe('JvmMemory controller', () => {
     });
 
     it('should cancel refresh', () => {
+      ctrl.refresh = 'interval-sentinel';
       let func = scope.$on.args[0][1];
       func();
       interval.cancel.should.be.calledWith('interval-sentinel');
