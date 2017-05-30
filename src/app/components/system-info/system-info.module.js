@@ -26,12 +26,21 @@
  */
 
 import './system-info.controller.js';
+import './system-cpu.controller.js';
+import './system-memory.controller.js';
 import './system-info.service.js';
+
+require.ensure([], () => {
+  require('c3');
+});
 
 export default angular.module('systemInfo',
   [
+    'patternfly.charts',
     'app.filters',
     'systemInfo.controller',
+    'systemCpu.controller',
+    'systemMemory.controller',
     'systemInfo.service'
   ]
 );

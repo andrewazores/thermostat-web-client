@@ -1,16 +1,14 @@
-function jvmInfo (app) {
-  console.log('mock jvmInfo endpoint up');
-  app.get('/jvm-info/:jvmId', function (req, res, next) {
-    console.log('jvm-info requested');
-    console.log(req.params);
-    console.log('~~~~');
+function jvmInfo (server) {
+  server.init('jvmInfo');
+  server.app.get('/jvm-info/:jvmId', function (req, res, next) {
+    server.logRequest('jvm-info', req);
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(
       {
         response: {
           jvmId: req.params.jvmId,
           mainClass: 'c.r.t.A',
-          startTime: 45000,
+          startTime: Date.now(),
           endTime: -1,
           isAlive: true,
           jvmOptions: [

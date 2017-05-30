@@ -9,23 +9,54 @@
     <strong>Unable to retrieve data.</strong> Error while retrieving system information.
   </div>
 
-  <div ng-show="!ctrl.showErr" class="row">
-    <div class="col-xs-12 col-lg-8">
-      <table class="table table-striped table-bordered">
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="(key, value) in ctrl.systemInfo">
-            <td>{{key}}</td>
-            <td>{{value}}</td>
-          </tr>
-        </tbody>
-      </table>
+  <div ng-show="!ctrl.showErr">
+    <div class="row">
+      <div class="col-xs-12 col-lg-8">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="(key, value) in ctrl.systemInfo">
+              <td>{{key}}</td>
+              <td>{{value}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <div class="row row-cards-pf">
+      <div class="container container-cards-pf">
+
+        <div class="col-xs-12 col-md-4" ng-controller="systemCpuController as ctrl">
+          <div class="card-pf card-pf-view">
+            <div class="card-pf-heading">
+              <label class="card-pf-title">CPU Usage</label>
+            </div>
+            <div class="card-pf-body">
+              <div pf-donut-pct-chart id="cpuChart" config="ctrl.config" data="ctrl.data"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-md-4" ng-controller="systemMemoryController as ctrl">
+          <div class="card-pf card-pf-view">
+            <div class="card-pf-heading">
+              <label class="card-pf-title">Memory Usage</label>
+            </div>
+            <div class="card-pf-body">
+              <div pf-donut-pct-chart id="memoryChart" config="ctrl.config" data="ctrl.data"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
 </div><!-- /container -->

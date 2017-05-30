@@ -29,18 +29,21 @@ describe('SystemInfoController', () => {
 
   beforeEach(angular.mock.module('systemInfo.controller'));
 
-  let ctrl, scope, promise;
+  let ctrl, scope, interval, promise;
   beforeEach(inject(($q, $rootScope, $controller) => {
     'ngInject';
     scope = $rootScope;
     promise = $q.defer();
+    interval = sinon.spy();
 
     let systemInfoService = {
       getSystemInfo: () => promise.promise
     };
     ctrl = $controller('systemInfoController', {
       systemId: 'foo-systemId',
-      systemInfoService: systemInfoService
+      systemInfoService: systemInfoService,
+      $scope: scope,
+      $interval: interval
     });
   }));
 

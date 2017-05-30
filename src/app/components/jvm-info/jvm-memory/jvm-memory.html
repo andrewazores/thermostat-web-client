@@ -1,0 +1,42 @@
+<div class="container-fluid">
+  <h2>{{ctrl.data}}</h2>
+  <div class="row row-cards-pf">
+    <div class="container-fluid container-cards-pf">
+
+      <div class="col-xs-12 col-sm-6 col-lg-4 col-xl-3">
+        <div class="card-pf card-pf-view">
+          <div class="card-pf-heading">
+            <label class="card-pf-title">Metaspace</label>
+          </div>
+          <div class="card-pf-body">
+            <div pf-donut-pct-chart id="metaspaceChart "config="ctrl.metaspaceConfig" data="ctrl.metaspaceData"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="row row-cards-pf">
+    <div class="container-fluid container-cards-pf">
+
+        <div ng-repeat="(index, generation) in ctrl.generationData" class="col-xs-12 col-sm-6 col-lg-4 col-xl-3">
+          <div class="card-pf card-pf-view">
+            <div class="card-pf-heading">
+              <label class="card-pf-title">{{generation.name}} ({{generation.collector}})</label>
+            </div>
+            <div ng-repeat="space in generation.spaces">
+              <div class="card-pf-body text-center">
+                <label>Space {{space.index}}</label>
+                <div pf-donut-pct-chart id="gen-{{gen.index}}-space-{{space.index}}"
+                  config="ctrl.spaceConfigs['gen-' + generation.index + '-space-' + space.index]" data="space"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+
+  </div>
+</div>

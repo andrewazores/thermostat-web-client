@@ -25,46 +25,49 @@
  * exception statement from your version.
  */
 
-import './jvm-memory/jvm-memory.routing.js';
+describe('JvmMemoryService', () => {
 
-function config($stateProvider) {
-  'ngInject';
+  beforeEach(angular.mock.module($provide => {
+    'ngInject';
 
-  $stateProvider.state('jvmInfo', {
-    url: '/jvm-info/{jvmId}',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => resolve(require('./jvm-info.html'))
-        )
-      );
-    },
-    controller: 'jvmInfoController as ctrl',
-    resolve: {
-      loadJvmInfo: ($q, $ocLazyLoad) => {
-        'ngInject';
-        return $q(resolve => {
-          require.ensure(['./jvm-info.module.js'], () => {
-            let module = require('./jvm-info.module.js');
-            $ocLazyLoad.load({ name: 'jvmInfo' });
-            resolve(module);
-          });
-        });
-      },
-      jvmId: $stateParams => $stateParams.jvmId
-    }
+    $provide.value('gatewayUrl', 'http://example.com:1234');
+  }));
+
+  beforeEach(angular.mock.module('jvmMemory.service'));
+
+  let httpBackend, scope, svc;
+  beforeEach(inject(($httpBackend, $rootScope, jvmMemoryService) => {
+    'ngInject';
+    httpBackend = $httpBackend;
+
+    scope = $rootScope;
+    svc = jvmMemoryService;
+  }));
+
+  afterEach(() => {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
   });
-}
 
-export { config };
+  it('should exist', () => {
+    should.exist(svc);
+  });
 
-export default angular.module('jvmInfo.routing',
-  [
-    'ui.router',
-    'ui.bootstrap',
-    'oc.lazyLoad',
-    'patternfly',
-    'app.filters',
-    'jvmMemory.routing'
-  ]
-).config(config);
+  describe('getJvmMemory(jvmId)', () => {
+    it('should resolve mock data', done => {
+      let expected = {
+        metaspace: 100
+      };
+      httpBackend.when('GET', 'http://example.com:1234/jvm-memory/0.0.2?q=jvmId%3D%3Dfoo-jvmId')
+        .respond(expected);
+      svc.getJvmMemory('foo-jvmId').then(res => {
+        res.data.should.deepEqual(expected);
+        done();
+      });
+      httpBackend.expectGET('http://example.com:1234/jvm-memory/0.0.2?q=jvmId%3D%3Dfoo-jvmId');
+      httpBackend.flush();
+      scope.$apply();
+    });
+  });
+
+});

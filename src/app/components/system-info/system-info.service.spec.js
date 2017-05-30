@@ -70,4 +70,39 @@ describe('SystemInfoService', () => {
     });
   });
 
+  describe('getCpuInfo(systemId)', () => {
+    it('should resolve mock data', done => {
+      let expected = {
+        percent: 80
+      };
+      httpBackend.when('GET', 'http://example.com:1234/system-info/cpu/foo-systemId')
+        .respond(expected);
+      svc.getCpuInfo('foo-systemId').then(res => {
+        res.data.should.deepEqual(expected);
+        done();
+      });
+      httpBackend.expectGET('http://example.com:1234/system-info/cpu/foo-systemId');
+      httpBackend.flush();
+      scope.$apply();
+    });
+  });
+
+  describe('getMemoryInfo(systemId)', () => {
+    it('should resolve mock data', done => {
+      let expected = {
+        total: 16384,
+        used: 9001
+      };
+      httpBackend.when('GET', 'http://example.com:1234/system-info/memory/foo-systemId')
+        .respond(expected);
+      svc.getMemoryInfo('foo-systemId').then(res => {
+        res.data.should.deepEqual(expected);
+        done();
+      });
+      httpBackend.expectGET('http://example.com:1234/system-info/memory/foo-systemId');
+      httpBackend.flush();
+      scope.$apply();
+    });
+  });
+
 });

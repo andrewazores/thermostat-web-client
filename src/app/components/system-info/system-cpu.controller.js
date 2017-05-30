@@ -25,46 +25,45 @@
  * exception statement from your version.
  */
 
-import './jvm-memory/jvm-memory.routing.js';
+class SystemCpuController {
+  constructor (systemInfoService, $scope, $interval) {
+    this.svc = systemInfoService;
+    this.scope = $scope;
 
-function config($stateProvider) {
-  'ngInject';
+    this.data = {
+      used: 0,
+      total: 0
+    };
 
-  $stateProvider.state('jvmInfo', {
-    url: '/jvm-info/{jvmId}',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => resolve(require('./jvm-info.html'))
-        )
-      );
-    },
-    controller: 'jvmInfoController as ctrl',
-    resolve: {
-      loadJvmInfo: ($q, $ocLazyLoad) => {
-        'ngInject';
-        return $q(resolve => {
-          require.ensure(['./jvm-info.module.js'], () => {
-            let module = require('./jvm-info.module.js');
-            $ocLazyLoad.load({ name: 'jvmInfo' });
-            resolve(module);
-          });
-        });
-      },
-      jvmId: $stateParams => $stateParams.jvmId
-    }
-  });
+    this.config = {
+      chartId: 'cpuChart',
+      units: '%'
+    };
+
+    this.refresh = $interval(() => this.update(), 2000);
+
+    $scope.$on('$destroy', () => {
+      if (angular.isDefined(this.refresh)) {
+        $interval.cancel(this.refresh);
+      }
+    });
+
+    this.update();
+  }
+
+  update () {
+    this.svc.getCpuInfo(this.scope.systemId).then(resp => {
+      let cpuInfo = resp.data.response;
+      this.data = {
+        used: cpuInfo.percent,
+        total: 100
+      };
+    });
+  }
 }
 
-export { config };
-
-export default angular.module('jvmInfo.routing',
+export default angular.module('systemCpu.controller',
   [
-    'ui.router',
-    'ui.bootstrap',
-    'oc.lazyLoad',
-    'patternfly',
-    'app.filters',
-    'jvmMemory.routing'
+    'systemInfo.service'
   ]
-).config(config);
+).controller('systemCpuController', SystemCpuController);

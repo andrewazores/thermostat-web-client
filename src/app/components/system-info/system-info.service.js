@@ -26,16 +26,26 @@
  */
 
 import urlJoin from 'url-join';
+import _ from 'lodash';
 
 class SystemInfoService {
-  constructor ($http, gatewayUrl) {
+  constructor ($q, $http, gatewayUrl) {
     'ngInject';
+    this.q = $q;
     this.http = $http;
     this.gatewayUrl = gatewayUrl;
   }
 
   getSystemInfo (systemId) {
     return this.http.get(urlJoin(this.gatewayUrl, 'system-info', systemId));
+  }
+
+  getCpuInfo (systemId) {
+    return this.http.get(urlJoin(this.gatewayUrl, 'system-info', 'cpu', systemId));
+  }
+
+  getMemoryInfo (systemId) {
+    return this.http.get(urlJoin(this.gatewayUrl, 'system-info', 'memory', systemId));
   }
 }
 

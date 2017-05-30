@@ -1,9 +1,7 @@
-function systemInfo (app) {
-  console.log('mock systemInfo endpoint up');
-  app.get('/system-info/:systemId', function (req, res, next) {
-    console.log('system-info requested');
-    console.log(req.params);
-    console.log('~~~~');
+function systemInfo (server) {
+  server.init('systemInfo');
+  server.app.get('/system-info/:systemId', function (req, res, next) {
+    server.logRequest('system-info', req);
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(
       {
