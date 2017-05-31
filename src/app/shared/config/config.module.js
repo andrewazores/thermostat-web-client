@@ -34,17 +34,6 @@ let config = () => {
   mod.constant('CFG_MODULE', MOD_NAME);
   mod.constant('environment', process.env.NODE_ENV);
   mod.constant('debug', process.env.DEBUG);
-
-  let setFromFile = key => {
-    let cfg = require('./config.json');
-    if (!cfg.hasOwnProperty(key)) {
-      throw 'Required configuration property \'' + key + '\' not provided in config.json';
-    }
-    mod.constant(key, cfg[key]);
-  };
-
-  [
-    'gatewayUrl'
-  ].forEach(setFromFile);
+  mod.constant('gatewayUrl', process.env.GATEWAY_URL);
 };
 config();

@@ -78,7 +78,8 @@ module.exports = function () {
   config.plugins.push(
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
-      DEBUG: false
+      DEBUG: false,
+      GATEWAY_URL: 'http://localhost:8888'
     })
   );
 
