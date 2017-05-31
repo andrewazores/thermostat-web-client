@@ -34,8 +34,8 @@ class JvmInfoService {
     this.gatewayUrl = gatewayUrl;
   }
 
-  getJvmInfo (jvmId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvm-info', jvmId));
+  getJvmInfo (systemId, jvmId) {
+    return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'systems', systemId, 'jvms', jvmId));
   }
 }
 

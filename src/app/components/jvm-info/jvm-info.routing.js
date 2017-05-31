@@ -31,7 +31,7 @@ function config($stateProvider) {
   'ngInject';
 
   $stateProvider.state('jvmInfo', {
-    url: '/jvm-info/{jvmId}',
+    url: '/jvm-info/{systemId}/{jvmId}',
     templateProvider: $q => {
       'ngInject';
       return $q(resolve =>
@@ -51,6 +51,7 @@ function config($stateProvider) {
           });
         });
       },
+      systemId: $stateParams => $stateParams.systemId,
       jvmId: $stateParams => $stateParams.jvmId
     }
   });

@@ -30,7 +30,11 @@ class JvmMemoryController {
     'ngInject';
 
     this.jvmId = jvmId;
+    this.scope = $scope;
+    this.interval = $interval;
     this.jvmMemoryService = jvmMemoryService;
+
+    this.scope.refreshRate = '2000';
 
     this.metaspaceData = {
       used: 0,
@@ -46,15 +50,25 @@ class JvmMemoryController {
 
     this.generationData = {};
 
-    this.refresh = $interval(() => this.update(), 2000);
+    this.scope.$watch('refreshRate', (cur, prev) => this.setRefreshRate(cur));
 
-    $scope.$on('$destroy', () => {
-      if (angular.isDefined(this.refresh)) {
-        $interval.cancel(this.refresh);
-      }
-    });
+    this.scope.$on('$destroy', () => this.cancel());
 
     this.update();
+  }
+
+  cancel () {
+    if (angular.isDefined(this.refresh)) {
+      this.interval.cancel(this.refresh);
+    }
+  }
+
+  setRefreshRate (val) {
+    this.cancel();
+    if (val > 0) {
+      this.refresh = this.interval(() => this.update(), val);
+      this.update();
+    }
   }
 
   update () {

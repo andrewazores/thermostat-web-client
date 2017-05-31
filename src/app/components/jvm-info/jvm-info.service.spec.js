@@ -63,13 +63,13 @@ describe('JvmInfoService', () => {
         isAlive: true,
         jvmOptions: []
       };
-      httpBackend.when('GET', 'http://example.com:1234/jvm-info/foo-jvmId')
+      httpBackend.when('GET', 'http://example.com:1234/jvms/0.0.1/systems/bar-systemId/jvms/foo-jvmId')
         .respond(expected);
-      svc.getJvmInfo('foo-jvmId').then(res => {
+      svc.getJvmInfo('bar-systemId', 'foo-jvmId').then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://example.com:1234/jvm-info/foo-jvmId');
+      httpBackend.expectGET('http://example.com:1234/jvms/0.0.1/systems/bar-systemId/jvms/foo-jvmId');
       httpBackend.flush();
       scope.$apply();
     });

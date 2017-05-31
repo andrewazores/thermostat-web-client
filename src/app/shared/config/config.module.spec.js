@@ -27,27 +27,7 @@
 
 describe('ConfigModule', () => {
 
-  describe('config.json missing', () => {
-    it('should throw an exception when gatewayUrl missing', done => {
-      try {
-        require('inject-loader!./config.module.js')({
-          './config.json': {}
-        });
-      } catch (e) {
-        should.exist(e);
-        e.should.equal('Required configuration property \'gatewayUrl\' not provided in config.json');
-        done();
-      }
-    });
-  });
-
   beforeEach(() => {
-    let mockCfg = {
-      gatewayUrl: 'http://example.com:1234'
-    };
-    require('inject-loader!./config.module.js')({
-      './config.json': mockCfg
-    });
     angular.mock.module('configModule');
   });
 
@@ -95,6 +75,28 @@ describe('ConfigModule', () => {
     it('should be readonly', done => {
       try {
         _debug.foo = 'bar';
+      } catch (e) {
+        e.message.should.equal('Attempted to assign to readonly property.');
+        done();
+      }
+    });
+  });
+
+  describe('gatewayUrl', () => {
+    let _gatewayUrl;
+    beforeEach(inject(gatewayUrl => {
+      'ngInject';
+
+      _gatewayUrl = gatewayUrl;
+    }));
+
+    it('should be exported', () => {
+      should.exist(_gatewayUrl);
+    });
+
+    it('should be readonly', done => {
+      try {
+        _gatewayUrl.foo = 'bar';
       } catch (e) {
         e.message.should.equal('Attempted to assign to readonly property.');
         done();

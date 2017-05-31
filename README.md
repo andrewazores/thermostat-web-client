@@ -20,11 +20,11 @@ look like:
         "clientId": "BarClientId"
     }
 
-`config.json` placed in `src/app/shared/config/`. The following keys are required:
-
-`gatewayUrl`: the URL of the `Thermostat Web-Gateway` endpoint
-
 ## Environments
+
+`GATEWAY_URL` should be set to the URL of a Thermostat Web-Gateway instance.
+The default value of this variable is the default URL for the web-client
+mockapi server.
 
 Expected values for `NODE_ENV`:
 
@@ -94,10 +94,6 @@ running the image will look like `docker run -it --rm -p 8888:8080 thermostat-we
 which will bind the application to port 8888 on the host machine.
 
 The `PORT` and `HOST` variables outlined above may also be set in `.s2i/environment`.
-
-`config.json` should also be created as outlined in the source repository
-before beginning an s2i build, or else the built image will contain incorrect
-configurations and paths as provided by config.json.template.
 
 ### OpenShift
 

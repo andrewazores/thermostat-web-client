@@ -2,7 +2,8 @@
   <ol class="breadcrumb" style="margin-bottom: 0px;">
     <li><a ui-sref="landing">Thermostat</a></li>
     <li><a ui-sref="jvmList">JVM List</a></li>
-    <li><a ui-sref="jvmInfo({jvmId: ctrl.jvmId})">{{ctrl.jvmId}}</a></li>
+    <li><a ui-sref="systemInfo({systemId: ctrl.systemId})">{{ctrl.systemId}}</a></li>
+    <li><a ui-sref="jvmInfo({systemId: ctrl.systemId, jvmId: ctrl.jvmId})">{{ctrl.jvmId}}</a></li>
   </ol>
 
   <div class="row">
@@ -15,6 +16,14 @@
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td>Username</td>
+            <td>{{ctrl.jvmInfo.username}}</td>
+          </tr>
+          <tr>
+            <td>UID</td>
+            <td>{{ctrl.jvmInfo.uid}}</td>
+          </tr>
           <tr>
             <td>JVM ID</td>
             <td>{{ctrl.jvmInfo.jvmId}}</td>
@@ -32,9 +41,54 @@
             <td>{{ctrl.jvmInfo.endTime | unixToDate}}</td>
           </tr>
           <tr>
-            <td>JVM Options</td>
+            <td>Last Updated</td>
+            <td>{{ctrl.jvmInfo.lastUpdated | unixToDate}}</td>
+          </tr>
+          <tr>
+            <td>JVM PID</td>
+            <td>{{ctrl.jvmInfo.jvmPid}}</td>
+          </tr>
+          <tr>
+            <td>Java Version</td>
+            <td>{{ctrl.jvmInfo.javaVersion}}</td>
+          </tr>
+          <tr>
+            <td>Java Home</td>
+            <td>{{ctrl.jvmInfo.javaHome}}</td>
+          </tr>
+          <tr>
+            <td>Java Command Line</td>
+            <td>{{ctrl.jvmInfo.javaCommandLine}}</td>
+          </tr>
+          <tr>
+            <td>JVM Name</td>
+            <td>{{ctrl.jvmInfo.jvmName}}</td>
+          </tr>
+          <tr>
+            <td>JVM Info</td>
+            <td>{{ctrl.jvmInfo.jvmInfo}}</td>
+          </tr>
+          <tr>
+            <td>JVM Version</td>
+            <td>{{ctrl.jvmInfo.jvmVersion}}</td>
+          </tr>
+          <tr>
+            <td>JVM Arguments</td>
+            <td>{{ctrl.jvmInfo.jvmArguments}}</td>
+          </tr>
+          <tr>
+            <td>Classpath</td>
+            <td>{{ctrl.jvmInfo.classpath}}</td>
+          </tr>
+          <tr>
+            <td>Environment Variables</td>
             <td>
-              <div ng-repeat="opt in ctrl.jvmInfo.jvmOptions">{{opt}}<br/></div>
+              <span ng-repeat="env in ctrl.jvmInfo.environment">
+                <span ng-repeat="(key, val) in env">
+                  {{key}}="{{val}}"
+                </span>
+                <br/>
+              </span>
             </td>
           </tr>
         </tbody>
@@ -45,9 +99,10 @@
   <div class="row">
 
     <div class="col-xs-12 col-md-3">
-      <label>Metric</label>
-      <select class="combobox form-control" ng-model="comboValue">
-        <option value="" selected="selected" disabled>Select a Metric</option>
+      <label for="metricCombo" class="label label-primary">Metric</label>
+      <select name="metricCombo" class="combobox form-control" ng-model="comboValue">
+        <option value="" style="display:none" selected="selected" disabled>Select a Metric</option>
+        <option value="">None</option>
         <option value="jvmMemory">Memory Usage</option>
       </select>
     </div>

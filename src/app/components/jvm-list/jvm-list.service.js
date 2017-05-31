@@ -35,7 +35,12 @@ class JvmListService {
   }
 
   getSystems() {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvm-list'));
+    return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'tree'), {
+      params: {
+        aliveOnly: true,
+        include: 'jvmId,mainClass,startTime'
+      }
+    });
   }
 }
 

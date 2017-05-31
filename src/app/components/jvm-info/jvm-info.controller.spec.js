@@ -51,6 +51,7 @@ describe('JvmInfoController', () => {
     ctrl = $controller('jvmInfoController', {
       $scope: scope,
       $state: state,
+      systemId: 'bar-systemId',
       jvmId: 'foo-jvmId',
       jvmInfoService: svc
     });
@@ -60,8 +61,8 @@ describe('JvmInfoController', () => {
     should.exist(ctrl);
   });
 
-  it('should call jvmInfoService with jvmId foo-jvmId', () => {
-    svc.getJvmInfo.should.be.calledWith('foo-jvmId');
+  it('should call jvmInfoService with systemId:bar-systemId and jvmId:foo-jvmId', () => {
+    svc.getJvmInfo.should.be.calledWith('bar-systemId', 'foo-jvmId');
   });
 
   it('should provide promise callbacks', () => {
