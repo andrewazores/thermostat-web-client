@@ -15,7 +15,16 @@ if (process.env.PORT) {
 exports.config = {
   framework: 'mocha',
   mochaOpts: {
-    reporter: 'spec',
+    reporter: 'mocha-multi',
+    reporterOptions: {
+      'mocha-junit-reporter': {
+        stdout: '-',
+        options: {
+          mochaFile: './test-reports/integration-tests.xml'
+        }
+      },
+      spec: '-'
+    },
     timeout: 60000, // 60_000ms -> one minute maximum time per individual test case
     slow: 10000 // test cases taking longer than ten seconds are deemed 'slow' tests
   },
