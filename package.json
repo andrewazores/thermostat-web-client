@@ -96,6 +96,7 @@
     "integration-test": "protractor integration-test/integration-test.config.js",
     "postintegration-test": "npm run stop-integration-test-server",
     "start": "npm run start-mockapi && npm run start-daemon",
+    "start-image": "node server.js",
     "stop": "npm run stop-mockapi && npm run stop-daemon",
     "prestart-daemon": "npm run stop-daemon",
     "start-daemon": "\"$(npm bin)\"/forever start --watch server.js",
