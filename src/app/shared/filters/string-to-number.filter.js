@@ -25,14 +25,15 @@
  * exception statement from your version.
  */
 
-let mod = angular.module('app.filters', []);
+export default function filterProvider () {
+  return val => {
+    if (typeof val === 'string') {
+      return parseInt(val);
+    }
+    return val;
+  }
+}
 
-(function requireFilters () {
-  let req = require.context('./', true, /\.filter\.js/);
-  req.keys().map(v => {
-    let f = req(v);
-    mod.filter(f.filterName, f.default);
-  });
-})();
+const filterName = 'stringToNumber';
 
-export default mod;
+export { filterName };

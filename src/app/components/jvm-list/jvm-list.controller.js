@@ -33,11 +33,20 @@ class JvmListController {
     jvmListService.getSystems().then(
       resp => {
         this.showErr = false;
-        this.systems = resp.data;
+        this.systems = resp.data.response;
       },
       () => {
         this.showErr = true;
       });
+  }
+
+  extractClassName (fullClassName) {
+    if (fullClassName.indexOf('.') === -1) {
+      return fullClassName;
+    }
+
+    let split = fullClassName.split('.');
+    return split[split.length - 1];
   }
 }
 

@@ -4,29 +4,37 @@ function jvmList (server) {
   server.app.get('/jvms/0.0.1/tree', function (req, res, next) {
     server.logRequest('jvm-list', req);
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(
-      [
+    res.send(JSON.stringify( {
+      response: [
         {
           "systemId": "system-0",
           "jvms": [
             {
               "mainClass": "c.r.t.A",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-0"
             },
             {
               "mainClass": "c.r.t.B",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-1"
             },
             {
               "mainClass": "c.r.t.C",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-2"
             },
             {
               "mainClass": "c.r.t.D",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-3"
             }
           ]
@@ -36,22 +44,30 @@ function jvmList (server) {
           "jvms": [
             {
               "mainClass": "c.r.t.A",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-0"
             },
             {
               "mainClass": "c.r.t.B",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-1"
             },
             {
               "mainClass": "c.r.t.C",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-2"
             },
             {
               "mainClass": "c.r.t.D",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-3"
             }
           ]
@@ -61,22 +77,30 @@ function jvmList (server) {
           "jvms": [
             {
               "mainClass": "c.r.t.A",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-0"
             },
             {
               "mainClass": "c.r.t.B",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-1"
             },
             {
               "mainClass": "c.r.t.C",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-2"
             },
             {
               "mainClass": "c.r.t.D",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-3"
             }
           ]
@@ -86,28 +110,36 @@ function jvmList (server) {
           "jvms": [
             {
               "mainClass": "c.r.t.A",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-0"
             },
             {
               "mainClass": "c.r.t.B",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-1"
             },
             {
               "mainClass": "c.r.t.C",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-2"
             },
             {
               "mainClass": "c.r.t.D",
-              "startTime": 45000,
+              "startTime": {
+                $numberLong: '45000'
+              },
               "jvmId": "vm-3"
             }
           ]
         }
       ]
-    ));
+    }));
     next();
   });
 

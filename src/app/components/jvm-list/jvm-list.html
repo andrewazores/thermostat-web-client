@@ -39,9 +39,9 @@
                   </div>
                   <div class="card-pf-body">
                     <h2 class="card-pf-title text-center">
-                      {{jvm.mainClass}}
+                      {{ctrl.extractClassName(jvm.mainClass)}}
                     </h2>
-                    <p class="card-pf-info text-center"><strong>Created On</strong> {{jvm.startTime | unixToDate}}</p>
+                    <p class="card-pf-info text-center"><strong>Created On</strong> {{jvm.startTime.$numberLong | stringToNumber | unixToDate}}</p>
                   </div>
                 </div>
               </div>

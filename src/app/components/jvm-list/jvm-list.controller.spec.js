@@ -52,7 +52,11 @@ describe('JvmListController', () => {
   });
 
   it('should set JVMs list when service resolves', done => {
-    promise.resolve({ data: ['foo', 'bar']});
+    promise.resolve({
+      data: {
+        response: ['foo', 'bar']
+      }
+    });
     scope.$apply();
     ctrl.should.have.ownProperty('systems');
     ctrl.systems.should.deepEqual(['foo', 'bar']);
@@ -66,6 +70,20 @@ describe('JvmListController', () => {
     ctrl.should.have.ownProperty('showErr');
     ctrl.showErr.should.equal(true);
     done();
+  });
+
+  describe('extractClassName', () => {
+    it('should return early if class name is bare', () => {
+      let val = 'className';
+      let res = ctrl.extractClassName(val);
+      res.should.equal(val);
+    });
+
+    it('should return class name given fully qualified name', () => {
+      let val = 'foo.bar.Baz';
+      let res = ctrl.extractClassName(val);
+      res.should.equal('Baz');
+    });
   });
 
 });

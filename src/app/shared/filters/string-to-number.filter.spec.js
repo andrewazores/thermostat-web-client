@@ -25,14 +25,35 @@
  * exception statement from your version.
  */
 
-let mod = angular.module('app.filters', []);
+import stringToNumberProvider from './string-to-number.filter.js';
+import { filterName } from './string-to-number.filter.js';
 
-(function requireFilters () {
-  let req = require.context('./', true, /\.filter\.js/);
-  req.keys().map(v => {
-    let f = req(v);
-    mod.filter(f.filterName, f.default);
+describe('stringToNumber filter', () => {
+
+  let fn;
+  beforeEach(() => {
+    fn = stringToNumberProvider();
   });
-})();
 
-export default mod;
+  it('should be exported', () => {
+    should.exist(stringToNumberProvider);
+  });
+
+  it('should name itself', () => {
+    filterName.should.equal('stringToNumber');
+  });
+
+  it('should parse strings into numbers', () => {
+    let res = fn('100');
+    res.should.equal(100);
+  });
+
+  it('should return non-strings as-is', () => {
+    let r1 = fn(100);
+    let r2 = fn({ foo: 'bar' });
+
+    r1.should.equal(100);
+    r2.should.deepEqual({ foo: 'bar' });
+  });
+
+});

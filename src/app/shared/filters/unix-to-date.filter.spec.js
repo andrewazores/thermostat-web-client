@@ -26,6 +26,7 @@
  */
 
 import unixToDateProvider from './unix-to-date.filter.js';
+import { filterName } from './unix-to-date.filter.js';
 
 describe('unixToDate filter', () => {
   let formatSpy = sinon.spy();
@@ -33,6 +34,10 @@ describe('unixToDate filter', () => {
 
   it('should be exported', () => {
     should.exist(unixToDateProvider);
+  });
+
+  it('should name itself', () => {
+    filterName.should.equal('unixToDate');
   });
 
   it('should provide a timestamp formatting function', () => {
