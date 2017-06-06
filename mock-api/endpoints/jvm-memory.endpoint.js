@@ -22,74 +22,74 @@ function jvmMemory (server) {
             agentId: 'foo-agentId',
             jvmId: jvmId,
             timeStamp: Date.now(),
-            metaspaceMaxCapacity: 0,
-            metaspaceMinCapacity: 0,
-            metaspaceCapacity: 4096,
-            metaspaceUsed: _.round(4096 * Math.random()),
+            metaspaceMaxCapacity: { $numberLong: '0' },
+            metaspaceMinCapacity: { $numberLong: '0' },
+            metaspaceCapacity: { $numberLong: (4096 * 1024 * 1024).toString() },
+            metaspaceUsed: { $numberLong: _.round(4096 * 1024 * 1024 * Math.random()).toString() },
             generations: [
               {
-                capacity: 100,
+                capacity: { $numberLong: (100 * 1024 * 1024).toString() },
                 collector: 'Shenandoah',
-                maxCapacity: 200,
+                maxCapacity: { $numberLong: (200 * 1024 * 1024).toString() },
                 name: 'Generation 0',
                 spaces: [
                   {
-                    capacity: 50,
+                    capacity: { $numberLong: (50 * 1024 * 1024).toString() },
                     index: 0,
-                    maxCapacity: 100,
+                    maxCapacity: { $numberLong: (100 * 1024 * 1024).toString() },
                     name: 'Gen 0 Space 0',
-                    used: _.round(50 * Math.random())
+                    used: { $numberLong: _.round(50 * 1024 * 1024 * Math.random()).toString() }
                   },
                   {
-                    capacity: 50,
+                    capacity: { $numberLong: (50 * 1024 * 1024).toString() },
                     index: 1,
-                    maxCapacity: 100,
+                    maxCapacity: { $numberLong: (100 * 1024 * 1024).toString() },
                     name: 'Gen 0 Space 1',
-                    used: _.round(50 * Math.random())
+                    used: { $numberLong: _.round(50 * 1024 * 1024 * Math.random()).toString() }
                   }
                 ]
               },
               {
-                capacity: 200,
+                capacity: { $numberLong: (200 * 1024 * 1024).toString() },
                 collector: 'Shenandoah',
-                maxCapacity: 400,
+                maxCapacity: { $numberLong: (400 * 1024 * 1024).toString() },
                 name: 'Generation 1',
                 spaces: [
                   {
-                    capacity: 200,
+                    capacity: { $numberLong: (200 * 1024 * 1024).toString() },
                     index: 0,
-                    maxCapacity: 400,
+                    maxCapacity: { $numberLong: (400 * 1024 * 1024).toString() },
                     name: 'Gen 1 Space 0',
-                    used: _.round(200 * Math.random())
+                    used: { $numberLong: _.round(200 * 1024 * 1024 * Math.random()).toString() }
                   }
                 ]
               },
               {
-                capacity: 400,
+                capacity: { $numberLong: (400 * 1024 * 1024).toString() },
                 collector: 'G1',
-                maxCapacity: 1600,
+                maxCapacity: { $numberLong: (1600 * 1024 * 1024).toString() },
                 name: 'Generation 2',
                 spaces: [
                   {
-                    capacity: 50,
+                    capacity: { $numberLong: (50 * 1024 * 1024).toString() },
                     index: 0,
-                    maxCapacity: 400,
+                    maxCapacity: { $numberLong: (400 * 1024 * 1024).toString() },
                     name: 'Gen 2 Space 0',
-                    used: _.round(50 * Math.random())
+                    used: { $numberLong: _.round(50 * 1024 * 1024 * Math.random()).toString() }
                   },
                   {
-                    capacity: 100,
+                    capacity: { $numberLong: (100 * 1024 * 1024).toString() },
                     index: 1,
-                    maxCapacity: 200,
+                    maxCapacity: { $numberLong: (200 * 1024 * 1024).toString() },
                     name: 'Gen 2 Space 1',
-                    used: _.round(100 * Math.random())
+                    used: { $numberLong: _.round(100 * 1024 * 1024 * Math.random()).toString() }
                   },
                   {
-                    capacity: 250,
+                    capacity: { $numberLong: (250 * 1024 * 1024).toString() },
                     index: 2,
-                    maxCapacity: 1000,
+                    maxCapacity: { $numberLong: (1000 * 1024 * 1024).toString() },
                     name: 'Gen 2 Space 2',
-                    used: _.round(250 * Math.random())
+                    used: { $numberLong: _.round(250 * 1024 * 1024 * Math.random()).toString() }
                   }
                 ]
               }

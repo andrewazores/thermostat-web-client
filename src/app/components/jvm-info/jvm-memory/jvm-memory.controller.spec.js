@@ -152,23 +152,23 @@ describe('JvmMemory controller', () => {
               agentId: 'foo-agentId',
               jvmId: 'foo-jvmId',
               timeStamp: 100,
-              metaspaceMaxCapacity: 0,
-              metaspaceMinCapacity: 0,
-              metaspaceCapacity: 4096,
-              metaspaceUsed: 2048,
+              metaspaceMaxCapacity: { $numberLong: '0' },
+              metaspaceMinCapacity: { $numberLong: '0' },
+              metaspaceCapacity: { $numberLong: (40 * 1024 * 1024).toString() },
+              metaspaceUsed: { $numberLong: (20 * 1024 * 1024).toString() },
               generations: [
                 {
-                  capacity: 100,
+                  capacity: { $numberLong: (10 * 1024 * 1024).toString() },
                   collector: 'Shenandoah',
-                  maxCapacity: 200,
+                  maxCapacity: { $numberLong: (20 * 1024 * 1024).toString() },
                   name: 'Generation 0',
                   spaces: [
                     {
-                      capacity: 50,
+                      capacity: { $numberLong: (50 * 1024 * 1024).toString() },
                       index: 0,
-                      maxCapacity: 100,
+                      maxCapacity: { $numberLong: (100 * 1024 * 1024).toString() },
                       name: 'Gen 0 Space 0',
-                      used: 20
+                      used: { $numberLong: (20 * 1024 * 1024).toString() }
                     }
                   ]
                 }
@@ -182,8 +182,8 @@ describe('JvmMemory controller', () => {
     it('should update metaspaceData', () => {
       func(data);
       ctrl.metaspaceData.should.deepEqual({
-        used: 2048,
-        total: 4096
+        used: 20,
+        total: 40
       });
     });
 
@@ -209,8 +209,8 @@ describe('JvmMemory controller', () => {
       func(data);
       let generation = data.data.response[0].generations[0];
       let space = generation.spaces[0];
-      space.capacity = 100;
-      space.used = 50;
+      space.capacity = { $numberLong: (100 * 1024 * 1024).toString() };
+      space.used = { $numberLong: (50 * 1024 * 1024).toString() };
       func(data);
       ctrl.generationData.should.deepEqual({
         0: {

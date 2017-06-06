@@ -74,8 +74,8 @@ class JvmMemoryController {
   update () {
     this.jvmMemoryService.getJvmMemory(this.jvmId).then(resp => {
       let data = resp.data.response[0];
-      this.metaspaceData.used = data.metaspaceUsed;
-      this.metaspaceData.total = data.metaspaceCapacity;
+      this.metaspaceData.used = this.convertMemStat(data.metaspaceUsed);
+      this.metaspaceData.total = this.convertMemStat(data.metaspaceCapacity);
 
       for (let i = 0; i < data.generations.length; i++) {
         let generation = data.generations[i];
@@ -93,13 +93,13 @@ class JvmMemoryController {
         for (let j = 0; j < generation.spaces.length; j++) {
           let space = generation.spaces[j];
           if (gen.spaces.hasOwnProperty(space.index)) {
-            gen.spaces[space.index].used = space.used;
-            gen.spaces[space.index].total = space.capacity;
+            gen.spaces[space.index].used = this.convertMemStat(space.used);
+            gen.spaces[space.index].total = this.convertMemStat(space.capacity);
           } else {
             gen.spaces[space.index] = {
               index: space.index,
-              used: space.used,
-              total: space.capacity
+              used: this.convertMemStat(space.used),
+              total: this.convertMemStat(space.capacity)
             };
           }
           let spaceKey = 'gen-' + gen.index + '-space-' + space.index;
@@ -113,6 +113,10 @@ class JvmMemoryController {
         this.generationData[i] = gen;
       }
     });
+  }
+
+  convertMemStat (obj) {
+    return _.ceil(parseInt(obj.$numberLong) / (1024 * 1024));
   }
 }
 
