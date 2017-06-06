@@ -148,12 +148,12 @@ function jvmList (server) {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(
       {
-        response: {
+        response: [{
           systemId: req.params.systemId,
           jvmId: req.params.jvmId,
           mainClass: 'c.r.t.A',
-          startTime: Date.now() - 5000000 + _.round(Math.random() * 1000000),
-          endTime: -1,
+          startTime: { $numberLong: (Date.now() - 5000000 + _.round(Math.random() * 1000000)).toString() },
+          stopTime: { $numberLong: '-1' },
           isAlive: true,
           jvmPid: _.round(Math.random() * 2048) + 512,
           javaVersion: '1.9',
@@ -166,16 +166,18 @@ function jvmList (server) {
           classpath: 'class:path',
           environment: [
             {
-              FOO: 'BAR'
+              key: 'FOO',
+              value: 'BAR'
             },
             {
-              baz: 'bam'
+              key: 'baz',
+              value: 'bam'
             }
           ],
           uid: _.round(Math.random() * 800),
           username: 'thermostat-user',
-          lastUpdated: Date.now()
-        }
+          lastUpdated: { $numberLong: Date.now().toString() }
+        }]
       }
     ));
     next();

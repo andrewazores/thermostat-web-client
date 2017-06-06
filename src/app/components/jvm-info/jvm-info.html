@@ -34,15 +34,15 @@
           </tr>
           <tr>
             <td>Start Time</td>
-            <td>{{ctrl.jvmInfo.startTime | unixToDate}}</td>
+            <td>{{ctrl.jvmInfo.startTime.$numberLong | stringToNumber | unixToDate}}</td>
           </tr>
-          <tr ng-show="!ctrl.jvmInfo.isAlive">
-            <td>End Time</td>
-            <td>{{ctrl.jvmInfo.endTime | unixToDate}}</td>
+          <tr ng-show="parseInt(ctrl.jvmInfo.endTime.$numberLong) > 0">
+            <td>Stop Time</td>
+            <td>{{ctrl.jvmInfo.stopTime.$numberLong | stringToNumber | unixToDate}}</td>
           </tr>
-          <tr>
+          <tr ng-show="ctrl.jvmInfo.lastUpdated">
             <td>Last Updated</td>
-            <td>{{ctrl.jvmInfo.lastUpdated | unixToDate}}</td>
+            <td>{{ctrl.jvmInfo.lastUpdated.$numberLong | stringToNumber | unixToDate}}</td>
           </tr>
           <tr>
             <td>JVM PID</td>
@@ -84,9 +84,7 @@
             <td>Environment Variables</td>
             <td>
               <span ng-repeat="env in ctrl.jvmInfo.environment">
-                <span ng-repeat="(key, val) in env">
-                  {{key}}="{{val}}"
-                </span>
+                {{env.key}}="{{env.value}}"
                 <br/>
               </span>
             </td>
