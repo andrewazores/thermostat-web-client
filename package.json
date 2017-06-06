@@ -83,7 +83,7 @@
     "stop-mockapi": "\"$(npm bin)\"/forever stop --silent mock-api/mockapi.server.js || true",
     "prestart-mockapi": "npm run stop-mockapi",
     "start-mockapi": "\"$(npm bin)\"/forever start --watch --watchDirectory mock-api mock-api/mockapi.server.js",
-    "predevserver": "npm run prebuild && npm stop-daemon && npm run start-mockapi",
+    "predevserver": "npm run prebuild && npm run stop-daemon && npm run start-mockapi",
     "devserver": "\"$(npm bin)/webpack-dev-server\" --progress",
     "pretest": "npm run lint-tests",
     "test": "\"$(npm bin)/karma\" start",
