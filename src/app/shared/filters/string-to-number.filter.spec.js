@@ -25,35 +25,30 @@
  * exception statement from your version.
  */
 
-import stringToNumberProvider from './string-to-number.filter.js';
-import { filterName } from './string-to-number.filter.js';
-
 describe('stringToNumber filter', () => {
 
+  beforeEach(angular.mock.module('app.filters'));
+
   let fn;
-  beforeEach(() => {
-    fn = stringToNumberProvider();
-  });
-
-  it('should be exported', () => {
-    should.exist(stringToNumberProvider);
-  });
-
-  it('should name itself', () => {
-    filterName.should.equal('stringToNumber');
-  });
+  beforeEach(angular.mock.inject(stringToNumberFilter => {
+    'ngInject';
+    fn = stringToNumberFilter;
+  }));
 
   it('should parse strings into numbers', () => {
-    let res = fn('100');
-    res.should.equal(100);
+    fn('100').should.equal(100);
   });
 
-  it('should return non-strings as-is', () => {
-    let r1 = fn(100);
-    let r2 = fn({ foo: 'bar' });
+  it('should return the same value for numbers', () => {
+    fn(100).should.equal(100);
+  });
 
-    r1.should.equal(100);
-    r2.should.deepEqual({ foo: 'bar' });
+  it('should return NaN for objects', () => {
+    fn({ foo: 'bar' }).should.be.NaN();
+  });
+
+  it('should return NaN for undefined', () => {
+    fn(undefined).should.be.NaN();
   });
 
 });

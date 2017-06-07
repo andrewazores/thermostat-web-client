@@ -80,6 +80,7 @@ class JvmListController {
 
 export default angular.module('jvmList.controller',
   [
-    'jvmList.service'
+    'jvmList.service',
+    'app.filters'
   ]
 ).controller('jvmListController', JvmListController);

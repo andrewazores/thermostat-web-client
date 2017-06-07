@@ -26,9 +26,12 @@
  */
 
 export default function filterProvider () {
-  return val => parseInt(val);
+  return val => {
+    val = val || 0;
+    return val.toFixed();
+  }
 }
 
-const filterName = 'stringToNumber';
+const filterName = 'bigIntToString';
 
 export { filterName };

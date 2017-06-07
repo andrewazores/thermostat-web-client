@@ -34,15 +34,15 @@
           </tr>
           <tr>
             <td>Start Time</td>
-            <td>{{ctrl.jvmInfo.startTime.$numberLong | stringToNumber | unixToDate}}</td>
+            <td>{{ctrl.jvmInfo.startTime | metricToBigInt | bigIntToString | stringToNumber | unixToDate}}</td>
           </tr>
           <tr ng-show="parseInt(ctrl.jvmInfo.endTime.$numberLong) > 0">
             <td>Stop Time</td>
-            <td>{{ctrl.jvmInfo.stopTime.$numberLong | stringToNumber | unixToDate}}</td>
+            <td>{{ctrl.jvmInfo.stopTime | metricToBigInt | bigIntToString | stringToNumber | unixToDate}}</td>
           </tr>
           <tr ng-show="ctrl.jvmInfo.lastUpdated">
             <td>Last Updated</td>
-            <td>{{ctrl.jvmInfo.lastUpdated.$numberLong | stringToNumber | unixToDate}}</td>
+            <td>{{ctrl.jvmInfo.lastUpdated | metricToBigInt | bigIntToString | stringToNumber | unixToDate}}</td>
           </tr>
           <tr>
             <td>JVM PID</td>

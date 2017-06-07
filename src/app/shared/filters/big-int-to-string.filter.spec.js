@@ -25,10 +25,32 @@
  * exception statement from your version.
  */
 
-export default function filterProvider () {
-  return val => parseInt(val);
-}
+import big from 'big.js';
 
-const filterName = 'stringToNumber';
+describe('bigIntToString filter', () => {
 
-export { filterName };
+  beforeEach(angular.mock.module('app.filters'));
+
+  let fn;
+  beforeEach(angular.mock.inject(bigIntToStringFilter => {
+    'ngInject';
+    fn = bigIntToStringFilter;
+  }));
+
+  it('should convert big int to string', () => {
+    fn(big(100)).should.equal('100');
+  });
+
+  it('should convert number to string', () => {
+    fn(100).should.equal('100');
+  });
+
+  it('should fail on object input', () => {
+    (() => fn({ foo: 'bar' })).should.throw(/undefined is not a constructor/);
+  });
+
+  it('should treat undefined as 0', () => {
+    fn(undefined).should.equal('0');
+  });
+
+});

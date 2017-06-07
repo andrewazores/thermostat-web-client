@@ -26,13 +26,20 @@
  */
 
 class JvmMemoryController {
-  constructor (jvmId, $scope, $interval, jvmMemoryService) {
+  constructor (jvmId, $scope, $interval, jvmMemoryService, metricToBigIntFilter, bigIntToStringFilter, stringToNumberFilter) {
     'ngInject';
 
     this.jvmId = jvmId;
     this.scope = $scope;
     this.interval = $interval;
     this.jvmMemoryService = jvmMemoryService;
+
+    this.convertMemStat = obj => {
+      let bigInt = metricToBigIntFilter(obj, 1024 * 1024);
+      let str = bigIntToStringFilter(bigInt);
+      let num = stringToNumberFilter(str);
+      return _.ceil(num);
+    };
 
     this.scope.refreshRate = '2000';
 
@@ -114,13 +121,10 @@ class JvmMemoryController {
       }
     });
   }
-
-  convertMemStat (obj) {
-    return _.ceil(parseInt(obj.$numberLong) / (1024 * 1024));
-  }
 }
 
 export default angular.module('jvmMemory.controller',
   [
+    'app.filters'
   ]
 ).controller('jvmMemoryController', JvmMemoryController);
