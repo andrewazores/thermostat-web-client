@@ -74,6 +74,7 @@ AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(
         return defer.promise;
       });
     });
+
     angular.bootstrap(document, [appModule.name]);
   }
 ));

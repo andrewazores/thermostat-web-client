@@ -1,7 +1,7 @@
 <div class="container-fluid container-cards-pf">
   <ol class="breadcrumb" style="margin-bottom: 0px;">
     <li><a ui-sref="landing">Thermostat</a></li>
-    <li><a ui-sref="jvmList">JVM List</a></li>
+    <li><a ui-sref="jvmList({ '#': ctrl.systemId })">JVM List</a></li>
     <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemId}}</a></li>
   </ol>
 
