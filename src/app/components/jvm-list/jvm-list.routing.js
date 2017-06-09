@@ -60,7 +60,6 @@ export default angular.module('jvmList.routing',
     'ui.router',
     'ui.bootstrap',
     'oc.lazyLoad',
-    'patternfly',
     'app.filters'
   ]
 ).config(config);

@@ -25,26 +25,28 @@
  * exception statement from your version.
  */
 
-function landingRouting($stateProvider) {
-  'ngInject';
+export default angular.module('auth.routing', [
+  'ui.router',
+  'ui.bootstrap'
+]).config(authRouting);
 
-  $stateProvider.state('landing', {
-    url: '/landing',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure(['./landing.html'], () => {
-          resolve(require('./landing.html'));
-        })
-      );
-    }
-  });
+function authRouting ($stateProvider, $urlRouterProvider) {
+
+  // define initial state behaviour
+  'ngInject';
+  $urlRouterProvider.when('', '/');
+
+  'ngInject';
+  $stateProvider
+    .state('/', {
+      url:'/',
+      controller: 'StubAuthController'
+    })
+    .state('login', {
+      url: '/login',
+      template: require('./login.html'),
+      controller: 'LoginController'
+    });
 }
 
-export { landingRouting };
-
-export default angular.module('landing.routing',
-  [
-    'ui.router',
-    'ui.bootstrap'
-  ]).config(landingRouting);
+export { authRouting };

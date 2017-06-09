@@ -25,26 +25,44 @@
  * exception statement from your version.
  */
 
-function landingRouting($stateProvider) {
-  'ngInject';
+import 'oclazyload';
 
-  $stateProvider.state('landing', {
-    url: '/landing',
+(function requireModuleRoutings () {
+  let req = require.context('./components', true, /\.routing\.js/);
+  req.keys().map(req);
+})();
+
+export const appRouter = angular.module('app.routing', [
+  'auth.routing',
+  'error.routing',
+  'landing.routing',
+  'jvmList.routing',
+  'jvmInfo.routing',
+  'systemInfo.routing'
+]);
+
+export default angular.module('error.routing', [
+  'ui.router',
+  'ui.bootstrap'
+]).config(errorRouting);
+
+function errorRouting ($stateProvider, $urlRouterProvider) {
+  'ngInject';
+  $stateProvider.state('404', {
     templateProvider: $q => {
       'ngInject';
       return $q(resolve =>
-        require.ensure(['./landing.html'], () => {
-          resolve(require('./landing.html'));
+        require.ensure([], () => {
+          resolve(require('./shared/templates/404.html'));
         })
       );
     }
   });
+
+  // define behaviour when no state is matched
+  $urlRouterProvider.otherwise(($injector, $location) => {
+    $injector.get('$state').go('404', { location: $location.path() });
+  });
 }
 
-export { landingRouting };
-
-export default angular.module('landing.routing',
-  [
-    'ui.router',
-    'ui.bootstrap'
-  ]).config(landingRouting);
+export { errorRouting };

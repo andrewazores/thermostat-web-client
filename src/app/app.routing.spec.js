@@ -25,16 +25,16 @@
  * exception statement from your version.
  */
 
-describe('LandingModule', () => {
+describe('ErrorRouting', () => {
 
-  let module = require('./landing.routing.js');
+  let module = require('./app.routing.js');
 
-  let stateProvider, args, q;
+  let stateProvider, urlRouterProvider, args, q;
+
   beforeEach(() => {
-    stateProvider = {
-      state: sinon.spy()
-    };
-    module.landingRouting(stateProvider);
+    stateProvider = { state: sinon.spy() };
+    urlRouterProvider = { otherwise: sinon.spy() };
+    module.errorRouting(stateProvider, urlRouterProvider);
     args = stateProvider.state.args[0];
     q = sinon.spy();
   });
@@ -42,18 +42,13 @@ describe('LandingModule', () => {
   describe('stateProvider', () => {
     it('should call $stateProvider.state', () => {
       stateProvider.state.should.be.calledOnce();
-      args[0].should.equal('landing');
     });
 
-    it('should define a \'landing\' state', () => {
-      args[0].should.equal('landing');
+    it('should define a \'404\' state', () => {
+      args[0].should.equal('404');
     });
 
-    it('should map to /landing', () => {
-      args[1].url.should.equal('/landing');
-    });
-
-    it('template provider should return landing.html', done => {
+    it('template provider should return 404.html', done => {
       let providerFn = args[1].templateProvider[1];
       providerFn.should.be.a.Function();
       providerFn(q);
@@ -63,10 +58,27 @@ describe('LandingModule', () => {
       deferred.should.be.a.Function();
 
       let resolve = sinon.stub().callsFake(val => {
-        val.should.equal(require('./landing.html'));
+        val.should.equal(require('./shared/error-templates/404.html'));
         done();
       });
       deferred(resolve);
+      done();
     });
+  });
+
+  describe('urlRouterProvider.otherwise', () => {
+    it('should not called with state as \'404\'', () => {
+      urlRouterProvider.otherwise.should.not.be.calledWith('404');
+    });
+
+    it('should be called with a function', done => {
+      let injectorFn = urlRouterProvider.otherwise.args[0][0];
+      let $injector = {
+        get: sinon.spy(() => { done(); })
+      };
+      injectorFn.should.be.a.Function();
+      injectorFn($injector);
+    });
+
   });
 });

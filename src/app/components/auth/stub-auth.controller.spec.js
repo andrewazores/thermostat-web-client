@@ -25,8 +25,7 @@
  * exception statement from your version.
  */
 
-describe('LoginController', () => {
-
+describe('AuthController', () => {
   beforeEach(angular.mock.module($provide => {
     'ngInject';
     $provide.value('$transitions', { onBefore: angular.noop });
@@ -38,15 +37,13 @@ describe('LoginController', () => {
     let scope, authStatus, authLogin, stateGo, alert;
     beforeEach(inject(($controller, $rootScope, authService) => {
       'ngInject';
-
       scope = $rootScope.$new();
-
       authStatus = sinon.stub(authService, 'status').returns(false);
       authLogin = sinon.stub(authService, 'login');
       stateGo = sinon.spy();
       alert = sinon.spy(window, 'alert');
 
-      $controller('LoginController', {
+      $controller('StubAuthController', {
         $scope: scope,
         $state: { go: stateGo },
         authService: authService
@@ -57,14 +54,6 @@ describe('LoginController', () => {
       authStatus.restore();
       authLogin.restore();
       alert.restore();
-    });
-
-    it('should be supplied', () => {
-      scope.should.have.ownProperty('login');
-    });
-
-    it('should be a function', () => {
-      scope.login.should.be.a.Function();
     });
 
     it('should perform a login', () => {
@@ -92,54 +81,20 @@ describe('LoginController', () => {
     let scope, authStatus, stateGo;
     beforeEach(inject(($controller, $rootScope, authService) => {
       'ngInject';
-
       scope = $rootScope.$new();
-
       authStatus = sinon.stub(authService, 'status').returns(true);
       stateGo = sinon.spy();
 
-      $controller('LoginController', {
+      $controller('StubAuthController', {
         $scope: scope,
         $state: { go: stateGo },
         authService: authService
       });
     }));
 
-    afterEach(() => {
-      authStatus.restore();
-    });
-
     it('should redirect to landing if already logged in', () => {
       authStatus.should.be.calledOnce();
       stateGo.should.be.calledWith('landing');
     });
   });
-
-  describe('when logged out', () => {
-    let scope, authStatus, stateGo;
-    beforeEach(inject(($controller, $rootScope, authService) => {
-      'ngInject';
-
-      scope = $rootScope.$new();
-      stateGo = sinon.spy();
-
-      authStatus = sinon.stub(authService, 'status').returns(false);
-
-      $controller('LoginController', {
-        $scope: scope,
-        $state: {go: stateGo},
-        authService: authService
-      });
-    }));
-
-    afterEach(() => {
-      authStatus.restore();
-    });
-
-    it('should keep login state if not logged in', () => {
-      authStatus.should.be.calledOnce();
-      stateGo.should.be.calledWith('login');
-    });
-  });
-
 });

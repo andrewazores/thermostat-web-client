@@ -63,7 +63,6 @@ export default angular.module('systemInfo.routing',
   [
     'ui.router',
     'ui.bootstrap',
-    'oc.lazyLoad',
-    'patternfly'
+    'oc.lazyLoad'
   ]
 ).config(config);

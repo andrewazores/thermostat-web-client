@@ -25,26 +25,20 @@
  * exception statement from your version.
  */
 
-function landingRouting($stateProvider) {
-  'ngInject';
+export default class AuthController {
 
-  $stateProvider.state('landing', {
-    url: '/landing',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure(['./landing.html'], () => {
-          resolve(require('./landing.html'));
-        })
-      );
+  constructor ($scope, $state, authService) {
+    'ngInject';
+
+    if (authService.status()) {
+      $state.go('landing');
+    } else {
+      $state.go('login');
     }
-  });
+
+    $scope.login = () => {
+      authService.login($scope.username, $scope.password, () => $state.go('landing'), () => alert('Login failed'));
+    };
+  }
+
 }
-
-export { landingRouting };
-
-export default angular.module('landing.routing',
-  [
-    'ui.router',
-    'ui.bootstrap'
-  ]).config(landingRouting);
