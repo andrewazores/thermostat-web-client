@@ -44,10 +44,8 @@ class JvmListController {
   loadData () {
     this.jvmListService.getSystems().then(
       resp => {
-        console.log(resp);
         this.showErr = false;
         this.systems = resp.data.response;
-        console.log(this.systems);
 
         for (var i = 0; i < this.systems.length; i++) {
           let system = this.systems[i];
