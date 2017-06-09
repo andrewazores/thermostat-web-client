@@ -25,4 +25,8 @@
  * exception statement from your version.
  */
 
-require('should');
+var x = 5;
+
+function test (val) {
+    return val;
+}

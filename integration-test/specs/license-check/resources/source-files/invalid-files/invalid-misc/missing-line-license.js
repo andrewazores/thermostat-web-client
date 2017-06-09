@@ -4,7 +4,6 @@
  * Thermostat is distributed under the GNU General Public License,
  * version 2 or any later version (with a special exception described
  * below, commonly known as the "Classpath Exception").
- *
  * A copy of GNU General Public License (GPL) is included in this
  * distribution, in the file COPYING.
  *
@@ -25,4 +24,8 @@
  * exception statement from your version.
  */
 
-require('should');
+var x = 5;
+
+function test (val) {
+    return val;
+}

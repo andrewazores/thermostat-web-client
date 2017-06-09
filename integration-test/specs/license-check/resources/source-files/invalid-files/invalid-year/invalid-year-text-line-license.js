@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2017 Red Hat, Inc.
+ * Copyright 2012-2017 RedHat, Inc.
  *
  * Thermostat is distributed under the GNU General Public License,
  * version 2 or any later version (with a special exception described
@@ -24,5 +24,3 @@
  * not obligated to do so.  If you do not wish to do so, delete this
  * exception statement from your version.
  */
-
-require('should');

@@ -25,4 +25,29 @@
  * exception statement from your version.
  */
 
-require('should');
+const licenseChecker = require('./license-check.js');
+const SCRIPT_TERMINATION_EXIT_STATUS = 1;
+
+function exitWithErrorMessage (msg) {
+  console.log(msg);
+  process.exit(SCRIPT_TERMINATION_EXIT_STATUS);
+}
+
+let licenseData = licenseChecker.readLicenseFile('LICENSE');
+if (!licenseData.success) {
+  exitWithErrorMessage(licenseData.error);
+}
+
+['integration-test/integration-test.config.js', 'integration-test/test-env.js'].forEach((filePath) => {
+  let fileCheckResult = licenseChecker.checkFileForLicense(filePath, licenseData);
+  if (!fileCheckResult.success) {
+    exitWithErrorMessage(fileCheckResult.error);
+  }
+});
+
+['license-check/', 'src/app/'].forEach((folderPath) => {
+  let checkResult = licenseChecker.walkDirectoryAndCheckLicenses(folderPath, licenseData);
+  if (!checkResult.success) {
+    exitWithErrorMessage(checkResult.error);
+  }
+});
