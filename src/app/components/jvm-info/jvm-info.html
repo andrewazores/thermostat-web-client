@@ -22,7 +22,7 @@
           </tr>
           <tr>
             <td>UID</td>
-            <td>{{ctrl.jvmInfo.uid}}</td>
+            <td>{{ctrl.jvmInfo.uid | metricToBigInt | bigIntToString }}</td>
           </tr>
           <tr>
             <td>JVM ID</td>

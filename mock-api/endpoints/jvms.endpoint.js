@@ -77,7 +77,7 @@ function jvmList (server) {
               value: 'bam'
             }
           ],
-          uid: _.round(Math.random() * 800),
+          uid: { $numberLong: _.round(Math.random() * 800) },
           username: 'thermostat-user',
           lastUpdated: { $numberLong: Date.now().toString() }
         }]
