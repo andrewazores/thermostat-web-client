@@ -20,22 +20,22 @@ function jvmList (server) {
         'jvms': [
           {
             'mainClass': 'c.r.t.A',
-            'startTime': 45000,
+            'startTime': { $numberLong: '45000' },
             'jvmId': 'vm-0'
           },
           {
             'mainClass': 'c.r.t.B',
-            'startTime': 45000,
+            'startTime': { $numberLong: '45000' },
             'jvmId': 'vm-1'
           },
           {
             'mainClass': 'c.r.t.C',
-            'startTime': 45000,
+            'startTime': { $numberLong: '45000' },
             'jvmId': 'vm-2'
           },
           {
             'mainClass': 'c.r.t.D',
-            'startTime': 45000,
+            'startTime': { $numberLong: '45000' },
             'jvmId': 'vm-3'
           }
         ]
