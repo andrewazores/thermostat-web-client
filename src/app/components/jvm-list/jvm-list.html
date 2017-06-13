@@ -11,8 +11,8 @@
 
   <div ng-show="!ctrl.showErr" >
     <uib-accordion close-others="true">
-
-      <uib-accordion-group class="cards-pf" ng-repeat="system in ctrl.systems" is-open="false" heading={{system.systemId}}>
+      <uib-accordion-group class="cards-pf" ng-repeat="system in ctrl.systems" id="{{system.systemId}}"
+                                                                               is-open="ctrl.systemsOpen[system.systemId]" heading="{{system.systemId}}">
         <div class="container-fluid container-cards-pf">
           <div class="row row-cards-pf">
 
@@ -39,9 +39,9 @@
                   </div>
                   <div class="card-pf-body">
                     <h2 class="card-pf-title text-center">
-                      {{jvm.mainClass}}
+                      {{ctrl.extractClassName(jvm.mainClass)}}
                     </h2>
-                    <p class="card-pf-info text-center"><strong>Created On</strong> {{jvm.startTime | unixToDate}}</p>
+                    <p class="card-pf-info text-center"><strong>Created On</strong> {{jvm.startTime | metricToBigInt | bigIntToString | stringToNumber | unixToDate}}</p>
                   </div>
                 </div>
               </div>

@@ -29,15 +29,12 @@ describe('LandingModule', () => {
 
   let module = require('./landing.routing.js');
 
-  let stateProvider, urlRouterProvider, args, q;
+  let stateProvider, args, q;
   beforeEach(() => {
     stateProvider = {
       state: sinon.spy()
     };
-    urlRouterProvider = {
-      otherwise: sinon.spy()
-    };
-    module.landingRouting(stateProvider, urlRouterProvider);
+    module.landingRouting(stateProvider);
     args = stateProvider.state.args[0];
     q = sinon.spy();
   });
@@ -72,11 +69,4 @@ describe('LandingModule', () => {
       deferred(resolve);
     });
   });
-
-  describe('urlRouterProvider', () => {
-    it('should define the \'otherwise\' state as \'landing\'', () => {
-      urlRouterProvider.otherwise.should.be.calledWith('landing');
-    });
-  });
-
 });

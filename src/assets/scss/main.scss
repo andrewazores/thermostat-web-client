@@ -13,3 +13,22 @@
     margin-top: 10px;
   }
 }
+
+// alert inline notifications margin manipulation
+.alert-danger {
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+// 404 information slate margin manipulation
+.blank-slate-pf {
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  background-color: $color-white;
+}
+
+.fa-frown-o {
+  margin-bottom: 20px;
+}

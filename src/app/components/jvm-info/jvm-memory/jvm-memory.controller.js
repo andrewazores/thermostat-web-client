@@ -26,13 +26,20 @@
  */
 
 class JvmMemoryController {
-  constructor (jvmId, $scope, $interval, jvmMemoryService) {
+  constructor (jvmId, $scope, $interval, jvmMemoryService, metricToBigIntFilter, bigIntToStringFilter, stringToNumberFilter) {
     'ngInject';
 
     this.jvmId = jvmId;
     this.scope = $scope;
     this.interval = $interval;
     this.jvmMemoryService = jvmMemoryService;
+
+    this.convertMemStat = obj => {
+      let bigInt = metricToBigIntFilter(obj, 1024 * 1024);
+      let str = bigIntToStringFilter(bigInt);
+      let num = stringToNumberFilter(str);
+      return _.ceil(num);
+    };
 
     this.scope.refreshRate = '2000';
 
@@ -74,8 +81,8 @@ class JvmMemoryController {
   update () {
     this.jvmMemoryService.getJvmMemory(this.jvmId).then(resp => {
       let data = resp.data.response[0];
-      this.metaspaceData.used = data.metaspaceUsed;
-      this.metaspaceData.total = data.metaspaceCapacity;
+      this.metaspaceData.used = this.convertMemStat(data.metaspaceUsed);
+      this.metaspaceData.total = this.convertMemStat(data.metaspaceCapacity);
 
       for (let i = 0; i < data.generations.length; i++) {
         let generation = data.generations[i];
@@ -93,13 +100,13 @@ class JvmMemoryController {
         for (let j = 0; j < generation.spaces.length; j++) {
           let space = generation.spaces[j];
           if (gen.spaces.hasOwnProperty(space.index)) {
-            gen.spaces[space.index].used = space.used;
-            gen.spaces[space.index].total = space.capacity;
+            gen.spaces[space.index].used = this.convertMemStat(space.used);
+            gen.spaces[space.index].total = this.convertMemStat(space.capacity);
           } else {
             gen.spaces[space.index] = {
               index: space.index,
-              used: space.used,
-              total: space.capacity
+              used: this.convertMemStat(space.used),
+              total: this.convertMemStat(space.capacity)
             };
           }
           let spaceKey = 'gen-' + gen.index + '-space-' + space.index;
@@ -118,5 +125,6 @@ class JvmMemoryController {
 
 export default angular.module('jvmMemory.controller',
   [
+    'app.filters'
   ]
 ).controller('jvmMemoryController', JvmMemoryController);

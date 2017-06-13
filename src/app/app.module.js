@@ -27,18 +27,13 @@
 
 import 'angular-patternfly';
 import '@uirouter/angularjs';
-import 'oclazyload';
 import 'es6-promise/auto';
 
 import {default as CFG_MODULE} from './shared/config/config.module.js';
 import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
 import './shared/filters/filters.module.js';
+import './app.routing.js';
 import AppController from './app.controller.js';
-
-(function requireModuleRoutings () {
-  let req = require.context('./components', true, /\.routing\.js/);
-  req.keys().map(req);
-})();
 
 require.ensure([], () => {
   require('angular-patternfly/node_modules/patternfly/dist/css/patternfly.css');
@@ -52,10 +47,7 @@ export const appModule = angular.module('appModule',
     CFG_MODULE,
     AUTH_MODULE,
     // non-core modules
-    'landing.routing',
-    'jvmList.routing',
-    'jvmInfo.routing',
-    'systemInfo.routing'
+    'app.routing'
   ]
 ).controller('AppController', AppController);
 
@@ -74,6 +66,7 @@ AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(
         return defer.promise;
       });
     });
+
     angular.bootstrap(document, [appModule.name]);
   }
 ));

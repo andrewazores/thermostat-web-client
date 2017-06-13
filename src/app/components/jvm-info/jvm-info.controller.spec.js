@@ -78,10 +78,10 @@ describe('JvmInfoController', () => {
   });
 
   it('should assign jvmInfo object on promise resolve', () => {
-    let expected = ['foo', 'bar'];
+    let expected = 'foo';
     promise.then.args[0][0]({
       data: {
-        response: expected
+        response: [expected]
       }
     });
     ctrl.jvmInfo.should.equal(expected);

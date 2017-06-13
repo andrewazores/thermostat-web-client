@@ -25,7 +25,14 @@
  * exception statement from your version.
  */
 
-import unixToDate from './unix-to-date.filter.js';
+let mod = angular.module('app.filters', []);
 
-angular.module('app.filters', [])
-  .filter('unixToDate', unixToDate);
+(function requireFilters () {
+  let req = require.context('./', true, /\.filter\.js/);
+  req.keys().map(v => {
+    let f = req(v);
+    mod.filter(f.filterName, f.default);
+  });
+})();
+
+export default mod;

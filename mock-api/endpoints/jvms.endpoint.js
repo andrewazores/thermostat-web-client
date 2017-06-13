@@ -4,110 +4,45 @@ function jvmList (server) {
   server.app.get('/jvms/0.0.1/tree', function (req, res, next) {
     server.logRequest('jvm-list', req);
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(
-      [
-        {
-          "systemId": "system-0",
-          "jvms": [
-            {
-              "mainClass": "c.r.t.A",
-              "startTime": 45000,
-              "jvmId": "vm-0"
-            },
-            {
-              "mainClass": "c.r.t.B",
-              "startTime": 45000,
-              "jvmId": "vm-1"
-            },
-            {
-              "mainClass": "c.r.t.C",
-              "startTime": 45000,
-              "jvmId": "vm-2"
-            },
-            {
-              "mainClass": "c.r.t.D",
-              "startTime": 45000,
-              "jvmId": "vm-3"
-            }
-          ]
-        },
-        {
-          "systemId": "system-1",
-          "jvms": [
-            {
-              "mainClass": "c.r.t.A",
-              "startTime": 45000,
-              "jvmId": "vm-0"
-            },
-            {
-              "mainClass": "c.r.t.B",
-              "startTime": 45000,
-              "jvmId": "vm-1"
-            },
-            {
-              "mainClass": "c.r.t.C",
-              "startTime": 45000,
-              "jvmId": "vm-2"
-            },
-            {
-              "mainClass": "c.r.t.D",
-              "startTime": 45000,
-              "jvmId": "vm-3"
-            }
-          ]
-        },
-        {
-          "systemId": "system-2",
-          "jvms": [
-            {
-              "mainClass": "c.r.t.A",
-              "startTime": 45000,
-              "jvmId": "vm-0"
-            },
-            {
-              "mainClass": "c.r.t.B",
-              "startTime": 45000,
-              "jvmId": "vm-1"
-            },
-            {
-              "mainClass": "c.r.t.C",
-              "startTime": 45000,
-              "jvmId": "vm-2"
-            },
-            {
-              "mainClass": "c.r.t.D",
-              "startTime": 45000,
-              "jvmId": "vm-3"
-            }
-          ]
-        },
-        {
-          "systemId": "system-3",
-          "jvms": [
-            {
-              "mainClass": "c.r.t.A",
-              "startTime": 45000,
-              "jvmId": "vm-0"
-            },
-            {
-              "mainClass": "c.r.t.B",
-              "startTime": 45000,
-              "jvmId": "vm-1"
-            },
-            {
-              "mainClass": "c.r.t.C",
-              "startTime": 45000,
-              "jvmId": "vm-2"
-            },
-            {
-              "mainClass": "c.r.t.D",
-              "startTime": 45000,
-              "jvmId": "vm-3"
-            }
-          ]
-        }
-      ]
-    ));
+
+    var limit = 4;
+    var resp = [];
+    if (req.query.limit) {
+      limit = parseInt(req.query.limit);
+      // 0 means no limit, so we'll default to 4
+      if (limit === 0) {
+        limit = 4;
+      }
+    }
+    for (var i = 0; i < limit; i++) {
+      var system = {
+        'systemId': 'system-' + i,
+        'jvms': [
+          {
+            'mainClass': 'c.r.t.A',
+            'startTime': { $numberLong: '45000' },
+            'jvmId': 'vm-0'
+          },
+          {
+            'mainClass': 'c.r.t.B',
+            'startTime': { $numberLong: '45000' },
+            'jvmId': 'vm-1'
+          },
+          {
+            'mainClass': 'c.r.t.C',
+            'startTime': { $numberLong: '45000' },
+            'jvmId': 'vm-2'
+          },
+          {
+            'mainClass': 'c.r.t.D',
+            'startTime': { $numberLong: '45000' },
+            'jvmId': 'vm-3'
+          }
+        ]
+      };
+      resp.push(system);
+    }
+    res.send(JSON.stringify({ response: resp }));
     next();
   });
 
@@ -116,12 +51,12 @@ function jvmList (server) {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(
       {
-        response: {
+        response: [{
           systemId: req.params.systemId,
           jvmId: req.params.jvmId,
           mainClass: 'c.r.t.A',
-          startTime: Date.now() - 5000000 + _.round(Math.random() * 1000000),
-          endTime: -1,
+          startTime: { $numberLong: (Date.now() - 5000000 + _.round(Math.random() * 1000000)).toString() },
+          stopTime: { $numberLong: '-1' },
           isAlive: true,
           jvmPid: _.round(Math.random() * 2048) + 512,
           javaVersion: '1.9',
@@ -134,16 +69,18 @@ function jvmList (server) {
           classpath: 'class:path',
           environment: [
             {
-              FOO: 'BAR'
+              key: 'FOO',
+              value: 'BAR'
             },
             {
-              baz: 'bam'
+              key: 'baz',
+              value: 'bam'
             }
           ],
-          uid: _.round(Math.random() * 800),
+          uid: { $numberLong: _.round(Math.random() * 800) },
           username: 'thermostat-user',
-          lastUpdated: Date.now()
-        }
+          lastUpdated: { $numberLong: Date.now().toString() }
+        }]
       }
     ));
     next();

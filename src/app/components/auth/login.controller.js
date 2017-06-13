@@ -32,6 +32,8 @@ export default class LoginController {
 
     if (authService.status()) {
       $state.go('landing');
+    } else {
+      $state.go('login');
     }
 
     $scope.login = () => {

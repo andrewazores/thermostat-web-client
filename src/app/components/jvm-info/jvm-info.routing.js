@@ -64,7 +64,6 @@ export default angular.module('jvmInfo.routing',
     'ui.router',
     'ui.bootstrap',
     'oc.lazyLoad',
-    'patternfly',
     'app.filters',
     'jvmMemory.routing'
   ]

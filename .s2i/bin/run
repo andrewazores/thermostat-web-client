@@ -3,4 +3,4 @@
 node --version
 npm --version
 
-npm start
+npm run start-image

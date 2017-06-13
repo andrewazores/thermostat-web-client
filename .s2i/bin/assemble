@@ -11,13 +11,13 @@ if [ -z "$NODE_ENV" ]; then
     export NODE_ENV=testing
 fi
 
-if [ ! -f src/app/shared/config/config.json ]; then
-    pushd src/app/shared/config
-    cp config.json.template config.json
-    popd
-fi
-
 echo "NODE_ENV=$NODE_ENV"
+echo "GATEWAY_URL=$GATEWAY_URL"
+
+if [ -z "$GATEWAY_URL" ]; then
+    echo "GATEWAY_URL must be set"
+    exit 1
+fi
 
 NODE_ENV=development npm install
 npm run build

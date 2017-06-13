@@ -26,23 +26,61 @@
  */
 
 class JvmListController {
-  constructor (jvmListService) {
+  constructor (jvmListService, $location, $timeout, $anchorScroll) {
     'ngInject';
+    this.jvmListService = jvmListService;
+    this.location = $location;
+    this.timeout = $timeout;
+    this.anchorScroll = $anchorScroll;
+
     this.title = 'JVM Listing';
     this.showErr = false;
-    jvmListService.getSystems().then(
+    this.systemsOpen = {};
+
+    this.loadData();
+    this.onload();
+  }
+
+  loadData () {
+    this.jvmListService.getSystems().then(
       resp => {
         this.showErr = false;
-        this.systems = resp.data;
+        this.systems = resp.data.response;
+
+        for (var i = 0; i < this.systems.length; i++) {
+          let system = this.systems[i];
+          this.systemsOpen[system.systemId] = false;
+        }
+
+        let hash = this.location.hash();
+        if (hash) {
+          this.systemsOpen[hash] = true;
+          this.onload();
+        }
       },
       () => {
         this.showErr = true;
-      });
+      }
+    );
+  }
+
+  onload () {
+    this.timeout(this.anchorScroll);
+  }
+
+  extractClassName (fullClassName) {
+    if (fullClassName.indexOf('.') === -1) {
+      return fullClassName;
+    }
+
+    let split = fullClassName.split('.');
+    return split[split.length - 1];
   }
 }
 
 export default angular.module('jvmList.controller',
   [
-    'jvmList.service'
+    'jvmList.service',
+    'app.filters'
   ]
 ).controller('jvmListController', JvmListController);

@@ -33,7 +33,7 @@ class JvmInfoController {
     this.jvmInfo = {};
     jvmInfoService.getJvmInfo(systemId, jvmId).then(
       res => {
-        this.jvmInfo = res.data.response;
+        this.jvmInfo = res.data.response[0];
       },
       () => {
         this.jvmInfo = {};

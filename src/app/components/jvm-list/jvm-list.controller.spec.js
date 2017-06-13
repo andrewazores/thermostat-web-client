@@ -29,19 +29,32 @@ describe('JvmListController', () => {
 
   beforeEach(angular.mock.module('jvmList.controller'));
 
-  let ctrl, scope, promise;
+  let ctrl, scope, promise, location, timeout, anchorScroll, onloadSpy;
   beforeEach(inject(($q, $rootScope, $controller) => {
     'ngInject';
     scope = $rootScope;
     promise = $q.defer();
+    location = {
+      hash: () => ''
+    };
+    timeout = sinon.spy();
+    anchorScroll = sinon.spy();
 
     let jvmListService = {
       getSystems: () => promise.promise
     };
     ctrl = $controller('jvmListController', {
-      jvmListService: jvmListService
+      jvmListService: jvmListService,
+      $location: location,
+      $timeout: timeout,
+      $anchorScroll: anchorScroll
     });
+    onloadSpy = sinon.spy(ctrl, 'onload');
   }));
+
+  afterEach(() => {
+    onloadSpy.restore();
+  });
 
   it('should exist', () => {
     should.exist(ctrl);
@@ -51,21 +64,82 @@ describe('JvmListController', () => {
     ctrl.title.should.equal('JVM Listing');
   });
 
-  it('should set JVMs list when service resolves', done => {
-    promise.resolve({ data: ['foo', 'bar']});
-    scope.$apply();
-    ctrl.should.have.ownProperty('systems');
-    ctrl.systems.should.deepEqual(['foo', 'bar']);
-    ctrl.showErr.should.equal(false);
-    done();
+  describe('loadData', () => {
+    it('should set JVMs list and systemsOpen when service resolves', done => {
+      let data = {
+        response: [
+          {
+            systemId: 'foo'
+          },
+          {
+            systemId: 'bar'
+          }
+        ]
+      };
+      promise.resolve({ data: data });
+      scope.$apply();
+      ctrl.should.have.ownProperty('systems');
+      ctrl.systems.should.deepEqual(data.response);
+      ctrl.showErr.should.equal(false);
+      ctrl.systemsOpen.should.deepEqual({
+        foo: false,
+        bar: false
+      });
+      onloadSpy.should.not.be.called();
+      done();
+    });
+
+    it('should set systemsOpen to true and anchorScroll if corresponding hash provided', done => {
+      let data = {
+        response: [
+          {
+            systemId: 'foo'
+          },
+          {
+            systemId: 'bar'
+          }
+        ]
+      };
+      location.hash = () => 'foo';
+      promise.resolve({ data: data });
+      scope.$apply();
+      ctrl.systemsOpen.should.deepEqual({
+        foo: true,
+        bar: false
+      });
+      onloadSpy.should.be.calledOnce();
+      done();
+    });
+
+    it('should set error flag when service rejects', done => {
+      promise.reject();
+      scope.$apply();
+      ctrl.should.have.ownProperty('showErr');
+      ctrl.showErr.should.equal(true);
+      done();
+    });
   });
 
-  it('should set error flag when service rejects', done => {
-    promise.reject();
-    scope.$apply();
-    ctrl.should.have.ownProperty('showErr');
-    ctrl.showErr.should.equal(true);
-    done();
+  describe('extractClassName', () => {
+    it('should return early if class name is bare', () => {
+      let val = 'className';
+      let res = ctrl.extractClassName(val);
+      res.should.equal(val);
+    });
+
+    it('should return class name given fully qualified name', () => {
+      let val = 'foo.bar.Baz';
+      let res = ctrl.extractClassName(val);
+      res.should.equal('Baz');
+    });
+  });
+
+  describe('onload', () => {
+    it('should call timeout with argument of anchorScroll', () => {
+      timeout.reset();
+      ctrl.onload();
+      timeout.should.be.calledWith(anchorScroll);
+    });
   });
 
 });

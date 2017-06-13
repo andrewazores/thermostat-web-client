@@ -32,3 +32,7 @@ export default function filterProvider (formatter = moment) {
     return formatter(timestamp).format('lll');
   }
 }
+
+const filterName = 'unixToDate';
+
+export { filterName };

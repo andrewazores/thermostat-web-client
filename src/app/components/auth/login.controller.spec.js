@@ -69,7 +69,7 @@ describe('LoginController', () => {
 
     it('should perform a login', () => {
       authLogin.should.not.be.called();
-      stateGo.should.not.be.called();
+      stateGo.should.be.calledOnce();
 
       scope.login();
 
@@ -136,9 +136,9 @@ describe('LoginController', () => {
       authStatus.restore();
     });
 
-    it('should do nothing if not logged in', () => {
+    it('should keep login state if not logged in', () => {
       authStatus.should.be.calledOnce();
-      stateGo.should.not.be.called();
+      stateGo.should.be.calledWith('login');
     });
   });
 

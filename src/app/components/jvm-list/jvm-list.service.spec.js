@@ -87,13 +87,13 @@ describe('JvmListService', () => {
           ]
         }
       ];
-      httpBackend.when('GET', 'http://example.com:1234/jvms/0.0.1/tree?aliveOnly=true&include=jvmId,mainClass,startTime')
+      httpBackend.when('GET', 'http://example.com:1234/jvms/0.0.1/tree?limit=0&aliveOnly=true&include=jvmId,mainClass,startTime')
         .respond(expected);
       svc.getSystems().then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://example.com:1234/jvms/0.0.1/tree?aliveOnly=true&include=jvmId,mainClass,startTime');
+      httpBackend.expectGET('http://example.com:1234/jvms/0.0.1/tree?limit=0&aliveOnly=true&include=jvmId,mainClass,startTime');
       httpBackend.flush();
       scope.$apply();
     });

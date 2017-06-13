@@ -1,9 +1,9 @@
 <div class="container-fluid container-cards-pf">
   <ol class="breadcrumb" style="margin-bottom: 0px;">
     <li><a ui-sref="landing">Thermostat</a></li>
-    <li><a ui-sref="jvmList">JVM List</a></li>
-    <li><a ui-sref="systemInfo({systemId: ctrl.systemId})">{{ctrl.systemId}}</a></li>
-    <li><a ui-sref="jvmInfo({systemId: ctrl.systemId, jvmId: ctrl.jvmId})">{{ctrl.jvmId}}</a></li>
+    <li><a ui-sref="jvmList({ '#': ctrl.systemId })">JVM List</a></li>
+    <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemId}}</a></li>
+    <li><a ui-sref="jvmInfo({ systemId: ctrl.systemId, jvmId: ctrl.jvmId })">{{ctrl.jvmId}}</a></li>
   </ol>
 
   <div class="row">
@@ -22,7 +22,7 @@
           </tr>
           <tr>
             <td>UID</td>
-            <td>{{ctrl.jvmInfo.uid}}</td>
+            <td>{{ctrl.jvmInfo.uid | metricToBigInt | bigIntToString }}</td>
           </tr>
           <tr>
             <td>JVM ID</td>
@@ -34,15 +34,15 @@
           </tr>
           <tr>
             <td>Start Time</td>
-            <td>{{ctrl.jvmInfo.startTime | unixToDate}}</td>
+            <td>{{ctrl.jvmInfo.startTime | metricToBigInt | bigIntToString | stringToNumber | unixToDate}}</td>
           </tr>
-          <tr ng-show="!ctrl.jvmInfo.isAlive">
-            <td>End Time</td>
-            <td>{{ctrl.jvmInfo.endTime | unixToDate}}</td>
+          <tr ng-show="parseInt(ctrl.jvmInfo.endTime.$numberLong) > 0">
+            <td>Stop Time</td>
+            <td>{{ctrl.jvmInfo.stopTime | metricToBigInt | bigIntToString | stringToNumber | unixToDate}}</td>
           </tr>
-          <tr>
+          <tr ng-show="ctrl.jvmInfo.lastUpdated">
             <td>Last Updated</td>
-            <td>{{ctrl.jvmInfo.lastUpdated | unixToDate}}</td>
+            <td>{{ctrl.jvmInfo.lastUpdated | metricToBigInt | bigIntToString | stringToNumber | unixToDate}}</td>
           </tr>
           <tr>
             <td>JVM PID</td>
@@ -84,9 +84,7 @@
             <td>Environment Variables</td>
             <td>
               <span ng-repeat="env in ctrl.jvmInfo.environment">
-                <span ng-repeat="(key, val) in env">
-                  {{key}}="{{val}}"
-                </span>
+                {{env.key}}="{{env.value}}"
                 <br/>
               </span>
             </td>
