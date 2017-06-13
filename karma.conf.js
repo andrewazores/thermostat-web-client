@@ -10,6 +10,7 @@ module.exports = function (config) {
     ],
 
     preprocessors: {
+      'src/app/components/auth/keycloak.stub.js': ['webpack', 'sourcemap'],
       'src/tests.webpack.js': ['webpack', 'sourcemap']
     },
 

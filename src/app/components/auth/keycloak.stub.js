@@ -25,9 +25,36 @@
  * exception statement from your version.
  */
 
-var errorSpy = sinon.spy();
-var successSpy = sinon.stub().yields().returns({error: errorSpy});
-var initSpy = sinon.stub().returns({success: successSpy});
-var keycloakProvider = sinon.stub().returns({init: initSpy});
+export default function Keycloak () {
+  let initError = sinon.spy();
+  let initSuccess = sinon.stub().yields().returns({
+    error: initError
+  });
+  let init = sinon.stub().returns({
+    success: initSuccess
+  });
 
-window.Keycloak = keycloakProvider;
+  let updateTokenError = sinon.spy();
+  let updateTokenSuccess = sinon.stub().yields().returns({
+    error: updateTokenError
+  });
+  let updateToken = sinon.stub().returns({
+    success: updateTokenSuccess
+  });
+
+  let Keycloak = sinon.stub().returns({
+    init: init,
+    initSuccess: initSuccess,
+    initError: initError,
+
+    updateToken: updateToken,
+    updateTokenSuccess: updateTokenSuccess,
+    updateTokenError: updateTokenError
+  });
+
+  return Keycloak;
+}
+
+module.exports = Keycloak;
+
+window.Keycloak = Keycloak();

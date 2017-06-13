@@ -27,6 +27,7 @@
 
 var fs = require('fs'),
   path = require('path'),
+  glob = require('glob'),
   _ = require('lodash');
 
 var host = 'localhost';
@@ -59,9 +60,5 @@ exports.config = {
   params: {
     webClientUrl: 'http://' + host + ':' + port + '/'
   },
-  specs: ['test-env.js',
-          'specs/license-check/license-check.spec.js']
-          .concat(fs.readdirSync(path.resolve(__dirname, 'specs'))
-          .filter(v => _.endsWith(v, '.spec.js'))
-          .map(v => 'specs/' + v))
+  specs: ['test-env.js'].concat(glob.sync(__dirname + '/specs/**/*.spec.js'))
 };

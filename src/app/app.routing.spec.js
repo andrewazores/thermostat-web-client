@@ -29,14 +29,36 @@ describe('ErrorRouting', () => {
 
   let module = require('./app.routing.js');
 
-  let stateProvider, urlRouterProvider, args, q;
+  let stateProvider, urlRouterProvider, q, transitions, authSvc;
 
   beforeEach(() => {
     stateProvider = { state: sinon.spy() };
     urlRouterProvider = { otherwise: sinon.spy() };
-    module.errorRouting(stateProvider, urlRouterProvider);
-    args = stateProvider.state.args[0];
+
     q = sinon.spy();
+    q.defer = sinon.stub().returns({
+      resolve: sinon.spy(),
+      reject: sinon.spy()
+    });
+
+    let authSvcRefreshError = sinon.stub();
+    let authSvcRefreshSuccess = sinon.stub().returns({ error: authSvcRefreshError });
+    authSvc = {
+      login: sinon.spy(),
+      logout: sinon.spy(),
+      refresh: sinon.stub().returns({
+        success: authSvcRefreshSuccess
+      }),
+      refreshSuccess: authSvcRefreshSuccess,
+      refreshError: authSvcRefreshError,
+      status: () => true
+    };
+    transitions = {
+      onBefore: sinon.spy()
+    };
+
+    module.errorRouting(stateProvider, urlRouterProvider);
+    module.transitionHook(q, transitions, authSvc);
   });
 
   describe('stateProvider', () => {
@@ -45,10 +67,12 @@ describe('ErrorRouting', () => {
     });
 
     it('should define a \'404\' state', () => {
+      let args = stateProvider.state.args[0];
       args[0].should.equal('404');
     });
 
     it('template provider should return 404.html', done => {
+      let args = stateProvider.state.args[0];
       let providerFn = args[1].templateProvider[1];
       providerFn.should.be.a.Function();
       providerFn(q);
@@ -58,11 +82,10 @@ describe('ErrorRouting', () => {
       deferred.should.be.a.Function();
 
       let resolve = sinon.stub().callsFake(val => {
-        val.should.equal(require('./shared/error-templates/404.html'));
+        val.should.equal(require('./shared/templates/404.html'));
         done();
       });
       deferred(resolve);
-      done();
     });
   });
 
@@ -79,6 +102,48 @@ describe('ErrorRouting', () => {
       injectorFn.should.be.a.Function();
       injectorFn($injector);
     });
-
   });
+
+  describe('state change hook', () => {
+    it('should be on state change start', () => {
+      transitions.onBefore.should.be.calledOnce();
+    });
+
+    it('should match all transitions', () => {
+      transitions.onBefore.args[0][0].should.deepEqual({});
+    });
+
+    it('should provide a transition function', () => {
+      transitions.onBefore.args[0][1].should.be.a.Function();
+    });
+
+    it('should call authService.refresh()', () => {
+      authSvc.refresh.should.not.be.called();
+
+      transitions.onBefore.args[0][1]();
+
+      authSvc.refresh.should.be.calledOnce();
+    });
+
+    it('should resolve on success', () => {
+      q.defer().resolve.should.not.be.called();
+
+      authSvc.refreshSuccess.yields();
+      transitions.onBefore.args[0][1]();
+
+      q.defer().resolve.should.be.calledOnce();
+    });
+
+    it('should reject on error', () => {
+      q.defer().reject.should.not.be.called();
+      authSvc.login.should.not.be.called();
+
+      authSvc.refreshError.yields();
+      transitions.onBefore.args[0][1]();
+
+      q.defer().reject.should.be.calledOnce();
+      authSvc.login.should.be.calledOnce();
+    });
+  });
+
 });
