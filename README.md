@@ -86,10 +86,10 @@ require the embedded webserver to be running, using ex. `npm start`.
 ### Source-to-Image
 
 `s2i` can also be used to produce an application image. The expected base image
-is `centos/nodejs-4-centos7`, although others may also work. The build invocation
-will look like `s2i build . centos/nodejs-4-centos7 thermostat-web-client` and
-running the image will look like `docker run -it --rm -p 8888:8080 thermostat-web-client`,
-which will bind the application to port 8888 on the host machine.
+is `centos/nodejs-6-centos7`, although others may also work. The build invocation
+will look like `s2i build . centos/nodejs-6-centos7 thermostat-web-client` and
+running the image will look like `docker run -it --rm -p 9090:8080 thermostat-web-client`,
+which will bind the application to port 9090 on the host machine.
 
 The `PORT` and `HOST` variables outlined above may also be set in `.s2i/environment`.
 
@@ -97,7 +97,7 @@ The `PORT` and `HOST` variables outlined above may also be set in `.s2i/environm
 
 In order to deploy this web-client on OpenShift do:
 
-    $ oc new-app centos/nodejs-4-centos7~https://github.com/andrewazores/thermostat-web-client
+    $ oc new-app centos/nodejs-6-centos7~https://github.com/andrewazores/thermostat-web-client
 
 ## Keycloak Configuration
 
