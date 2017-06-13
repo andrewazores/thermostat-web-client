@@ -82,7 +82,7 @@ describe('JvmMemory controller', () => {
     ctrl.should.have.ownProperty('metaspaceConfig');
     ctrl.metaspaceConfig.should.deepEqual({
       chartId: 'metaspaceChart',
-      units: 'MiB'
+      units: 'KiB'
     });
   });
 
@@ -182,8 +182,8 @@ describe('JvmMemory controller', () => {
     it('should update metaspaceData', () => {
       func(data);
       ctrl.metaspaceData.should.deepEqual({
-        used: 20,
-        total: 40
+        used: 20480,
+        total: 40960
       });
     });
 
@@ -197,8 +197,8 @@ describe('JvmMemory controller', () => {
           spaces: [
             {
               index: 0,
-              used: 20,
-              total: 50
+              used: 20480,
+              total: 51200
             }
           ]
         }
@@ -220,8 +220,8 @@ describe('JvmMemory controller', () => {
           spaces: [
             {
               index: 0,
-              used: 50,
-              total: 100
+              used: 51200,
+              total: 102400
             }
           ]
         }

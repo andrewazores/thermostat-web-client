@@ -35,7 +35,7 @@ class JvmMemoryController {
     this.jvmMemoryService = jvmMemoryService;
 
     this.convertMemStat = obj => {
-      let bigInt = metricToBigIntFilter(obj, 1024 * 1024);
+      let bigInt = metricToBigIntFilter(obj, 1024);
       let str = bigIntToStringFilter(bigInt);
       let num = stringToNumberFilter(str);
       return _.ceil(num);
@@ -50,7 +50,7 @@ class JvmMemoryController {
 
     this.metaspaceConfig = {
       chartId: 'metaspaceChart',
-      units: 'MiB'
+      units: 'KiB'
     };
 
     this.spaceConfigs = [];
@@ -113,7 +113,7 @@ class JvmMemoryController {
           if (!this.spaceConfigs.hasOwnProperty(spaceKey)) {
             this.spaceConfigs[spaceKey] = {
               chartId: spaceKey,
-              units: 'MiB'
+              units: 'KiB'
             };
           }
         }

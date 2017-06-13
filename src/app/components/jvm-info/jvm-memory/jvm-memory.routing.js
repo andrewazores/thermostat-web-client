@@ -57,5 +57,6 @@ export { config };
 
 export default angular.module('jvmMemory.routing',
   [
+    'patternfly'
   ]
 ).config(config);

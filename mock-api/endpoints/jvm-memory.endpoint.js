@@ -21,7 +21,7 @@ function jvmMemory (server) {
           {
             agentId: 'foo-agentId',
             jvmId: jvmId,
-            timeStamp: Date.now(),
+            timeStamp: { $numberLong: Date.now().toString() },
             metaspaceMaxCapacity: { $numberLong: '0' },
             metaspaceMinCapacity: { $numberLong: '0' },
             metaspaceCapacity: { $numberLong: (4096 * 1024 * 1024).toString() },
