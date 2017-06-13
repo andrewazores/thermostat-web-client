@@ -51,22 +51,4 @@ export const appModule = angular.module('appModule',
   ]
 ).controller('AppController', AppController);
 
-AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(
-  () => {
-    appModule.run(($q, $transitions, authService) => {
-      'ngInject';
-      $transitions.onBefore({}, () => {
-        let defer = $q.defer();
-        authService.refresh()
-          .success(() => defer.resolve())
-          .error(() => {
-            defer.reject('Keycloak token update failed');
-            authService.login();
-          });
-        return defer.promise;
-      });
-    });
-
-    angular.bootstrap(document, [appModule.name]);
-  }
-));
+AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule.name])));

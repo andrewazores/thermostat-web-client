@@ -65,4 +65,19 @@ function errorRouting ($stateProvider, $urlRouterProvider) {
   });
 }
 
-export { errorRouting };
+function transitionHook ($q, $transitions, authService) {
+  'ngInject';
+  $transitions.onBefore({}, () => {
+    let defer = $q.defer();
+    authService.refresh()
+      .success(() => defer.resolve())
+      .error(() => {
+        defer.reject('Auth token update failed');
+        authService.login();
+      });
+    return defer.promise;
+  });
+};
+appRouter.run(transitionHook);
+
+export { errorRouting, transitionHook };
