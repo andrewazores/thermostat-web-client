@@ -82,11 +82,10 @@ describe('ErrorRouting', () => {
       deferred.should.be.a.Function();
 
       let resolve = sinon.stub().callsFake(val => {
-        val.should.equal(require('./shared/error-templates/404.html'));
+        val.should.equal(require('./shared/templates/404.html'));
         done();
       });
       deferred(resolve);
-      done();
     });
   });
 
