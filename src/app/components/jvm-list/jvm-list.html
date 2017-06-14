@@ -47,7 +47,7 @@
                   </div>
                   <div class="card-pf-body">
                     <h2 class="card-pf-title text-center ellipsis-word-wrap">
-                      {{ctrl.extractClassName(jvm.mainClass)}}
+                      {{jvm.mainClass | extractClass:true }}
                     </h2>
                     <div class="card-pf-info text-center">
                       <strong>Created On</strong> {{jvm.startTime | timeStampToDate}}
@@ -60,9 +60,9 @@
             </div>
           </div><!-- /row -->
         </div>
-      </uib-accordion-group>
+        </uib-accordion-group>
 
-    </uib-accordion>
+        </uib-accordion>
   </div>
 
 </div><!-- /container -->

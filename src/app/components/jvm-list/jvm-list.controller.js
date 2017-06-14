@@ -88,15 +88,6 @@ class JvmListController {
     this.timeout(this.anchorScroll);
   }
 
-  extractClassName (fullClassName) {
-    if (fullClassName.indexOf('.') === -1) {
-      return fullClassName;
-    }
-
-    let split = fullClassName.split('.');
-    return split[split.length - 1];
-  }
-
 }
 
 export default angular.module('jvmList.controller',

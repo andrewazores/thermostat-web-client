@@ -164,20 +164,6 @@ describe('JvmListController', () => {
     });
   });
 
-  describe('extractClassName', () => {
-    it('should return early if class name is bare', () => {
-      let val = 'className';
-      let res = ctrl.extractClassName(val);
-      res.should.equal(val);
-    });
-
-    it('should return class name given fully qualified name', () => {
-      let val = 'foo.bar.Baz';
-      let res = ctrl.extractClassName(val);
-      res.should.equal('Baz');
-    });
-  });
-
   describe('onload', () => {
     it('should call timeout with argument of anchorScroll', () => {
       timeout.reset();
