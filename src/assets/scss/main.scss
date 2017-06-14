@@ -40,3 +40,9 @@
 .break-word-wrap {
   overflow-wrap: break-word;
 }
+
+.ellipsis-word-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

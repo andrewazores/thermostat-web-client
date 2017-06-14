@@ -22,7 +22,7 @@
                   <span class="pficon pficon-container-node card-pf-icon-circle"></span>
                 </div>
                 <div class="card-pf-body">
-                  <h2 class="card-pf-title text-center">
+                  <h2 class="card-pf-title text-center ellipsis-word-wrap">
                     {{system.systemId}}
                   </h2>
                   <p class="card-pf-info text-center">Monitored System</p>
@@ -38,7 +38,7 @@
                     <span class="pficon pficon-virtual-machine card-pf-icon-circle"></span>
                   </div>
                   <div class="card-pf-body">
-                    <h2 class="card-pf-title text-center">
+                    <h2 class="card-pf-title text-center ellipsis-word-wrap">
                       {{ctrl.extractClassName(jvm.mainClass)}}
                     </h2>
                     <p class="card-pf-info text-center"><strong>Created On</strong> {{jvm.startTime | metricToBigInt | bigIntToString | stringToNumber | unixToDate}}</p>
