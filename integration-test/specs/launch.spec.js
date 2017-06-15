@@ -1,11 +1,12 @@
 describe('Basic web-client launch', function () {
-  it('should successfully load', done => {
-    browser.get(browser.params.webClientUrl);
-    browser.waitForAngular().then(() => done());
-  });
+
+  beforeEach(require('../login-helper.js'));
 
   it('should set page title', () => {
-    browser.get(browser.params.webClientUrl);
     browser.getTitle().should.eventually.equal('Thermostat');
+  });
+
+  it('should navigate to landing state', () => {
+    browser.getCurrentUrl().should.eventually.containEql('landing');
   });
 });
