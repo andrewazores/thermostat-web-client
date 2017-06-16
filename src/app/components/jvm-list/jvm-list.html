@@ -41,7 +41,7 @@
                     <h2 class="card-pf-title text-center ellipsis-word-wrap">
                       {{ctrl.extractClassName(jvm.mainClass)}}
                     </h2>
-                    <p class="card-pf-info text-center"><strong>Created On</strong> {{jvm.startTime | metricToBigInt | bigIntToString | stringToNumber | unixToDate}}</p>
+                    <p class="card-pf-info text-center"><strong>Created On</strong> {{jvm.startTime | timeStampToDate}}</p>
                   </div>
                 </div>
               </div>
