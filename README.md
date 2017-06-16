@@ -83,6 +83,15 @@ suite when any test file changes.
 To run integration tests separately, use `npm run integration-test`. This will
 require the embedded webserver to be running, using ex. `npm start`.
 
+### Development Tips
+
+1. `npm completion` outputs a script which will enable completion for things like
+`npm run <TAB><TAB>`, which will offer completions for web-client build and run
+scripts. You can save this file in your home directory and source it in your
+`.bashrc` for example, or put it somewhere system-wide. On Fedora, putting the
+output of this command in the file `/etc/bash_completion.d/npm` will work for
+system-wide completion enabling.
+
 ### Source-to-Image
 
 `s2i` can also be used to produce an application image. The expected base image
