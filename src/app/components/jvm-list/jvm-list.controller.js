@@ -52,6 +52,11 @@ class JvmListController {
           this.systemsOpen[system.systemId] = false;
         }
 
+        if (this.systems.length === 1) {
+          this.systemsOpen[this.systems[0].systemId] = true;
+          this.onload();
+        }
+
         let hash = this.location.hash();
         if (hash) {
           this.systemsOpen[hash] = true;

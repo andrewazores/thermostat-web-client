@@ -111,6 +111,44 @@ describe('JvmListController', () => {
       done();
     });
 
+    it('should set systemsOpen to false for multiple results with no hash', done => {
+      let data = {
+        response: [
+          {
+            systemId: 'foo'
+          },
+          {
+            systemId: 'bar'
+          }
+        ]
+      };
+      promise.resolve({ data: data });
+      scope.$apply();
+      ctrl.systemsOpen.should.deepEqual({
+        foo: false,
+        bar: false
+      });
+      onloadSpy.should.not.be.called();
+      done();
+    });
+
+    it('should set systemsOpen to true for singleton result', done => {
+      let data = {
+        response: [
+          {
+            systemId: 'foo'
+          }
+        ]
+      };
+      promise.resolve({ data: data });
+      scope.$apply();
+      ctrl.systemsOpen.should.deepEqual({
+        foo: true
+      });
+      onloadSpy.should.be.calledOnce();
+      done();
+    });
+
     it('should set error flag when service rejects', done => {
       promise.reject();
       scope.$apply();
