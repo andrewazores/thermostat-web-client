@@ -25,18 +25,16 @@
  * exception statement from your version.
  */
 
-let mod = angular.module('app.filters',
-  [
-    'app.services'
-  ]
-);
+import big from 'big.js';
 
-(function requireFilters () {
-  let req = require.context('./', true, /\.filter\.js/);
-  req.keys().map(v => {
-    let f = req(v);
-    mod.filter(f.filterName, f.default);
-  });
-})();
+class MetricToBigIntService {
+  constructor () {
+    this.big = big;
+  }
 
-export default mod;
+  convert (metric) {
+    return this.big(metric.$numberLong);
+  }
+}
+
+angular.module('app.services').service('metricToBigIntService', MetricToBigIntService);

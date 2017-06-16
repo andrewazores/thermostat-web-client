@@ -29,7 +29,7 @@ describe('JvmMemory controller', () => {
 
   beforeEach(angular.mock.module('jvmMemory.controller'));
 
-  let scope, interval, svc, promise, ctrl;
+  let scope, interval, memSvc, scaleSvc, promise, ctrl;
   beforeEach(inject($controller => {
     'ngInject';
 
@@ -44,15 +44,22 @@ describe('JvmMemory controller', () => {
     promise = {
       then: sinon.spy()
     };
-    svc = {
+    memSvc = {
       getJvmMemory: sinon.stub().returns(promise)
+    };
+    scaleSvc = {
+      format: sinon.stub().returns({
+        scale: 1024 * 1024,
+        unit: 'MiB'
+      })
     };
 
     ctrl = $controller('jvmMemoryController', {
       jvmId: 'foo-jvmId',
       $scope: scope,
       $interval: interval,
-      jvmMemoryService: svc
+      jvmMemoryService: memSvc,
+      scaleBytesService: scaleSvc
     });
 
     sinon.spy(ctrl, 'setRefreshRate');
@@ -82,12 +89,12 @@ describe('JvmMemory controller', () => {
     ctrl.should.have.ownProperty('metaspaceConfig');
     ctrl.metaspaceConfig.should.deepEqual({
       chartId: 'metaspaceChart',
-      units: 'KiB'
+      units: 'B'
     });
   });
 
   it('should update on init', () => {
-    svc.getJvmMemory.should.be.calledWith('foo-jvmId');
+    memSvc.getJvmMemory.should.be.calledWith('foo-jvmId');
   });
 
   it('should reset interval on refreshRate change', () => {
@@ -160,15 +167,15 @@ describe('JvmMemory controller', () => {
                 {
                   capacity: { $numberLong: (10 * 1024 * 1024).toString() },
                   collector: 'Shenandoah',
-                  maxCapacity: { $numberLong: (20 * 1024 * 1024).toString() },
+                  maxCapacity: { $numberLong: (60 * 1024 * 1024).toString() },
                   name: 'Generation 0',
                   spaces: [
                     {
                       capacity: { $numberLong: (50 * 1024 * 1024).toString() },
                       index: 0,
-                      maxCapacity: { $numberLong: (100 * 1024 * 1024).toString() },
+                      maxCapacity: { $numberLong: (80 * 1024 * 1024).toString() },
                       name: 'Gen 0 Space 0',
-                      used: { $numberLong: (20 * 1024 * 1024).toString() }
+                      used: { $numberLong: (30 * 1024 * 1024).toString() }
                     }
                   ]
                 }
@@ -177,18 +184,19 @@ describe('JvmMemory controller', () => {
           ]
         }
       };
+      func(data);
     });
 
     it('should update metaspaceData', () => {
-      func(data);
       ctrl.metaspaceData.should.deepEqual({
-        used: 20480,
-        total: 40960
+        used: 20,
+        total: 40
       });
+      scaleSvc.format.should.be.calledTwice();
+      scaleSvc.format.should.be.calledWithMatch({ $numberLong: (20 * 1024 * 1024).toString() });
     });
 
     it('should add generationData', () => {
-      func(data);
       ctrl.generationData.should.deepEqual({
         0: {
           index: 0,
@@ -197,16 +205,17 @@ describe('JvmMemory controller', () => {
           spaces: [
             {
               index: 0,
-              used: 20480,
-              total: 51200
+              used: 30,
+              total: 50
             }
           ]
         }
       });
+      scaleSvc.format.should.be.calledTwice();
+      scaleSvc.format.should.be.calledWithMatch({ $numberLong: (30 * 1024 * 1024).toString() });
     });
 
     it('should update generationData on repeated calls', () => {
-      func(data);
       let generation = data.data.response[0].generations[0];
       let space = generation.spaces[0];
       space.capacity = { $numberLong: (100 * 1024 * 1024).toString() };
@@ -220,12 +229,17 @@ describe('JvmMemory controller', () => {
           spaces: [
             {
               index: 0,
-              used: 51200,
-              total: 102400
+              used: 50,
+              total: 100
             }
           ]
         }
       });
+      scaleSvc.format.callCount.should.equal(4);
+      scaleSvc.format.args[0][0].should.deepEqual({ $numberLong: (20 * 1024 * 1024).toString() });
+      scaleSvc.format.args[1][0].should.deepEqual({ $numberLong: (30 * 1024 * 1024).toString() });
+      scaleSvc.format.args[2][0].should.deepEqual({ $numberLong: (20 * 1024 * 1024).toString() });
+      scaleSvc.format.args[3][0].should.deepEqual({ $numberLong: (50 * 1024 * 1024).toString() });
     });
   });
 

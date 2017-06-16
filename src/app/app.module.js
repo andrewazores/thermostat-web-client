@@ -32,6 +32,7 @@ import 'es6-promise/auto';
 import {default as CFG_MODULE} from './shared/config/config.module.js';
 import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
 import './shared/filters/filters.module.js';
+import './shared/services/services.module.js';
 import './app.routing.js';
 import AppController from './app.controller.js';
 

@@ -25,18 +25,34 @@
  * exception statement from your version.
  */
 
-let mod = angular.module('app.filters',
-  [
-    'app.services'
-  ]
-);
+class ScaleBytesService {
+  constructor (metricToBigIntService) {
+    'ngInject';
+    this.metricToBigInt = metricToBigIntService;
+  }
 
-(function requireFilters () {
-  let req = require.context('./', true, /\.filter\.js/);
-  req.keys().map(v => {
-    let f = req(v);
-    mod.filter(f.filterName, f.default);
-  });
-})();
+  get sizes() {
+    return ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+  }
 
-export default mod;
+  format (bytesMetric, dp = 2) {
+    const base = 1024;
+    let big = this.metricToBigInt.convert(bytesMetric);
+
+    let log = 0;
+    while (big.gte(base)) {
+      // big.js doesn't support log, so we do this instead
+      big = big.div(base);
+      log++;
+    }
+
+    let scale = Math.pow(1024, log);
+    return {
+      result: parseFloat(this.metricToBigInt.convert(bytesMetric).div(scale).toFixed(dp)),
+      scale: scale,
+      unit: this.sizes[log]
+    };
+  }
+}
+
+angular.module('app.services').service('scaleBytesService', ScaleBytesService);

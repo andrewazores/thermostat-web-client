@@ -25,18 +25,29 @@
  * exception statement from your version.
  */
 
-let mod = angular.module('app.filters',
-  [
-    'app.services'
-  ]
-);
+import big from 'big.js';
 
-(function requireFilters () {
-  let req = require.context('./', true, /\.filter\.js/);
-  req.keys().map(v => {
-    let f = req(v);
-    mod.filter(f.filterName, f.default);
+describe('MetricToBigIntService', () => {
+
+  let svc;
+
+  beforeEach(angular.mock.module('app.services'));
+
+  beforeEach(inject(metricToBigIntService => {
+    'ngInject';
+    svc = metricToBigIntService;
+    sinon.spy(svc, 'big');
+  }));
+
+  afterEach(() => {
+    svc.big.restore();
   });
-})();
 
-export default mod;
+  it('should delegate to big.js function', () => {
+    svc.big.should.not.be.called();
+    svc.convert({ $numberLong: '0' }).should.deepEqual(big(0));
+    svc.big.should.be.calledOnce();
+    svc.big.should.be.calledWith('0');
+  });
+
+});

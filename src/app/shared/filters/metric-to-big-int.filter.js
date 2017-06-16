@@ -25,15 +25,14 @@
  * exception statement from your version.
  */
 
-import big from 'big.js';
-
-export default function filterProvider () {
+export default function filterProvider (metricToBigIntService) {
+  'ngInject';
   return (val, scale = 1) => {
     // in case the filter is invoked on asynchronously loaded data and
     // 'val' is undefined, we want to avoid throwing an error below
     val = val || { $numberLong: '0' };
 
-    let res = big(val.$numberLong);
+    let res = metricToBigIntService.convert(val);
     // 'big(undefined)' does not have any functions defined on it,
     // so we can detect that case this way
     if (res.div) {
