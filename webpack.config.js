@@ -19,7 +19,8 @@ module.exports = function () {
       'jquery': 'angular-patternfly/node_modules/patternfly/node_modules/jquery',
       'angular': 'angular-patternfly/node_modules/angular',
       'd3': 'angular-patternfly/node_modules/patternfly/node_modules/d3',
-      'c3': 'angular-patternfly/node_modules/patternfly/node_modules/c3'
+      'c3': 'angular-patternfly/node_modules/patternfly/node_modules/c3',
+      'bootstrap-switch': 'angular-patternfly/node_modules/patternfly/node_modules/bootstrap-switch'
     }
   };
 

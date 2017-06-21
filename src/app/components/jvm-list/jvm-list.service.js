@@ -34,12 +34,12 @@ class JvmListService {
     this.gatewayUrl = gatewayUrl;
   }
 
-  getSystems() {
+  getSystems (aliveOnly = false) {
     return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'tree'), {
       params: {
         limit: 0,
-        aliveOnly: true,
-        include: 'jvmId,mainClass,startTime'
+        aliveOnly: aliveOnly,
+        include: 'jvmId,mainClass,startTime,stopTime,isAlive'
       }
     });
   }

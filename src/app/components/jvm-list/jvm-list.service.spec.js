@@ -87,13 +87,35 @@ describe('JvmListService', () => {
           ]
         }
       ];
-      httpBackend.when('GET', 'http://example.com:1234/jvms/0.0.1/tree?limit=0&aliveOnly=true&include=jvmId,mainClass,startTime')
+      httpBackend.when('GET', 'http://example.com:1234/jvms/0.0.1/tree?limit=0&aliveOnly=false&include=jvmId,mainClass,startTime,stopTime,isAlive')
         .respond(expected);
       svc.getSystems().then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://example.com:1234/jvms/0.0.1/tree?limit=0&aliveOnly=true&include=jvmId,mainClass,startTime');
+      httpBackend.expectGET('http://example.com:1234/jvms/0.0.1/tree?limit=0&aliveOnly=false&include=jvmId,mainClass,startTime,stopTime,isAlive');
+      httpBackend.flush();
+      scope.$apply();
+    });
+
+    it('should use aliveOnly=false parameter', done => {
+      httpBackend.when('GET', 'http://example.com:1234/jvms/0.0.1/tree?limit=0&aliveOnly=false&include=jvmId,mainClass,startTime,stopTime,isAlive')
+        .respond({});
+      svc.getSystems(false).then(() => {
+        done();
+      });
+      httpBackend.expectGET('http://example.com:1234/jvms/0.0.1/tree?limit=0&aliveOnly=false&include=jvmId,mainClass,startTime,stopTime,isAlive');
+      httpBackend.flush();
+      scope.$apply();
+    });
+
+    it('should use aliveOnly=true parameter', done => {
+      httpBackend.when('GET', 'http://example.com:1234/jvms/0.0.1/tree?limit=0&aliveOnly=true&include=jvmId,mainClass,startTime,stopTime,isAlive')
+        .respond({});
+      svc.getSystems(true).then(() => {
+        done();
+      });
+      httpBackend.expectGET('http://example.com:1234/jvms/0.0.1/tree?limit=0&aliveOnly=true&include=jvmId,mainClass,startTime,stopTime,isAlive');
       httpBackend.flush();
       scope.$apply();
     });

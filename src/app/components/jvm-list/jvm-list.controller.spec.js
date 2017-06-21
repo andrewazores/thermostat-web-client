@@ -29,9 +29,13 @@ describe('JvmListController', () => {
 
   beforeEach(angular.mock.module('jvmList.controller'));
 
-  let ctrl, scope, promise, location, timeout, anchorScroll, onloadSpy;
+  let ctrl, svc, scope, promise, location, timeout, anchorScroll;
   beforeEach(inject(($q, $rootScope, $controller) => {
     'ngInject';
+    sinon.stub(angular, 'element').withArgs('#aliveOnlyState').returns({
+      bootstrapSwitch: sinon.spy(),
+      on: sinon.spy()
+    });
     scope = $rootScope;
     promise = $q.defer();
     location = {
@@ -40,20 +44,22 @@ describe('JvmListController', () => {
     timeout = sinon.spy();
     anchorScroll = sinon.spy();
 
-    let jvmListService = {
-      getSystems: () => promise.promise
+    svc = {
+      getSystems: sinon.stub().returns(promise.promise)
     };
     ctrl = $controller('jvmListController', {
-      jvmListService: jvmListService,
+      jvmListService: svc,
       $location: location,
+      $scope: scope,
       $timeout: timeout,
       $anchorScroll: anchorScroll
     });
-    onloadSpy = sinon.spy(ctrl, 'onload');
+    sinon.spy(ctrl, 'onload');
   }));
 
   afterEach(() => {
-    onloadSpy.restore();
+    ctrl.onload.restore();
+    angular.element.restore();
   });
 
   it('should exist', () => {
@@ -85,7 +91,7 @@ describe('JvmListController', () => {
         foo: false,
         bar: false
       });
-      onloadSpy.should.not.be.called();
+      ctrl.onload.should.be.calledOnce();
       done();
     });
 
@@ -107,7 +113,7 @@ describe('JvmListController', () => {
         foo: true,
         bar: false
       });
-      onloadSpy.should.be.calledOnce();
+      ctrl.onload.should.be.calledOnce();
       done();
     });
 
@@ -128,7 +134,7 @@ describe('JvmListController', () => {
         foo: false,
         bar: false
       });
-      onloadSpy.should.not.be.called();
+      ctrl.onload.should.be.calledOnce();
       done();
     });
 
@@ -145,7 +151,7 @@ describe('JvmListController', () => {
       ctrl.systemsOpen.should.deepEqual({
         foo: true
       });
-      onloadSpy.should.be.calledOnce();
+      ctrl.onload.should.be.calledOnce();
       done();
     });
 
@@ -177,6 +183,59 @@ describe('JvmListController', () => {
       timeout.reset();
       ctrl.onload();
       timeout.should.be.calledWith(anchorScroll);
+    });
+  });
+
+  describe('isAlive', () => {
+    it('should be a scope function', () => {
+      scope.should.have.ownProperty('isAlive');
+      scope.isAlive.should.be.a.Function();
+    });
+
+    it('should return false for object without stopTime', () => {
+      scope.isAlive({ foo: 'bar'} ).should.equal(false);
+    });
+
+    it('should return false for object with positive stopTime', () => {
+      scope.isAlive({ stopTime: { $numberLong: '100' } }).should.equal(false);
+    });
+
+    it('should return true for object with negative stopTime', () => {
+      scope.isAlive({ stopTime: { $numberLong: '-100' } }).should.equal(true);
+    });
+
+    it('should return false for object with zero stopTime', () => {
+      scope.isAlive({ stopTime: { $numberLong: '0' } }).should.equal(false);
+    });
+  });
+
+  describe('aliveOnly', () => {
+    it('should default to true', () => {
+      ctrl.should.have.ownProperty('aliveOnly');
+      ctrl.aliveOnly.should.equal(true);
+    });
+
+    it('should be bound to aliveOnlyState', () => {
+      angular.element.should.be.calledWith('#aliveOnlyState');
+    });
+
+    it('should set up bootstrap switch', () => {
+      angular.element('#aliveOnlyState').bootstrapSwitch.should.be.calledOnce();
+    });
+
+    it('should update state on switch event', () => {
+      let stateWidget = angular.element('#aliveOnlyState');
+      stateWidget.on.should.be.calledOnce();
+      stateWidget.on.should.be.calledWith('switchChange.bootstrapSwitch', sinon.match.func);
+
+      svc.getSystems.should.be.calledOnce();
+      svc.getSystems.firstCall.should.be.calledWith(true);
+      let fn = stateWidget.on.args[0][1];
+      fn(null, false);
+      ctrl.aliveOnly.should.equal(false);
+      svc.getSystems.should.be.calledTwice();
+      svc.getSystems.secondCall.should.be.calledWith(false);
+      promise.resolve();
     });
   });
 

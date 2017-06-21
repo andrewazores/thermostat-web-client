@@ -28,6 +28,7 @@
 import 'angular-patternfly';
 import '@uirouter/angularjs';
 import 'es6-promise/auto';
+import 'bootstrap-switch';
 
 import {default as CFG_MODULE} from './shared/config/config.module.js';
 import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
@@ -39,6 +40,7 @@ import AppController from './app.controller.js';
 require.ensure([], () => {
   require('angular-patternfly/node_modules/patternfly/dist/css/patternfly.css');
   require('angular-patternfly/node_modules/patternfly/dist/css/patternfly-additions.css');
+  require('bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css');
   require('../assets/scss/app.scss');
 });
 
