@@ -25,32 +25,33 @@
  * exception statement from your version.
  */
 
-export default class KeycloakAuthService {
+import authModule from './components/auth/auth.module.js';
 
-  constructor (keycloak) {
-    this.keycloak = keycloak;
-  }
+let name = 'authInterceptor';
 
-  login (user, pass, success = angular.noop) {
-    this.keycloak.login();
-    success();
-  }
+export default angular.module(name,
+  [
+    authModule
+  ]
+).factory(name, ($q, authService) => {
+  'ngInject';
+  return {
+    request: config => {
+      var defer = $q.defer();
 
-  logout () {
-    this.keycloak.logout();
-  }
+      if (authService.token) {
+        authService.refresh()
+          .success(() => {
+            config.headers = config.headers || {};
+            config.headers.Authorization = 'Bearer ' + authService.token;
+            defer.resolve(config);
+          })
+          .error(() => {
+            defer.reject('Failed to refresh token');
+          });
+      }
 
-  status () {
-    return this.keycloak.authenticated;
-  }
-
-  refresh () {
-    // refresh the token if it expires within 300 seconds
-    return this.keycloak.updateToken(300);
-  }
-
-  get token () {
-    return this.keycloak.token;
-  }
-
-}
+      return defer.promise;
+    }
+  };
+}).name;

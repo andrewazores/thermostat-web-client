@@ -35,6 +35,7 @@ import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components
 import 'shared/filters/filters.module.js';
 import 'shared/services/services.module.js';
 import './app.routing.js';
+import authInterceptor from './auth-interceptor.factory.js';
 import AppController from './app.controller.js';
 
 require.ensure([], () => {
@@ -50,8 +51,13 @@ export const appModule = angular.module('appModule',
     CFG_MODULE,
     AUTH_MODULE,
     // non-core modules
-    'app.routing'
+    'app.routing',
+    authInterceptor
   ]
-).controller('AppController', AppController);
+).controller('AppController', AppController)
+  .config($httpProvider => {
+    'ngInject';
+    $httpProvider.interceptors.push(authInterceptor);
+  });
 
 AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule.name])));

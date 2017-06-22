@@ -42,7 +42,8 @@ describe('KeycloakAuthService', () => {
       login: login,
       logout: logout,
       updateToken: refresh,
-      authenticated: authenticated
+      authenticated: authenticated,
+      token: 'fakeToken'
     };
     keycloakAuthService = new KeycloakAuthService(mockCloak);
   });
@@ -81,6 +82,13 @@ describe('KeycloakAuthService', () => {
       let res = keycloakAuthService.refresh();
       res.should.equal('refresh-foo');
       refresh.should.be.calledOnce();
+    });
+  });
+
+  describe('#get token()', () => {
+    it('should delegate to Keycloak object', () => {
+      let res = keycloakAuthService.token;
+      res.should.equal('fakeToken');
     });
   });
 });
