@@ -28,8 +28,8 @@
 import moment from 'moment';
 
 export default function filterProvider (formatter = moment) {
-  return timestamp => {
-    return formatter(timestamp).format('lll');
+  return (timestamp, format = 'lll') => {
+    return formatter(timestamp).format(format);
   }
 }
 

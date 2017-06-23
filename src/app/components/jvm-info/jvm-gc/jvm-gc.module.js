@@ -25,38 +25,12 @@
  * exception statement from your version.
  */
 
-import 'angular-patternfly';
-import '@uirouter/angularjs';
-import 'bootstrap-switch';
+import './jvm-gc.controller.js';
+import './jvm-gc.service.js';
 
-import {default as CFG_MODULE} from 'shared/config/config.module.js';
-import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
-import 'shared/filters/filters.module.js';
-import 'shared/services/services.module.js';
-import './app.routing.js';
-import authInterceptor from './auth-interceptor.factory.js';
-import AppController from './app.controller.js';
-
-require.ensure([], () => {
-  require('angular-patternfly/node_modules/patternfly/dist/css/patternfly.css');
-  require('angular-patternfly/node_modules/patternfly/dist/css/patternfly-additions.css');
-  require('bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css');
-  require('scss/app.scss');
-});
-
-export const appModule = angular.module('appModule',
+export default angular.module('jvmGc',
   [
-    'ui.router',
-    CFG_MODULE,
-    AUTH_MODULE,
-    // non-core modules
-    'app.routing',
-    authInterceptor
+    'jvmGc.controller',
+    'jvmGc.service'
   ]
-).controller('AppController', AppController)
-  .config($httpProvider => {
-    'ngInject';
-    $httpProvider.interceptors.push(authInterceptor);
-  });
-
-AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule.name])));
+);

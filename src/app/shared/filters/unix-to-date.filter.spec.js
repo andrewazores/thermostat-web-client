@@ -54,4 +54,11 @@ describe('unixToDate filter', () => {
     momentStub.should.be.calledWith(timestamp);
     formatSpy.should.be.calledWith('lll');
   });
+
+  it('should allow caller to supply format', () => {
+    let fn = unixToDateProvider(momentStub);
+    fn(100, 'fooFormat');
+    momentStub.should.be.calledWith(100);
+    formatSpy.should.be.calledWith('fooFormat');
+  });
 });
