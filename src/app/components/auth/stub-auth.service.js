@@ -64,4 +64,8 @@ export default class StubAuthService {
     };
   }
 
+  get token () {
+    return 'stubAuthMockToken';
+  }
+
 }

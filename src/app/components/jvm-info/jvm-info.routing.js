@@ -25,8 +25,6 @@
  * exception statement from your version.
  */
 
-import './jvm-memory/jvm-memory.routing.js';
-
 function config($stateProvider) {
   'ngInject';
 
@@ -65,6 +63,7 @@ export default angular.module('jvmInfo.routing',
     'ui.bootstrap',
     'oc.lazyLoad',
     'app.filters',
-    'jvmMemory.routing'
+    'jvmMemory.routing',
+    'jvmGc.routing'
   ]
 ).config(config);

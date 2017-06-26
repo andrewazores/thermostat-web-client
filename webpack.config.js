@@ -2,6 +2,7 @@
 
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var path = require('path');
 
 var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === 'test' || ENV === 'test-watch';
@@ -19,7 +20,14 @@ module.exports = function () {
       'jquery': 'angular-patternfly/node_modules/patternfly/node_modules/jquery',
       'angular': 'angular-patternfly/node_modules/angular',
       'd3': 'angular-patternfly/node_modules/patternfly/node_modules/d3',
-      'c3': 'angular-patternfly/node_modules/patternfly/node_modules/c3'
+      'c3': 'angular-patternfly/node_modules/patternfly/node_modules/c3',
+      'bootstrap-switch': 'angular-patternfly/node_modules/patternfly/node_modules/bootstrap-switch',
+
+      'assets': path.resolve(__dirname, 'src', 'assets'),
+      'images': 'assets/images',
+      'scss': 'assets/scss',
+      'shared': path.resolve(__dirname, 'src', 'app', 'shared'),
+      'templates': 'shared/templates'
     }
   };
 

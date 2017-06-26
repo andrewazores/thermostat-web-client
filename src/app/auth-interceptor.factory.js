@@ -25,27 +25,33 @@
  * exception statement from your version.
  */
 
-import urlJoin from 'url-join';
+import authModule from './components/auth/auth.module.js';
 
-class JvmListService {
-  constructor ($http, gatewayUrl) {
-    'ngInject';
-    this.http = $http;
-    this.gatewayUrl = gatewayUrl;
-  }
+let name = 'authInterceptor';
 
-  getSystems (aliveOnly = false) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'tree'), {
-      params: {
-        limit: 0,
-        aliveOnly: aliveOnly,
-        include: 'jvmId,mainClass,startTime,stopTime,isAlive'
-      }
-    });
-  }
-}
-
-export default angular.module('jvmList.service',
+export default angular.module(name,
   [
+    authModule
   ]
-).service('jvmListService', JvmListService);
+).factory(name, ($q, authService) => {
+  'ngInject';
+  return {
+    request: config => {
+      var defer = $q.defer();
+
+      if (authService.token) {
+        authService.refresh()
+          .success(() => {
+            config.headers = config.headers || {};
+            config.headers.Authorization = 'Bearer ' + authService.token;
+            defer.resolve(config);
+          })
+          .error(() => {
+            defer.reject('Failed to refresh token');
+          });
+      }
+
+      return defer.promise;
+    }
+  };
+}).name;

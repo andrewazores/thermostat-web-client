@@ -25,27 +25,12 @@
  * exception statement from your version.
  */
 
-import urlJoin from 'url-join';
+import './jvm-gc.controller.js';
+import './jvm-gc.service.js';
 
-class JvmListService {
-  constructor ($http, gatewayUrl) {
-    'ngInject';
-    this.http = $http;
-    this.gatewayUrl = gatewayUrl;
-  }
-
-  getSystems (aliveOnly = false) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'tree'), {
-      params: {
-        limit: 0,
-        aliveOnly: aliveOnly,
-        include: 'jvmId,mainClass,startTime,stopTime,isAlive'
-      }
-    });
-  }
-}
-
-export default angular.module('jvmList.service',
+export default angular.module('jvmGc',
   [
+    'jvmGc.controller',
+    'jvmGc.service'
   ]
-).service('jvmListService', JvmListService);
+);

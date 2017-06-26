@@ -25,27 +25,33 @@
  * exception statement from your version.
  */
 
-import urlJoin from 'url-join';
+import timeStampToDateProvider from './timestamp-to-date.filter.js';
+import { filterName } from './timestamp-to-date.filter.js';
 
-class JvmListService {
-  constructor ($http, gatewayUrl) {
-    'ngInject';
-    this.http = $http;
-    this.gatewayUrl = gatewayUrl;
-  }
+describe('timeStampToDate filter', () => {
+  let metricToBigIntStub = sinon.stub().returns('a');
+  let bigIntToStringStub = sinon.stub().returns('b');
+  let stringToNumberStub = sinon.stub().returns('c');
+  let unixToDateStub = sinon.stub().returns('Dec 31, 1969 7:00 PM');
 
-  getSystems (aliveOnly = false) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'tree'), {
-      params: {
-        limit: 0,
-        aliveOnly: aliveOnly,
-        include: 'jvmId,mainClass,startTime,stopTime,isAlive'
-      }
-    });
-  }
-}
+  it('should be exported', () => {
+    should.exist(timeStampToDateProvider);
+  });
 
-export default angular.module('jvmList.service',
-  [
-  ]
-).service('jvmListService', JvmListService);
+  it('should name itself', () => {
+    filterName.should.equal('timeStampToDate');
+  });
+
+  it('should follow the pipeline', () => {
+    let fn = timeStampToDateProvider(
+      metricToBigIntStub, bigIntToStringStub, stringToNumberStub, unixToDateStub);
+
+    let timestamp = 1497624324;
+    fn(timestamp).should.equal('Dec 31, 1969 7:00 PM');
+    metricToBigIntStub.should.be.calledWith(timestamp);
+    bigIntToStringStub.should.be.calledWith('a');
+    stringToNumberStub.should.be.calledWith('b');
+    unixToDateStub.should.be.calledWith('c');
+  });
+
+});

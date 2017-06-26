@@ -25,27 +25,29 @@
  * exception statement from your version.
  */
 
-import urlJoin from 'url-join';
+import big from 'big.js';
 
-class JvmListService {
-  constructor ($http, gatewayUrl) {
+describe('MetricToBigIntService', () => {
+
+  let svc;
+
+  beforeEach(angular.mock.module('app.services'));
+
+  beforeEach(inject(metricToBigIntService => {
     'ngInject';
-    this.http = $http;
-    this.gatewayUrl = gatewayUrl;
-  }
+    svc = metricToBigIntService;
+    sinon.spy(svc, 'big');
+  }));
 
-  getSystems (aliveOnly = false) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'tree'), {
-      params: {
-        limit: 0,
-        aliveOnly: aliveOnly,
-        include: 'jvmId,mainClass,startTime,stopTime,isAlive'
-      }
-    });
-  }
-}
+  afterEach(() => {
+    svc.big.restore();
+  });
 
-export default angular.module('jvmList.service',
-  [
-  ]
-).service('jvmListService', JvmListService);
+  it('should delegate to big.js function', () => {
+    svc.big.should.not.be.called();
+    svc.convert({ $numberLong: '0' }).should.deepEqual(big(0));
+    svc.big.should.be.calledOnce();
+    svc.big.should.be.calledWith('0');
+  });
+
+});

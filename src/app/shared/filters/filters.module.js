@@ -25,7 +25,11 @@
  * exception statement from your version.
  */
 
-let mod = angular.module('app.filters', []);
+let mod = angular.module('app.filters',
+  [
+    'app.services'
+  ]
+);
 
 (function requireFilters () {
   let req = require.context('./', true, /\.filter\.js/);

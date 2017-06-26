@@ -113,4 +113,10 @@ describe('StubAuthService', () => {
       done();
     });
   });
+
+  describe('#get token()', () => {
+    it('should return stubAuthMockToken', () => {
+      stubAuthService.token.should.equal('stubAuthMockToken');
+    });
+  });
 });

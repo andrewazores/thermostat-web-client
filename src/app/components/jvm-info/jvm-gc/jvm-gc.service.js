@@ -27,25 +27,25 @@
 
 import urlJoin from 'url-join';
 
-class JvmListService {
+class JvmGcService {
   constructor ($http, gatewayUrl) {
     'ngInject';
     this.http = $http;
     this.gatewayUrl = gatewayUrl;
   }
 
-  getSystems (aliveOnly = false) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'tree'), {
+  getJvmGcData (jvmId, limit = 1) {
+    return this.http.get(urlJoin(this.gatewayUrl, 'jvm-gc', '0.0.2'), {
       params: {
-        limit: 0,
-        aliveOnly: aliveOnly,
-        include: 'jvmId,mainClass,startTime,stopTime,isAlive'
+        l: limit,
+        s: '-timeStamp',
+        q: 'jvmId==' + jvmId
       }
     });
   }
 }
 
-export default angular.module('jvmList.service',
+export default angular.module('jvmGc.service',
   [
   ]
-).service('jvmListService', JvmListService);
+).service('jvmGcService', JvmGcService);

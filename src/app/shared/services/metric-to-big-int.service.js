@@ -25,27 +25,16 @@
  * exception statement from your version.
  */
 
-import urlJoin from 'url-join';
+import big from 'big.js';
 
-class JvmListService {
-  constructor ($http, gatewayUrl) {
-    'ngInject';
-    this.http = $http;
-    this.gatewayUrl = gatewayUrl;
+class MetricToBigIntService {
+  constructor () {
+    this.big = big;
   }
 
-  getSystems (aliveOnly = false) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'tree'), {
-      params: {
-        limit: 0,
-        aliveOnly: aliveOnly,
-        include: 'jvmId,mainClass,startTime,stopTime,isAlive'
-      }
-    });
+  convert (metric) {
+    return this.big(metric.$numberLong);
   }
 }
 
-export default angular.module('jvmList.service',
-  [
-  ]
-).service('jvmListService', JvmListService);
+angular.module('app.services').service('metricToBigIntService', MetricToBigIntService);

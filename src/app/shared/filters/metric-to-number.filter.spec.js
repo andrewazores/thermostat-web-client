@@ -25,40 +25,48 @@
  * exception statement from your version.
  */
 
-import unixToDateProvider from './unix-to-date.filter.js';
-import { filterName } from './unix-to-date.filter.js';
+import metricToNumberProvider from './metric-to-number.filter.js';
+import { filterName } from './metric-to-number.filter.js';
 
-describe('unixToDate filter', () => {
-  let formatSpy = sinon.spy();
-  let momentStub = sinon.stub().returns({ format: formatSpy });
+describe('metricToString filter', () => {
+  let metricToBigIntStub = sinon.stub().returns('a');
+  let bigIntToStringStub = sinon.stub().returns('b');
+  let stringToNumberStub = sinon.stub().returns('c');
+  let fn = metricToNumberProvider(metricToBigIntStub, bigIntToStringStub, stringToNumberStub);
 
   it('should be exported', () => {
-    should.exist(unixToDateProvider);
+    should.exist(metricToNumberProvider);
   });
 
   it('should name itself', () => {
-    filterName.should.equal('unixToDate');
+    filterName.should.equal('metricToNumber');
   });
 
-  it('should provide a timestamp formatting function', () => {
-    let fn = unixToDateProvider();
-    should.exist(fn);
-    fn.should.be.a.Function();
+  it ('should recognize one parameter and apply default', () => {
+    fn(5000);
+    metricToBigIntStub.should.be.calledWith(5000, 1);
   });
 
-  it('should use the provided \'moment\'', () => {
-    let timestamp = 450000;
-    let fn = unixToDateProvider(momentStub);
-    fn(timestamp);
-
-    momentStub.should.be.calledWith(timestamp);
-    formatSpy.should.be.calledWith('lll');
+  it ('should recognize both parameters', () => {
+    fn(1000, 25);
+    metricToBigIntStub.should.be.calledWith(1000, 25);
   });
 
-  it('should allow caller to supply format', () => {
-    let fn = unixToDateProvider(momentStub);
-    fn(100, 'fooFormat');
-    momentStub.should.be.calledWith(100);
-    formatSpy.should.be.calledWith('fooFormat');
+  it ('should allow multiple scale values', () => {
+    fn(10000, 5);
+    metricToBigIntStub.should.be.calledWith(10000, 5);
+
+    fn(10000, 25);
+    metricToBigIntStub.should.be.calledWith(1000, 25);
+  });
+
+  it('should follow the pipeline', () => {
+    let timestamp = 1497624324;
+
+    fn(timestamp).should.equal('c');
+    metricToBigIntStub.should.be.calledWith(timestamp);
+    bigIntToStringStub.should.be.calledWith('a');
+    stringToNumberStub.should.be.calledWith('b');
   });
 });
+

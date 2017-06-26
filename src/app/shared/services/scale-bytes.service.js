@@ -25,27 +25,34 @@
  * exception statement from your version.
  */
 
-import urlJoin from 'url-join';
-
-class JvmListService {
-  constructor ($http, gatewayUrl) {
+class ScaleBytesService {
+  constructor (metricToBigIntService) {
     'ngInject';
-    this.http = $http;
-    this.gatewayUrl = gatewayUrl;
+    this.metricToBigInt = metricToBigIntService;
   }
 
-  getSystems (aliveOnly = false) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'tree'), {
-      params: {
-        limit: 0,
-        aliveOnly: aliveOnly,
-        include: 'jvmId,mainClass,startTime,stopTime,isAlive'
-      }
-    });
+  get sizes() {
+    return ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+  }
+
+  format (bytesMetric, dp = 2) {
+    const base = 1024;
+    let big = this.metricToBigInt.convert(bytesMetric);
+
+    let log = 0;
+    while (big.gte(base)) {
+      // big.js doesn't support log, so we do this instead
+      big = big.div(base);
+      log++;
+    }
+
+    let scale = Math.pow(1024, log);
+    return {
+      result: parseFloat(this.metricToBigInt.convert(bytesMetric).div(scale).toFixed(dp)),
+      scale: scale,
+      unit: this.sizes[log]
+    };
   }
 }
 
-export default angular.module('jvmList.service',
-  [
-  ]
-).service('jvmListService', JvmListService);
+angular.module('app.services').service('scaleBytesService', ScaleBytesService);

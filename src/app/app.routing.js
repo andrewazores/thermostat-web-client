@@ -53,7 +53,7 @@ function errorRouting ($stateProvider, $urlRouterProvider) {
       'ngInject';
       return $q(resolve =>
         require.ensure([], () => {
-          resolve(require('./shared/templates/404.html'));
+          resolve(require('templates/404.html'));
         })
       );
     }

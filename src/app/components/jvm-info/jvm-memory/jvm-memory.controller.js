@@ -26,7 +26,8 @@
  */
 
 class JvmMemoryController {
-  constructor (jvmId, $scope, $interval, jvmMemoryService, metricToBigIntFilter, bigIntToStringFilter, stringToNumberFilter) {
+  constructor (jvmId, $scope, $interval, jvmMemoryService, metricToBigIntFilter,
+    bigIntToStringFilter, stringToNumberFilter, scaleBytesService) {
     'ngInject';
 
     this.jvmId = jvmId;
@@ -34,12 +35,10 @@ class JvmMemoryController {
     this.interval = $interval;
     this.jvmMemoryService = jvmMemoryService;
 
-    this.convertMemStat = obj => {
-      let bigInt = metricToBigIntFilter(obj, 1024 * 1024);
-      let str = bigIntToStringFilter(bigInt);
-      let num = stringToNumberFilter(str);
-      return _.ceil(num);
-    };
+    this.metricToBigInt = metricToBigIntFilter;
+    this.bigIntToString = bigIntToStringFilter;
+    this.stringToNumber = stringToNumberFilter;
+    this.scaleBytes = scaleBytesService;
 
     this.scope.refreshRate = '2000';
 
@@ -50,7 +49,7 @@ class JvmMemoryController {
 
     this.metaspaceConfig = {
       chartId: 'metaspaceChart',
-      units: 'MiB'
+      units: 'B'
     };
 
     this.spaceConfigs = [];
@@ -81,8 +80,11 @@ class JvmMemoryController {
   update () {
     this.jvmMemoryService.getJvmMemory(this.jvmId).then(resp => {
       let data = resp.data.response[0];
-      this.metaspaceData.used = this.convertMemStat(data.metaspaceUsed);
-      this.metaspaceData.total = this.convertMemStat(data.metaspaceCapacity);
+
+      let metaspaceScale = this.scaleBytes.format(data.metaspaceUsed);
+      this.metaspaceData.used = this.convertMemStat(data.metaspaceUsed, metaspaceScale.scale);
+      this.metaspaceData.total = this.convertMemStat(data.metaspaceCapacity, metaspaceScale.scale);
+      this.metaspaceConfig.units = metaspaceScale.unit;
 
       for (let i = 0; i < data.generations.length; i++) {
         let generation = data.generations[i];
@@ -99,32 +101,46 @@ class JvmMemoryController {
         }
         for (let j = 0; j < generation.spaces.length; j++) {
           let space = generation.spaces[j];
+
+          let genScale = this.scaleBytes.format(space.used);
+
           if (gen.spaces.hasOwnProperty(space.index)) {
-            gen.spaces[space.index].used = this.convertMemStat(space.used);
-            gen.spaces[space.index].total = this.convertMemStat(space.capacity);
+            gen.spaces[space.index].used = this.convertMemStat(space.used, genScale.scale);
+            gen.spaces[space.index].total = this.convertMemStat(space.capacity, genScale.scale);
           } else {
             gen.spaces[space.index] = {
               index: space.index,
-              used: this.convertMemStat(space.used),
-              total: this.convertMemStat(space.capacity)
+              used: this.convertMemStat(space.used, genScale.scale),
+              total: this.convertMemStat(space.capacity, genScale.scale)
             };
           }
+
           let spaceKey = 'gen-' + gen.index + '-space-' + space.index;
           if (!this.spaceConfigs.hasOwnProperty(spaceKey)) {
             this.spaceConfigs[spaceKey] = {
               chartId: spaceKey,
-              units: 'MiB'
+              units: genScale.unit
             };
+          } else {
+            this.spaceConfigs[spaceKey].units = genScale.unit;
           }
         }
         this.generationData[i] = gen;
       }
     });
   }
+
+  convertMemStat (stat, scale) {
+    let bigInt = this.metricToBigInt(stat, scale);
+    let str = this.bigIntToString(bigInt);
+    let num = this.stringToNumber(str);
+    return _.ceil(num);
+  }
 }
 
 export default angular.module('jvmMemory.controller',
   [
+    'app.services',
     'app.filters'
   ]
 ).controller('jvmMemoryController', JvmMemoryController);

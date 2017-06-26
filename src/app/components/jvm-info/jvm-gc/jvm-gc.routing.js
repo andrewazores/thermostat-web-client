@@ -25,27 +25,37 @@
  * exception statement from your version.
  */
 
-import urlJoin from 'url-join';
+function config ($stateProvider) {
+  'ngInject';
 
-class JvmListService {
-  constructor ($http, gatewayUrl) {
-    'ngInject';
-    this.http = $http;
-    this.gatewayUrl = gatewayUrl;
-  }
-
-  getSystems (aliveOnly = false) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvms', '0.0.1', 'tree'), {
-      params: {
-        limit: 0,
-        aliveOnly: aliveOnly,
-        include: 'jvmId,mainClass,startTime,stopTime,isAlive'
+  $stateProvider.state('jvmInfo.jvmGc', {
+    url: '/garbage-collection',
+    controller: 'jvmGcController as ctrl',
+    templateProvider: $q => {
+      'ngInject';
+      return $q(resolve =>
+        require.ensure([], () => resolve(require('./jvm-gc.html'))
+        )
+      );
+    },
+    resolve: {
+      loadJvmGc: ($q, $ocLazyLoad) => {
+        'ngInject';
+        return $q(resolve => {
+          require.ensure(['./jvm-gc.module.js'], () => {
+            let module = require('./jvm-gc.module.js');
+            $ocLazyLoad.load({ name: 'jvmGc' });
+            resolve(module);
+          });
+        });
       }
-    });
-  }
+    }
+  });
 }
 
-export default angular.module('jvmList.service',
+export { config };
+
+export default angular.module('jvmGc.routing',
   [
   ]
-).service('jvmListService', JvmListService);
+).config(config);

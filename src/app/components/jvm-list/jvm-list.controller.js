@@ -26,23 +26,39 @@
  */
 
 class JvmListController {
-  constructor (jvmListService, $location, $timeout, $anchorScroll) {
+  constructor (jvmListService, $scope, $location, $timeout, $anchorScroll) {
     'ngInject';
     this.jvmListService = jvmListService;
+    this.scope = $scope;
     this.location = $location;
     this.timeout = $timeout;
     this.anchorScroll = $anchorScroll;
+
+    this.aliveOnly = true;
+    let aliveOnlySwitch = angular.element('#aliveOnlyState');
+    aliveOnlySwitch.bootstrapSwitch();
+    aliveOnlySwitch.on('switchChange.bootstrapSwitch', (event, state) => {
+      this.aliveOnly = state;
+      this.loadData();
+    });
+
+    this.scope.isAlive = (jvm) => {
+      if (!jvm.hasOwnProperty('stopTime')) {
+        return false;
+      }
+
+      return parseInt(jvm.stopTime.$numberLong) < 0;
+    };
 
     this.title = 'JVM Listing';
     this.showErr = false;
     this.systemsOpen = {};
 
     this.loadData();
-    this.onload();
   }
 
   loadData () {
-    this.jvmListService.getSystems().then(
+    this.jvmListService.getSystems(this.aliveOnly).then(
       resp => {
         this.showErr = false;
         this.systems = resp.data.response;
@@ -52,11 +68,15 @@ class JvmListController {
           this.systemsOpen[system.systemId] = false;
         }
 
+        if (this.systems.length === 1) {
+          this.systemsOpen[this.systems[0].systemId] = true;
+        }
+
         let hash = this.location.hash();
         if (hash) {
           this.systemsOpen[hash] = true;
-          this.onload();
         }
+        this.onload();
       },
       () => {
         this.showErr = true;
@@ -76,6 +96,7 @@ class JvmListController {
     let split = fullClassName.split('.');
     return split[split.length - 1];
   }
+
 }
 
 export default angular.module('jvmList.controller',
