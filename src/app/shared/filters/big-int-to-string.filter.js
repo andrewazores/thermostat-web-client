@@ -29,7 +29,7 @@ export default function filterProvider () {
   return val => {
     val = val || 0;
     return val.toFixed();
-  }
+  };
 }
 
 const filterName = 'bigIntToString';

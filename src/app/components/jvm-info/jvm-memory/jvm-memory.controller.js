@@ -56,7 +56,7 @@ class JvmMemoryController {
 
     this.generationData = {};
 
-    this.scope.$watch('refreshRate', (cur, prev) => this.setRefreshRate(cur));
+    this.scope.$watch('refreshRate', cur => this.setRefreshRate(cur));
 
     this.scope.$on('$destroy', () => this.cancel());
 

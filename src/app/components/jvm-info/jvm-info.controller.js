@@ -40,7 +40,7 @@ class JvmInfoController {
       }
     );
 
-    $scope.$watch('comboValue', (cur, prev) => {
+    $scope.$watch('comboValue', cur => {
       if (cur === '') {
         $state.go('jvmInfo', { systemId: systemId, jvmId: jvmId });
       } else {

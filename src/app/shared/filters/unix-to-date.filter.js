@@ -30,7 +30,7 @@ import moment from 'moment';
 export default function filterProvider (formatter = moment) {
   return (timestamp, format = 'lll') => {
     return formatter(timestamp).format(format);
-  }
+  };
 }
 
 const filterName = 'unixToDate';

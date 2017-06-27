@@ -26,7 +26,6 @@
  */
 
 import urlJoin from 'url-join';
-import _ from 'lodash';
 
 class SystemInfoService {
   constructor ($q, $http, gatewayUrl) {

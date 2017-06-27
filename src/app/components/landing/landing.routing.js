@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-function landingRouting($stateProvider) {
+function landingRouting ($stateProvider) {
   'ngInject';
 
   $stateProvider.state('landing', {

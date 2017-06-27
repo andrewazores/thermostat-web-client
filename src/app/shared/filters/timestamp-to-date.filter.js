@@ -26,7 +26,7 @@
  */
 
 export default function filterProvider (
-  metricToBigIntFilter, bigIntToStringFilter, stringToNumberFilter, 
+  metricToBigIntFilter, bigIntToStringFilter, stringToNumberFilter,
   unixToDateFilter) {
   'ngInject';
   return timestamp => {
@@ -34,7 +34,7 @@ export default function filterProvider (
       stringToNumberFilter(
         bigIntToStringFilter(
           metricToBigIntFilter(timestamp))));
-  }
+  };
 }
 
 const filterName = 'timeStampToDate';

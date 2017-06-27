@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-function config($stateProvider) {
+function config ($stateProvider) {
   'ngInject';
 
   $stateProvider.state('jvmList', {

@@ -77,7 +77,7 @@ function transitionHook ($q, $transitions, authService) {
       });
     return defer.promise;
   });
-};
+}
 appRouter.run(transitionHook);
 
 export { errorRouting, transitionHook };
