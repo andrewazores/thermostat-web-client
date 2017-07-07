@@ -46,13 +46,20 @@ describe('unixToDate filter', () => {
     fn.should.be.a.Function();
   });
 
-  it('should use the provided \'moment\'', () => {
+  it('should use the provided \'moment\' & format', () => {
     let timestamp = 450000;
     let fn = unixToDateProvider(momentStub);
     fn(timestamp);
 
     momentStub.should.be.calledWith(timestamp);
     formatSpy.should.be.calledWith('lll');
+  });
+
+  it('should accept alternate time formats', () => {
+    let timestamp = 450000;
+    let fn = unixToDateProvider(momentStub);
+    fn(timestamp, 'LTS');
+    formatSpy.should.be.calledWith('LTS');
   });
 
   it('should allow caller to supply format', () => {

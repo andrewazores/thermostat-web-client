@@ -4,12 +4,10 @@
     <li><a ui-sref="jvmList({ '#': ctrl.systemId })">JVM List</a></li>
     <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemId}}</a></li>
   </ol>
-
   <div ng-show="ctrl.showErr" class="alert alert-danger alert-dismissable">
     <span class="pficon pficon-error-circle-o"></span>
     <strong>Unable to retrieve data.</strong> Error while retrieving system information.
   </div>
-
   <div ng-show="!ctrl.showErr">
     <div class="row">
       <div class="col-xs-12 col-lg-8">
@@ -32,8 +30,8 @@
 
     <div class="row row-cards-pf">
       <div class="container container-cards-pf">
-
-        <div class="col-xs-12 col-md-4" ng-controller="systemCpuController as ctrl">
+        <!-- System-CPU Donut Chart -->
+        <div class="col-xs-12 col-md-6" ng-controller="systemCpuController as ctrl">
           <div class="card-pf card-pf-view">
             <div class="card-pf-heading">
               <label class="card-pf-title">CPU Usage</label>
@@ -43,21 +41,59 @@
             </div>
           </div>
         </div>
-
-        <div class="col-xs-12 col-md-4" ng-controller="systemMemoryController as ctrl">
-          <div class="card-pf card-pf-view">
-            <div class="card-pf-heading">
-              <label class="card-pf-title">Memory Usage</label>
+        <div class="system-memory-charts" ng-controller="systemMemoryController as ctrl">
+          <!-- System-Memory Donut Chart -->
+          <div class="col-xs-12 col-md-6">
+            <div class="card-pf card-pf-view">
+              <div class="card-pf-heading">
+                <label class="card-pf-title">Memory Usage</label>
+              </div>
+              <div class="card-pf-body">
+                <div pf-donut-pct-chart id="systemMemoryDonutChart" config="ctrl.donutConfig" data="ctrl.donutData"></div>
+              </div>
             </div>
-            <div class="card-pf-body">
-              <div pf-donut-pct-chart id="memoryChart" config="ctrl.config" data="ctrl.data"></div>
+          </div>
+          <!-- System-Memory Line Chart -->
+          <div class="col-xs-12 col-md-12">
+            <div class="card-pf card-pf-view">
+              <div class="card-pf-heading">
+                <label class="card-pf-title">Memory</label>
+              </div>
+              <!-- Metric Controls: Refresh Rate -->
+              <div class="row" style="margin-top:2vh">
+                <div class="col-xs-12 col-md-3">
+                  <label for="refreshCombo" class="label label-info">Refresh Rate</label>
+                  <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
+                    <option value="-1">Disabled</option>
+                    <option value="1000">1 Second (Default)</option>
+                    <option value="2000">2 Seconds</option>
+                    <option value="5000">5 Seconds</option>
+                    <option value="10000">10 Seconds</option>
+                    <option value="30000">30 Seconds</option>
+                  </select>
+                </div>
+                <!-- Metric Controls: Max Data Age -->
+                <div class="col-xs-12 col-md-3">
+                  <label for="dataAgeCombo" class="label label-info">Max Data Age</label>
+                  <select name="dataAgeCombo" class="combobox form-control" ng-model="dataAgeLimit">
+                    <option value="10000">10 Seconds</option>
+                    <option value="30000">30 Seconds (Default)</option>
+                    <option value="60000">1 Minute</option>
+                    <option value="300000">5 Minutes</option>
+                    <option value="600000">10 Minutes</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Line Chart -->
+              <div class="card-pf-body">
+                <div pf-line-chart id="systemMemoryLineChart" config="ctrl.lineConfig" chart-data="ctrl.lineData" set-area-chart="false" show-x-axis="true" show-y-axis="true">
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
-
   </div>
-
-</div><!-- /container -->
+</div>
+<!-- /container -->

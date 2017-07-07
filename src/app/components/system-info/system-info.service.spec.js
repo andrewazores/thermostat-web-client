@@ -93,13 +93,13 @@ describe('SystemInfoService', () => {
         total: 16384,
         used: 9001
       };
-      httpBackend.when('GET', 'http://example.com:1234/system-info/memory/foo-systemId')
+      httpBackend.when('GET', 'http://example.com:1234/system-memory/0.0.1/systems/foo-systemId')
         .respond(expected);
       svc.getMemoryInfo('foo-systemId').then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://example.com:1234/system-info/memory/foo-systemId');
+      httpBackend.expectGET('http://example.com:1234/system-memory/0.0.1/systems/foo-systemId');
       httpBackend.flush();
       scope.$apply();
     });

@@ -44,7 +44,7 @@ class SystemInfoService {
   }
 
   getMemoryInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'system-info', 'memory', systemId));
+    return this.http.get(urlJoin(this.gatewayUrl, 'system-memory', '0.0.1', 'systems', systemId));
   }
 }
 

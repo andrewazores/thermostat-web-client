@@ -26,40 +26,163 @@
  */
 
 class SystemMemoryController {
-  constructor (systemInfoService, $scope, $interval) {
+  constructor (systemInfoService, $scope, $interval, pfUtils, unixToDateFilter) {
+    'ngInject';
     this.svc = systemInfoService;
     this.scope = $scope;
+    this.interval = $interval;
+    this.unixToDate = unixToDateFilter;
 
-    this.data = {
-      used: 0,
-      total: 0
-    };
+    this.scope.refreshRate = '1000';
+    this.scope.dataAgeLimit = '30000';
 
-    this.config = {
-      chartId: 'memoryChart',
-      units: 'MiB'
-    };
+    this.scope.$watch('refreshRate', newRefreshRate => this.setRefreshRate(newRefreshRate));
+    this.scope.$watch('dataAgeLimit', () => this.trimData());
+    this.scope.$on('$destroy', () => this.stopUpdating());
 
-    this.refresh = $interval(() => this.update(), 2000);
-
-    $scope.$on('$destroy', () => {
-      if (angular.isDefined(this.refresh)) {
-        $interval.cancel(this.refresh);
-      }
-    });
+    this.setupDonutChart();
+    this.setupLineChart(pfUtils);
 
     this.update();
   }
 
+  setupDonutChart () {
+    this.donutConfig = {
+      chartId: 'systemMemoryDonutChart',
+      units: '%'
+    };
+
+    this.donutData = {
+      used: 0,
+      total: 100
+    };
+  }
+
+  setupLineChart (pfUtils) {
+    this.lineConfig = {
+      chartId: 'systemMemoryLineChart',
+      color: {
+        pattern: [
+          pfUtils.colorPalette.red,    // total memory
+          pfUtils.colorPalette.blue,   // free memory
+          pfUtils.colorPalette.orange, // used memory
+          pfUtils.colorPalette.gold,   // total swap
+          pfUtils.colorPalette.purple, // free swap
+          pfUtils.colorPalette.green   // buffers
+        ]
+      },
+      grid: { y: {show: true} },
+      point: { r: 2 },
+      legend : { 'show': true },
+      tooltip: {
+        format: {
+          value: memoryValue => { return memoryValue + ' MiB'; }
+        }
+      },
+      transition: { duration: 50 },
+      axis: {
+        x: {
+          type: 'timeseries',
+          label: {
+            text: 'Time',
+            position: 'outer-center'
+          },
+          tick : {
+            format: timestamp => this.unixToDate(timestamp, 'LTS'),
+            count: 5,
+            fit: false
+          }
+        },
+        y: {
+          min: 0,
+          padding: 0,
+          tick: 10,
+          label: {
+            text: 'Size (MiB)',
+            position: 'outer-middle'
+          }
+        }
+      }
+    };
+
+    this.lineData = {
+      xData: ['timestamp'],
+      yData0: ['Total Memory'],
+      yData1: ['Free Memory'],
+      yData2: ['Used Memory'],
+      yData3: ['Total Swap'],
+      yData4: ['Free Swap'],
+      yData5: ['Buffers']
+    };
+  }
+
+  processData (resp) {
+    for (let i = resp.data.response.length - 1; i >= 0; i--) {
+      let data = resp.data.response[i];
+      let free = data.free;
+      let total = data.total;
+      let used = total - free;
+      let usage = Math.round((used) / total * 100);
+
+      // update the memory time series chart
+      this.lineConfig.axis.y.max = total;
+      this.lineData.xData.push(data.timestamp);
+      this.lineData.yData0.push(total);
+      this.lineData.yData1.push(free);
+      this.lineData.yData2.push(used);
+      this.lineData.yData3.push(data.swapTotal);
+      this.lineData.yData4.push(data.swapFree);
+      this.lineData.yData5.push(data.buffers);
+      this.trimData();
+
+      // update the memory donut chart
+      this.donutData.used = usage;
+    }
+  }
+
   update () {
-    this.svc.getMemoryInfo(this.scope.systemId).then(resp => {
-      this.data = resp.data.response;
-    });
+    this.svc.getMemoryInfo(this.scope.systemId)
+      .then(response => this.processData(response), angular.noop);
+  }
+
+  setRefreshRate (refreshRate) {
+    this.stopUpdating();
+    if (refreshRate > 0) {
+      this.refresh = this.interval(() => this.update(), refreshRate);
+      this.update();
+    }
+  }
+
+  stopUpdating () {
+    if (angular.isDefined(this.refresh)) {
+      this.interval.cancel(this.refresh);
+      delete this.refresh;
+    }
+  }
+
+  trimData () {
+    let now = Date.now();
+    let oldestLimit = now - parseInt(this.scope.dataAgeLimit);
+    while (true) {
+      let oldest = this.lineData.xData[1];
+      if (angular.isDefined(oldest) && oldest < oldestLimit) {
+        this.lineData.xData.splice(1, 1);
+        this.lineData.yData0.splice(1, 1);
+        this.lineData.yData1.splice(1, 1);
+        this.lineData.yData2.splice(1, 1);
+        this.lineData.yData3.splice(1, 1);
+        this.lineData.yData4.splice(1, 1);
+        this.lineData.yData5.splice(1, 1);
+      } else {
+        break;
+      }
+    }
   }
 }
 
 export default angular.module('systemMemory.controller',
   [
+    'patternfly',
     'systemInfo.service'
   ]
 ).controller('systemMemoryController', SystemMemoryController);
