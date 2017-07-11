@@ -43,8 +43,10 @@ function landingRouting ($stateProvider) {
 
 export { landingRouting };
 
-export default angular.module('landing.routing',
-  [
+export default angular
+  .module('landing.routing', [
     'ui.router',
     'ui.bootstrap'
-  ]).config(landingRouting);
+  ])
+  .config(landingRouting)
+  .name;

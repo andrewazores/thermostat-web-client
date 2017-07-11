@@ -27,12 +27,14 @@
 
 describe('JvmListService', () => {
 
-  beforeEach(angular.mock.module($provide => {
-    'ngInject';
-    $provide.value('gatewayUrl', 'http://example.com:1234');
-  }));
+  beforeEach(() => {
+    angular.mock.module('configModule', $provide => {
+      'ngInject';
+      $provide.constant('gatewayUrl', 'http://example.com:1234');
+    });
 
-  beforeEach(angular.mock.module('jvmList.service'));
+    angular.mock.module('jvmList.service');
+  });
 
   let httpBackend, scope, svc;
   beforeEach(inject(($httpBackend, $rootScope, jvmListService) => {

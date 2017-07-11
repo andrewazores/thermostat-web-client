@@ -25,15 +25,9 @@
  * exception statement from your version.
  */
 
-let MOD_NAME = 'configModule';
-export default MOD_NAME;
-
-let config = () => {
-  let mod = angular.module(MOD_NAME, []);
-
-  mod.constant('CFG_MODULE', MOD_NAME);
-  mod.constant('environment', process.env.NODE_ENV);
-  mod.constant('debug', process.env.DEBUG);
-  mod.constant('gatewayUrl', process.env.GATEWAY_URL);
-};
-config();
+export default angular
+  .module('configModule', [])
+  .constant('environment', process.env.NODE_ENV)
+  .constant('debug', process.env.DEBUG)
+  .constant('gatewayUrl', process.env.GATEWAY_URL)
+  .name;

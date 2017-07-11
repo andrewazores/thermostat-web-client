@@ -25,10 +25,9 @@
  * exception statement from your version.
  */
 
-export default angular.module('app.services',
-  [
-  ]
-);
+export default angular
+  .module('app.services', [])
+  .name;
 
 let req = require.context('./', true, /\.service\.js/);
 req.keys().map(req);

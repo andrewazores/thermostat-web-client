@@ -32,7 +32,7 @@ describe('AppController', () => {
     $provide.value('$transitions', { onBefore: angular.noop });
   }));
 
-  beforeEach(angular.mock.module('appModule'));
+  beforeEach(angular.mock.module('appController'));
 
   ['testing', 'development', 'production'].forEach(env => {
     describe(env + ' $scope', () => {
@@ -47,7 +47,7 @@ describe('AppController', () => {
           logout: sinon.spy()
         };
 
-        $controller('AppController', {
+        $controller('appController', {
           $scope: scope,
           environment: env,
           authService: authService
@@ -87,9 +87,9 @@ describe('AppController', () => {
         logout: sinon.spy()
       };
 
-      $controller('AppController', {
+      $controller('appController', {
         $scope: scope,
-        Environment: 'testing',
+        environment: 'testing',
         authService: authService
       });
     }));

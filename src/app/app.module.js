@@ -27,15 +27,16 @@
 
 import 'angular-patternfly';
 import '@uirouter/angularjs';
+import 'oclazyload';
 import 'bootstrap-switch';
 
-import {default as CFG_MODULE} from 'shared/config/config.module.js';
-import {default as AUTH_MODULE, config as AUTH_MOD_BOOTSTRAP} from './components/auth/auth.module.js';
-import 'shared/filters/filters.module.js';
-import 'shared/services/services.module.js';
-import './app.routing.js';
+import configModule from 'shared/config/config.module.js';
+import {default as authModule, config as authModBootstrap} from './components/auth/auth.module.js';
+import filters from 'shared/filters/filters.module.js';
+import services from 'shared/services/services.module.js';
+import appRouting from './app.routing.js';
 import authInterceptor from './auth-interceptor.factory.js';
-import AppController from './app.controller.js';
+import appController from './app.controller.js';
 
 require.ensure([], () => {
   require('angular-patternfly/node_modules/patternfly/dist/css/patternfly.css');
@@ -44,19 +45,22 @@ require.ensure([], () => {
   require('scss/app.scss');
 });
 
-export const appModule = angular.module('appModule',
-  [
+export const appModule = angular
+  .module('appModule', [
     'ui.router',
-    CFG_MODULE,
-    AUTH_MODULE,
+    'ui.bootstrap',
+    configModule,
+    authModule,
     // non-core modules
-    'app.routing',
-    authInterceptor
-  ]
-).controller('AppController', AppController)
+    services,
+    filters,
+    appRouting,
+    authInterceptor,
+    appController
+  ])
   .config($httpProvider => {
     'ngInject';
     $httpProvider.interceptors.push(authInterceptor);
   });
 
-AUTH_MOD_BOOTSTRAP(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule.name])));
+authModBootstrap(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule.name])));

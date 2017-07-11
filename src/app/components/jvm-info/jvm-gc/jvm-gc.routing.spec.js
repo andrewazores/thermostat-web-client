@@ -28,9 +28,9 @@
 describe('JvmGcRouting', () => {
 
   let module = require('./jvm-gc.routing.js');
-
   let stateProvider, args, q, ocLazyLoad;
   beforeEach(() => {
+    angular.mock.module(module.default);
     stateProvider = {
       state: sinon.spy()
     };
@@ -72,17 +72,18 @@ describe('JvmGcRouting', () => {
     });
 
     it('resolve should load jvm-gc module', done => {
-      let resolveFn = args[1].resolve.loadJvmGc[2];
+      let resolveFn = args[1].resolve.loadJvmGc[3];
       resolveFn.should.be.a.Function();
-      resolveFn(q, ocLazyLoad);
+      resolveFn({}, q, ocLazyLoad);
       q.should.be.calledOnce();
 
       let deferred = q.args[0][0];
       deferred.should.be.a.Function();
 
       let resolve = sinon.stub().callsFake(val => {
-        ocLazyLoad.load.should.be.calledWith({ name: 'jvmGc' });
-        val.should.equal(require('./jvm-gc.module.js'));
+        let mod = require('./jvm-gc.module.js');
+        ocLazyLoad.load.should.be.calledWith({ name: mod.default });
+        val.should.equal(mod);
         done();
       });
       deferred(resolve);

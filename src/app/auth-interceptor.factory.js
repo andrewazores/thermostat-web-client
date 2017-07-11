@@ -29,29 +29,28 @@ import authModule from './components/auth/auth.module.js';
 
 let name = 'authInterceptor';
 
-export default angular.module(name,
-  [
-    authModule
-  ]
-).factory(name, ($q, authService) => {
-  'ngInject';
-  return {
-    request: config => {
-      var defer = $q.defer();
+export default angular
+  .module(name, [authModule])
+  .factory(name, ($q, authService) => {
+    'ngInject';
+    return {
+      request: config => {
+        var defer = $q.defer();
 
-      if (authService.token) {
-        authService.refresh()
-          .success(() => {
-            config.headers = config.headers || {};
-            config.headers.Authorization = 'Bearer ' + authService.token;
-            defer.resolve(config);
-          })
-          .error(() => {
-            defer.reject('Failed to refresh token');
-          });
+        if (authService.token) {
+          authService.refresh()
+            .success(() => {
+              config.headers = config.headers || {};
+              config.headers.Authorization = 'Bearer ' + authService.token;
+              defer.resolve(config);
+            })
+            .error(() => {
+              defer.reject('Failed to refresh token');
+            });
+        }
+
+        return defer.promise;
       }
-
-      return defer.promise;
-    }
-  };
-}).name;
+    };
+  })
+  .name;

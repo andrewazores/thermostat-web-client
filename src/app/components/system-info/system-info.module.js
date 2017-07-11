@@ -25,22 +25,16 @@
  * exception statement from your version.
  */
 
-import './system-info.controller.js';
-import './system-cpu.controller.js';
-import './system-memory.controller.js';
-import './system-info.service.js';
+import controller from './system-info.controller.js';
+import cpuController from './system-cpu.controller.js';
+import memoryController from './system-memory.controller.js';
+import service from './system-info.service.js';
 
-require.ensure([], () => {
-  require('c3');
-});
-
-export default angular.module('systemInfo',
-  [
-    'patternfly.charts',
-    'app.filters',
-    'systemInfo.controller',
-    'systemCpu.controller',
-    'systemMemory.controller',
-    'systemInfo.service'
-  ]
-);
+export default angular
+  .module('systemInfo', [
+    controller,
+    cpuController,
+    memoryController,
+    service
+  ])
+  .name;

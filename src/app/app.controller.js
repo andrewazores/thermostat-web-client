@@ -25,8 +25,9 @@
  * exception statement from your version.
  */
 
-export default class AppController {
+import authModule from './components/auth/auth.module.js';
 
+class AppController {
   constructor ($scope, environment, $state, authService) {
     'ngInject';
 
@@ -43,5 +44,10 @@ export default class AppController {
     };
 
   }
-
 }
+
+let name = 'appController';
+export default angular
+  .module(name, [authModule])
+  .controller(name, AppController)
+  .name;

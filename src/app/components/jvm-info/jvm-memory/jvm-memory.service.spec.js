@@ -27,13 +27,14 @@
 
 describe('JvmMemoryService', () => {
 
-  beforeEach(angular.mock.module($provide => {
-    'ngInject';
+  beforeEach(() => {
+    angular.mock.module('configModule', $provide => {
+      'ngInject';
+      $provide.constant('gatewayUrl', 'http://example.com:1234');
+    });
 
-    $provide.value('gatewayUrl', 'http://example.com:1234');
-  }));
-
-  beforeEach(angular.mock.module('jvmMemory.service'));
+    angular.mock.module('jvmMemory.service');
+  });
 
   let httpBackend, scope, svc;
   beforeEach(inject(($httpBackend, $rootScope, jvmMemoryService) => {

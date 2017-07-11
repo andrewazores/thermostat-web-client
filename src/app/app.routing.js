@@ -25,26 +25,9 @@
  * exception statement from your version.
  */
 
-import 'oclazyload';
-
-(function requireModuleRoutings () {
-  let req = require.context('./components', true, /\.routing\.js/);
-  req.keys().map(req);
-})();
-
-export const appRouter = angular.module('app.routing', [
-  'auth.routing',
-  'error.routing',
-  'landing.routing',
-  'jvmList.routing',
-  'jvmInfo.routing',
-  'systemInfo.routing'
-]);
-
-export default angular.module('error.routing', [
-  'ui.router',
-  'ui.bootstrap'
-]).config(errorRouting);
+let errorModule = angular
+  .module('error.routing', ['ui.router'])
+  .config(errorRouting);
 
 function errorRouting ($stateProvider, $urlRouterProvider) {
   'ngInject';
@@ -65,6 +48,12 @@ function errorRouting ($stateProvider, $urlRouterProvider) {
   });
 }
 
+let componentRoutingModules = [errorModule.name];
+let req = require.context('./components', true, /\.routing\.js/);
+req.keys().forEach(k => componentRoutingModules.push(req(k).default));
+
+let appRouter = angular.module('app.routing', componentRoutingModules);
+
 function transitionHook ($q, $transitions, authService) {
   'ngInject';
   $transitions.onBefore({}, () => {
@@ -77,7 +66,8 @@ function transitionHook ($q, $transitions, authService) {
       });
     return defer.promise;
   });
-}
+};
 appRouter.run(transitionHook);
+export default appRouter.name;
 
-export { errorRouting, transitionHook };
+export { errorModule, errorRouting, transitionHook };

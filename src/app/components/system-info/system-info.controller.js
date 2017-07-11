@@ -25,6 +25,9 @@
  * exception statement from your version.
  */
 
+import filters from 'shared/filters/filters.module.js';
+import service from './system-info.service.js';
+
 class SystemInfoController {
   constructor (systemId, systemInfoService, $interval, $scope) {
     'ngInject';
@@ -43,8 +46,11 @@ class SystemInfoController {
   }
 }
 
-export default angular.module('systemInfo.controller',
-  [
-    'systemInfo.service'
-  ]
-).controller('systemInfoController', SystemInfoController);
+export default angular
+  .module('systemInfo.controller', [
+    'patternfly',
+    filters,
+    service
+  ])
+  .controller('systemInfoController', SystemInfoController)
+  .name;

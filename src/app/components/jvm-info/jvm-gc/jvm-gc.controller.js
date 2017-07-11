@@ -25,6 +25,10 @@
  * exception statement from your version.
  */
 
+import 'c3';
+import filters from 'shared/filters/filters.module.js';
+import service from './jvm-gc.service.js';
+
 class JvmGcController {
   constructor (jvmId, $scope, $interval, jvmGcService, metricToBigIntFilter,
     bigIntToStringFilter, stringToNumberFilter, unixToDateFilter) {
@@ -218,8 +222,12 @@ class JvmGcController {
 
 }
 
-export default angular.module('jvmGc.controller',
-  [
-    'patternfly'
-  ]
-).controller('jvmGcController', JvmGcController);
+export default angular
+  .module('jvmGc.controller', [
+    'patternfly',
+    'patternfly.charts',
+    service,
+    filters
+  ])
+  .controller('jvmGcController', JvmGcController)
+  .name;

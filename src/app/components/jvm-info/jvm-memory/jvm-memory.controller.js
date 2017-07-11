@@ -25,6 +25,11 @@
  * exception statement from your version.
  */
 
+import 'c3';
+import services from 'shared/services/services.module.js';
+import filters from 'shared/filters/filters.module.js';
+import service from './jvm-memory.service.js';
+
 class JvmMemoryController {
   constructor (jvmId, $scope, $interval, jvmMemoryService, metricToBigIntFilter,
     bigIntToStringFilter, stringToNumberFilter, scaleBytesService) {
@@ -138,9 +143,13 @@ class JvmMemoryController {
   }
 }
 
-export default angular.module('jvmMemory.controller',
-  [
-    'app.services',
-    'app.filters'
-  ]
-).controller('jvmMemoryController', JvmMemoryController);
+export default angular
+  .module('jvmMemory.controller', [
+    'patternfly',
+    'patternfly.charts',
+    services,
+    filters,
+    service
+  ])
+  .controller('jvmMemoryController', JvmMemoryController)
+  .name;

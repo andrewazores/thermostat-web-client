@@ -31,13 +31,6 @@ describe('ConfigModule', () => {
     angular.mock.module('configModule');
   });
 
-  it('should export CFG_MODULE constant', () => {
-    inject(CFG_MODULE => {
-      'ngInject';
-      should.exist(CFG_MODULE);
-    });
-  });
-
   describe('environment', () => {
     let _environment;
     beforeEach(inject(environment => {

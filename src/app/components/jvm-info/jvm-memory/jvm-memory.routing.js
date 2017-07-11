@@ -39,12 +39,12 @@ function config ($stateProvider) {
       );
     },
     resolve: {
-      loadJvmMemory: ($q, $ocLazyLoad) => {
+      loadJvmMemory: (loadJvmInfo, $q, $ocLazyLoad) => {
         'ngInject';
         return $q(resolve => {
           require.ensure(['./jvm-memory.module.js'], () => {
             let module = require('./jvm-memory.module.js');
-            $ocLazyLoad.load({ name: 'jvmMemory' });
+            $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });
         });
@@ -55,8 +55,10 @@ function config ($stateProvider) {
 
 export { config };
 
-export default angular.module('jvmMemory.routing',
-  [
-    'patternfly'
-  ]
-).config(config);
+export default angular
+  .module('jvmMemory.routing', [
+    'ui.router',
+    'oc.lazyLoad'
+  ])
+  .config(config)
+  .name;

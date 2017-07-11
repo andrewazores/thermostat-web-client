@@ -25,6 +25,7 @@
  * exception statement from your version.
  */
 
+import config from 'shared/config/config.module.js';
 import urlJoin from 'url-join';
 
 class SystemInfoService {
@@ -48,7 +49,7 @@ class SystemInfoService {
   }
 }
 
-export default angular.module('systemInfo.service',
-  [
-  ]
-).service('systemInfoService', SystemInfoService);
+export default angular
+  .module('systemInfo.service', [config])
+  .service('systemInfoService', SystemInfoService)
+  .name;

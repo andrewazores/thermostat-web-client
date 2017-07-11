@@ -25,6 +25,10 @@
  * exception statement from your version.
  */
 
+import 'c3';
+import filters from 'shared/filters/filters.module.js';
+import service from './system-info.service.js';
+
 class SystemMemoryController {
   constructor (systemInfoService, $scope, $interval, pfUtils, unixToDateFilter) {
     'ngInject';
@@ -180,9 +184,12 @@ class SystemMemoryController {
   }
 }
 
-export default angular.module('systemMemory.controller',
-  [
+export default angular
+  .module('systemMemory.controller', [
     'patternfly',
-    'systemInfo.service'
-  ]
-).controller('systemMemoryController', SystemMemoryController);
+    'patternfly.charts',
+    filters,
+    service
+  ])
+  .controller('systemMemoryController', SystemMemoryController)
+  .name;

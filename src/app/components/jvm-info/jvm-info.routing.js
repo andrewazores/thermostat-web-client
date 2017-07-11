@@ -25,6 +25,9 @@
  * exception statement from your version.
  */
 
+import jvmGc from './jvm-gc/jvm-gc.routing.js';
+import jvmMemory from './jvm-memory/jvm-memory.routing.js';
+
 function config ($stateProvider) {
   'ngInject';
 
@@ -44,7 +47,7 @@ function config ($stateProvider) {
         return $q(resolve => {
           require.ensure(['./jvm-info.module.js'], () => {
             let module = require('./jvm-info.module.js');
-            $ocLazyLoad.load({ name: 'jvmInfo' });
+            $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });
         });
@@ -57,13 +60,12 @@ function config ($stateProvider) {
 
 export { config };
 
-export default angular.module('jvmInfo.routing',
-  [
+export default angular
+  .module('jvmInfo.routing', [
     'ui.router',
-    'ui.bootstrap',
     'oc.lazyLoad',
-    'app.filters',
-    'jvmMemory.routing',
-    'jvmGc.routing'
-  ]
-).config(config);
+    jvmGc,
+    jvmMemory
+  ])
+  .config(config)
+  .name;

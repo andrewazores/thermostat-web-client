@@ -28,9 +28,9 @@
 describe('JvmListRouting', () => {
 
   let module = require('./jvm-list.routing.js');
-
   let stateProvider, args, q, ocLazyLoad;
   beforeEach(() => {
+    angular.mock.module(module.default);
     stateProvider = {
       state: sinon.spy()
     };
@@ -81,8 +81,9 @@ describe('JvmListRouting', () => {
       deferred.should.be.a.Function();
 
       let resolve = sinon.stub().callsFake(val => {
-        ocLazyLoad.load.should.be.calledWith({ name: 'jvmList' });
-        val.should.equal(require('./jvm-list.module.js'));
+        let mod = require('./jvm-list.module.js');
+        ocLazyLoad.load.should.be.calledWith({ name: mod.default });
+        val.should.equal(mod);
         done();
       });
       deferred(resolve);

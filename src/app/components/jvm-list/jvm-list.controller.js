@@ -25,6 +25,9 @@
  * exception statement from your version.
  */
 
+import filters from 'shared/filters/filters.module.js';
+import service from './jvm-list.service.js';
+
 class JvmListController {
   constructor (jvmListService, $scope, $location, $timeout, $anchorScroll) {
     'ngInject';
@@ -90,9 +93,11 @@ class JvmListController {
 
 }
 
-export default angular.module('jvmList.controller',
-  [
-    'jvmList.service',
-    'app.filters'
-  ]
-).controller('jvmListController', JvmListController);
+export default angular
+  .module('jvmList.controller', [
+    'patternfly',
+    filters,
+    service
+  ])
+  .controller('jvmListController', JvmListController)
+  .name;

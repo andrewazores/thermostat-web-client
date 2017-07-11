@@ -44,7 +44,7 @@ function config ($stateProvider) {
         return $q(resolve => {
           require.ensure(['./system-info.module.js'], () => {
             let module = require('./system-info.module.js');
-            $ocLazyLoad.load({ name: 'systemInfo' });
+            $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });
         });
@@ -59,10 +59,10 @@ function config ($stateProvider) {
 
 export { config };
 
-export default angular.module('systemInfo.routing',
-  [
+export default angular
+  .module('systemInfo.routing', [
     'ui.router',
-    'ui.bootstrap',
     'oc.lazyLoad'
-  ]
-).config(config);
+  ])
+  .config(config)
+  .name;
