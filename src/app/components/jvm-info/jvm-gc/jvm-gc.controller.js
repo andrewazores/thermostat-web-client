@@ -30,17 +30,15 @@ import filters from 'shared/filters/filters.module.js';
 import service from './jvm-gc.service.js';
 
 class JvmGcController {
-  constructor (jvmId, $scope, $interval, jvmGcService, metricToBigIntFilter,
-    bigIntToStringFilter, stringToNumberFilter, unixToDateFilter) {
+  constructor (jvmId, $scope, $interval, jvmGcService,
+    metricToNumberFilter, unixToDateFilter) {
     'ngInject';
 
     this.jvmId = jvmId;
     this.scope = $scope;
     this.interval = $interval;
     this.jvmGcService = jvmGcService;
-    this.metricToBigInt = metricToBigIntFilter;
-    this.bigIntToString = bigIntToStringFilter;
-    this.stringToNumber = stringToNumberFilter;
+    this.metricToNumberFilter = metricToNumberFilter;
     this.unixToDate = unixToDateFilter;
 
     this.scope.refreshRate = '1000';
@@ -174,8 +172,8 @@ class JvmGcController {
     for (let i = resp.data.response.length - 1; i >= 0; i--) {
       let data = resp.data.response[i];
       let collectorName = data.collectorName;
-      let timestamp = data.timeStamp;
-      let micros = data.wallTimeInMicros;
+      let timestamp = this.metricToNumberFilter(data.timeStamp);
+      let micros = this.metricToNumberFilter(data.wallTimeInMicros);
 
       seenCollectors.add(collectorName);
       this.makeConfig(collectorName, micros);
