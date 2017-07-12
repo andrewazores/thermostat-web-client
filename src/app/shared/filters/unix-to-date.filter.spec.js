@@ -25,30 +25,25 @@
  * exception statement from your version.
  */
 
-import unixToDateProvider from './unix-to-date.filter.js';
-import { filterName } from './unix-to-date.filter.js';
+import {filterProvider} from './unix-to-date.filter.js';
 
 describe('unixToDate filter', () => {
   let formatSpy = sinon.spy();
   let momentStub = sinon.stub().returns({ format: formatSpy });
 
   it('should be exported', () => {
-    should.exist(unixToDateProvider);
-  });
-
-  it('should name itself', () => {
-    filterName.should.equal('unixToDate');
+    should.exist(filterProvider);
   });
 
   it('should provide a timestamp formatting function', () => {
-    let fn = unixToDateProvider();
+    let fn = filterProvider();
     should.exist(fn);
     fn.should.be.a.Function();
   });
 
   it('should use the provided \'moment\' & format', () => {
     let timestamp = 450000;
-    let fn = unixToDateProvider(momentStub);
+    let fn = filterProvider(momentStub);
     fn(timestamp);
 
     momentStub.should.be.calledWith(timestamp);
@@ -57,13 +52,13 @@ describe('unixToDate filter', () => {
 
   it('should accept alternate time formats', () => {
     let timestamp = 450000;
-    let fn = unixToDateProvider(momentStub);
+    let fn = filterProvider(momentStub);
     fn(timestamp, 'LTS');
     formatSpy.should.be.calledWith('LTS');
   });
 
   it('should allow caller to supply format', () => {
-    let fn = unixToDateProvider(momentStub);
+    let fn = filterProvider(momentStub);
     fn(100, 'fooFormat');
     momentStub.should.be.calledWith(100);
     formatSpy.should.be.calledWith('fooFormat');

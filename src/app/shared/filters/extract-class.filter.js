@@ -25,11 +25,14 @@
  * exception statement from your version.
  */
 
-export default function filterProvider (extractClassService) {
+import filterModule from './filters.module.js';
+
+function filterProvider (extractClassService) {
   'ngInject';
   return extractClassService.extract;
 }
 
-const filterName = 'extractClass';
-
-export { filterName };
+export default angular
+  .module(filterModule)
+  .filter('extractClass', filterProvider)
+  .name;

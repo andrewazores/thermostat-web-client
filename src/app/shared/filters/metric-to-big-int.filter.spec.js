@@ -29,13 +29,14 @@ import big from 'big.js';
 
 describe('metricToBigInt filter', () => {
 
-  beforeEach(angular.mock.module('app.filters'));
-
   let fn;
-  beforeEach(angular.mock.inject(metricToBigIntFilter => {
-    'ngInject';
-    fn = metricToBigIntFilter;
-  }));
+  beforeEach(() => {
+    angular.mock.module('app.filters');
+    angular.mock.inject(metricToBigIntFilter => {
+      'ngInject';
+      fn = metricToBigIntFilter;
+    });
+  });
 
   it('should return the inner $numberLong property value', () => {
     fn({ $numberLong: '100' }).should.deepEqual(big('100'));

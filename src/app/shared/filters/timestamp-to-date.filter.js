@@ -25,7 +25,9 @@
  * exception statement from your version.
  */
 
-export default function filterProvider (
+import filterModule from './filters.module.js';
+
+function filterProvider (
   metricToBigIntFilter, bigIntToStringFilter, stringToNumberFilter,
   unixToDateFilter) {
   'ngInject';
@@ -37,7 +39,7 @@ export default function filterProvider (
   };
 }
 
-const filterName = 'timeStampToDate';
-
-export { filterName };
-
+export default angular
+  .module(filterModule)
+  .filter('timeStampToDate', filterProvider)
+  .name;

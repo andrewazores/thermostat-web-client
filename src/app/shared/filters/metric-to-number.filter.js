@@ -25,7 +25,9 @@
  * exception statement from your version.
  */
 
-export default function filterProvider (
+import filterModule from './filters.module.js';
+
+function filterProvider (
   metricToBigIntFilter, bigIntToStringFilter, stringToNumberFilter) {
   'ngInject';
   return (metric, scale = 1) => {
@@ -35,6 +37,7 @@ export default function filterProvider (
   }
 }
 
-const filterName = 'metricToNumber';
-
-export { filterName };
+export default angular
+  .module(filterModule)
+  .filter('metricToNumber', filterProvider)
+  .name;

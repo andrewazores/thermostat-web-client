@@ -25,14 +25,18 @@
  * exception statement from your version.
  */
 
+import filterModule from './filters.module.js';
 import moment from 'moment';
 
-export default function filterProvider (formatter = moment) {
+function filterProvider (formatter = moment) {
   return (timestamp, format = 'lll') => {
     return formatter(timestamp).format(format);
   };
 }
 
-const filterName = 'unixToDate';
+export {filterProvider};
 
-export { filterName };
+export default angular
+  .module(filterModule)
+  .filter('unixToDate', filterProvider)
+  .name;
