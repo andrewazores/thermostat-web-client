@@ -26,7 +26,8 @@
  */
 
 class ExtractClassService {
-  extract (fullClassName, includePkg = false) {
+  extract (fullClassName = '', includePkg = false) {
+
     if (fullClassName.indexOf('.') === -1) {
       return fullClassName;
     }

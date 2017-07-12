@@ -28,7 +28,7 @@
 export default function filterProvider (extractClassService) {
   'ngInject';
   return extractClassService.extract;
-};
+}
 
 const filterName = 'extractClass';
 

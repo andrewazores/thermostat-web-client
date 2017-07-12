@@ -55,4 +55,8 @@ describe('ExtractClassService', () => {
   it('should strip paths to JARs', () => {
     svc.extract('/path/to/foo.JaR').should.equal('foo.JaR');
   });
+
+  it('should return an empty string if given undef', () => {
+    svc.extract().should.equal('');
+  });
 });
