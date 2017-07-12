@@ -4,10 +4,9 @@
     <li><a ui-sref="jvmList({ '#': ctrl.systemId })">JVM List</a></li>
     <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemId}}</a></li>
   </ol>
-  <div ng-show="ctrl.showErr" class="alert alert-danger alert-dismissable">
-    <span class="pficon pficon-error-circle-o"></span>
-    <strong>Unable to retrieve data.</strong> Error while retrieving system information.
-  </div>
+
+  <dismissible-error-message ng-show="ctrl.showErr" err-message="errMessage" err-title="errTitle"></dismissible-error-message>
+
   <div ng-show="!ctrl.showErr">
     <div class="row">
       <div class="col-xs-12 col-lg-8">

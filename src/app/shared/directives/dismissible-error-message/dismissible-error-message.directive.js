@@ -25,36 +25,20 @@
  * exception statement from your version.
  */
 
-import filters from 'shared/filters/filters.module.js';
-import service from './system-info.service.js';
+import dismissibleErrorMessageTemplate from './dismissible-error-message.html'
 
-class SystemInfoController {
-  constructor (systemId, systemInfoService, $interval, $scope) {
-    'ngInject';
-    this.systemId = systemId;
-    this.showErr = false;
-
-    $scope.systemId = systemId;
-    $scope.errTitle = 'Unable to retrieve data.';
-    $scope.errMessage = 'Error while retrieving system information.';
-
-    systemInfoService.getSystemInfo(systemId).then(
-      resp => {
-        this.systemInfo = resp.data.response;
-        this.showErr = false;
-      },
-      () => {
-        this.showErr = true;
-      }
-    );
-  }
+export let dismissibleErrorMessageFunc = () => {
+    return {
+        restrict: 'E',
+        scope: {
+            errTitle: '<',
+            errMessage: '<'
+        },
+        template: dismissibleErrorMessageTemplate
+    }
 }
 
-export default angular
-  .module('systemInfo.controller', [
-    'patternfly',
-    filters,
-    service
-  ])
-  .controller('systemInfoController', SystemInfoController)
-  .name;
+export default angular.module('directives.dismissible-error-message',
+    [
+    ]
+).directive("dismissibleErrorMessage", dismissibleErrorMessageFunc);

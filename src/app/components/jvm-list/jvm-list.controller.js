@@ -27,6 +27,7 @@
 
 import filters from 'shared/filters/filters.module.js';
 import service from './jvm-list.service.js';
+import dismissibleErrorMessage from "shared/directives/dismissible-error-message/dismissible-error-message.directive.js";
 
 class JvmListController {
   constructor (jvmListService, $scope, $location, $timeout, $anchorScroll) {
@@ -36,6 +37,9 @@ class JvmListController {
     this.location = $location;
     this.timeout = $timeout;
     this.anchorScroll = $anchorScroll;
+
+    $scope.errTitle = 'Unable to retrieve data.';
+    $scope.errMessage = 'Error while retrieving Thermostat JVM Listing.';
 
     this.aliveOnly = true;
     let aliveOnlySwitch = angular.element('#aliveOnlyState');
@@ -95,6 +99,7 @@ class JvmListController {
 
 export default angular
   .module('jvmList.controller', [
+    'directives.dismissible-error-message',
     'patternfly',
     filters,
     service
