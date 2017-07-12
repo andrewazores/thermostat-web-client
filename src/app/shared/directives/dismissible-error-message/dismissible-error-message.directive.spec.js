@@ -33,7 +33,8 @@ describe('dismissibleErrorMessage Directive', () => {
 
   let initDummyModule = () => {
     let compile, rootScope;
-    inject(($compile, $rootScope) => {
+    angular.mock.inject(($compile, $rootScope) => {
+      'ngInject';
       compile = $compile;
       rootScope = $rootScope;
     });
