@@ -42,7 +42,8 @@ rules:
   no-debugger: 1
   no-cond-assign: 2
   no-extra-parens: 0
-  no-console: 1
+  no-console: [1, { allow: ["error", "info", "warning"] }]
+  no-constant-condition: ["error", {"checkLoops": false}]
   no-extra-semi: 2
   no-irregular-whitespace: 2
   dot-notation:

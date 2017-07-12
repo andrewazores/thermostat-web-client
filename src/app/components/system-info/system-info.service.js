@@ -25,8 +25,8 @@
  * exception statement from your version.
  */
 
+import config from 'shared/config/config.module.js';
 import urlJoin from 'url-join';
-import _ from 'lodash';
 
 class SystemInfoService {
   constructor ($q, $http, gatewayUrl) {
@@ -45,11 +45,11 @@ class SystemInfoService {
   }
 
   getMemoryInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'system-info', 'memory', systemId));
+    return this.http.get(urlJoin(this.gatewayUrl, 'system-memory', '0.0.1', 'systems', systemId));
   }
 }
 
-export default angular.module('systemInfo.service',
-  [
-  ]
-).service('systemInfoService', SystemInfoService);
+export default angular
+  .module('systemInfo.service', [config])
+  .service('systemInfoService', SystemInfoService)
+  .name;

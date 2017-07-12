@@ -25,12 +25,19 @@
  * exception statement from your version.
  */
 
+import filters from 'shared/filters/filters.module.js';
+import service from './system-info.service.js';
+
 class SystemInfoController {
   constructor (systemId, systemInfoService, $interval, $scope) {
     'ngInject';
     this.systemId = systemId;
     this.showErr = false;
+
     $scope.systemId = systemId;
+    $scope.errTitle = 'Unable to retrieve data.';
+    $scope.errMessage = 'Error while retrieving system information.';
+
     systemInfoService.getSystemInfo(systemId).then(
       resp => {
         this.systemInfo = resp.data.response;
@@ -43,8 +50,11 @@ class SystemInfoController {
   }
 }
 
-export default angular.module('systemInfo.controller',
-  [
-    'systemInfo.service'
-  ]
-).controller('systemInfoController', SystemInfoController);
+export default angular
+  .module('systemInfo.controller', [
+    'patternfly',
+    filters,
+    service
+  ])
+  .controller('systemInfoController', SystemInfoController)
+  .name;

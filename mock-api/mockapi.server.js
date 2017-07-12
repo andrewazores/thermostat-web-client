@@ -18,13 +18,13 @@ fs.readdir(endpoints, function (err, files) {
   var server = {
     app: app,
     init: function (svc) {
-      console.log('mock ' + svc + ' up');
+      console.info('mock ' + svc + ' up');
     },
     logRequest: function (svc, req) {
-      console.log('[' + svc + '] requested');
-      console.log('params: ' + JSON.stringify(req.params));
-      console.log('query: ' + JSON.stringify(req.query));
-      console.log('~~~~\n');
+      console.info('[' + svc + '] requested');
+      console.info('params: ' + JSON.stringify(req.params));
+      console.info('query: ' + JSON.stringify(req.query));
+      console.info('~~~~\n');
     }
   };
   for (var i = 0; i < files.length; i++) {
@@ -36,5 +36,5 @@ fs.readdir(endpoints, function (err, files) {
 });
 
 app.listen(app.get('port'), app.get('host'), function () {
-  console.log('Mock-API server started on http://' + app.get('host') + ':' + app.get('port'));
+  console.info('Mock-API server started on http://' + app.get('host') + ':' + app.get('port'));
 });

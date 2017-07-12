@@ -27,12 +27,14 @@
 
 describe('SystemInfoService', () => {
 
-  beforeEach(angular.mock.module($provide => {
-    'ngInject';
-    $provide.value('gatewayUrl', 'http://example.com:1234');
-  }));
+  beforeEach(() => {
+    angular.mock.module('configModule', $provide => {
+      'ngInject';
+      $provide.constant('gatewayUrl', 'http://example.com:1234');
+    });
 
-  beforeEach(angular.mock.module('systemInfo.service'));
+    angular.mock.module('systemInfo.service');
+  });
 
   let httpBackend, scope, svc;
   beforeEach(inject(($httpBackend, $rootScope, systemInfoService) => {
@@ -93,13 +95,13 @@ describe('SystemInfoService', () => {
         total: 16384,
         used: 9001
       };
-      httpBackend.when('GET', 'http://example.com:1234/system-info/memory/foo-systemId')
+      httpBackend.when('GET', 'http://example.com:1234/system-memory/0.0.1/systems/foo-systemId')
         .respond(expected);
       svc.getMemoryInfo('foo-systemId').then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://example.com:1234/system-info/memory/foo-systemId');
+      httpBackend.expectGET('http://example.com:1234/system-memory/0.0.1/systems/foo-systemId');
       httpBackend.flush();
       scope.$apply();
     });

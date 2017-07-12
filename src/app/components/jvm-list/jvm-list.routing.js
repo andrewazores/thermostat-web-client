@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-function config($stateProvider) {
+function config ($stateProvider) {
   'ngInject';
 
   $stateProvider.state('jvmList', {
@@ -44,7 +44,7 @@ function config($stateProvider) {
         return $q(resolve => {
           require.ensure(['./jvm-list.module.js'], () => {
             let module = require('./jvm-list.module.js');
-            $ocLazyLoad.load({ name: 'jvmList' });
+            $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });
         });
@@ -55,11 +55,10 @@ function config($stateProvider) {
 
 export { config };
 
-export default angular.module('jvmList.routing',
-  [
+export default angular
+  .module('jvmList.routing', [
     'ui.router',
-    'ui.bootstrap',
-    'oc.lazyLoad',
-    'app.filters'
-  ]
-).config(config);
+    'oc.lazyLoad'
+  ])
+  .config(config)
+  .name;

@@ -29,7 +29,7 @@ const licenseChecker = require('./license-check.js');
 const SCRIPT_TERMINATION_EXIT_STATUS = 1;
 
 function exitWithErrorMessage (msg) {
-  console.log(msg);
+  console.error(msg);
   process.exit(SCRIPT_TERMINATION_EXIT_STATUS);
 }
 

@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-function landingRouting($stateProvider) {
+function landingRouting ($stateProvider) {
   'ngInject';
 
   $stateProvider.state('landing', {
@@ -43,8 +43,10 @@ function landingRouting($stateProvider) {
 
 export { landingRouting };
 
-export default angular.module('landing.routing',
-  [
+export default angular
+  .module('landing.routing', [
     'ui.router',
     'ui.bootstrap'
-  ]).config(landingRouting);
+  ])
+  .config(landingRouting)
+  .name;

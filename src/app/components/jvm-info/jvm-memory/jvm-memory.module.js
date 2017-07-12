@@ -25,12 +25,12 @@
  * exception statement from your version.
  */
 
-import './jvm-memory.controller.js';
-import './jvm-memory.service.js';
+import controller from './jvm-memory.controller.js';
+import service from './jvm-memory.service.js';
 
-export default angular.module('jvmMemory',
-  [
-    'jvmMemory.controller',
-    'jvmMemory.service'
-  ]
-);
+export default angular
+  .module('jvmMemory', [
+    controller,
+    service
+  ])
+  .name;

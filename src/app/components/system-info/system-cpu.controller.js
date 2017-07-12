@@ -25,6 +25,10 @@
  * exception statement from your version.
  */
 
+import 'c3';
+import filters from 'shared/filters/filters.module.js';
+import service from './system-info.service.js';
+
 class SystemCpuController {
   constructor (systemInfoService, $scope, $interval) {
     this.svc = systemInfoService;
@@ -62,8 +66,12 @@ class SystemCpuController {
   }
 }
 
-export default angular.module('systemCpu.controller',
-  [
-    'systemInfo.service'
-  ]
-).controller('systemCpuController', SystemCpuController);
+export default angular
+  .module('systemCpu.controller', [
+    'patternfly',
+    'patternfly.charts',
+    filters,
+    service
+  ])
+  .controller('systemCpuController', SystemCpuController)
+  .name;

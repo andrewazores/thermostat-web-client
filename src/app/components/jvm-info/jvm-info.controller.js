@@ -25,6 +25,9 @@
  * exception statement from your version.
  */
 
+import filters from 'shared/filters/filters.module.js';
+import service from './jvm-info.service.js';
+
 class JvmInfoController {
   constructor ($scope, $state, systemId, jvmId, jvmInfoService) {
     'ngInject';
@@ -40,7 +43,7 @@ class JvmInfoController {
       }
     );
 
-    $scope.$watch('comboValue', (cur, prev) => {
+    $scope.$watch('comboValue', cur => {
       if (cur === '') {
         $state.go('jvmInfo', { systemId: systemId, jvmId: jvmId });
       } else {
@@ -50,7 +53,12 @@ class JvmInfoController {
   }
 }
 
-export default angular.module('jvmInfo.controller',
-  [
-  ]
-).controller('jvmInfoController', JvmInfoController);
+export default angular
+  .module('jvmInfo.controller', [
+    'patternfly',
+    'ui.bootstrap',
+    filters,
+    service
+  ])
+  .controller('jvmInfoController', JvmInfoController)
+  .name;

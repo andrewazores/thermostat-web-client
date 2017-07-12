@@ -26,6 +26,7 @@
  */
 
 import urlJoin from 'url-join';
+import config from 'shared/config/config.module.js';
 
 class JvmListService {
   constructor ($http, gatewayUrl) {
@@ -45,7 +46,7 @@ class JvmListService {
   }
 }
 
-export default angular.module('jvmList.service',
-  [
-  ]
-).service('jvmListService', JvmListService);
+export default angular
+  .module('jvmList.service', [config])
+  .service('jvmListService', JvmListService)
+  .name;

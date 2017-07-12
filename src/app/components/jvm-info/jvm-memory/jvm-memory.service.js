@@ -26,6 +26,7 @@
  */
 
 import urlJoin from 'url-join';
+import config from 'shared/config/config.module.js';
 
 class JvmMemoryService {
   constructor ($http, gatewayUrl) {
@@ -45,7 +46,7 @@ class JvmMemoryService {
   }
 }
 
-export default angular.module('jvmMemory.service',
-  [
-  ]
-).service('jvmMemoryService', JvmMemoryService);
+export default angular
+  .module('jvmMemory.service', [config])
+  .service('jvmMemoryService', JvmMemoryService)
+  .name;

@@ -27,11 +27,12 @@ function jvmGc (server) {
         accumulatedMicros = 1000;
       }
       var data = {
-        collectorName: 'fooCollector',
-        timeStamp: Date.now() - i,
-        wallTimeInMicros: accumulatedMicros,
+        agentId: 'foo-agentId',
         jvmId: jvmId,
-        agentId: 'foo-agentId'
+        timeStamp: { $numberLong: (Date.now() - i).toString() },
+        collectorName: 'fooCollector',
+        runCount: { $numberLong: '0' },
+        wallTimeInMicros: { $numberLong: accumulatedMicros.toString() }
       };
       response.push(data);
     }

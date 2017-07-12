@@ -4,10 +4,7 @@
     <li><a ui-sref="jvmList">JVM List</a></li>
   </ol>
 
-  <div ng-show="ctrl.showErr" class="alert alert-danger alert-dismissable">
-    <span class="pficon pficon-error-circle-o"></span>
-    <strong>Unable to retrieve data.</strong> Error while retrieving Thermostat JVM Listing.
-  </div>
+  <dismissible-error-message ng-show="ctrl.showErr" err-message="errMessage" err-title="errTitle"></dismissible-error-message>
 
   <div ng-show="!ctrl.showErr" >
     <div class="text-right">
@@ -47,7 +44,7 @@
                   </div>
                   <div class="card-pf-body">
                     <h2 class="card-pf-title text-center ellipsis-word-wrap">
-                      {{ctrl.extractClassName(jvm.mainClass)}}
+                      {{jvm.mainClass | extractClass:true }}
                     </h2>
                     <div class="card-pf-info text-center">
                       <strong>Created On</strong> {{jvm.startTime | timeStampToDate}}
@@ -60,9 +57,9 @@
             </div>
           </div><!-- /row -->
         </div>
-      </uib-accordion-group>
+        </uib-accordion-group>
 
-    </uib-accordion>
+        </uib-accordion>
   </div>
 
 </div><!-- /container -->

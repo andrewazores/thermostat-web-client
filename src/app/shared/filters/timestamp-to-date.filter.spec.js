@@ -25,27 +25,30 @@
  * exception statement from your version.
  */
 
-import timeStampToDateProvider from './timestamp-to-date.filter.js';
-import { filterName } from './timestamp-to-date.filter.js';
-
 describe('timeStampToDate filter', () => {
   let metricToBigIntStub = sinon.stub().returns('a');
   let bigIntToStringStub = sinon.stub().returns('b');
   let stringToNumberStub = sinon.stub().returns('c');
   let unixToDateStub = sinon.stub().returns('Dec 31, 1969 7:00 PM');
+  let fn;
 
-  it('should be exported', () => {
-    should.exist(timeStampToDateProvider);
-  });
+  beforeEach(() => {
+    angular.mock.module('app.filters');
+    angular.mock.module('app.filters', $provide => {
+      'ngInject';
+      $provide.value('metricToBigIntFilter', metricToBigIntStub);
+      $provide.value('bigIntToStringFilter', bigIntToStringStub);
+      $provide.value('stringToNumberFilter', stringToNumberStub);
+      $provide.value('unixToDateFilter', unixToDateStub);
+    });
 
-  it('should name itself', () => {
-    filterName.should.equal('timeStampToDate');
+    angular.mock.inject(timeStampToDateFilter => {
+      'ngInject';
+      fn = timeStampToDateFilter;
+    });
   });
 
   it('should follow the pipeline', () => {
-    let fn = timeStampToDateProvider(
-      metricToBigIntStub, bigIntToStringStub, stringToNumberStub, unixToDateStub);
-
     let timestamp = 1497624324;
     fn(timestamp).should.equal('Dec 31, 1969 7:00 PM');
     metricToBigIntStub.should.be.calledWith(timestamp);

@@ -25,49 +25,38 @@
  * exception statement from your version.
  */
 
-let errorModule = angular
-  .module('error.routing', ['ui.router'])
-  .config(errorRouting);
+describe('ExtractClassService', () => {
 
-function errorRouting ($stateProvider, $urlRouterProvider) {
-  'ngInject';
-  $stateProvider.state('404', {
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => {
-          resolve(require('templates/404.html'));
-        })
-      );
-    }
+  let svc;
+
+  beforeEach(angular.mock.module('app.services'));
+
+  beforeEach(inject(extractClassService => {
+    'ngInject';
+    svc = extractClassService;
+  }));
+
+  it('should return early if class name is bare', () => {
+    svc.extract('className').should.equal('className');
   });
 
-  // define behaviour when no state is matched
-  $urlRouterProvider.otherwise(($injector, $location) => {
-    $injector.get('$state').go('404', { location: $location.path() });
+  it('should return class name given fully qualified name', () => {
+    svc.extract('foo.bar.Baz').should.equal('Baz');
   });
-}
 
-let componentRoutingModules = [errorModule.name];
-let req = require.context('./components', true, /\.routing\.js/);
-req.keys().forEach(k => componentRoutingModules.push(req(k).default));
-
-let appRouter = angular.module('app.routing', componentRoutingModules);
-
-function transitionHook ($q, $transitions, authService) {
-  'ngInject';
-  $transitions.onBefore({}, () => {
-    let defer = $q.defer();
-    authService.refresh()
-      .success(() => defer.resolve())
-      .error(() => {
-        defer.reject('Auth token update failed');
-        authService.login();
-      });
-    return defer.promise;
+  it('should return class name with condensed package given fully qualified name', () => {
+    svc.extract('foo.bar.Baz', true).should.equal('f.b.Baz');
   });
-};
-appRouter.run(transitionHook);
-export default appRouter.name;
 
-export { errorModule, errorRouting, transitionHook };
+  it('should return JAR filename given JAR filename', () => {
+    svc.extract('foo.jar').should.equal('foo.jar');
+  });
+
+  it('should strip paths to JARs', () => {
+    svc.extract('/path/to/foo.JaR').should.equal('foo.JaR');
+  });
+
+  it('should return an empty string if given undef', () => {
+    svc.extract().should.equal('');
+  });
+});

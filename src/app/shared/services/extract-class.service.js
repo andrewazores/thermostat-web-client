@@ -25,37 +25,36 @@
  * exception statement from your version.
  */
 
-import big from 'big.js';
+class ExtractClassService {
+  extract (fullClassName = '', includePkg = false) {
 
-describe('metricToBigInt filter', () => {
+    if (fullClassName.indexOf('.') === -1) {
+      return fullClassName;
+    }
 
-  let fn;
-  beforeEach(() => {
-    angular.mock.module('app.filters');
-    angular.mock.inject(metricToBigIntFilter => {
-      'ngInject';
-      fn = metricToBigIntFilter;
-    });
-  });
+    // remove paths, which are sometimes present when running JARs
+    if (fullClassName.indexOf('/') !== -1) {
+      fullClassName = fullClassName.substring(fullClassName.lastIndexOf('/') + 1);
+    }
 
-  it('should return the inner $numberLong property value', () => {
-    fn({ $numberLong: '100' }).should.deepEqual(big('100'));
-  });
+    let split = fullClassName.split('.');
+    const idx = split.length - 1;
 
-  it('should divide by optional second argument', () => {
-    fn({ $numberLong: '100' }, 4).should.deepEqual(big('25'));
-  });
+    // return filename if mainClass is a JAR
+    if (split[idx].toLowerCase() === 'jar') {
+      return fullClassName;
+    }
 
-  it('should fail on non-objects', () => {
-    fn(100).should.deepEqual(big(undefined));
-  });
+    // include first letter of package names, ex. c.r.t.m.Thermostat
+    let className = split[idx];
+    let pkg = '';
+    if (includePkg) {
+      for (let i = 0; i < idx; i++) {
+        pkg += split[i].charAt(0) + '.';
+      }
+    }
+    return pkg + className;
+  }
+}
 
-  it('should fail on objects without $numberLong property', () => {
-    fn({ foo: 'bar' }).should.deepEqual(big(undefined));
-  });
-
-  it('should treat undefined as a metric of 0', () => {
-    fn(undefined).should.deepEqual(big('0'));
-  });
-
-});
+angular.module('app.services').service('extractClassService', ExtractClassService);

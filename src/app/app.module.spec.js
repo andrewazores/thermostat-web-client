@@ -84,24 +84,6 @@ describe('AppModule', () => {
     });
   });
 
-  it('should provide AppController', () => {
-    inject(($controller, $rootScope) => {
-      'ngInject';
-      should.exist($controller('AppController', {
-        $scope: $rootScope.$new(),
-        environment: 'testing'
-      }));
-    });
-  });
-
-  it('should provide configModule', () => {
-    inject(CFG_MODULE => {
-      'ngInject';
-      should.exist(CFG_MODULE);
-      should.exist(angular.module(CFG_MODULE));
-    });
-  });
-
   it('should provide authModule', () => {
     inject(AUTH_MODULE => {
       'ngInject';

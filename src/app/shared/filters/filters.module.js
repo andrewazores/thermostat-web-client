@@ -25,18 +25,11 @@
  * exception statement from your version.
  */
 
-let mod = angular.module('app.filters',
-  [
-    'app.services'
-  ]
-);
+import servicesModule from 'shared/services/services.module.js';
 
-(function requireFilters () {
-  let req = require.context('./', true, /\.filter\.js/);
-  req.keys().map(v => {
-    let f = req(v);
-    mod.filter(f.filterName, f.default);
-  });
-})();
+export default angular
+  .module('app.filters', [servicesModule])
+  .name;
 
-export default mod;
+let req = require.context('./', true, /\.filter\.js/);
+req.keys().map(req);

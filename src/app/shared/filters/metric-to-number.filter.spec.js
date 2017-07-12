@@ -25,21 +25,25 @@
  * exception statement from your version.
  */
 
-import metricToNumberProvider from './metric-to-number.filter.js';
-import { filterName } from './metric-to-number.filter.js';
-
-describe('metricToString filter', () => {
+describe('metricToNumber filter', () => {
   let metricToBigIntStub = sinon.stub().returns('a');
   let bigIntToStringStub = sinon.stub().returns('b');
   let stringToNumberStub = sinon.stub().returns('c');
-  let fn = metricToNumberProvider(metricToBigIntStub, bigIntToStringStub, stringToNumberStub);
+  let fn;
 
-  it('should be exported', () => {
-    should.exist(metricToNumberProvider);
-  });
+  beforeEach(() => {
+    angular.mock.module('app.filters');
+    angular.mock.module('app.filters', $provide => {
+      'ngInject';
+      $provide.value('metricToBigIntFilter', metricToBigIntStub);
+      $provide.value('bigIntToStringFilter', bigIntToStringStub);
+      $provide.value('stringToNumberFilter', stringToNumberStub);
+    });
 
-  it('should name itself', () => {
-    filterName.should.equal('metricToNumber');
+    angular.mock.inject(metricToNumberFilter => {
+      'ngInject';
+      fn = metricToNumberFilter;
+    });
   });
 
   it ('should recognize one parameter and apply default', () => {

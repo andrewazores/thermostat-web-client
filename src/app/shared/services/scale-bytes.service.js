@@ -31,7 +31,7 @@ class ScaleBytesService {
     this.metricToBigInt = metricToBigIntService;
   }
 
-  get sizes() {
+  get sizes () {
     return ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
   }
 

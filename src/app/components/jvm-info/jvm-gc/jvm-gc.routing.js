@@ -39,12 +39,12 @@ function config ($stateProvider) {
       );
     },
     resolve: {
-      loadJvmGc: ($q, $ocLazyLoad) => {
+      loadJvmGc: (loadJvmInfo, $q, $ocLazyLoad) => {
         'ngInject';
         return $q(resolve => {
           require.ensure(['./jvm-gc.module.js'], () => {
             let module = require('./jvm-gc.module.js');
-            $ocLazyLoad.load({ name: 'jvmGc' });
+            $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });
         });
@@ -55,7 +55,10 @@ function config ($stateProvider) {
 
 export { config };
 
-export default angular.module('jvmGc.routing',
-  [
-  ]
-).config(config);
+export default angular
+  .module('jvmGc.routing', [
+    'ui.router',
+    'oc.lazyLoad'
+  ])
+  .config(config)
+  .name;

@@ -25,6 +25,7 @@
  * exception statement from your version.
  */
 
+import config from 'shared/config/config.module.js';
 import urlJoin from 'url-join';
 
 class JvmGcService {
@@ -45,7 +46,7 @@ class JvmGcService {
   }
 }
 
-export default angular.module('jvmGc.service',
-  [
-  ]
-).service('jvmGcService', JvmGcService);
+export default angular
+  .module('jvmGc.service', [config])
+  .service('jvmGcService', JvmGcService)
+  .name;

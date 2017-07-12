@@ -25,49 +25,14 @@
  * exception statement from your version.
  */
 
-let errorModule = angular
-  .module('error.routing', ['ui.router'])
-  .config(errorRouting);
+import filterModule from './filters.module.js';
 
-function errorRouting ($stateProvider, $urlRouterProvider) {
+function filterProvider (extractClassService) {
   'ngInject';
-  $stateProvider.state('404', {
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => {
-          resolve(require('templates/404.html'));
-        })
-      );
-    }
-  });
-
-  // define behaviour when no state is matched
-  $urlRouterProvider.otherwise(($injector, $location) => {
-    $injector.get('$state').go('404', { location: $location.path() });
-  });
+  return extractClassService.extract;
 }
 
-let componentRoutingModules = [errorModule.name];
-let req = require.context('./components', true, /\.routing\.js/);
-req.keys().forEach(k => componentRoutingModules.push(req(k).default));
-
-let appRouter = angular.module('app.routing', componentRoutingModules);
-
-function transitionHook ($q, $transitions, authService) {
-  'ngInject';
-  $transitions.onBefore({}, () => {
-    let defer = $q.defer();
-    authService.refresh()
-      .success(() => defer.resolve())
-      .error(() => {
-        defer.reject('Auth token update failed');
-        authService.login();
-      });
-    return defer.promise;
-  });
-};
-appRouter.run(transitionHook);
-export default appRouter.name;
-
-export { errorModule, errorRouting, transitionHook };
+export default angular
+  .module(filterModule)
+  .filter('extractClass', filterProvider)
+  .name;

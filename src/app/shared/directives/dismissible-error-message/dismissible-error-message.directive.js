@@ -25,37 +25,20 @@
  * exception statement from your version.
  */
 
-import big from 'big.js';
+import dismissibleErrorMessageTemplate from './dismissible-error-message.html'
 
-describe('metricToBigInt filter', () => {
+export let dismissibleErrorMessageFunc = () => {
+    return {
+        restrict: 'E',
+        scope: {
+            errTitle: '<',
+            errMessage: '<'
+        },
+        template: dismissibleErrorMessageTemplate
+    }
+}
 
-  let fn;
-  beforeEach(() => {
-    angular.mock.module('app.filters');
-    angular.mock.inject(metricToBigIntFilter => {
-      'ngInject';
-      fn = metricToBigIntFilter;
-    });
-  });
-
-  it('should return the inner $numberLong property value', () => {
-    fn({ $numberLong: '100' }).should.deepEqual(big('100'));
-  });
-
-  it('should divide by optional second argument', () => {
-    fn({ $numberLong: '100' }, 4).should.deepEqual(big('25'));
-  });
-
-  it('should fail on non-objects', () => {
-    fn(100).should.deepEqual(big(undefined));
-  });
-
-  it('should fail on objects without $numberLong property', () => {
-    fn({ foo: 'bar' }).should.deepEqual(big(undefined));
-  });
-
-  it('should treat undefined as a metric of 0', () => {
-    fn(undefined).should.deepEqual(big('0'));
-  });
-
-});
+export default angular.module('directives.dismissible-error-message',
+    [
+    ]
+).directive("dismissibleErrorMessage", dismissibleErrorMessageFunc);

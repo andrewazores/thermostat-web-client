@@ -25,18 +25,11 @@
  * exception statement from your version.
  */
 
-export default angular.module('auth.routing', [
-  'ui.router',
-  'ui.bootstrap'
-]).config(authRouting);
-
 function authRouting ($stateProvider, $urlRouterProvider) {
-
-  // define initial state behaviour
   'ngInject';
+  // define initial state behaviour
   $urlRouterProvider.when('', '/');
 
-  'ngInject';
   $stateProvider
     .state('/', {
       url:'/',
@@ -49,4 +42,7 @@ function authRouting ($stateProvider, $urlRouterProvider) {
     });
 }
 
-export { authRouting };
+export default angular
+  .module('auth.routing', ['ui.router'])
+  .config(authRouting)
+  .name;

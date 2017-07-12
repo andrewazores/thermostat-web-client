@@ -3,7 +3,7 @@
     <li><a ui-sref="landing">Thermostat</a></li>
     <li><a ui-sref="jvmList({ '#': ctrl.systemId })">JVM List</a></li>
     <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemId}}</a></li>
-    <li><a ui-sref="jvmInfo({ systemId: ctrl.systemId, jvmId: ctrl.jvmId })">{{ctrl.jvmId}}</a></li>
+    <li><a ui-sref="jvmInfo({ systemId: ctrl.systemId, jvmId: ctrl.jvmId })">{{ctrl.jvmInfo.mainClass | extractClass}}</a></li>
   </ol>
 
   <div class="row">

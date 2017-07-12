@@ -25,7 +25,9 @@
  * exception statement from your version.
  */
 
-export default function filterProvider (metricToBigIntService) {
+import filterModule from './filters.module.js';
+
+function filterProvider (metricToBigIntService) {
   'ngInject';
   return (val, scale = 1) => {
     // in case the filter is invoked on asynchronously loaded data and
@@ -42,6 +44,7 @@ export default function filterProvider (metricToBigIntService) {
   };
 }
 
-const filterName = 'metricToBigInt';
-
-export { filterName };
+export default angular
+  .module(filterModule)
+  .filter('metricToBigInt', filterProvider)
+  .name;

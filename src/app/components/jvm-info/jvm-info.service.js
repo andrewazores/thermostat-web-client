@@ -26,6 +26,7 @@
  */
 
 import urlJoin from 'url-join';
+import config from 'shared/config/config.module.js';
 
 class JvmInfoService {
   constructor ($http, gatewayUrl) {
@@ -39,7 +40,7 @@ class JvmInfoService {
   }
 }
 
-export default angular.module('jvmInfo.service',
-  [
-  ]
-).service('jvmInfoService', JvmInfoService);
+export default angular
+  .module('jvmInfo.service', [config])
+  .service('jvmInfoService', JvmInfoService)
+  .name;

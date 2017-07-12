@@ -16,5 +16,5 @@ app.set('port', port);
 app.set('host', host);
 
 app.listen(app.get('port'), app.get('host'), function () {
-  console.log('Server started on http://' + app.get('host') + ':' + app.get('port'));
+  console.info('Server started on http://' + app.get('host') + ':' + app.get('port'));
 });

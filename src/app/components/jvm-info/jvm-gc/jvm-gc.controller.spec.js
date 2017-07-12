@@ -86,8 +86,8 @@ describe('JvmGcController', () => {
         response: [
           {
             collectorName: 'fooCollector',
-            timeStamp: 100,
-            wallTimeInMicros: 50
+            timeStamp: { $numberLong: '100' },
+            wallTimeInMicros: { $numberLong: '50' }
           }
         ]
       }
@@ -263,14 +263,14 @@ describe('JvmGcController', () => {
       ctrl.collectors.should.deepEqual([]);
       ctrl.chartConfigs.should.deepEqual({});
       ctrl.collectorData.has('fooCollector').should.be.false();
-      let timestamp = Date.now();
+      let timestamp = Date.now().toString();
       ctrl.processData({
         data: {
           response: [
             {
               collectorName: 'fooCollector',
-              timeStamp: timestamp,
-              wallTimeInMicros: 50
+              timeStamp: { $numberLong: timestamp },
+              wallTimeInMicros: { $numberLong: '50' }
             }
           ]
         }
@@ -278,26 +278,27 @@ describe('JvmGcController', () => {
       ctrl.collectorData.has('fooCollector').should.be.true();
       ctrl.collectorData.get('fooCollector').should.be.an.Array();
       ctrl.collectorData.get('fooCollector').length.should.equal(1);
-      ctrl.collectorData.get('fooCollector')[0].should.deepEqual({ timestamp: timestamp, micros: 50 });
+      ctrl.collectorData.get('fooCollector')[0].should.deepEqual({ timestamp: parseInt(timestamp), micros: 50 });
     });
 
     it('should process multiple service results', () => {
       ctrl.collectors.should.deepEqual([]);
       ctrl.chartConfigs.should.deepEqual({});
       ctrl.collectorData.has('fooCollector').should.be.false();
-      let timestamp = Date.now();
+      let timestampA = Date.now().toString();
+      let timestampB = (Date.now() - 10).toString();
       ctrl.processData({
         data: {
           response: [
             {
               collectorName: 'fooCollector',
-              timeStamp: timestamp,
-              wallTimeInMicros: 50
+              timeStamp: { $numberLong: timestampA },
+              wallTimeInMicros: { $numberLong: '50' }
             },
             {
               collectorName: 'fooCollector',
-              timeStamp: timestamp - 10,
-              wallTimeInMicros: 25
+              timeStamp: { $numberLong: timestampB },
+              wallTimeInMicros: { $numberLong: '25' }
             }
           ]
         }
@@ -305,20 +306,20 @@ describe('JvmGcController', () => {
       ctrl.collectorData.has('fooCollector').should.be.true();
       ctrl.collectorData.get('fooCollector').should.be.an.Array();
       ctrl.collectorData.get('fooCollector').length.should.equal(2);
-      ctrl.collectorData.get('fooCollector')[0].should.deepEqual({ timestamp: (timestamp - 10), micros: 25 });
-      ctrl.collectorData.get('fooCollector')[1].should.deepEqual({ timestamp: timestamp, micros: 50 });
+      ctrl.collectorData.get('fooCollector')[0].should.deepEqual({ timestamp: parseInt(timestampB), micros: 25 });
+      ctrl.collectorData.get('fooCollector')[1].should.deepEqual({ timestamp: parseInt(timestampA), micros: 50 });
     });
 
     it('should append new data', () => {
-      let timestampA = Date.now();
-      let timestampB = Date.now() + 5000;
+      let timestampA = Date.now().toString();
+      let timestampB = (Date.now() + 5000).toString();
       ctrl.processData({
         data: {
           response: [
             {
               collectorName: 'fooCollector',
-              timeStamp: timestampA,
-              wallTimeInMicros: 50
+              timeStamp: { $numberLong: timestampA },
+              wallTimeInMicros: { $numberLong: '50' }
             }
           ]
         }
@@ -328,8 +329,8 @@ describe('JvmGcController', () => {
           response: [
             {
               collectorName: 'fooCollector',
-              timeStamp: timestampB,
-              wallTimeInMicros: 100
+              timeStamp: { $numberLong: timestampB },
+              wallTimeInMicros: { $numberLong: '100' }
             }
           ]
         }
@@ -337,19 +338,20 @@ describe('JvmGcController', () => {
       ctrl.collectorData.has('fooCollector').should.be.true();
       ctrl.collectorData.get('fooCollector').should.be.an.Array();
       ctrl.collectorData.get('fooCollector').length.should.equal(2);
-      ctrl.collectorData.get('fooCollector')[0].should.deepEqual({ timestamp: timestampA, micros: 50 });
-      ctrl.collectorData.get('fooCollector')[1].should.deepEqual({ timestamp: timestampB, micros: 100 });
+      ctrl.collectorData.get('fooCollector')[0].should.deepEqual({ timestamp: parseInt(timestampA), micros: 50 });
+      ctrl.collectorData.get('fooCollector')[1].should.deepEqual({ timestamp: parseInt(timestampB), micros: 100 });
     });
 
     it('should append a sample with duplicate elapsed time if no sample received for a collector', () => {
-      let timestamp = Date.now();
+      let timestampA = Date.now().toString();
+      let timestampB = (Date.now() + 10).toString();
       ctrl.processData({
         data: {
           response: [
             {
               collectorName: 'fooCollector',
-              timeStamp: timestamp,
-              wallTimeInMicros: 100
+              timeStamp: { $numberLong: timestampA },
+              wallTimeInMicros: { $numberLong: '100' }
             }
           ]
         }
@@ -359,46 +361,46 @@ describe('JvmGcController', () => {
           response: [
             {
               collectorName: 'barCollector',
-              timeStamp: timestamp + 10,
-              wallTimeInMicros: 200
+              timeStamp: { $numberLong: timestampB },
+              wallTimeInMicros: { $numberLong: '200' }
             }
           ]
         }
       });
       ctrl.collectorData.get('fooCollector').length.should.equal(2);
-      ctrl.collectorData.get('fooCollector')[0].should.deepEqual({ timestamp: timestamp, micros: 100 });
-      ctrl.collectorData.get('fooCollector')[1].should.deepEqual({ timestamp: timestamp + 10, micros: 100 });
+      ctrl.collectorData.get('fooCollector')[0].should.deepEqual({ timestamp: parseInt(timestampA), micros: 100 });
+      ctrl.collectorData.get('fooCollector')[1].should.deepEqual({ timestamp: parseInt(timestampB), micros: 100 });
 
       ctrl.collectorData.get('barCollector').length.should.equal(1);
-      ctrl.collectorData.get('barCollector')[0].should.deepEqual({ timestamp: timestamp + 10, micros: 200 });
+      ctrl.collectorData.get('barCollector')[0].should.deepEqual({ timestamp: parseInt(timestampB), micros: 200 });
     });
 
     it('should ignore duplicate timestamps', () => {
-      let timestamp = Date.now();
+      let timestamp = Date.now().toString();
       ctrl.processData({
         data: {
           response: [
             {
               collectorName: 'fooCollector',
-              timeStamp: timestamp,
-              wallTimeInMicros: 200
+              timeStamp: { $numberLong: timestamp },
+              wallTimeInMicros: { $numberLong: 200 }
             },
             {
               collectorName: 'fooCollector',
-              timeStamp: timestamp,
-              wallTimeInMicros: 100
+              timeStamp: { $numberLong: timestamp },
+              wallTimeInMicros: { $numberLong: 100 }
             },
             {
               collectorName: 'fooCollector',
-              timeStamp: timestamp,
-              wallTimeInMicros: 100
+              timeStamp: { $numberLong: timestamp },
+              wallTimeInMicros: { $numberLong: 100 }
             }
           ]
         }
       });
       ctrl.collectorData.get('fooCollector').length.should.equal(1);
       // note: response is processed in reverse order, so 100 is seen first
-      ctrl.collectorData.get('fooCollector')[0].should.deepEqual({ timestamp: timestamp, micros: 100 });
+      ctrl.collectorData.get('fooCollector')[0].should.deepEqual({ timestamp: parseInt(timestamp), micros: 100 });
     });
   });
 

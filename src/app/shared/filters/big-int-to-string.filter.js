@@ -25,13 +25,16 @@
  * exception statement from your version.
  */
 
-export default function filterProvider () {
+import filterModule from './filters.module.js';
+
+function filterProvider () {
   return val => {
     val = val || 0;
     return val.toFixed();
-  }
+  };
 }
 
-const filterName = 'bigIntToString';
-
-export { filterName };
+export default angular
+  .module(filterModule)
+  .filter('bigIntToString', filterProvider)
+  .name;

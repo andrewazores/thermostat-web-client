@@ -25,10 +25,13 @@
  * exception statement from your version.
  */
 
-export default function filterProvider () {
+import filterModule from './filters.module.js';
+
+function filterProvider () {
   return val => parseInt(val);
 }
 
-const filterName = 'stringToNumber';
-
-export { filterName };
+export default angular
+  .module(filterModule)
+  .filter('stringToNumber', filterProvider)
+  .name;
