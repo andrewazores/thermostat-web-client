@@ -27,6 +27,11 @@
 
 import filterModule from './filters.module.js';
 
+/**
+ * Takes an integer and returns it as a string with 0 decimal places.
+ * @param {Number}
+ * @returns {String}
+ */
 function filterProvider () {
   return val => {
     val = val || 0;

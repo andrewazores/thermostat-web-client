@@ -27,6 +27,13 @@
 
 import big from 'big.js';
 
+/**
+ * Takes a metric object with numeric value
+ * and converts it into a Big number Object.
+ * Documentation for big.js: http://mikemcl.github.io/big.js/
+ * @param {Object} metric e.g., '{ $numberLong: metric }'
+ * @return {Big number Object}
+ */
 class MetricToBigIntService {
   constructor () {
     this.big = big;
@@ -37,4 +44,6 @@ class MetricToBigIntService {
   }
 }
 
-angular.module('app.services').service('metricToBigIntService', MetricToBigIntService);
+angular
+  .module('app.services')
+  .service('metricToBigIntService', MetricToBigIntService);

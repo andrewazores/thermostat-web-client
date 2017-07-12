@@ -29,7 +29,8 @@ describe('SystemMemoryController', () => {
 
   beforeEach(angular.mock.module('systemMemory.controller'));
 
-  let service, scope, interval, memoryPromise, controller, unixToDate;
+  let service, scope, interval, memoryPromise, controller,
+    dateFilterStub, dateFormatSpy;
 
   beforeEach(inject($controller => {
     'ngInject';
@@ -48,20 +49,28 @@ describe('SystemMemoryController', () => {
       getMemoryInfo: sinon.stub().returns(memoryPromise)
     };
 
+    dateFilterStub = sinon.stub().returns('mockDate');
+    dateFormatSpy = {
+      time: {
+        medium: sinon.spy()
+      }
+    };
     scope = {
       $on: sinon.spy(),
-      $watch: sinon.spy(),
+      $watch: sinon.spy()
     };
 
     interval = sinon.stub().returns('interval-sentinel');
     interval.cancel = sinon.stub().returns(interval.sentinel);
-    unixToDate = sinon.stub().returns('mockDate');
+
+
     controller = $controller('systemMemoryController', {
       systemId: 'foo-systemId',
       systemInfoService: service,
       $scope: scope,
       $interval: interval,
-      unixToDateFilter: unixToDate,
+      dateFilter: dateFilterStub,
+      DATE_FORMAT: dateFormatSpy
     });
 
   }));
@@ -172,12 +181,13 @@ describe('SystemMemoryController', () => {
       controller.should.have.ownProperty('lineConfig');
     });
 
-    it('linechart should use unixToDateFilter to format x ticks', () => {
-      let tickFn = controller.lineConfig.axis.x.tick.format;
-      tickFn.should.be.a.Function();
-      tickFn('fooTimestamp').should.equal('mockDate');
-      unixToDate.should.be.calledWith('fooTimestamp', 'LTS');
+    it('should use dateFilter with DATE_FORMAT.time.medium to format x ticks', () => {
+      let fn = controller.lineConfig.axis.x.tick.format;
+      fn.should.be.a.Function();
+      fn('fooTimestamp').should.equal('mockDate');
+      dateFilterStub.should.be.calledWith('fooTimestamp', dateFormatSpy.time.medium);
     });
+
 
     it('line chart should set a custom tooltip', () => {
       let tooltipFormat = controller.lineConfig.tooltip.format;

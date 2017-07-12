@@ -30,12 +30,14 @@ import filters from 'shared/filters/filters.module.js';
 import service from './system-info.service.js';
 
 class SystemMemoryController {
-  constructor (systemInfoService, $scope, $interval, pfUtils, unixToDateFilter) {
+  constructor (systemInfoService, $scope, $interval, pfUtils,
+    dateFilter, DATE_FORMAT) {
     'ngInject';
     this.svc = systemInfoService;
     this.scope = $scope;
     this.interval = $interval;
-    this.unixToDate = unixToDateFilter;
+    this.dateFilter = dateFilter;
+    this.dateFormat = DATE_FORMAT;
 
     this.scope.refreshRate = '1000';
     this.scope.dataAgeLimit = '30000';
@@ -92,7 +94,7 @@ class SystemMemoryController {
             position: 'outer-center'
           },
           tick : {
-            format: timestamp => this.unixToDate(timestamp, 'LTS'),
+            format: timestamp => this.dateFilter(timestamp, this.dateFormat.time.medium),
             count: 5,
             fit: false
           }

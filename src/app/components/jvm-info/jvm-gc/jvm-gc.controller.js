@@ -30,16 +30,16 @@ import filters from 'shared/filters/filters.module.js';
 import service from './jvm-gc.service.js';
 
 class JvmGcController {
-  constructor (jvmId, $scope, $interval, jvmGcService,
-    metricToNumberFilter, unixToDateFilter) {
+  constructor (jvmId, $scope, $interval, dateFilter, DATE_FORMAT,
+    metricToNumberFilter, jvmGcService) {
     'ngInject';
-
     this.jvmId = jvmId;
     this.scope = $scope;
     this.interval = $interval;
-    this.jvmGcService = jvmGcService;
+    this.dateFilter = dateFilter;
+    this.dateFormat = DATE_FORMAT;
     this.metricToNumberFilter = metricToNumberFilter;
-    this.unixToDate = unixToDateFilter;
+    this.jvmGcService = jvmGcService;
 
     this.scope.refreshRate = '1000';
     this.scope.dataAgeLimit = '30000';
@@ -84,7 +84,7 @@ class JvmGcController {
           type: 'timeseries',
           localtime: false,
           tick: {
-            format: timestamp => this.unixToDate(timestamp, 'LTS'),
+            format: timestamp => this.dateFilter(timestamp, this.dateFormat.time.medium),
             count: 5
           }
         },

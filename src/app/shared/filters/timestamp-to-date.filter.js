@@ -27,19 +27,45 @@
 
 import filterModule from './filters.module.js';
 
+/**
+ * Given a timestamp metric, uses AngularJS $filter('date') to format it
+ * to a date string, using a medium format as a default.
+ * Can be supplied with a predefined localizable date format, or a custom
+ * format that can include literal values e.g., "h 'in the morning'".
+ * Documentation for date: https://docs.angularjs.org/api/ng/filter/date
+ * @param {Object} metric timestamp metric, e.g., '{ $numberLong: metric }'
+ * @param {String} format
+ * @returns {String} formatted date string
+ */
 function filterProvider (
-  metricToBigIntFilter, bigIntToStringFilter, stringToNumberFilter,
-  unixToDateFilter) {
+  dateFilter, bigIntToStringFilter, metricToBigIntFilter) {
   'ngInject';
-  return timestamp => {
-    return unixToDateFilter(
-      stringToNumberFilter(
-        bigIntToStringFilter(
-          metricToBigIntFilter(timestamp))));
+  return (metric, format = dateFormat.dateTime.medium) => {
+    return dateFilter(
+      bigIntToStringFilter(
+        metricToBigIntFilter(metric)), format);
   };
 }
 
+const dateFormat = {
+  date: {
+    short: 'shortDate',
+    medium: 'mediumDate',
+    long: 'longDate',
+    full: 'fullDate'
+  },
+  time: {
+    short: 'shortTime',
+    medium: 'mediumTime'
+  },
+  dateTime: {
+    short: 'short',
+    medium: 'medium'
+  }
+};
+
 export default angular
   .module(filterModule)
-  .filter('timeStampToDate', filterProvider)
+  .filter('timestampToDate', filterProvider)
+  .constant('DATE_FORMAT', dateFormat)
   .name;
