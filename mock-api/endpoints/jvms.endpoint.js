@@ -6,6 +6,7 @@ function jvmList (server) {
     res.setHeader('Content-Type', 'application/json');
 
     var limit = 4;
+    var aliveOnly = req.query.aliveOnly === 'true';
     var resp = [];
     if (req.query.limit) {
       limit = parseInt(req.query.limit);
@@ -15,34 +16,37 @@ function jvmList (server) {
       }
     }
     for (var i = 0; i < limit; i++) {
+      var jvms = [
+        {
+          'mainClass': 'c.r.t.A',
+          'startTime': { $numberLong: (Date.now() - 10000000).toString() },
+          'stopTime': { $numberLong: '-1' },
+          'jvmId': 'vm-0'
+        },
+        {
+          'mainClass': 'c.r.t.B',
+          'startTime': { $numberLong: (Date.now() - 1500000).toString() },
+          'stopTime': { $numberLong: '-1' },
+          'jvmId': 'vm-1'
+        },
+        {
+          'mainClass': 'c.r.t.C',
+          'startTime': { $numberLong: (Date.now() - 25000000).toString() },
+          'stopTime': { $numberLong: '-1' },
+          'jvmId': 'vm-2'
+        }
+      ];
+      if (!aliveOnly) {
+        jvms.push({
+          'mainClass': 'c.r.t.D',
+          'startTime': { $numberLong: (Date.now() - 350000000).toString() },
+          'stopTime': { $numberLong: Date.now().toString() },
+          'jvmId': 'vm-3'
+        });
+      }
       var system = {
         'systemId': 'system-' + i,
-        'jvms': [
-          {
-            'mainClass': 'c.r.t.A',
-            'startTime': { $numberLong: (Date.now() - 10000000).toString() },
-            'stopTime': { $numberLong: '-1' },
-            'jvmId': 'vm-0'
-          },
-          {
-            'mainClass': 'c.r.t.B',
-            'startTime': { $numberLong: (Date.now() - 1500000).toString() },
-            'stopTime': { $numberLong: '-1' },
-            'jvmId': 'vm-1'
-          },
-          {
-            'mainClass': 'c.r.t.C',
-            'startTime': { $numberLong: (Date.now() - 25000000).toString() },
-            'stopTime': { $numberLong: '-1' },
-            'jvmId': 'vm-2'
-          },
-          {
-            'mainClass': 'c.r.t.D',
-            'startTime': { $numberLong: (Date.now() - 350000000).toString() },
-            'stopTime': { $numberLong: Date.now().toString() },
-            'jvmId': 'vm-3'
-          }
-        ]
+        'jvms': jvms
       };
       resp.push(system);
     }
