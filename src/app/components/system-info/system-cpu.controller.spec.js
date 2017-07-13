@@ -107,14 +107,14 @@ describe('SystemCpuController', () => {
         func.should.be.a.Function();
         let mockData = {
           data: {
-            response: {
-              percent: 80
-            }
+            response: [{
+              perProcessorUsage: [80]
+            }]
           }
         };
         func(mockData);
         controller.data.should.deepEqual({
-          used: mockData.data.response.percent,
+          used: mockData.data.response[0].perProcessorUsage[0],
           total: 100
         });
       });

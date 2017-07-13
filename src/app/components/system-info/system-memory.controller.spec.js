@@ -94,7 +94,7 @@ describe('SystemMemoryController', () => {
         response: {
           systemId: 'foo-systemId',
           agentId: 'mock-agentId',
-          timestamp: Date.now(),
+          timeStamp: Date.now(),
           total: 16384,
           free: 0,
           buffers: 1,
@@ -219,7 +219,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestamp,
+              timeStamp: timestamp,
               total: 16384,
               free: 0,
               buffers: 1,
@@ -268,7 +268,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampA,
+              timeStamp: timestampA,
               total: 16384,
               free: 0,
               buffers: 0,
@@ -280,7 +280,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampB,
+              timeStamp: timestampB,
               total: 16384,
               free: 0,
               buffers: 0,
@@ -306,7 +306,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampA,
+              timeStamp: timestampA,
               total: 16384,
               free: 0,
               buffers: 0,
@@ -324,7 +324,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampB,
+              timeStamp: timestampB,
               total: 16384,
               free: 0,
               buffers: 0,
@@ -351,7 +351,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampA,
+              timeStamp: timestampA,
               total: 16384,
               free: 0,
               buffers: 0,
@@ -369,7 +369,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampB,
+              timeStamp: timestampB,
               total: 16384,
               free: 0,
               buffers: 0,

@@ -26,6 +26,7 @@
  */
 
 import 'c3';
+import _ from 'lodash';
 import filters from 'shared/filters/filters.module.js';
 import service from './system-info.service.js';
 
@@ -57,9 +58,9 @@ class SystemCpuController {
 
   update () {
     this.svc.getCpuInfo(this.scope.systemId).then(resp => {
-      let cpuInfo = resp.data.response;
+      let cpuInfo = resp.data.response[0];
       this.data = {
-        used: cpuInfo.percent,
+        used: _.floor(_.mean(cpuInfo.perProcessorUsage)),
         total: 100
       };
     });

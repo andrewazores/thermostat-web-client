@@ -132,7 +132,7 @@ class SystemMemoryController {
 
       // update the memory time series chart
       this.lineConfig.axis.y.max = total;
-      this.lineData.xData.push(data.timestamp);
+      this.lineData.xData.push(data.timeStamp);
       this.lineData.yData0.push(total);
       this.lineData.yData1.push(free);
       this.lineData.yData2.push(used);

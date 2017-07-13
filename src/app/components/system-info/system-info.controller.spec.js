@@ -58,7 +58,7 @@ describe('SystemInfoController', () => {
     };
     promise.resolve({
       data: {
-        response: response
+        response: [response]
       }
     });
     scope.$apply();

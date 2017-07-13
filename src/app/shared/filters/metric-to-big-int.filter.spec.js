@@ -47,7 +47,11 @@ describe('metricToBigInt filter', () => {
   });
 
   it('should fail on non-objects', () => {
-    fn(100).should.deepEqual(big(undefined));
+    fn('foo').should.deepEqual(big(undefined));
+  });
+
+  it('should convert plain numbers', () => {
+    fn(100).should.deepEqual(big(100));
   });
 
   it('should fail on objects without $numberLong property', () => {

@@ -20,22 +20,26 @@ function jvmList (server) {
         'jvms': [
           {
             'mainClass': 'c.r.t.A',
-            'startTime': { $numberLong: '45000' },
+            'startTime': { $numberLong: (Date.now() - 10000000).toString() },
+            'stopTime': { $numberLong: '-1' },
             'jvmId': 'vm-0'
           },
           {
             'mainClass': 'c.r.t.B',
-            'startTime': { $numberLong: '45000' },
+            'startTime': { $numberLong: (Date.now() - 1500000).toString() },
+            'stopTime': { $numberLong: '-1' },
             'jvmId': 'vm-1'
           },
           {
             'mainClass': 'c.r.t.C',
-            'startTime': { $numberLong: '45000' },
+            'startTime': { $numberLong: (Date.now() - 25000000).toString() },
+            'stopTime': { $numberLong: '-1' },
             'jvmId': 'vm-2'
           },
           {
             'mainClass': 'c.r.t.D',
-            'startTime': { $numberLong: '45000' },
+            'startTime': { $numberLong: (Date.now() - 350000000).toString() },
+            'stopTime': { $numberLong: Date.now().toString() },
             'jvmId': 'vm-3'
           }
         ]
@@ -55,8 +59,8 @@ function jvmList (server) {
           systemId: req.params.systemId,
           jvmId: req.params.jvmId,
           mainClass: 'c.r.t.A',
-          startTime: { $numberLong: (Date.now() - 5000000 + _.round(Math.random() * 1000000)).toString() },
-          stopTime: { $numberLong: '-1' },
+          startTime: Date.now() - 5000000 + _.round(Math.random() * 1000000),
+          stopTime: -1,
           isAlive: true,
           jvmPid: _.round(Math.random() * 2048) + 512,
           javaVersion: '1.9',
@@ -77,9 +81,9 @@ function jvmList (server) {
               value: 'bam'
             }
           ],
-          uid: { $numberLong: _.round(Math.random() * 800) },
+          uid: _.floor(Math.random() * 800),
           username: 'thermostat-user',
-          lastUpdated: { $numberLong: Date.now().toString() }
+          lastUpdated: Date.now().toString()
         }]
       }
     ));

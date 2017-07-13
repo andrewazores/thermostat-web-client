@@ -40,6 +40,13 @@ class MetricToBigIntService {
   }
 
   convert (metric) {
+    if (!angular.isDefined(metric)) {
+      return this.big(undefined);
+    }
+    // FIXME: https://trello.com/c/3jDpmy8M/170-clean-up-numberlong-ambiguities
+    if (typeof metric === 'number') {
+      metric = { $numberLong: metric.toString() };
+    }
     return this.big(metric.$numberLong);
   }
 }

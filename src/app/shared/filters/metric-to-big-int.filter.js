@@ -40,6 +40,10 @@ function filterProvider (metricToBigIntService) {
     // in case the filter is invoked on asynchronously loaded data and
     // 'val' is undefined, we want to avoid throwing an error below
     val = val || { $numberLong: '0' };
+    // FIXME: https://trello.com/c/3jDpmy8M/170-clean-up-numberlong-ambiguities
+    if (typeof val === 'number') {
+      val = { $numberLong: val.toString() };
+    }
 
     let res = metricToBigIntService.convert(val);
     // 'big(undefined)' does not have any functions defined on it,

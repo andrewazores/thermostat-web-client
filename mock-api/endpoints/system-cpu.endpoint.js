@@ -1,14 +1,17 @@
 function systemCpu (server) {
   var _ = require('lodash');
   server.init('systemCpu');
-  server.app.get('/system-info/cpu/:systemId', function (req, res, next) {
+  server.app.get('/system-cpu/0.0.1/systems/:systemId', function (req, res, next) {
     server.logRequest('system-info', req);
     res.setHeader('Content-Type', 'application/json');
+    var randomUsage = function () {
+      return _.round(Math.random() * 100);
+    };
     res.send(JSON.stringify(
       {
-        response: {
-          percent: _.round(Math.random() * 100)
-        }
+        response: [{
+          perProcessorUsage: [randomUsage(), randomUsage(), randomUsage(), randomUsage()]
+        }]
       }
     ));
     next();

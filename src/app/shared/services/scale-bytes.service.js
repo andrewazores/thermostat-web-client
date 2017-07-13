@@ -36,6 +36,17 @@ class ScaleBytesService {
   }
 
   format (bytesMetric, dp = 2) {
+    if (!angular.isDefined(bytesMetric)) {
+      return {
+        result: 0,
+        scale: 0,
+        unit: ''
+      };
+    }
+    // FIXME: https://trello.com/c/3jDpmy8M/170-clean-up-numberlong-ambiguities
+    if (typeof bytesMetric === 'number') {
+      bytesMetric = { $numberLong: bytesMetric.toString() };
+    }
     const base = 1024;
     let big = this.metricToBigInt.convert(bytesMetric);
 

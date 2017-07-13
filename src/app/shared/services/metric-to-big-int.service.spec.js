@@ -50,4 +50,18 @@ describe('MetricToBigIntService', () => {
     svc.big.should.be.calledWith('0');
   });
 
+  it('should convert raw numbers', () => {
+    svc.big.should.not.be.called();
+    svc.convert(0).should.deepEqual(big(0));
+    svc.big.should.be.calledOnce();
+    svc.big.should.be.calledWith('0');
+  });
+
+  it('should handle undefined', () => {
+    svc.big.should.not.be.called();
+    svc.convert(undefined).should.deepEqual(big(undefined));
+    svc.big.should.be.calledOnce();
+    svc.big.should.be.calledWith(undefined);
+  });
+
 });

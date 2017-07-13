@@ -20,7 +20,7 @@ function systemMemory (server) {
       var data = {
         systemId: systemId,
         agentId: 'mock-agentId',
-        timestamp: new Date().getTime(),
+        timeStamp: new Date().getTime(),
         total: 16384,
         free: _.round(Math.random() * (16384 / 4)),
         buffers: 16384 / 32,

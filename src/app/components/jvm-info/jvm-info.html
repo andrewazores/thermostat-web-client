@@ -22,7 +22,7 @@
           </tr>
           <tr>
             <td>UID</td>
-            <td>{{ctrl.jvmInfo.uid | metricToBigInt | bigIntToString }}</td>
+            <td>{{ctrl.jvmInfo.uid}}</td>
           </tr>
           <tr>
             <td>JVM ID</td>
@@ -34,15 +34,15 @@
           </tr>
           <tr>
             <td>Start Time</td>
-            <td>{{ctrl.jvmInfo.startTime | timestampToDate}}</td>
+            <td>{{ctrl.jvmInfo.startTime | date:"medium"}}</td>
           </tr>
           <tr ng-show="parseInt(ctrl.jvmInfo.endTime.$numberLong) > 0">
             <td>Stop Time</td>
-            <td>{{ctrl.jvmInfo.stopTime | timestampToDate}}</td>
+            <td>{{ctrl.jvmInfo.stopTime | date:"medium"}}</td>
           </tr>
           <tr ng-show="ctrl.jvmInfo.lastUpdated">
             <td>Last Updated</td>
-            <td>{{ctrl.jvmInfo.lastUpdated | timestampToDate}}</td>
+            <td>{{ctrl.jvmInfo.lastUpdated | date:"medium"}}</td>
           </tr>
           <tr>
             <td>JVM PID</td>

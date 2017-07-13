@@ -25,45 +25,47 @@
  * exception statement from your version.
  */
 
-import config from 'shared/config/config.module.js';
-import urlJoin from 'url-join';
+import filtersModule from 'shared/filters/filters.module.js';
+import servicesModule from 'shared/services/services.module.js';
 
-class SystemInfoService {
-  constructor ($q, $http, gatewayUrl) {
-    'ngInject';
-    this.q = $q;
-    this.http = $http;
-    this.gatewayUrl = gatewayUrl;
-  }
+describe('formatBytesFilter', () => {
 
-  getSystemInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'systems', '0.0.1', 'systems', systemId), {
-      params: {
-        sort: '-timeStamp',
-        limit: 1
-      }
+  let fn, mockSvc;
+  beforeEach(() => {
+    mockSvc = {
+      format: sinon.stub().returns({
+        result: 100,
+        scale: 2,
+        unit: 'MiB'
+      })
+    };
+    angular.mock.module(filtersModule);
+    angular.mock.module(servicesModule, $provide => {
+      'ngInject';
+      $provide.value('scaleBytesService', mockSvc);
     });
-  }
-
-  getCpuInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'system-cpu', '0.0.1', 'systems', systemId), {
-      params: {
-        sort: '-timeStamp',
-        limit: 1
-      }
+    angular.mock.inject(formatBytesFilter => {
+      'ngInject';
+      fn = formatBytesFilter;
     });
-  }
+  });
 
-  getMemoryInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'system-memory', '0.0.1', 'systems', systemId), {
-      params: {
-        sort: '-timeStamp'
-      }
-    });
-  }
-}
+  it('should exist', () => {
+    should.exist(fn);
+  });
 
-export default angular
-  .module('systemInfo.service', [config])
-  .service('systemInfoService', SystemInfoService)
-  .name;
+  it('should convert raw numbers', () => {
+    mockSvc.format.should.not.be.called();
+    fn(100).should.equal('100 MiB');
+    mockSvc.format.should.be.calledOnce();
+    mockSvc.format.should.be.calledWithMatch({ $numberLong: '100' });
+  });
+
+  it('should delegate when called with $numberLong', () => {
+    mockSvc.format.should.not.be.called();
+    fn({ $numberLong: '100' }).should.equal('100 MiB');
+    mockSvc.format.should.be.calledOnce();
+    mockSvc.format.should.be.calledWithMatch({ $numberLong: '100' });
+  });
+
+});

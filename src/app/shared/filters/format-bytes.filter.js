@@ -25,45 +25,21 @@
  * exception statement from your version.
  */
 
-import config from 'shared/config/config.module.js';
-import urlJoin from 'url-join';
+import filterModule from './filters.module.js';
 
-class SystemInfoService {
-  constructor ($q, $http, gatewayUrl) {
-    'ngInject';
-    this.q = $q;
-    this.http = $http;
-    this.gatewayUrl = gatewayUrl;
-  }
-
-  getSystemInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'systems', '0.0.1', 'systems', systemId), {
-      params: {
-        sort: '-timeStamp',
-        limit: 1
-      }
-    });
-  }
-
-  getCpuInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'system-cpu', '0.0.1', 'systems', systemId), {
-      params: {
-        sort: '-timeStamp',
-        limit: 1
-      }
-    });
-  }
-
-  getMemoryInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'system-memory', '0.0.1', 'systems', systemId), {
-      params: {
-        sort: '-timeStamp'
-      }
-    });
-  }
+function filterProvider (scaleBytesService) {
+  'ngInject';
+  return val => {
+    // FIXME: https://trello.com/c/3jDpmy8M/170-clean-up-numberlong-ambiguities
+    if (typeof val === 'number') {
+      val = { $numberLong: val.toString() };
+    }
+    let scale = scaleBytesService.format(val);
+    return scale.result + ' ' + scale.unit;
+  };
 }
 
 export default angular
-  .module('systemInfo.service', [config])
-  .service('systemInfoService', SystemInfoService)
+  .module(filterModule)
+  .filter('formatBytes', filterProvider)
   .name;

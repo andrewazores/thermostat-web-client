@@ -49,7 +49,7 @@ class JvmListController {
       this.loadData();
     });
 
-    this.scope.isAlive = (jvm) => {
+    this.scope.isAlive = jvm => {
       if (!jvm.hasOwnProperty('stopTime')) {
         return false;
       }
