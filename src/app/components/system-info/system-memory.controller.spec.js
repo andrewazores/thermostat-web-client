@@ -64,7 +64,7 @@ describe('SystemMemoryController', () => {
     interval.cancel = sinon.stub().returns(interval.sentinel);
 
 
-    controller = $controller('systemMemoryController', {
+    controller = $controller('SystemMemoryController', {
       systemId: 'foo-systemId',
       systemInfoService: service,
       $scope: scope,

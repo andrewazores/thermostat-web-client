@@ -74,5 +74,5 @@ export default angular
     filters,
     service
   ])
-  .controller('systemCpuController', SystemCpuController)
+  .controller('SystemCpuController', SystemCpuController)
   .name;

@@ -39,7 +39,7 @@ describe('SystemInfoController', () => {
     let systemInfoService = {
       getSystemInfo: () => promise.promise
     };
-    ctrl = $controller('systemInfoController', {
+    ctrl = $controller('SystemInfoController', {
       systemId: 'foo-systemId',
       systemInfoService: systemInfoService,
       $scope: scope,

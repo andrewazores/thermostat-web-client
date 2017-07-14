@@ -193,5 +193,5 @@ export default angular
     filters,
     service
   ])
-  .controller('systemMemoryController', SystemMemoryController)
+  .controller('SystemMemoryController', SystemMemoryController)
   .name;

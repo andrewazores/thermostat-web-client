@@ -66,4 +66,6 @@ class ScaleBytesService {
   }
 }
 
-angular.module('app.services').service('scaleBytesService', ScaleBytesService);
+angular
+  .module('app.services')
+  .service('scaleBytesService', ScaleBytesService);

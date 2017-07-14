@@ -30,7 +30,7 @@ function config ($stateProvider) {
 
   $stateProvider.state('jvmInfo.jvmGc', {
     url: '/garbage-collection',
-    controller: 'jvmGcController as ctrl',
+    controller: 'JvmGcController as ctrl',
     templateProvider: $q => {
       'ngInject';
       return $q(resolve =>

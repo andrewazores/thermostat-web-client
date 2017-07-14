@@ -227,5 +227,5 @@ export default angular
     service,
     filters
   ])
-  .controller('jvmGcController', JvmGcController)
+  .controller('JvmGcController', JvmGcController)
   .name;

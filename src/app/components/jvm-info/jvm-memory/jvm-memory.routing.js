@@ -30,7 +30,7 @@ function config ($stateProvider) {
 
   $stateProvider.state('jvmInfo.jvmMemory', {
     url: '/memory',
-    controller: 'jvmMemoryController as ctrl',
+    controller: 'JvmMemoryController as ctrl',
     templateProvider: $q => {
       'ngInject';
       return $q(resolve =>

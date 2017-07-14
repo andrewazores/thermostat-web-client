@@ -25,12 +25,12 @@
  * exception statement from your version.
  */
 
-import controller from './jvm-info.controller.js';
+import JvmInfoController from './jvm-info.controller.js';
 import service from './jvm-info.service.js';
 
 export default angular
   .module('jvmInfo', [
-    controller,
+    JvmInfoController,
     service
   ])
   .name;

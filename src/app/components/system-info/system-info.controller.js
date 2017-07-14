@@ -56,5 +56,5 @@ export default angular
     filters,
     service
   ])
-  .controller('systemInfoController', SystemInfoController)
+  .controller('SystemInfoController', SystemInfoController)
   .name;

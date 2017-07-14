@@ -60,5 +60,5 @@ export default angular
     filters,
     service
   ])
-  .controller('jvmInfoController', JvmInfoController)
+  .controller('JvmInfoController', JvmInfoController)
   .name;

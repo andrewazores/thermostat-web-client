@@ -56,7 +56,7 @@ describe('JvmGcController', () => {
       getJvmGcData: sinon.stub().returns(promise)
     };
 
-    ctrl = $controller('jvmGcController', {
+    ctrl = $controller('JvmGcController', {
       jvmId: 'foo-jvmId',
       $scope: scope,
       $interval: interval,

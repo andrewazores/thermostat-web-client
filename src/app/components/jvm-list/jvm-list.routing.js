@@ -37,7 +37,7 @@ function config ($stateProvider) {
         )
       );
     },
-    controller: 'jvmListController as ctrl',
+    controller: 'JvmListController as ctrl',
     resolve: {
       loadJvmList: ($q, $ocLazyLoad) => {
         'ngInject';

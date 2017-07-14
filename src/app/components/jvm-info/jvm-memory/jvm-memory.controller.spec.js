@@ -54,7 +54,7 @@ describe('JvmMemory controller', () => {
       })
     };
 
-    ctrl = $controller('jvmMemoryController', {
+    ctrl = $controller('JvmMemoryController', {
       jvmId: 'foo-jvmId',
       $scope: scope,
       $interval: interval,

@@ -49,11 +49,11 @@ describe('authInterceptorFactory', () => {
       $provide.value('authService', authSvc);
     });
 
-    angular.mock.module('authInterceptor');
+    angular.mock.module('authInterceptorFactory');
 
-    angular.mock.inject(authInterceptor => {
+    angular.mock.inject(authInterceptorFactory => {
       'ngInject';
-      interceptor = authInterceptor;
+      interceptor = authInterceptorFactory;
     });
   });
 

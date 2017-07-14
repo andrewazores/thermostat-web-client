@@ -52,7 +52,7 @@ describe('SystemCpuController', () => {
 
     interval = sinon.stub().returns('interval-sentinel');
     interval.cancel = sinon.stub().returns(interval.sentinel);
-    controller = $controller('systemCpuController', {
+    controller = $controller('SystemCpuController', {
       systemInfoService: service,
       $scope: scope,
       $interval: interval

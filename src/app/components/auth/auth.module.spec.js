@@ -26,7 +26,7 @@
  */
 
 // not a 'real' angular module since this is used for bootstrapping Angular to begin with
-import {config} from './auth.module.js';
+import { config } from './auth.module.js';
 
 describe('AuthModule', () => {
 

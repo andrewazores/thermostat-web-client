@@ -151,5 +151,5 @@ export default angular
     filters,
     service
   ])
-  .controller('jvmMemoryController', JvmMemoryController)
+  .controller('JvmMemoryController', JvmMemoryController)
   .name;

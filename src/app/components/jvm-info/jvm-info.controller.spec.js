@@ -48,7 +48,7 @@ describe('JvmInfoController', () => {
       getJvmInfo: sinon.stub().returns(promise)
     };
 
-    ctrl = $controller('jvmInfoController', {
+    ctrl = $controller('JvmInfoController', {
       $scope: scope,
       $state: state,
       systemId: 'bar-systemId',

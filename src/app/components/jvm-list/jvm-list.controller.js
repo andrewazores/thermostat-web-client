@@ -27,7 +27,7 @@
 
 import filters from 'shared/filters/filters.module.js';
 import service from './jvm-list.service.js';
-import dismissibleErrorMessage from "shared/directives/dismissible-error-message/dismissible-error-message.directive.js";
+import dismissibleErrorMessage from 'shared/directives/dismissible-error-message/dismissible-error-message.directive.js';
 
 class JvmListController {
   constructor (jvmListService, $scope, $location, $timeout, $anchorScroll) {
@@ -104,5 +104,5 @@ export default angular
     filters,
     service
   ])
-  .controller('jvmListController', JvmListController)
+  .controller('JvmListController', JvmListController)
   .name;
