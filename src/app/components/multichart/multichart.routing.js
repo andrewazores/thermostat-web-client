@@ -25,20 +25,40 @@
  * exception statement from your version.
  */
 
-import dismissibleErrorMessageTemplate from './dismissible-error-message.html';
+function config ($stateProvider) {
+  'ngInject';
 
-export let dismissibleErrorMessageFunc = () => {
-  return {
-    restrict: 'E',
-    scope: {
-      errTitle: '<',
-      errMessage: '<'
+  $stateProvider.state('multichart', {
+    url: '/multichart',
+    templateProvider: $q => {
+      'ngInject';
+      return $q(resolve =>
+        require.ensure([], () => resolve(require('./multichart.html'))
+        )
+      );
     },
-    template: dismissibleErrorMessageTemplate
-  };
-};
+    controller: 'MultichartController as ctrl',
+    resolve: {
+      loadMultichart: ($q, $ocLazyLoad) => {
+        'ngInject';
+        return $q(resolve => {
+          require.ensure(['./multichart.module.js'], () => {
+            let module = require('./multichart.module.js');
+            $ocLazyLoad.load({ name: module.default });
+            resolve(module);
+          });
+        });
+      }
+    }
+  });
+}
+
+export { config };
 
 export default angular
-    .module('dismissibleErrorMessage.directive', [])
-    .directive('dismissibleErrorMessage', dismissibleErrorMessageFunc)
-    .name;
+  .module('multichartRouter', [
+    'ui.router',
+    'oc.lazyLoad'
+  ])
+  .config(config)
+  .name;

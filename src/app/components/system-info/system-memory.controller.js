@@ -184,6 +184,20 @@ class SystemMemoryController {
       }
     }
   }
+
+  multichartFn () {
+    return new Promise(resolve =>
+      this.svc.getMemoryInfo(this.scope.systemId).then(resp => {
+        let data = resp.data.response[0];
+        let free = data.free;
+        let total = data.total;
+        let used = total - free;
+        let usage = Math.round(used / total * 100);
+        resolve(usage);
+      })
+    );
+  }
+
 }
 
 export default angular

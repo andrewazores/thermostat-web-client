@@ -25,20 +25,12 @@
  * exception statement from your version.
  */
 
-import dismissibleErrorMessageTemplate from './dismissible-error-message.html';
-
-export let dismissibleErrorMessageFunc = () => {
-  return {
-    restrict: 'E',
-    scope: {
-      errTitle: '<',
-      errMessage: '<'
-    },
-    template: dismissibleErrorMessageTemplate
-  };
-};
+import directive from './multichart-add.directive.js';
+import controller from './multichart-add.controller.js';
 
 export default angular
-    .module('dismissibleErrorMessage.directive', [])
-    .directive('dismissibleErrorMessage', dismissibleErrorMessageFunc)
-    .name;
+  .module('multichartAddModule', [
+    directive,
+    controller
+  ])
+  .name;

@@ -21,6 +21,7 @@ module.exports = function () {
       'angular': 'angular-patternfly/node_modules/angular',
       'd3': 'angular-patternfly/node_modules/patternfly/node_modules/d3',
       'c3': 'angular-patternfly/node_modules/patternfly/node_modules/c3',
+      'bootstrap': 'angular-patternfly/node_modules/patternfly/node_modules/bootstrap/dist/js/bootstrap.js',
       'bootstrap-switch': 'angular-patternfly/node_modules/patternfly/node_modules/bootstrap-switch',
 
       'assets': path.resolve(__dirname, 'src', 'assets'),

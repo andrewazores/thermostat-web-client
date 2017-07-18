@@ -65,6 +65,14 @@ class SystemCpuController {
       };
     });
   }
+
+  multichartFn () {
+    return new Promise(resolve =>
+      this.svc.getCpuInfo(this.scope.systemId).then(resp =>
+        resolve(_.floor(_.mean(resp.data.response[0].perProcessorUsage)))
+      )
+    );
+  }
 }
 
 export default angular

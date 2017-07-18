@@ -25,20 +25,50 @@
  * exception statement from your version.
  */
 
-import dismissibleErrorMessageTemplate from './dismissible-error-message.html';
+import servicesModule from 'shared/services/services.module.js';
 
-export let dismissibleErrorMessageFunc = () => {
-  return {
-    restrict: 'E',
-    scope: {
-      errTitle: '<',
-      errMessage: '<'
-    },
-    template: dismissibleErrorMessageTemplate
-  };
-};
+class MultichartAddController {
+  constructor (multichartService, $scope, $timeout) {
+    'ngInject';
+    this.svc = multichartService;
+    this.scope = $scope;
+    this.scope.multicharts = multichartService.chartNames;
+
+    this.scope.$watch('multicharts', cur => {
+      $timeout(() => {
+        cur.forEach(chart => {
+          let el = angular.element('#' + chart + '-' + this.scope.svcName);
+          el.bootstrapSwitch();
+          el.on('switchChange.bootstrapSwitch', event => {
+            this.toggleChart(event.currentTarget.getAttribute('data-chart'));
+          });
+        });
+      });
+    });
+  }
+
+  toggleChart (chartName) {
+    if (this.isInChart(chartName)) {
+      this.removeFromChart(chartName);
+    } else {
+      this.addToChart(chartName);
+    }
+  }
+
+  removeFromChart (chartName) {
+    this.svc.removeService(chartName, this.scope.svcName);
+  }
+
+  addToChart (chartName) {
+    this.svc.addService(chartName, this.scope.svcName, this.scope.getFn);
+  }
+
+  isInChart (chartName) {
+    return this.svc.hasServiceForChart(chartName, this.scope.svcName);
+  }
+}
 
 export default angular
-    .module('dismissibleErrorMessage.directive', [])
-    .directive('dismissibleErrorMessage', dismissibleErrorMessageFunc)
-    .name;
+  .module('multichartAddControllerModule', [servicesModule])
+  .controller('MultichartAddController', MultichartAddController)
+  .name;

@@ -27,10 +27,12 @@
 
 import JvmMemoryController from './jvm-memory.controller.js';
 import service from './jvm-memory.service.js';
+import directives from 'shared/directives/directives.module.js';
 
 export default angular
   .module('jvmMemory', [
     JvmMemoryController,
-    service
+    service,
+    directives
   ])
   .name;

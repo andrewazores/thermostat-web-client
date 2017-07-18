@@ -25,20 +25,15 @@
  * exception statement from your version.
  */
 
-import dismissibleErrorMessageTemplate from './dismissible-error-message.html';
-
-export let dismissibleErrorMessageFunc = () => {
-  return {
-    restrict: 'E',
-    scope: {
-      errTitle: '<',
-      errMessage: '<'
-    },
-    template: dismissibleErrorMessageTemplate
-  };
-};
+let mods = [];
+let req = require.context('./', true, /\.module\.js/);
+req.keys().map(v => {
+  let name = req(v).default;
+  if (name) {
+    mods.push(name);
+  }
+});
 
 export default angular
-    .module('dismissibleErrorMessage.directive', [])
-    .directive('dismissibleErrorMessage', dismissibleErrorMessageFunc)
-    .name;
+  .module('app.directives', mods)
+  .name;

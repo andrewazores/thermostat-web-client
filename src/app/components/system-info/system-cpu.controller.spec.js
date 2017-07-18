@@ -140,4 +140,31 @@ describe('SystemCpuController', () => {
     });
   });
 
+  describe('multichartFn', () => {
+    it('should return a promise', () => {
+      let res = controller.multichartFn();
+      res.should.be.a.Promise();
+    });
+
+    it('should resolve system-cpu stat', done => {
+      service.cpuPromise.should.be.calledOnce();
+      let res = controller.multichartFn();
+      res.then(v => {
+        v.should.equal(90);
+        done();
+      });
+      service.cpuPromise.should.be.calledTwice();
+      let prom = service.cpuPromise.secondCall.args[0];
+      prom({
+        data: {
+          response: [
+            {
+              perProcessorUsage: [90]
+            }
+          ]
+        }
+      });
+    });
+  });
+
 });

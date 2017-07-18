@@ -243,4 +243,31 @@ describe('JvmMemory controller', () => {
     });
   });
 
+  describe('multichartFn', () => {
+    it('should return a promise', () => {
+      let res = ctrl.multichartFn();
+      res.should.be.a.Promise();
+    });
+
+    it('should resolve jvm-memory stat', done => {
+      promise.then.should.be.calledOnce();
+      let res = ctrl.multichartFn();
+      res.then(v => {
+        v.should.equal(9001);
+        done();
+      });
+      promise.then.should.be.calledTwice();
+      let prom = promise.then.secondCall.args[0];
+      prom({
+        data: {
+          response: [
+            {
+              metaspaceUsed: { $numberLong: '9001' }
+            }
+          ]
+        }
+      });
+    });
+  });
+
 });

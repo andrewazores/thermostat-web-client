@@ -25,20 +25,22 @@
  * exception statement from your version.
  */
 
-import dismissibleErrorMessageTemplate from './dismissible-error-message.html';
+import servicesModule from 'shared/services/services.module.js';
 
-export let dismissibleErrorMessageFunc = () => {
-  return {
-    restrict: 'E',
-    scope: {
-      errTitle: '<',
-      errMessage: '<'
-    },
-    template: dismissibleErrorMessageTemplate
-  };
-};
+class SanitizeService {
+  sanitize (str) {
+    if (!str) {
+      return;
+    }
+    if (typeof str !== 'string') {
+      return str;
+    }
+    let res = str;
+    res = res.replace(/\s+/g, '-');
+    return res;
+  }
+}
 
-export default angular
-    .module('dismissibleErrorMessage.directive', [])
-    .directive('dismissibleErrorMessage', dismissibleErrorMessageFunc)
-    .name;
+angular
+  .module(servicesModule)
+  .service('sanitizeService', SanitizeService);

@@ -152,6 +152,37 @@ describe('SystemMemoryController', () => {
     controller.should.not.have.ownProperty('refresh');
   });
 
+  describe('multichartFn', () => {
+    it('should return a promise', () => {
+      let res = controller.multichartFn();
+      res.should.be.a.Promise();
+    });
+
+    [[50, 45, 10], [100, 20, 80], [500, 50, 90]].forEach(tup => {
+      it('should resolve system-memory stat (' + tup + ')', done => {
+        service.memoryPromise.then.should.be.calledOnce();
+        let res = controller.multichartFn();
+        res.then(v => {
+          v.should.equal(tup[2]);
+          done();
+        });
+        service.memoryPromise.then.should.be.calledTwice();
+        let prom = service.memoryPromise.then.secondCall.args[0];
+        prom({
+          data: {
+            response: [
+              {
+                total: tup[0],
+                free: tup[1]
+              }
+            ]
+          }
+        });
+      });
+    });
+
+  });
+
   it('should call update() on refresh', () => {
     scope.$watch.should.be.calledWith(sinon.match('refreshRate'), sinon.match.func);
     let refreshFn = scope.$watch.args[0][1];

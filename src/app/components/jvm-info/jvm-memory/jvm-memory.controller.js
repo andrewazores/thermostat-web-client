@@ -32,7 +32,7 @@ import service from './jvm-memory.service.js';
 
 class JvmMemoryController {
   constructor (jvmId, $scope, $interval, jvmMemoryService, metricToBigIntFilter,
-    bigIntToStringFilter, stringToNumberFilter, scaleBytesService) {
+    bigIntToStringFilter, stringToNumberFilter, scaleBytesService, sanitizeService) {
     'ngInject';
 
     this.jvmId = jvmId;
@@ -44,6 +44,7 @@ class JvmMemoryController {
     this.bigIntToString = bigIntToStringFilter;
     this.stringToNumber = stringToNumberFilter;
     this.scaleBytes = scaleBytesService;
+    this.scope.sanitize = sanitizeService.sanitize;
 
     this.scope.refreshRate = '2000';
 
@@ -80,6 +81,14 @@ class JvmMemoryController {
       this.refresh = this.interval(() => this.update(), val);
       this.update();
     }
+  }
+
+  multichartFn () {
+    return new Promise(resolve =>
+      this.jvmMemoryService.getJvmMemory(this.scope.systemId).then(resp =>
+        resolve(this.convertMemStat(resp.data.response[0].metaspaceUsed))
+      )
+    );
   }
 
   update () {

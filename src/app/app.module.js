@@ -28,12 +28,14 @@
 import 'angular-patternfly';
 import '@uirouter/angularjs';
 import 'oclazyload';
+import 'bootstrap';
 import 'bootstrap-switch';
 
 import configModule from 'shared/config/config.module.js';
 import {default as authModule, config as authModBootstrap} from './components/auth/auth.module.js';
 import filters from 'shared/filters/filters.module.js';
 import services from 'shared/services/services.module.js';
+import directives from 'shared/directives/directives.module.js';
 import appRouting from './app.routing.js';
 import authInterceptorFactory from './auth-interceptor.factory.js';
 import AppController from './app.controller.js';
@@ -54,6 +56,7 @@ export const appModule = angular
     // non-core modules
     services,
     filters,
+    directives,
     appRouting,
     authInterceptorFactory,
     AppController

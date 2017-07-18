@@ -1,0 +1,24 @@
+<div ng-if="multicharts.length > 0">
+  <div class="dropdown dropdown-kebab-pf">
+    <button class="btn btn-link dropdown-toggle" type="button" id="kebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <span class="fa fa-ellipsis-v"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="kebab">
+      <li>Multicharts</li>
+      <li role="separator" class="divider"></li>
+      <li ng-repeat="chart in multicharts">
+        <div class="text-right">
+          <div class="form-group">
+            <label for="switch-{{chart}}-{{svcName}}" class="label label-info pull-left">{{chart}}</label>
+            <input class="bootstrap-switch pull-right" id="{{chart}}-{{svcName}}" name="switch-{{chart}}-{{svcName}}" data-chart="{{chart}}"
+            data-size="mini"
+            type="checkbox"
+            ng-checked="ctrl.isInChart(chart)"
+            />
+          </div>
+        </div>
+      </li>
+      <li>
+    </ul>
+  </div>
+</div>

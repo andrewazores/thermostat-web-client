@@ -25,20 +25,38 @@
  * exception statement from your version.
  */
 
-import dismissibleErrorMessageTemplate from './dismissible-error-message.html';
+import { configFactory } from './multichart-add.directive.js';
 
-export let dismissibleErrorMessageFunc = () => {
-  return {
-    restrict: 'E',
-    scope: {
-      errTitle: '<',
-      errMessage: '<'
-    },
-    template: dismissibleErrorMessageTemplate
-  };
-};
+describe('MultichartAddDirective', () => {
+  let cfg;
+  beforeEach(() => {
+    cfg = configFactory();
+  });
 
-export default angular
-    .module('dismissibleErrorMessage.directive', [])
-    .directive('dismissibleErrorMessage', dismissibleErrorMessageFunc)
-    .name;
+  it('should be restricted to an element or attribute', () => {
+    cfg.restrict.should.have.length(2);
+    cfg.restrict.should.containEql('E');
+    cfg.restrict.should.containEql('A');
+  });
+
+  it('should expect a svcName string in scope', () => {
+    cfg.scope.should.have.ownProperty('svcName');
+    cfg.scope.svcName.should.equal('@');
+  });
+
+  it('should expect a getFn expression in scope', () => {
+    cfg.scope.should.have.ownProperty('getFn');
+    cfg.scope.getFn.should.equal('&');
+  });
+
+  it('should use correct template', () => {
+    cfg.template.should.equal(require('./multichart-add.html'));
+  });
+
+  it('should attach multichartAddController', () => {
+    cfg.should.have.ownProperty('controller');
+    cfg.controller.should.equal('MultichartAddController');
+    cfg.should.have.ownProperty('controllerAs');
+    cfg.controllerAs.should.equal('ctrl');
+  });
+});

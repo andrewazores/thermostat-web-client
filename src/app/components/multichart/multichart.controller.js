@@ -25,20 +25,45 @@
  * exception statement from your version.
  */
 
-import dismissibleErrorMessageTemplate from './dismissible-error-message.html';
+import services from 'shared/services/services.module.js';
+import directives from 'shared/directives/directives.module.js';
 
-export let dismissibleErrorMessageFunc = () => {
-  return {
-    restrict: 'E',
-    scope: {
-      errTitle: '<',
-      errMessage: '<'
-    },
-    template: dismissibleErrorMessageTemplate
-  };
-};
+class MultiChartController {
+  constructor (multichartService) {
+    this.svc = multichartService;
+    this.showErr = false;
+  }
+
+  createChart (chartName) {
+    if (!chartName) {
+      return false;
+    }
+    chartName = chartName.trim();
+    if (!this.isValid(chartName)) {
+      this.showErr = true;
+      return;
+    }
+    this.showErr = false;
+    this.svc.addChart(chartName);
+  }
+
+  isValid (chartName) {
+    if (!chartName) {
+      return false;
+    }
+    return chartName.search(/^[\w-]+$/) > -1;
+  }
+
+  get chartNames () {
+    return this.svc.chartNames;
+  }
+}
 
 export default angular
-    .module('dismissibleErrorMessage.directive', [])
-    .directive('dismissibleErrorMessage', dismissibleErrorMessageFunc)
-    .name;
+  .module('multichartController', [
+    'patternfly',
+    services,
+    directives
+  ])
+  .controller('MultichartController', MultiChartController)
+  .name;

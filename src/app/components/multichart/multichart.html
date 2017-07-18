@@ -1,0 +1,80 @@
+<div class="container-fluid container-cards-pf">
+  <ol class="breadcrumb" style="margin-bottom: 0px;">
+    <li><a ui-sref="landing">Thermostat</a></li>
+    <li><a ui-serf="multichart">Multichart</a></li>
+  </ol>
+
+  <dismissible-error-message ng-show="ctrl.showErr" err-title="'Invalid chart name.'"
+                                                    err-message="'Chart names may contain alphanumeric characters, underscores, and hyphens.'"/>
+
+  <div class="row">
+    <div class="col-xs-12 col-md-4">
+      <div class="input-group">
+        <span class="input-group-addon">Name</span>
+        <input type="text" class="form-control" placeholder="Enter new chart name" ng-model="newChartName"/>
+        <button class="input-group-button" ng-click="ctrl.createChart(newChartName)">Create Chart</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-cards-pf">
+    <div class="container-fluid container-cards-pf">
+
+      <div ng-repeat="chart in ctrl.chartNames">
+        <div class="col-xs-12 col-md-10">
+          <div ng-controller="MultiChartChartController as chartCtrl" class="card-pf card-pf-view">
+            <div class="card-pf-heading">
+              <label class="card-pf-title">{{chart}}</label>
+              <button class="btn btn-default pull-right" ng-click="chartCtrl.removeChart(chart)"><span class="pficon pficon-close"></span></button>
+            </div>
+
+            <!-- Metric Controls: Refresh Rate -->
+            <div class="row" style="margin-top:2vh">
+              <div class="col-xs-12 col-md-3">
+                <label for="refreshCombo" class="label label-info">Refresh Rate</label>
+                <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
+                  <option value="-1">Disabled</option>
+                  <option value="1000">1 Second</option>
+                  <option value="2000" selected>2 Seconds (Default)</option>
+                  <option value="5000">5 Seconds</option>
+                  <option value="10000">10 Seconds</option>
+                  <option value="30000">30 Seconds</option>
+                  <option value="60000">1 Minute</option>
+                  <option value="300000">5 Minutes</option>
+                  <option value="600000">10 Minutes</option>
+                </select>
+              </div>
+              <!-- Metric Controls: Max Data Age -->
+              <div class="col-xs-12 col-md-3">
+                <label for="dataAgeCombo" class="label label-info">Max Data Age</label>
+                <select name="dataAgeCombo" class="combobox form-control" ng-model="dataAgeLimit">
+                  <option value="10000">10 Seconds</option>
+                  <option value="30000">30 Seconds</option>
+                  <option value="60000" selected>1 Minute (Default)</option>
+                  <option value="300000">5 Minutes</option>
+                  <option value="600000">10 Minutes</option>
+                  <option value="900000">15 Minutes</option>
+                  <option value="1800000">30 Minutes</option>
+                  <option value="3600000">1 Hour</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="card-pf-body">
+              <div pf-line-chart id="chart-{{chart}}" config="chartCtrl.chartConfig"
+                                                      chart-data="chartCtrl.chartData"
+                                                      show-x-axis="true"
+                                                      show-y-axis="true"
+                                                      ></div>
+
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

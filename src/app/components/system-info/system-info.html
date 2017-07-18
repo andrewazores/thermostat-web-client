@@ -50,6 +50,7 @@
           <div class="card-pf card-pf-view">
             <div class="card-pf-heading">
               <label class="card-pf-title">CPU Usage</label>
+              <mc-add class="pull-right" svc-name="{{systemId}}-cpu" get-fn="ctrl.multichartFn()"></mc-add>
             </div>
             <div class="card-pf-body">
               <div pf-donut-pct-chart id="cpuChart" config="ctrl.config" data="ctrl.data"></div>
@@ -62,6 +63,7 @@
             <div class="card-pf card-pf-view">
               <div class="card-pf-heading">
                 <label class="card-pf-title">Memory Usage</label>
+                <mc-add class="pull-right" svc-name="{{systemId}}-memory" get-fn="ctrl.multichartFn()"></mc-add>
               </div>
               <div class="card-pf-body">
                 <div pf-donut-pct-chart id="systemMemoryDonutChart" config="ctrl.donutConfig" data="ctrl.donutData"></div>
