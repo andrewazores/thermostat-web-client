@@ -9,11 +9,11 @@
 
   <div class="row">
     <div class="col-xs-12 col-md-4">
-      <div class="input-group">
+      <form name="newChartForm" class="input-group" ng-submit="ctrl.createChart(newChartName)">
         <span class="input-group-addon">Name</span>
         <input type="text" class="form-control" placeholder="Enter new chart name" ng-model="newChartName"/>
-        <button class="input-group-button" ng-click="ctrl.createChart(newChartName)">Create Chart</button>
-      </div>
+        <input type="submit" value="Create Chart"/>
+      </form>
     </div>
   </div>
 

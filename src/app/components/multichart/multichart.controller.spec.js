@@ -29,16 +29,22 @@ import controllerModule from './multichart.controller.js';
 
 describe('MultiChartController', () => {
 
-  let svc, ctrl;
+  let scope, svc, ctrl;
   beforeEach(() => {
     angular.mock.module(controllerModule);
-    angular.mock.inject($controller => {
+    angular.mock.inject(($rootScope, $controller) => {
       'ngInject';
+      scope = $rootScope.$new();
+      scope.newChartForm = {
+        $setPristine: sinon.spy(),
+        $setUntouched: sinon.spy()
+      };
       svc = {
         addChart: sinon.spy(),
         chartNames: ['foo', 'bar']
       };
       ctrl = $controller('MultichartController', {
+        $scope: scope,
         multichartService: svc
       });
     });
@@ -64,11 +70,14 @@ describe('MultiChartController', () => {
       ctrl.showErr.should.be.false();
     });
 
-    it('should call to service on success', () => {
+    it('should reset form and call to service on success', () => {
       svc.addChart.should.not.be.called();
       ctrl.createChart('foo');
       svc.addChart.should.be.calledOnce();
       svc.addChart.should.be.calledWith('foo');
+      scope.newChartName.should.equal('');
+      scope.newChartForm.$setUntouched.should.be.calledOnce();
+      scope.newChartForm.$setPristine.should.be.calledOnce();
     });
 
     it('should trim spaces from chart names', () => {
