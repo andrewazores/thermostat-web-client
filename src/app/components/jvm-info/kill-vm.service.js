@@ -25,11 +25,50 @@
  * exception statement from your version.
  */
 
+import servicesModule from 'shared/services/services.module.js';
 import configModule from 'shared/config/config.module.js';
+import urlJoin from 'url-join';
+
+class KillVmService {
+  constructor ($q, commandChannelService) {
+    'ngInject';
+    this.q = $q;
+    this.commandChannel = commandChannelService;
+  }
+
+  getPath (systemId, agentId, jvmId) {
+    return urlJoin(
+      'commands',
+      'v1',
+      'actions',
+      'kill-vm',
+      'systems',
+      'foo',
+      'agents',
+      'testAgent',
+      'jvms',
+      'abc',
+      'sequence',
+      this.commandChannel.sequence
+    );
+  }
+
+  killVm (systemId, agentId, jvmId, jvmPid) {
+    return this.q((resolve, reject) => {
+      this.commandChannel.sendMessage(
+        this.getPath(systemId, agentId, jvmId),
+        'com.redhat.thermostat.killvm.agent.internal.KillVmReceiver',
+        { 'vm-pid': jvmPid }
+      ).then(success => resolve(success.payload.respType === 'OK') , reject);
+    });
+  }
+}
+
+angular
+  .module(servicesModule)
+  .service('killVmService', KillVmService);
 
 export default angular
-  .module('app.services', [configModule])
+  .module('jvmInfo.killVm.service', [configModule])
+  .service('killVmService', KillVmService)
   .name;
-
-let req = require.context('./', true, /\.service\.js/);
-req.keys().map(req);

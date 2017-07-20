@@ -61,6 +61,7 @@ function jvmList (server) {
       {
         response: [{
           systemId: req.params.systemId,
+          agentId: 'foo-agentId',
           jvmId: req.params.jvmId,
           mainClass: 'c.r.t.A',
           startTime: Date.now() - 5000000 + _.round(Math.random() * 1000000),

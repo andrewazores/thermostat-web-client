@@ -97,4 +97,44 @@ describe('ConfigModule', () => {
     });
   });
 
+  describe('commandChannelUrl', () => {
+    let fn = require('./config.module.js').cmdChanUrl;
+    let _commandChannelUrl;
+    beforeEach(inject(commandChannelUrl => {
+      'ngInject';
+
+      _commandChannelUrl = commandChannelUrl;
+    }));
+
+    it('should be exported', () => {
+      should.exist(_commandChannelUrl);
+    });
+
+    it('should be readonly', done => {
+      try {
+        _commandChannelUrl.foo = 'bar';
+      } catch (e) {
+        e.message.should.equal('Attempted to assign to readonly property.');
+        done();
+      }
+    });
+
+    it('should yield ws:// URL when gateway URL is http://', () => {
+      fn('http://example.com:8888').should.equal('ws://example.com:8888');
+    });
+
+    it('should yield wss:// URL when gateway URL is https://', () => {
+      fn('https://example.com:8888').should.equal('wss://example.com:8888');
+    });
+
+    it('should throw error when gateway URL protocol is unknown', done => {
+      try {
+        fn('ftp://example.com');
+      } catch (e) {
+        e.message.should.equal('GATEWAY_URL protocol unknown');
+        done();
+      }
+    });
+  });
+
 });

@@ -25,11 +25,21 @@
  * exception statement from your version.
  */
 
-import configModule from 'shared/config/config.module.js';
+import servicesModule from './services.module.js';
 
-export default angular
-  .module('app.services', [configModule])
-  .name;
+/* istanbul ignore next */
+class WebSocketFactory {
+  createSocket (connectUrl) {
+    if ('WebSocket' in window) {
+      return new WebSocket(connectUrl);
+    } else if ('MozWebSocket' in window) {
+      return new MozWebSocket(connectUrl);
+    } else {
+      return null;
+    }
+  }
+}
 
-let req = require.context('./', true, /\.service\.js/);
-req.keys().map(req);
+angular
+  .module(servicesModule)
+  .service('webSocketFactory', WebSocketFactory);
