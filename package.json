@@ -71,6 +71,7 @@
   "scripts": {
     "clean": "\"$(npm bin)/rimraf\" checkstyle coverage dist test-reports",
     "license-check": "node license-check/perform-license-check.js",
+    "license-update": "node license-check/perform-license-update.js",
     "prelint": "\"$(npm bin)/mkdirp\" checkstyle",
     "lint-js": "\"$(npm bin)/eslint\" --ext '!.spec.js' -c .eslintrc.yaml  src || npm run lint-js-checkstyle",
     "lint-js-checkstyle": "\"$(npm bin)/eslint\" -c .eslintrc.yaml -f checkstyle -o checkstyle/checkstyle-src.xml src",
