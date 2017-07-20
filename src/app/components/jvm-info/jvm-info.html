@@ -6,6 +6,8 @@
     <li><a ui-sref="jvmInfo({ systemId: ctrl.systemId, jvmId: ctrl.jvmId })">{{ctrl.jvmInfo.mainClass | extractClass}}</a></li>
   </ol>
 
+  <dismissible-error-message ng-show="ctrl.showErr" err-title="'Unable to kill JVM.'" err-message="ctrl.errMessage"></dismissible-error-message>
+
   <div class="row">
     <div class="col-xs-12 col-lg-8">
       <table class="table table-fixed table-striped table-bordered">
@@ -22,7 +24,7 @@
           </tr>
           <tr>
             <td>UID</td>
-            <td>{{ctrl.jvmInfo.uid | metricToBigInt | bigIntToString }}</td>
+            <td>{{ctrl.jvmInfo.uid}}</td>
           </tr>
           <tr>
             <td>JVM ID</td>
@@ -34,15 +36,15 @@
           </tr>
           <tr>
             <td>Start Time</td>
-            <td>{{ctrl.jvmInfo.startTime | timeStampToDate}}</td>
+            <td>{{ctrl.jvmInfo.startTime | date:"medium"}}</td>
           </tr>
-          <tr ng-show="parseInt(ctrl.jvmInfo.endTime.$numberLong) > 0">
+          <tr ng-show="ctrl.isAlive()">
             <td>Stop Time</td>
-            <td>{{ctrl.jvmInfo.stopTime | timeStampToDate}}</td>
+            <td>{{ctrl.jvmInfo.stopTime | date:"medium"}}</td>
           </tr>
-          <tr ng-show="ctrl.jvmInfo.lastUpdated">
+          <tr ng-show="ctrl.isAlive()"</tr>
             <td>Last Updated</td>
-            <td>{{ctrl.jvmInfo.lastUpdated | timeStampToDate}}</td>
+            <td>{{ctrl.jvmInfo.lastUpdated | date:"medium"}}</td>
           </tr>
           <tr>
             <td>JVM PID</td>
@@ -87,6 +89,11 @@
                 {{env.key}}="{{env.value}}"
                 <br/>
               </span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <btn ng-show="ctrl.isAlive()" class="btn btn-default" ng-click="ctrl.killVm()">Kill VM</btn>
             </td>
           </tr>
         </tbody>

@@ -25,42 +25,21 @@
  * exception statement from your version.
  */
 
-import {filterProvider} from './unix-to-date.filter.js';
+import filterModule from './filters.module.js';
 
-describe('unixToDate filter', () => {
-  let formatSpy = sinon.spy();
-  let momentStub = sinon.stub().returns({ format: formatSpy });
+function filterProvider (scaleBytesService) {
+  'ngInject';
+  return val => {
+    // FIXME: https://trello.com/c/3jDpmy8M/170-clean-up-numberlong-ambiguities
+    if (typeof val === 'number') {
+      val = { $numberLong: val.toString() };
+    }
+    let scale = scaleBytesService.format(val);
+    return scale.result + ' ' + scale.unit;
+  };
+}
 
-  it('should be exported', () => {
-    should.exist(filterProvider);
-  });
-
-  it('should provide a timestamp formatting function', () => {
-    let fn = filterProvider();
-    should.exist(fn);
-    fn.should.be.a.Function();
-  });
-
-  it('should use the provided \'moment\' & format', () => {
-    let timestamp = 450000;
-    let fn = filterProvider(momentStub);
-    fn(timestamp);
-
-    momentStub.should.be.calledWith(timestamp);
-    formatSpy.should.be.calledWith('lll');
-  });
-
-  it('should accept alternate time formats', () => {
-    let timestamp = 450000;
-    let fn = filterProvider(momentStub);
-    fn(timestamp, 'LTS');
-    formatSpy.should.be.calledWith('LTS');
-  });
-
-  it('should allow caller to supply format', () => {
-    let fn = filterProvider(momentStub);
-    fn(100, 'fooFormat');
-    momentStub.should.be.calledWith(100);
-    formatSpy.should.be.calledWith('fooFormat');
-  });
-});
+export default angular
+  .module(filterModule)
+  .filter('formatBytes', filterProvider)
+  .name;

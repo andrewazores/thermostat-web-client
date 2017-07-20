@@ -35,6 +35,7 @@
           </div>
           <div ng-repeat="collector in ctrl.collectors">
             <div class="card-pf-body text-center">
+              <mc-add class="pull-right" svc-name="{{ctrl.jvmId}}-{{sanitize(collector)}}-gc" get-fn="ctrl.multichartFn(collector)"></mc-add>
               <div pf-line-chart id="chart-{{collector}}" config="ctrl.chartConfigs[collector]"
                                                           chart-data="ctrl.chartData[collector]"
                                                           show-x-axis="true"

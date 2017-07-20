@@ -25,12 +25,12 @@
  * exception statement from your version.
  */
 
-import controller from './jvm-gc.controller.js';
+import JvmGcController from './jvm-gc.controller.js';
 import service from './jvm-gc.service.js';
 
 export default angular
   .module('jvmGc', [
-    controller,
+    JvmGcController,
     service
   ])
   .name;

@@ -29,7 +29,8 @@ describe('SystemMemoryController', () => {
 
   beforeEach(angular.mock.module('systemMemory.controller'));
 
-  let service, scope, interval, memoryPromise, controller, unixToDate;
+  let service, scope, interval, memoryPromise, controller,
+    dateFilterStub, dateFormatSpy;
 
   beforeEach(inject($controller => {
     'ngInject';
@@ -48,20 +49,28 @@ describe('SystemMemoryController', () => {
       getMemoryInfo: sinon.stub().returns(memoryPromise)
     };
 
+    dateFilterStub = sinon.stub().returns('mockDate');
+    dateFormatSpy = {
+      time: {
+        medium: sinon.spy()
+      }
+    };
     scope = {
       $on: sinon.spy(),
-      $watch: sinon.spy(),
+      $watch: sinon.spy()
     };
 
     interval = sinon.stub().returns('interval-sentinel');
     interval.cancel = sinon.stub().returns(interval.sentinel);
-    unixToDate = sinon.stub().returns('mockDate');
-    controller = $controller('systemMemoryController', {
+
+
+    controller = $controller('SystemMemoryController', {
       systemId: 'foo-systemId',
       systemInfoService: service,
       $scope: scope,
       $interval: interval,
-      unixToDateFilter: unixToDate,
+      dateFilter: dateFilterStub,
+      DATE_FORMAT: dateFormatSpy
     });
 
   }));
@@ -85,7 +94,7 @@ describe('SystemMemoryController', () => {
         response: {
           systemId: 'foo-systemId',
           agentId: 'mock-agentId',
-          timestamp: Date.now(),
+          timeStamp: Date.now(),
           total: 16384,
           free: 0,
           buffers: 1,
@@ -143,6 +152,37 @@ describe('SystemMemoryController', () => {
     controller.should.not.have.ownProperty('refresh');
   });
 
+  describe('multichartFn', () => {
+    it('should return a promise', () => {
+      let res = controller.multichartFn();
+      res.should.be.a.Promise();
+    });
+
+    [[50, 45, 10], [100, 20, 80], [500, 50, 90]].forEach(tup => {
+      it('should resolve system-memory stat (' + tup + ')', done => {
+        service.memoryPromise.then.should.be.calledOnce();
+        let res = controller.multichartFn();
+        res.then(v => {
+          v.should.equal(tup[2]);
+          done();
+        });
+        service.memoryPromise.then.should.be.calledTwice();
+        let prom = service.memoryPromise.then.secondCall.args[0];
+        prom({
+          data: {
+            response: [
+              {
+                total: tup[0],
+                free: tup[1]
+              }
+            ]
+          }
+        });
+      });
+    });
+
+  });
+
   it('should call update() on refresh', () => {
     scope.$watch.should.be.calledWith(sinon.match('refreshRate'), sinon.match.func);
     let refreshFn = scope.$watch.args[0][1];
@@ -172,12 +212,13 @@ describe('SystemMemoryController', () => {
       controller.should.have.ownProperty('lineConfig');
     });
 
-    it('linechart should use unixToDateFilter to format x ticks', () => {
-      let tickFn = controller.lineConfig.axis.x.tick.format;
-      tickFn.should.be.a.Function();
-      tickFn('fooTimestamp').should.equal('mockDate');
-      unixToDate.should.be.calledWith('fooTimestamp', 'LTS');
+    it('should use dateFilter with DATE_FORMAT.time.medium to format x ticks', () => {
+      let fn = controller.lineConfig.axis.x.tick.format;
+      fn.should.be.a.Function();
+      fn('fooTimestamp').should.equal('mockDate');
+      dateFilterStub.should.be.calledWith('fooTimestamp', dateFormatSpy.time.medium);
     });
+
 
     it('line chart should set a custom tooltip', () => {
       let tooltipFormat = controller.lineConfig.tooltip.format;
@@ -209,7 +250,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestamp,
+              timeStamp: timestamp,
               total: 16384,
               free: 0,
               buffers: 1,
@@ -258,7 +299,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampA,
+              timeStamp: timestampA,
               total: 16384,
               free: 0,
               buffers: 0,
@@ -270,7 +311,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampB,
+              timeStamp: timestampB,
               total: 16384,
               free: 0,
               buffers: 0,
@@ -296,7 +337,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampA,
+              timeStamp: timestampA,
               total: 16384,
               free: 0,
               buffers: 0,
@@ -314,7 +355,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampB,
+              timeStamp: timestampB,
               total: 16384,
               free: 0,
               buffers: 0,
@@ -341,7 +382,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampA,
+              timeStamp: timestampA,
               total: 16384,
               free: 0,
               buffers: 0,
@@ -359,7 +400,7 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timestamp: timestampB,
+              timeStamp: timestampB,
               total: 16384,
               free: 0,
               buffers: 0,

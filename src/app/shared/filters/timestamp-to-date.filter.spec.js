@@ -25,36 +25,38 @@
  * exception statement from your version.
  */
 
-describe('timeStampToDate filter', () => {
+describe('timestampToDate filter', () => {
+  let timestamp = { '$numberLong': '1234567890' };
   let metricToBigIntStub = sinon.stub().returns('a');
   let bigIntToStringStub = sinon.stub().returns('b');
-  let stringToNumberStub = sinon.stub().returns('c');
-  let unixToDateStub = sinon.stub().returns('Dec 31, 1969 7:00 PM');
+  let dateFilterSpy = sinon.spy();
   let fn;
 
   beforeEach(() => {
     angular.mock.module('app.filters');
     angular.mock.module('app.filters', $provide => {
       'ngInject';
+      $provide.value('dateFilter', dateFilterSpy);
       $provide.value('metricToBigIntFilter', metricToBigIntStub);
       $provide.value('bigIntToStringFilter', bigIntToStringStub);
-      $provide.value('stringToNumberFilter', stringToNumberStub);
-      $provide.value('unixToDateFilter', unixToDateStub);
     });
 
-    angular.mock.inject(timeStampToDateFilter => {
+    angular.mock.inject(timestampToDateFilter => {
       'ngInject';
-      fn = timeStampToDateFilter;
+      fn = timestampToDateFilter;
     });
   });
 
+  it('should use provided date format if given', () => {
+    fn(timestamp, 'mockFormat');
+    dateFilterSpy.should.be.calledWith('b', 'mockFormat');
+  });
+
   it('should follow the pipeline', () => {
-    let timestamp = 1497624324;
-    fn(timestamp).should.equal('Dec 31, 1969 7:00 PM');
+    fn(timestamp);
     metricToBigIntStub.should.be.calledWith(timestamp);
     bigIntToStringStub.should.be.calledWith('a');
-    stringToNumberStub.should.be.calledWith('b');
-    unixToDateStub.should.be.calledWith('c');
+    dateFilterSpy.should.be.calledWith('b');
   });
 
 });

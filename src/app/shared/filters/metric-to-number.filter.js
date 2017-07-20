@@ -27,6 +27,12 @@
 
 import filterModule from './filters.module.js';
 
+/**
+ * Takes a variable with numeric value, and returns it as an Integer
+ * @param {Object} metric e.g., '{ $numberLong: metric }'
+ * @param {Number} scale the divisor for big.div(), is 1 by default
+ * @returns {Number} Number with the numeric value of the metric
+ */
 function filterProvider (
   metricToBigIntFilter, bigIntToStringFilter, stringToNumberFilter) {
   'ngInject';
@@ -34,7 +40,7 @@ function filterProvider (
     return stringToNumberFilter(
       bigIntToStringFilter(
         metricToBigIntFilter(metric, scale)));
-  }
+  };
 }
 
 export default angular

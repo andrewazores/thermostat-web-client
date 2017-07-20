@@ -27,6 +27,11 @@
 
 import filterModule from './filters.module.js';
 
+/**
+ * Takes a string with numeric value, and returns it as an Integer
+ * @param {String}
+ * @returns {Number}
+ */
 function filterProvider () {
   return val => parseInt(val);
 }

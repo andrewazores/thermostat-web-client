@@ -40,7 +40,7 @@ function config ($stateProvider) {
         )
       );
     },
-    controller: 'jvmInfoController as ctrl',
+    controller: 'JvmInfoController as ctrl',
     resolve: {
       loadJvmInfo: ($q, $ocLazyLoad) => {
         'ngInject';

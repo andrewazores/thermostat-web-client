@@ -28,15 +28,17 @@
 import 'angular-patternfly';
 import '@uirouter/angularjs';
 import 'oclazyload';
+import 'bootstrap';
 import 'bootstrap-switch';
 
 import configModule from 'shared/config/config.module.js';
 import {default as authModule, config as authModBootstrap} from './components/auth/auth.module.js';
 import filters from 'shared/filters/filters.module.js';
 import services from 'shared/services/services.module.js';
+import directives from 'shared/directives/directives.module.js';
 import appRouting from './app.routing.js';
-import authInterceptor from './auth-interceptor.factory.js';
-import appController from './app.controller.js';
+import authInterceptorFactory from './auth-interceptor.factory.js';
+import AppController from './app.controller.js';
 
 require.ensure([], () => {
   require('angular-patternfly/node_modules/patternfly/dist/css/patternfly.css');
@@ -54,13 +56,14 @@ export const appModule = angular
     // non-core modules
     services,
     filters,
+    directives,
     appRouting,
-    authInterceptor,
-    appController
+    authInterceptorFactory,
+    AppController
   ])
   .config($httpProvider => {
     'ngInject';
-    $httpProvider.interceptors.push(authInterceptor);
+    $httpProvider.interceptors.push(authInterceptorFactory);
   });
 
 authModBootstrap(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule.name])));

@@ -57,4 +57,6 @@ class ExtractClassService {
   }
 }
 
-angular.module('app.services').service('extractClassService', ExtractClassService);
+angular
+  .module('app.services')
+  .service('extractClassService', ExtractClassService);

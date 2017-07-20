@@ -46,7 +46,7 @@ class AppController {
   }
 }
 
-let name = 'appController';
+let name = 'AppController';
 export default angular
   .module(name, [authModule])
   .controller(name, AppController)

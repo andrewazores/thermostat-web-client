@@ -29,19 +29,14 @@ import filters from 'shared/filters/filters.module.js';
 import service from './jvm-info.service.js';
 
 class JvmInfoController {
-  constructor ($scope, $state, systemId, jvmId, jvmInfoService) {
+  constructor ($scope, $state, systemId, jvmId, jvmInfoService, killVmService) {
     'ngInject';
     this.systemId = systemId;
     this.jvmId = jvmId;
+    this.jvmInfoService = jvmInfoService;
+    this.killVmService = killVmService;
     this.jvmInfo = {};
-    jvmInfoService.getJvmInfo(systemId, jvmId).then(
-      res => {
-        this.jvmInfo = res.data.response[0];
-      },
-      () => {
-        this.jvmInfo = {};
-      }
-    );
+    this.showErr = false;
 
     $scope.$watch('comboValue', cur => {
       if (cur === '') {
@@ -49,6 +44,42 @@ class JvmInfoController {
       } else {
         $state.go('jvmInfo.' + cur, { systemId: systemId, jvmId: jvmId });
       }
+    });
+
+    this.update();
+  }
+
+  update () {
+    this.jvmInfoService.getJvmInfo(this.systemId, this.jvmId).then(
+      res => {
+        this.jvmInfo = res.data.response[0];
+      },
+      () => {
+        this.jvmInfo = {};
+      }
+    );
+  }
+
+  isAlive () {
+    return true;
+    //FIXME: web-gateway responses do not yet include isAlive, and stopTime is not updated for dead JVMs
+    // if (this.jvmInfo.hasOwnProperty('isAlive')) {
+    //   return this.jvmInfo.isAlive;
+    // }
+    // return this.jvmInfo.stopTime > 0;
+  }
+
+  killVm () {
+    this.killVmService.killVm(this.systemId, this.jvmInfo.agentId, this.jvmId, this.jvmInfo.jvmPid).then(
+      success => {
+        this.showErr = false;
+      },
+      failure => {
+        this.showErr = true;
+        this.errMessage = failure;
+      }
+    ).finally(() => {
+      this.update();
     });
   }
 }
@@ -60,5 +91,5 @@ export default angular
     filters,
     service
   ])
-  .controller('jvmInfoController', JvmInfoController)
+  .controller('JvmInfoController', JvmInfoController)
   .name;

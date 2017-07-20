@@ -18,9 +18,25 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="(key, value) in ctrl.systemInfo">
-              <td>{{key}}</td>
-              <td>{{value}}</td>
+            <tr>
+              <td>Hostname</td>
+              <td>{{ctrl.systemInfo.hostname}}</td>
+            </tr>
+            <tr>
+              <td>Operating System</td>
+              <td>{{ctrl.systemInfo.osName}}</td>
+            </tr>
+            <tr>
+              <td>Kernel</td>
+              <td>{{ctrl.systemInfo.osKernel}}</td>
+            </tr>
+            <tr>
+              <td>CPU</td>
+              <td>{{ctrl.systemInfo.cpuModel}}<br/>({{ctrl.systemInfo.cpuCount}} cores)</td>
+            </tr>
+            <tr>
+              <td>Memory</td>
+              <td>{{ctrl.systemInfo.totalMemory | formatBytes}}</td>
             </tr>
           </tbody>
         </table>
@@ -30,22 +46,24 @@
     <div class="row row-cards-pf">
       <div class="container container-cards-pf">
         <!-- System-CPU Donut Chart -->
-        <div class="col-xs-12 col-md-6" ng-controller="systemCpuController as ctrl">
+        <div class="col-xs-12 col-md-6" ng-controller="SystemCpuController as ctrl">
           <div class="card-pf card-pf-view">
             <div class="card-pf-heading">
               <label class="card-pf-title">CPU Usage</label>
+              <mc-add class="pull-right" svc-name="{{systemId}}-cpu" get-fn="ctrl.multichartFn()"></mc-add>
             </div>
             <div class="card-pf-body">
               <div pf-donut-pct-chart id="cpuChart" config="ctrl.config" data="ctrl.data"></div>
             </div>
           </div>
         </div>
-        <div class="system-memory-charts" ng-controller="systemMemoryController as ctrl">
+        <div class="system-memory-charts" ng-controller="SystemMemoryController as ctrl">
           <!-- System-Memory Donut Chart -->
           <div class="col-xs-12 col-md-6">
             <div class="card-pf card-pf-view">
               <div class="card-pf-heading">
                 <label class="card-pf-title">Memory Usage</label>
+                <mc-add class="pull-right" svc-name="{{systemId}}-memory" get-fn="ctrl.multichartFn()"></mc-add>
               </div>
               <div class="card-pf-body">
                 <div pf-donut-pct-chart id="systemMemoryDonutChart" config="ctrl.donutConfig" data="ctrl.donutData"></div>

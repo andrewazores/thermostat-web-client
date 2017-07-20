@@ -37,7 +37,7 @@ function config ($stateProvider) {
         )
       );
     },
-    controller: 'systemInfoController as ctrl',
+    controller: 'SystemInfoController as ctrl',
     resolve: {
       loadSystemInfo: ($q, $ocLazyLoad) => {
         'ngInject';

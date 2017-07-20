@@ -44,10 +44,10 @@
                   </div>
                   <div class="card-pf-body">
                     <h2 class="card-pf-title text-center ellipsis-word-wrap">
-                      {{jvm.mainClass | extractClass:true }}
+                      {{jvm.mainClass | extractClass:true}}
                     </h2>
                     <div class="card-pf-info text-center">
-                      <strong>Created On</strong> {{jvm.startTime | timeStampToDate}}
+                      <strong>Created On</strong> {{jvm.startTime | timestampToDate}}
                       <span class="pull-right pficon" ng-class="isAlive(jvm) ? 'pficon-ok' : 'pficon-error-circle-o'"></span>
                     </div>
                   </div>

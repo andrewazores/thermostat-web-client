@@ -26,6 +26,7 @@
  */
 
 import 'c3';
+import _ from 'lodash';
 import filters from 'shared/filters/filters.module.js';
 import service from './system-info.service.js';
 
@@ -57,12 +58,20 @@ class SystemCpuController {
 
   update () {
     this.svc.getCpuInfo(this.scope.systemId).then(resp => {
-      let cpuInfo = resp.data.response;
+      let cpuInfo = resp.data.response[0];
       this.data = {
-        used: cpuInfo.percent,
+        used: _.floor(_.mean(cpuInfo.perProcessorUsage)),
         total: 100
       };
     });
+  }
+
+  multichartFn () {
+    return new Promise(resolve =>
+      this.svc.getCpuInfo(this.scope.systemId).then(resp =>
+        resolve(_.floor(_.mean(resp.data.response[0].perProcessorUsage)))
+      )
+    );
   }
 }
 
@@ -73,5 +82,5 @@ export default angular
     filters,
     service
   ])
-  .controller('systemCpuController', SystemCpuController)
+  .controller('SystemCpuController', SystemCpuController)
   .name;

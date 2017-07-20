@@ -25,16 +25,18 @@
  * exception statement from your version.
  */
 
-import controller from './system-info.controller.js';
-import cpuController from './system-cpu.controller.js';
-import memoryController from './system-memory.controller.js';
+import SystemInfocontroller from './system-info.controller.js';
+import SystemCpuController from './system-cpu.controller.js';
+import SystemMemoryController from './system-memory.controller.js';
 import service from './system-info.service.js';
+import directives from 'shared/directives/directives.module.js';
 
 export default angular
   .module('systemInfo', [
-    controller,
-    cpuController,
-    memoryController,
-    service
+    SystemInfocontroller,
+    SystemCpuController,
+    SystemMemoryController,
+    service,
+    directives
   ])
   .name;

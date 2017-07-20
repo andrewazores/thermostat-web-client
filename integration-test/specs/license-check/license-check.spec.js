@@ -119,4 +119,42 @@ describe('LicenseTest', () => {
     let licenseData = licenseCheck.readLicenseFile(CURRENT_LICENSE);
     licenseData.success.should.be.true(licenseData.error);
   });
+
+  describe('argument year processing', () => {
+    it('should properly get the current year for no arguments', () => {
+      const CURRENT_YEAR = new Date().getFullYear();
+      let currentYear = licenseCheck.getCurrentYearFromArgs([]);
+      currentYear.should.be.equal(CURRENT_YEAR);
+    });
+
+    ['20a5', 'a', ' ', '', '2345 '].forEach(yearStr => {
+      it('should throw for a non-integer value: "' + yearStr + '"', () => {
+        licenseCheck.getCurrentYearFromArgs.bind(null, [yearStr]).should.throw();
+      });
+    });
+
+    ['1990', '1999', '1000', '1523'].forEach(yearStr => {
+      it('should throw a < 2000 year value: ' + yearStr, () => {
+        licenseCheck.getCurrentYearFromArgs.bind(null, [yearStr]).should.throw();
+      });
+    });
+
+    ['3000', '3159', '3888', '4813', '9999'].forEach(yearStr => {
+      it('should throw a >= 3000 year value: ' + yearStr, () => {
+        licenseCheck.getCurrentYearFromArgs.bind(null, [yearStr]).should.throw();
+      });
+    });
+
+    it('should throw if there are multiple arguments', () => {
+      licenseCheck.getCurrentYearFromArgs.bind(null, ['2014', '2015']).should.throw();
+      licenseCheck.getCurrentYearFromArgs.bind(null, ['2014', '2015', '2711']).should.throw();
+    });
+
+    [2014, 2017, 2017, 2050, 2345].forEach(yearInt => {
+      it('should correctly process valid year ' + yearInt.toString(), () => {
+        let year = licenseCheck.getCurrentYearFromArgs([yearInt.toString()]);
+        year.should.be.equal(yearInt);
+      });
+    });
+  });
 });

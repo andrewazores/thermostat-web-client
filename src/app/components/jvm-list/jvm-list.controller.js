@@ -27,7 +27,7 @@
 
 import filters from 'shared/filters/filters.module.js';
 import service from './jvm-list.service.js';
-import dismissibleErrorMessage from "shared/directives/dismissible-error-message/dismissible-error-message.directive.js";
+import directives from 'shared/directives/directives.module.js';
 
 class JvmListController {
   constructor (jvmListService, $scope, $location, $timeout, $anchorScroll) {
@@ -49,7 +49,7 @@ class JvmListController {
       this.loadData();
     });
 
-    this.scope.isAlive = (jvm) => {
+    this.scope.isAlive = jvm => {
       if (!jvm.hasOwnProperty('stopTime')) {
         return false;
       }
@@ -99,10 +99,10 @@ class JvmListController {
 
 export default angular
   .module('jvmList.controller', [
-    'directives.dismissible-error-message',
     'patternfly',
     filters,
+    directives,
     service
   ])
-  .controller('jvmListController', JvmListController)
+  .controller('JvmListController', JvmListController)
   .name;

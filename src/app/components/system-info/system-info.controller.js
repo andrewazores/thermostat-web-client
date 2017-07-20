@@ -40,7 +40,7 @@ class SystemInfoController {
 
     systemInfoService.getSystemInfo(systemId).then(
       resp => {
-        this.systemInfo = resp.data.response;
+        this.systemInfo = resp.data.response[0];
         this.showErr = false;
       },
       () => {
@@ -56,5 +56,5 @@ export default angular
     filters,
     service
   ])
-  .controller('systemInfoController', SystemInfoController)
+  .controller('SystemInfoController', SystemInfoController)
   .name;

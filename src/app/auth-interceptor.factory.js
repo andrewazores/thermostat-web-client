@@ -27,7 +27,7 @@
 
 import authModule from './components/auth/auth.module.js';
 
-let name = 'authInterceptor';
+let name = 'authInterceptorFactory';
 
 export default angular
   .module(name, [authModule])

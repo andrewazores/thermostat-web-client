@@ -30,9 +30,16 @@ describe('JvmGcController', () => {
   beforeEach(angular.mock.module('app.filters'));
   beforeEach(angular.mock.module('jvmGc.controller'));
 
-  let scope, interval, svc, promise, ctrl, unixToDate;
-  beforeEach(inject(($controller, metricToBigIntFilter, bigIntToStringFilter, stringToNumberFilter) => {
+  let scope, interval, dateFilterStub, dateFormatSpy, svc, promise, ctrl;
+  beforeEach(inject(($controller) => {
     'ngInject';
+
+    dateFilterStub = sinon.stub().returns('mockDate');
+    dateFormatSpy = {
+      time: {
+        medium: sinon.spy()
+      }
+    };
 
     scope = {
       $on: sinon.spy(),
@@ -49,17 +56,13 @@ describe('JvmGcController', () => {
       getJvmGcData: sinon.stub().returns(promise)
     };
 
-    unixToDate = sinon.stub().returns('mockDate');
-
-    ctrl = $controller('jvmGcController', {
+    ctrl = $controller('JvmGcController', {
       jvmId: 'foo-jvmId',
       $scope: scope,
       $interval: interval,
-      jvmGcService: svc,
-      metricToBigIntFilter: metricToBigIntFilter,
-      bigIntToStringFilter: bigIntToStringFilter,
-      stringToNumberFilter: stringToNumberFilter,
-      unixToDateFilter: unixToDate
+      dateFilter: dateFilterStub,
+      DATE_FORMAT: dateFormatSpy,
+      jvmGcService: svc
     });
   }));
 
@@ -193,11 +196,11 @@ describe('JvmGcController', () => {
       cfg.chartId.should.equal('chart-fooCollector');
     });
 
-    it('should use unixToDateFilter to format x ticks', () => {
+    it('should use dateFilter with DATE_FORMAT.time.medium to format x ticks', () => {
       let fn = cfg.axis.x.tick.format;
       fn.should.be.a.Function();
       fn('fooTimestamp').should.equal('mockDate');
-      unixToDate.should.be.calledWith('fooTimestamp', 'LTS');
+      dateFilterStub.should.be.calledWith('fooTimestamp', dateFormatSpy.time.medium);
     });
 
     it('should format y ticks directly', () => {
@@ -421,6 +424,33 @@ describe('JvmGcController', () => {
       let func = scope.$on.args[0][1];
       func();
       interval.cancel.should.not.be.called();
+    });
+  });
+
+  describe('multichartFn', () => {
+    it('should return a promise', () => {
+      let res = ctrl.multichartFn();
+      res.should.be.a.Promise();
+    });
+
+    it('should resolve jvm-gc stat', done => {
+      promise.then.should.be.calledOnce();
+      let res = ctrl.multichartFn();
+      res.then(v => {
+        v.should.equal(400);
+        done();
+      });
+      promise.then.should.be.calledTwice();
+      let prom = promise.then.secondCall.args[0];
+      prom({
+        data: {
+          response: [
+            {
+              wallTimeInMicros: { $numberLong: '400' }
+            }
+          ]
+        }
+      });
     });
   });
 

@@ -52,7 +52,7 @@ describe('SystemCpuController', () => {
 
     interval = sinon.stub().returns('interval-sentinel');
     interval.cancel = sinon.stub().returns(interval.sentinel);
-    controller = $controller('systemCpuController', {
+    controller = $controller('SystemCpuController', {
       systemInfoService: service,
       $scope: scope,
       $interval: interval
@@ -107,14 +107,14 @@ describe('SystemCpuController', () => {
         func.should.be.a.Function();
         let mockData = {
           data: {
-            response: {
-              percent: 80
-            }
+            response: [{
+              perProcessorUsage: [80]
+            }]
           }
         };
         func(mockData);
         controller.data.should.deepEqual({
-          used: mockData.data.response.percent,
+          used: mockData.data.response[0].perProcessorUsage[0],
           total: 100
         });
       });
@@ -137,6 +137,33 @@ describe('SystemCpuController', () => {
       let func = scope.$on.args[0][1];
       func();
       interval.cancel.should.not.be.called();
+    });
+  });
+
+  describe('multichartFn', () => {
+    it('should return a promise', () => {
+      let res = controller.multichartFn();
+      res.should.be.a.Promise();
+    });
+
+    it('should resolve system-cpu stat', done => {
+      service.cpuPromise.should.be.calledOnce();
+      let res = controller.multichartFn();
+      res.then(v => {
+        v.should.equal(90);
+        done();
+      });
+      service.cpuPromise.should.be.calledTwice();
+      let prom = service.cpuPromise.secondCall.args[0];
+      prom({
+        data: {
+          response: [
+            {
+              perProcessorUsage: [90]
+            }
+          ]
+        }
+      });
     });
   });
 

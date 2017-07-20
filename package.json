@@ -23,6 +23,7 @@
     "es6-promise": "^4.1.0",
     "eslint": "^3.19.0",
     "eslint-plugin-mocha": "^4.9.0",
+    "express-ws": "^3.0.0",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.11.1",
     "font-awesome": "^4.7.0",
@@ -51,7 +52,6 @@
     "mocha": "^3.2.0",
     "mocha-junit-reporter": "^1.13.0",
     "mocha-multi": "^0.11.0",
-    "moment": "^2.18.1",
     "node-sass": "^4.5.2",
     "null-loader": "^0.1.1",
     "nyc": "^10.2.0",
@@ -71,6 +71,7 @@
   "scripts": {
     "clean": "\"$(npm bin)/rimraf\" checkstyle coverage dist test-reports",
     "license-check": "node license-check/perform-license-check.js",
+    "license-update": "node license-check/perform-license-update.js",
     "prelint": "\"$(npm bin)/mkdirp\" checkstyle",
     "lint-js": "\"$(npm bin)/eslint\" --ext '!.spec.js' -c .eslintrc.yaml  src || npm run lint-js-checkstyle",
     "lint-js-checkstyle": "\"$(npm bin)/eslint\" -c .eslintrc.yaml -f checkstyle -o checkstyle/checkstyle-src.xml src",

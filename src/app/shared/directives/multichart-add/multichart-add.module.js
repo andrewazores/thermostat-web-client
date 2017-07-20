@@ -25,18 +25,12 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
-import moment from 'moment';
-
-function filterProvider (formatter = moment) {
-  return (timestamp, format = 'lll') => {
-    return formatter(timestamp).format(format);
-  };
-}
-
-export {filterProvider};
+import directive from './multichart-add.directive.js';
+import controller from './multichart-add.controller.js';
 
 export default angular
-  .module(filterModule)
-  .filter('unixToDate', filterProvider)
+  .module('multichartAddModule', [
+    directive,
+    controller
+  ])
   .name;

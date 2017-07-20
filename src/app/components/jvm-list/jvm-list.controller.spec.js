@@ -47,7 +47,7 @@ describe('JvmListController', () => {
     svc = {
       getSystems: sinon.stub().returns(promise.promise)
     };
-    ctrl = $controller('jvmListController', {
+    ctrl = $controller('JvmListController', {
       jvmListService: svc,
       $location: location,
       $scope: scope,

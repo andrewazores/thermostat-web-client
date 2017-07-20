@@ -25,8 +25,10 @@
  * exception statement from your version.
  */
 
+import configModule from 'shared/config/config.module.js';
+
 export default angular
-  .module('app.services', [])
+  .module('app.services', [configModule])
   .name;
 
 let req = require.context('./', true, /\.service\.js/);

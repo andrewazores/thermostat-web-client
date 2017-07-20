@@ -1,4 +1,5 @@
 var express = require('express'),
+  expressWs = require('express-ws'),
   cors = require('cors'),
   path = require('path'),
   fs = require('fs'),
@@ -8,6 +9,7 @@ var port = process.env.MOCKAPI_PORT || 8888;
 var host = process.env.MOCKAPI_HOST || '0.0.0.0';
 
 var app = express();
+expressWs(app);
 app.use(cors());
 
 app.set('port', port);

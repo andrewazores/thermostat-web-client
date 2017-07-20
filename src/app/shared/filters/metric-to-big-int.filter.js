@@ -27,12 +27,23 @@
 
 import filterModule from './filters.module.js';
 
+/**
+ * Takes a variable with numeric value, and returns a
+ * Big number Object formatted as an Integer
+ * @param {Object} metric e.g., '{ $numberLong: metric }'
+ * @param {Number} scale the divisor for div(), is 1 by default
+ * @return {Big number Object}
+ */
 function filterProvider (metricToBigIntService) {
   'ngInject';
   return (val, scale = 1) => {
     // in case the filter is invoked on asynchronously loaded data and
     // 'val' is undefined, we want to avoid throwing an error below
     val = val || { $numberLong: '0' };
+    // FIXME: https://trello.com/c/3jDpmy8M/170-clean-up-numberlong-ambiguities
+    if (typeof val === 'number') {
+      val = { $numberLong: val.toString() };
+    }
 
     let res = metricToBigIntService.convert(val);
     // 'big(undefined)' does not have any functions defined on it,

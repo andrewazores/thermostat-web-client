@@ -30,12 +30,14 @@ import filters from 'shared/filters/filters.module.js';
 import service from './system-info.service.js';
 
 class SystemMemoryController {
-  constructor (systemInfoService, $scope, $interval, pfUtils, unixToDateFilter) {
+  constructor (systemInfoService, $scope, $interval, pfUtils,
+    dateFilter, DATE_FORMAT) {
     'ngInject';
     this.svc = systemInfoService;
     this.scope = $scope;
     this.interval = $interval;
-    this.unixToDate = unixToDateFilter;
+    this.dateFilter = dateFilter;
+    this.dateFormat = DATE_FORMAT;
 
     this.scope.refreshRate = '1000';
     this.scope.dataAgeLimit = '30000';
@@ -92,7 +94,7 @@ class SystemMemoryController {
             position: 'outer-center'
           },
           tick : {
-            format: timestamp => this.unixToDate(timestamp, 'LTS'),
+            format: timestamp => this.dateFilter(timestamp, this.dateFormat.time.medium),
             count: 5,
             fit: false
           }
@@ -130,7 +132,7 @@ class SystemMemoryController {
 
       // update the memory time series chart
       this.lineConfig.axis.y.max = total;
-      this.lineData.xData.push(data.timestamp);
+      this.lineData.xData.push(data.timeStamp);
       this.lineData.yData0.push(total);
       this.lineData.yData1.push(free);
       this.lineData.yData2.push(used);
@@ -182,6 +184,20 @@ class SystemMemoryController {
       }
     }
   }
+
+  multichartFn () {
+    return new Promise(resolve =>
+      this.svc.getMemoryInfo(this.scope.systemId).then(resp => {
+        let data = resp.data.response[0];
+        let free = data.free;
+        let total = data.total;
+        let used = total - free;
+        let usage = Math.round(used / total * 100);
+        resolve(usage);
+      })
+    );
+  }
+
 }
 
 export default angular
@@ -191,5 +207,5 @@ export default angular
     filters,
     service
   ])
-  .controller('systemMemoryController', SystemMemoryController)
+  .controller('SystemMemoryController', SystemMemoryController)
   .name;

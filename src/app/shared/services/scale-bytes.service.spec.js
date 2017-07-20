@@ -39,6 +39,22 @@ describe('ScaleBytesService', () => {
     should.exist(svc);
   });
 
+  it('should handle undefined', () => {
+    svc.format(undefined).should.deepEqual({
+      result: 0,
+      scale: 0,
+      unit: ''
+    });
+  });
+
+  it('should convert plain numbers', () => {
+    svc.format(100).should.deepEqual({
+      result: 100,
+      scale: 1,
+      unit: 'B'
+    });
+  });
+
   it('should not scale 0 bytes', () => {
     svc.format({ $numberLong: '0' }).should.deepEqual({
       result: 0,

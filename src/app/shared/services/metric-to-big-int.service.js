@@ -27,14 +27,30 @@
 
 import big from 'big.js';
 
+/**
+ * Takes a metric object with numeric value
+ * and converts it into a Big number Object.
+ * Documentation for big.js: http://mikemcl.github.io/big.js/
+ * @param {Object} metric e.g., '{ $numberLong: metric }'
+ * @return {Big number Object}
+ */
 class MetricToBigIntService {
   constructor () {
     this.big = big;
   }
 
   convert (metric) {
+    if (!angular.isDefined(metric)) {
+      return this.big(undefined);
+    }
+    // FIXME: https://trello.com/c/3jDpmy8M/170-clean-up-numberlong-ambiguities
+    if (typeof metric === 'number') {
+      metric = { $numberLong: metric.toString() };
+    }
     return this.big(metric.$numberLong);
   }
 }
 
-angular.module('app.services').service('metricToBigIntService', MetricToBigIntService);
+angular
+  .module('app.services')
+  .service('metricToBigIntService', MetricToBigIntService);

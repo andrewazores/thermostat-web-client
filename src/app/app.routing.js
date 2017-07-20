@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-let errorModule = angular
+let errorRouter = angular
   .module('error.routing', ['ui.router'])
   .config(errorRouting);
 
@@ -48,7 +48,7 @@ function errorRouting ($stateProvider, $urlRouterProvider) {
   });
 }
 
-let componentRoutingModules = [errorModule.name];
+let componentRoutingModules = [errorRouter.name];
 let req = require.context('./components', true, /\.routing\.js/);
 req.keys().forEach(k => componentRoutingModules.push(req(k).default));
 
@@ -66,8 +66,8 @@ function transitionHook ($q, $transitions, authService) {
       });
     return defer.promise;
   });
-};
+}
 appRouter.run(transitionHook);
 export default appRouter.name;
 
-export { errorModule, errorRouting, transitionHook };
+export { errorRouter, errorRouting, transitionHook };

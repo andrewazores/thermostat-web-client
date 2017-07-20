@@ -54,7 +54,7 @@ describe('JvmMemory controller', () => {
       })
     };
 
-    ctrl = $controller('jvmMemoryController', {
+    ctrl = $controller('JvmMemoryController', {
       jvmId: 'foo-jvmId',
       $scope: scope,
       $interval: interval,
@@ -240,6 +240,85 @@ describe('JvmMemory controller', () => {
       scaleSvc.format.args[1][0].should.deepEqual({ $numberLong: (30 * 1024 * 1024).toString() });
       scaleSvc.format.args[2][0].should.deepEqual({ $numberLong: (20 * 1024 * 1024).toString() });
       scaleSvc.format.args[3][0].should.deepEqual({ $numberLong: (50 * 1024 * 1024).toString() });
+    });
+  });
+
+  describe('multichartMetaspace', () => {
+    it('should return a promise', () => {
+      let res = ctrl.multichartMetaspace();
+      res.should.be.a.Promise();
+    });
+
+    it('should resolve jvm-memory stat', done => {
+      promise.then.should.be.calledOnce();
+      let res = ctrl.multichartMetaspace();
+      res.then(v => {
+        v.should.equal(9001);
+        done();
+      });
+      promise.then.should.be.calledTwice();
+      let prom = promise.then.secondCall.args[0];
+      prom({
+        data: {
+          response: [
+            {
+              metaspaceUsed: { $numberLong: '9001' }
+            }
+          ]
+        }
+      });
+    });
+  });
+
+  describe('multichartSpace', () => {
+    it('should return a promise', () => {
+      let res = ctrl.multichartSpace(0, 0);
+      res.should.be.a.Promise();
+    });
+
+    it('should resolve space used stat', done => {
+      promise.then.should.be.calledOnce();
+      let res = ctrl.multichartSpace(1, 1);
+      res.then(v => {
+        v.should.equal(400);
+        done();
+      });
+      promise.then.should.be.calledTwice();
+      let prom = promise.then.secondCall.args[0];
+      prom({
+        data: {
+          response: [
+            {
+              generations: [
+                {
+                  spaces: [
+                    {
+                      used: 100,
+                      total: 150
+                    },
+                    {
+                      used: 200,
+                      total: 250
+                    }
+                  ]
+                },
+                {
+                  spaces: [
+                    {
+                      used: 300,
+                      total: 350
+                    },
+                    {
+                      used: 400,
+                      total: 450
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      });
     });
   });
 

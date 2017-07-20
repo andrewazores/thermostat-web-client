@@ -23,6 +23,7 @@
             <label class="card-pf-title">Metaspace</label>
           </div>
           <div class="card-pf-body">
+            <mc-add class="pull-right" svc-name="{{ctrl.jvmId}}-metaspace" get-fn="ctrl.multichartMetaspace()"></mc-add>
             <div pf-donut-pct-chart id="metaspaceChart" config="ctrl.metaspaceConfig" data="ctrl.metaspaceData"></div>
           </div>
         </div>
@@ -43,6 +44,8 @@
             <div ng-repeat="space in generation.spaces">
               <div class="card-pf-body text-center">
                 <label>Space {{space.index}}</label>
+                <mc-add class="pull-right" svc-name="{{ctrl.jvmId}}-{{sanitize(generation.name)}}-space{{space.index}}"
+                                           get-fn="ctrl.multichartSpace(index, space.index)"></mc-add>
                 <div pf-donut-pct-chart id="gen-{{gen.index}}-space-{{space.index}}"
                   config="ctrl.spaceConfigs['gen-' + generation.index + '-space-' + space.index]" data="space"></div>
               </div>

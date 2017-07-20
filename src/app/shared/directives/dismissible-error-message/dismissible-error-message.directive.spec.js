@@ -25,11 +25,12 @@
  * exception statement from your version.
  */
 
+import directiveModule from './dismissible-error-message.directive.js';
 import {dismissibleErrorMessageFunc} from './dismissible-error-message.directive.js';
 
 describe('dismissibleErrorMessage Directive', () => {
   let compiledDirectiveElement;
-  beforeEach(angular.mock.module('directives.dismissible-error-message'));
+  beforeEach(angular.mock.module(directiveModule));
 
   let initDummyModule = () => {
     let compile, rootScope;

@@ -25,9 +25,20 @@
  * exception statement from your version.
  */
 
+export function cmdChanUrl (gatewayUrl) {
+  if (gatewayUrl.startsWith('http://')) {
+    return 'ws://' + gatewayUrl.substring(7);
+  } else if (gatewayUrl.startsWith('https://')) {
+    return 'wss://' + gatewayUrl.substring(8);
+  } else {
+    throw new Error('GATEWAY_URL protocol unknown');
+  }
+};
+
 export default angular
   .module('configModule', [])
   .constant('environment', process.env.NODE_ENV)
   .constant('debug', process.env.DEBUG)
   .constant('gatewayUrl', process.env.GATEWAY_URL)
+  .constant('commandChannelUrl', cmdChanUrl(process.env.GATEWAY_URL))
   .name;
