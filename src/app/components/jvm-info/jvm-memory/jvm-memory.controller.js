@@ -83,11 +83,24 @@ class JvmMemoryController {
     }
   }
 
-  multichartFn () {
+  multichartMetaspace () {
     return new Promise(resolve =>
-      this.jvmMemoryService.getJvmMemory(this.scope.systemId).then(resp =>
+      this.jvmMemoryService.getJvmMemory(this.jvmId).then(resp =>
         resolve(this.convertMemStat(resp.data.response[0].metaspaceUsed))
       )
+    );
+  }
+
+  multichartSpace (generationIndex, spaceIndex) {
+    return new Promise(resolve =>
+      this.jvmMemoryService.getJvmMemory(this.jvmId).then(resp => {
+        generationIndex = parseInt(generationIndex);
+        spaceIndex = parseInt(spaceIndex);
+        let data = resp.data.response[0];
+        let generation = data.generations[generationIndex];
+        let space = generation.spaces[spaceIndex];
+        resolve(this.convertMemStat(space.used));
+      })
     );
   }
 

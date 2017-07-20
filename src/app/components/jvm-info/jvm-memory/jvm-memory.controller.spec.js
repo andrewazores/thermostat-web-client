@@ -243,15 +243,15 @@ describe('JvmMemory controller', () => {
     });
   });
 
-  describe('multichartFn', () => {
+  describe('multichartMetaspace', () => {
     it('should return a promise', () => {
-      let res = ctrl.multichartFn();
+      let res = ctrl.multichartMetaspace();
       res.should.be.a.Promise();
     });
 
     it('should resolve jvm-memory stat', done => {
       promise.then.should.be.calledOnce();
-      let res = ctrl.multichartFn();
+      let res = ctrl.multichartMetaspace();
       res.then(v => {
         v.should.equal(9001);
         done();
@@ -263,6 +263,58 @@ describe('JvmMemory controller', () => {
           response: [
             {
               metaspaceUsed: { $numberLong: '9001' }
+            }
+          ]
+        }
+      });
+    });
+  });
+
+  describe('multichartSpace', () => {
+    it('should return a promise', () => {
+      let res = ctrl.multichartSpace(0, 0);
+      res.should.be.a.Promise();
+    });
+
+    it('should resolve space used stat', done => {
+      promise.then.should.be.calledOnce();
+      let res = ctrl.multichartSpace(1, 1);
+      res.then(v => {
+        v.should.equal(400);
+        done();
+      });
+      promise.then.should.be.calledTwice();
+      let prom = promise.then.secondCall.args[0];
+      prom({
+        data: {
+          response: [
+            {
+              generations: [
+                {
+                  spaces: [
+                    {
+                      used: 100,
+                      total: 150
+                    },
+                    {
+                      used: 200,
+                      total: 250
+                    }
+                  ]
+                },
+                {
+                  spaces: [
+                    {
+                      used: 300,
+                      total: 350
+                    },
+                    {
+                      used: 400,
+                      total: 450
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
