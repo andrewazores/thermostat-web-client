@@ -54,7 +54,7 @@ describe('JvmGcService', () => {
     should.exist(svc);
   });
 
-  describe('getJvmGcdata(jvmId)', () => {
+  describe('getJvmGcdata(jvmId, limit, collectorName)', () => {
     it('should resolve mock data', done => {
       let expected = {
         metaspace: 100
@@ -81,6 +81,21 @@ describe('JvmGcService', () => {
         done();
       });
       httpBackend.expectGET('http://example.com:1234/jvm-gc/0.0.2?l=5&s=-timeStamp&q=jvmId%3D%3Dfoo-jvmId');
+      httpBackend.flush();
+      scope.$apply();
+    });
+
+    it('should allow specifying collectorName', done => {
+      let expected = {
+        metaspace: 100
+      };
+      httpBackend.when('GET', 'http://example.com:1234/jvm-gc/0.0.2?l=5&q=jvmId%3D%3Dfoo-jvmId,collectorName%3D%3DfooCollector&s=-timeStamp')
+        .respond(expected);
+      svc.getJvmGcData('foo-jvmId', 5, 'fooCollector').then(res => {
+        res.data.should.deepEqual(expected);
+        done();
+      });
+      httpBackend.expectGET('http://example.com:1234/jvm-gc/0.0.2?l=5&q=jvmId%3D%3Dfoo-jvmId,collectorName%3D%3DfooCollector&s=-timeStamp');
       httpBackend.flush();
       scope.$apply();
     });

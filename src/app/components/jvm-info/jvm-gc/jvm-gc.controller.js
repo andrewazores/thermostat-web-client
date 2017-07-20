@@ -31,7 +31,7 @@ import service from './jvm-gc.service.js';
 
 class JvmGcController {
   constructor (jvmId, $scope, $interval, dateFilter, DATE_FORMAT,
-    metricToNumberFilter, jvmGcService) {
+    metricToNumberFilter, jvmGcService, sanitizeService) {
     'ngInject';
     this.jvmId = jvmId;
     this.scope = $scope;
@@ -40,6 +40,7 @@ class JvmGcController {
     this.dateFormat = DATE_FORMAT;
     this.metricToNumberFilter = metricToNumberFilter;
     this.jvmGcService = jvmGcService;
+    this.scope.sanitize = sanitizeService.sanitize;
 
     this.scope.refreshRate = '1000';
     this.scope.dataAgeLimit = '30000';
@@ -216,6 +217,14 @@ class JvmGcController {
     this.trimData();
 
     this.constructChartData();
+  }
+
+  multichartFn (collector) {
+    return new Promise(resolve => {
+      this.jvmGcService.getJvmGcData(this.jvmId, 1, collector).then(resp => {
+        resolve(this.metricToNumberFilter(resp.data.response[0].wallTimeInMicros));
+      });
+    });
   }
 
 }

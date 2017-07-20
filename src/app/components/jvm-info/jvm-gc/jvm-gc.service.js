@@ -35,14 +35,16 @@ class JvmGcService {
     this.gatewayUrl = gatewayUrl;
   }
 
-  getJvmGcData (jvmId, limit = 1) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvm-gc', '0.0.2'), {
-      params: {
-        l: limit,
-        s: '-timeStamp',
-        q: 'jvmId==' + jvmId
-      }
-    });
+  getJvmGcData (jvmId, limit = 1, collectorName) {
+    let params = {
+      l: limit,
+      s: '-timeStamp',
+      q: 'jvmId==' + jvmId
+    };
+    if (collectorName) {
+      params.q += ',collectorName==' + collectorName;
+    }
+    return this.http.get(urlJoin(this.gatewayUrl, 'jvm-gc', '0.0.2'), { params: params });
   }
 }
 
