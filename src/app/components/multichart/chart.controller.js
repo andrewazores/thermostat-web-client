@@ -146,6 +146,21 @@ class MultiChartController {
       this.refresh = this.interval(() => this.update(), val);
     }
   }
+
+  rename (to) {
+    if (!to) {
+      return;
+    }
+    to = to.trim();
+    if (!this.isValid(to)) {
+      return;
+    }
+    this.svc.rename(this.chart, to);
+  }
+
+  isValid (chartName) {
+    return chartName.search(/^[\w-]+$/) > -1;
+  }
 }
 
 export default angular

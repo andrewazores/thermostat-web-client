@@ -25,11 +25,11 @@
           <div ng-controller="MultiChartChartController as chartCtrl" class="card-pf card-pf-view">
             <div class="card-pf-heading">
               <label class="card-pf-title">{{chart}}</label>
-              <button class="btn btn-default pull-right" ng-click="chartCtrl.removeChart(chart)"><span class="pficon pficon-close"></span></button>
             </div>
 
-            <!-- Metric Controls: Refresh Rate -->
             <div class="row" style="margin-top:2vh">
+
+              <!-- Metric Controls: Refresh Rate -->
               <div class="col-xs-12 col-md-3">
                 <label for="refreshCombo" class="label label-info">Refresh Rate</label>
                 <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
@@ -44,6 +44,7 @@
                   <option value="600000">10 Minutes</option>
                 </select>
               </div>
+
               <!-- Metric Controls: Max Data Age -->
               <div class="col-xs-12 col-md-3">
                 <label for="dataAgeCombo" class="label label-info">Max Data Age</label>
@@ -58,6 +59,25 @@
                   <option value="3600000">1 Hour</option>
                 </select>
               </div>
+
+              <div class="dropdown dropdown-kebab-pf pull-right" style="margin-right:2vw">
+                <button class="btn btn-link dropdown-toggle" type="button" id="{{chart}}-kebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="{{chart}}-kebab">
+                  <li>
+                    <form name="renameForm" class="input-group" ng-submit="chartCtrl.rename(chartRename)">
+                      <input type="text" class="form-control" placeholder="Enter new chart name" ng-model="chartRename"/>
+                      <input type="submit" value="Rename chart"/>
+                    </form>
+                  </li>
+                  <li role="separator" class="divider"></li>
+                  <li>
+                    <a ng-click="chartCtrl.removeChart(chart)">Delete</a>
+                  </li>
+                </ul>
+              </div>
+
             </div>
 
             <div class="card-pf-body">
