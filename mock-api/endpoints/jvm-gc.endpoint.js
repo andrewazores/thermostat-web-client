@@ -5,7 +5,7 @@ function jvmGc (server) {
   server.app.get('/jvm-gc/0.0.2', function (req, res, next) {
     server.logRequest('jvm-gc', req);
 
-    var query = req.query.q;
+    var query = req.query.query;
     query = _.split(query, '&');
     var jvmId = 'foo-jvmId';
     for (var i = 0; i < query.length; i++) {
@@ -14,7 +14,7 @@ function jvmGc (server) {
         jvmId = _.split(str, '==')[1];
       }
     }
-    var limit = req.query.l || 1;
+    var limit = req.query.limit || 1;
 
     var response = [];
     for (var i = 0; i < limit; i++) {

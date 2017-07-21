@@ -4,7 +4,7 @@ function jvmMemory (server) {
   server.app.get('/jvm-memory/0.0.2', function (req, res, next) {
     server.logRequest('jvm-memory', req);
 
-    var query = req.query.q;
+    var query = req.query.query;
     query = _.split(query, '&');
     var jvmId = undefined;
     for (var i = 0; i < query.length; i++) {
