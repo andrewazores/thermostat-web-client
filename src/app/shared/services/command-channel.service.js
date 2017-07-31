@@ -41,6 +41,15 @@ class CommandChannelService {
     this.setCredentials('bar-client-user', 'client-pwd');
   }
 
+  get responseCodes () {
+    let responseCodes = [];
+    responseCodes.OK = Object.freeze({ value: 'OK', message: 'Request succeeded' });
+    responseCodes.ERROR = Object.freeze({ value: 'ERROR', message: 'Request failed for unknown reason' });
+    responseCodes.AUTH_FAIL = Object.freeze({ value: 'AUTH_FAIL', message: 'Failed due to authentication or authorization issues' });
+    responseCodes.UNKNOWN = Object.freeze({ value: 'UNKNOWN', message: 'Request failed with unknown response type' });
+    return Object.freeze(responseCodes);
+  }
+
   setCredentials (username, password) {
     this.username = username;
     this.password = password;
@@ -109,7 +118,13 @@ class CommandChannelService {
     socket.addEventListener('message', message => {
       socket.removeEventListener('close', closeFn);
       socket.close();
-      defer.resolve(JSON.parse(message.data));
+      let data = JSON.parse(message.data);
+      if (this.responseCodes.hasOwnProperty(data.payload.respType)) {
+        data.payload.respType = this.responseCodes[data.payload.respType];
+      } else {
+        data.payload.respType = this.responseCodes.UNKNOWN;
+      }
+      defer.resolve(data);
     });
     return defer.promise;
   }

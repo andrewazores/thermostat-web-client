@@ -43,6 +43,20 @@ describe('KillVmService', () => {
       commandChannel.promise = promise;
       commandChannel.sendMessage = sinon.stub().returns(promise.promise);
       commandChannel.sequence = 444;
+      commandChannel.responseCodes = {
+        OK: {
+          value: 'OK',
+          message: 'Request succeeded'
+        },
+        ERROR: {
+          value: 'ERROR',
+          message: 'Request failed for unknown reason'
+        },
+        AUTH_FAIL: {
+          value: 'AUTH_FAIL',
+          message: 'Request failed due to authentication or authorization issues'
+        }
+      };
       svc = killVmService;
     });
   });
@@ -65,14 +79,18 @@ describe('KillVmService', () => {
 
     it('should resolve true on command channel success', done => {
       svc.killVm('foo').then(success => {
-        success.should.be.true();
+        success.should.have.ownProperty('status');
+        success.status.should.be.true();
         done();
       });
       commandChannel.promise.resolve({
         type: 100,
         sequence: 1,
         payload: {
-          respType: 'OK'
+          respType: {
+            value: 'OK',
+            message: 'Request succeeded'
+          }
         }
       });
       scope.$apply();
@@ -80,14 +98,41 @@ describe('KillVmService', () => {
 
     it('should resolve false on command channel response error', done => {
       svc.killVm('foo', 'bar', 'baz').then(success => {
-        success.should.be.false();
+        success.should.have.ownProperty('status');
+        success.status.should.be.false();
+        success.should.have.ownProperty('reason');
+        success.reason.should.equal('Request failed for unknown reason');
         done();
       });
       commandChannel.promise.resolve({
         type: 100,
         sequence: 1,
         payload: {
-          respType: 'ERROR'
+          respType: {
+            value: 'ERROR',
+            message: 'Request failed for unknown reason'
+          }
+        }
+      });
+      scope.$apply();
+    });
+
+    it('should resolve false on command channel response auth fail', done => {
+      svc.killVm('foo', 'bar', 'baz').then(success => {
+        success.should.have.ownProperty('status');
+        success.status.should.be.false();
+        success.should.have.ownProperty('reason');
+        success.reason.should.equal('Request failed due to authentication or authorization issues');
+        done();
+      });
+      commandChannel.promise.resolve({
+        type: 100,
+        sequence: 1,
+        payload: {
+          respType: {
+            value: 'AUTH_FAIL',
+            message: 'Request failed due to authentication or authorization issues'
+          }
         }
       });
       scope.$apply();
@@ -99,6 +144,27 @@ describe('KillVmService', () => {
         done();
       });
       commandChannel.promise.reject('fooFailure');
+      scope.$apply();
+    });
+
+    it('should handle unknown response type', done => {
+      svc.killVm('foo', 'bar', 'baz').then(success => {
+        success.should.have.ownProperty('status');
+        success.status.should.be.false();
+        success.should.have.ownProperty('reason');
+        success.reason.should.equal('Request failed with unknown response type');
+        done();
+      });
+      commandChannel.promise.resolve({
+        type: 100,
+        sequence: 1,
+        payload: {
+          respType: {
+            value: 'UNKNOWN',
+            message: 'Request failed with unknown response type'
+          }
+        }
+      });
       scope.$apply();
     });
   });

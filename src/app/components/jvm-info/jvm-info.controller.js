@@ -71,8 +71,13 @@ class JvmInfoController {
 
   killVm () {
     this.killVmService.killVm(this.systemId, this.jvmInfo.agentId, this.jvmId, this.jvmInfo.jvmPid).then(
-      success => {
-        this.showErr = false;
+      response => {
+        if (response.status) {
+          this.showErr = false;
+        } else {
+          this.showErr = true;
+          this.errMessage = response.reason;
+        }
       },
       failure => {
         this.showErr = true;
