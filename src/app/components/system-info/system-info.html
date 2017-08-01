@@ -5,7 +5,7 @@
     <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemId}}</a></li>
   </ol>
 
-  <dismissible-error-message ng-show="ctrl.showErr" err-message="errMessage" err-title="errTitle"></dismissible-error-message>
+  <customizable-error-message ng-show="ctrl.showErr" dismissible="true" err-message="errMessage" err-title="errTitle"></customizable-error-message>
 
   <div ng-show="!ctrl.showErr">
     <div class="row">

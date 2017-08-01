@@ -50,7 +50,7 @@ Controllers
 
 Directives
 * lowerCamelCase
-* e.g., dismissibleErrorMessageDirective
+* e.g., customizableErrorMessageDirective
 
 Factories
 * lowerCamelCase

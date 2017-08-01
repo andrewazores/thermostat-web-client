@@ -6,7 +6,7 @@
     <li><a ui-sref="jvmInfo({ systemId: ctrl.systemId, jvmId: ctrl.jvmId })">{{ctrl.jvmInfo.mainClass | extractClass}}</a></li>
   </ol>
 
-  <dismissible-error-message ng-show="ctrl.showErr" err-title="'Unable to kill JVM.'" err-message="ctrl.errMessage"></dismissible-error-message>
+  <customizable-error-message ng-show="ctrl.showErr" dismissible="true" err-title="'Unable to kill JVM.'" err-message="ctrl.errMessage"></customizable-error-message>
 
   <div class="row">
     <div class="col-xs-12 col-lg-8">
