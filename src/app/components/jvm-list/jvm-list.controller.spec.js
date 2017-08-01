@@ -172,29 +172,6 @@ describe('JvmListController', () => {
     });
   });
 
-  describe('isAlive', () => {
-    it('should be a scope function', () => {
-      scope.should.have.ownProperty('isAlive');
-      scope.isAlive.should.be.a.Function();
-    });
-
-    it('should return false for object without stopTime', () => {
-      scope.isAlive({ foo: 'bar'} ).should.equal(false);
-    });
-
-    it('should return false for object with positive stopTime', () => {
-      scope.isAlive({ stopTime: { $numberLong: '100' } }).should.equal(false);
-    });
-
-    it('should return true for object with negative stopTime', () => {
-      scope.isAlive({ stopTime: { $numberLong: '-100' } }).should.equal(true);
-    });
-
-    it('should return false for object with zero stopTime', () => {
-      scope.isAlive({ stopTime: { $numberLong: '0' } }).should.equal(false);
-    });
-  });
-
   describe('aliveOnly', () => {
     it('should default to true', () => {
       ctrl.should.have.ownProperty('aliveOnly');

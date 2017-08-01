@@ -104,12 +104,6 @@ describe('JvmInfoController', () => {
     ctrl.showErr.should.be.false();
   });
 
-  describe('isAlive', () => {
-    it('should return true', () => {
-      ctrl.isAlive().should.be.true();
-    });
-  });
-
   describe('killVm', () => {
     it('should delegate to killVmService', () => {
       killVmService.killVm.should.not.be.called();
