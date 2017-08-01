@@ -44,7 +44,8 @@ describe('multichart chartController', () => {
         getDataPromise: getDataPromise,
         getAxesForChart: sinon.stub().returns(['y']),
         countServicesForChart: sinon.stub().returns(2),
-        removeChart: sinon.spy()
+        removeChart: sinon.spy(),
+        rename: sinon.spy()
       };
       scope = {
         $parent: {
@@ -332,6 +333,27 @@ describe('multichart chartController', () => {
       ctrl.setRefreshRate(-1);
       interval.cancel.should.be.calledOnce();
       svc.getData.should.be.calledOnce();
+    });
+  });
+
+  describe('rename', () => {
+    it('should delegate to service', () => {
+      svc.rename.should.not.be.called();
+      ctrl.rename('newname');
+      svc.rename.should.be.calledOnce();
+      svc.rename.should.be.calledWith('foo-chart', 'newname');
+    });
+
+    it('should do nothing if chart name is empty', () => {
+      svc.rename.should.not.be.called();
+      ctrl.rename('');
+      svc.rename.should.not.be.called();
+    });
+
+    it('should do nothing if chart name is invalid', () => {
+      svc.rename.should.not.be.called();
+      ctrl.rename('with space');
+      svc.rename.should.not.be.called();
     });
   });
 

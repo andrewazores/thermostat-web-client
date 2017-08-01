@@ -48,7 +48,7 @@
                     </h2>
                     <div class="card-pf-info text-center">
                       <strong>Created On</strong> {{jvm.startTime | timestampToDate}}
-                      <span class="pull-right pficon" ng-class="isAlive(jvm) ? 'pficon-ok' : 'pficon-error-circle-o'"></span>
+                      <span class="pull-right pficon" ng-class="jvm.isAlive ? 'pficon-ok' : 'pficon-error-circle-o'"></span>
                     </div>
                   </div>
                 </div>

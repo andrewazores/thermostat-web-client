@@ -108,15 +108,29 @@ describe('CommandChannelService', () => {
       }));
     });
 
-    it('should resolve with socket response', done => {
+    it('should resolve with socket response respType replaced', done => {
       svc.sendMessage('foo', 'bar').then(v => {
-        v.should.deepEqual({ payload: 'fooMessage' });
+        v.should.deepEqual({ payload: { respType: { value: 'OK', message: 'Request succeeded' } } });
         done();
       });
       webSocketFactory.addEventListener.should.be.calledWith('message', sinon.match.func);
       webSocketFactory.removeEventListener.should.not.be.called();
       let onmessage = webSocketFactory.addEventListener.withArgs('message').args[0][1];
-      onmessage({ data: JSON.stringify({ payload: 'fooMessage' }) });
+      onmessage({ data: JSON.stringify({ payload: { respType: 'OK' }}) });
+      webSocketFactory.close.should.be.calledOnce();
+      webSocketFactory.removeEventListener.should.be.calledWith('close');
+      scope.$apply();
+    });
+
+    it('should resolve with socket response respType replaced when respType is not recognized', done => {
+      svc.sendMessage('foo', 'bar').then(v => {
+        v.should.deepEqual({ payload: { respType: { value: 'UNKNOWN', message: 'Request failed with unknown response type' } } });
+        done();
+      });
+      webSocketFactory.addEventListener.should.be.calledWith('message', sinon.match.func);
+      webSocketFactory.removeEventListener.should.not.be.called();
+      let onmessage = webSocketFactory.addEventListener.withArgs('message').args[0][1];
+      onmessage({ data: JSON.stringify({ payload: { respType: 'FOO_RESPONSE' }}) });
       webSocketFactory.close.should.be.calledOnce();
       webSocketFactory.removeEventListener.should.be.calledWith('close');
       scope.$apply();
@@ -179,6 +193,45 @@ describe('CommandChannelService', () => {
       svc.setCredentials('fooUser', '');
       svc.sendMessage('foo', 'bar');
       webSocketFactory.createSocket.should.be.calledWith('ws://fooUser@foo-host:1234/foo');
+    });
+  });
+
+  describe('responseCodes', () => {
+    it('should enumerate the expected response types', () => {
+      svc.responseCodes.should.have.size(4);
+
+      svc.responseCodes.should.have.ownProperty('OK');
+      svc.responseCodes.OK.value.should.equal('OK');
+      svc.responseCodes.OK.message.should.not.equal('');
+
+      svc.responseCodes.should.have.ownProperty('ERROR');
+      svc.responseCodes.ERROR.value.should.equal('ERROR');
+      svc.responseCodes.ERROR.message.should.not.equal('');
+
+      svc.responseCodes.should.have.ownProperty('AUTH_FAIL');
+      svc.responseCodes.AUTH_FAIL.value.should.equal('AUTH_FAIL');
+      svc.responseCodes.AUTH_FAIL.message.should.not.equal('');
+
+      svc.responseCodes.should.have.ownProperty('UNKNOWN');
+      svc.responseCodes.UNKNOWN.value.should.equal('UNKNOWN');
+      svc.responseCodes.UNKNOWN.message.should.not.equal('');
+    });
+
+    it('should be read-only', () => {
+      should.throws(() => {
+        svc.responseCodes = [];
+      }, 'property should not be assignable');
+
+      should.throws(() => {
+        svc.responseCodes.ADDED = {
+          value: 'ADDED',
+          message: 'Added a new response code'
+        };
+      }, 'property should be immutable');
+
+      should.throws(() => {
+        svc.responseCodes.OK.value = 'NOK';
+      }, 'values should be immutable');
     });
   });
 

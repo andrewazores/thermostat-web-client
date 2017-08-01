@@ -60,19 +60,15 @@ class JvmInfoController {
     );
   }
 
-  isAlive () {
-    return true;
-    //FIXME: web-gateway responses do not yet include isAlive, and stopTime is not updated for dead JVMs
-    // if (this.jvmInfo.hasOwnProperty('isAlive')) {
-    //   return this.jvmInfo.isAlive;
-    // }
-    // return this.jvmInfo.stopTime > 0;
-  }
-
   killVm () {
     this.killVmService.killVm(this.systemId, this.jvmInfo.agentId, this.jvmId, this.jvmInfo.jvmPid).then(
-      success => {
-        this.showErr = false;
+      response => {
+        if (response.status) {
+          this.showErr = false;
+        } else {
+          this.showErr = true;
+          this.errMessage = response.reason;
+        }
       },
       failure => {
         this.showErr = true;

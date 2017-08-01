@@ -59,7 +59,15 @@ class KillVmService {
         this.getPath(systemId, agentId, jvmId),
         'com.redhat.thermostat.killvm.agent.internal.KillVmReceiver',
         { 'vm-pid': jvmPid }
-      ).then(success => resolve(success.payload.respType === 'OK') , reject);
+      ).then(
+        success => {
+          resolve({
+            status: success.payload.respType.value === this.commandChannel.responseCodes.OK.value,
+            reason: success.payload.respType.message
+          });
+        },
+        reject
+      );
     });
   }
 }

@@ -121,7 +121,7 @@ class MultiChartService {
   }
 
   getData (chartName) {
-    if (!this.charts.has(chartName)) {
+    if (!this.hasChart(chartName)) {
       return new Promise((resolve, reject) => reject(new Error('No such multichart ' + chartName)));
     }
 
@@ -147,6 +147,14 @@ class MultiChartService {
     return new Promise(resolve => {
       Promise.all(promises).then(() => resolve(res));
     });
+  }
+
+  rename (from, to) {
+    if (!this.hasChart(from) || this.hasChart(to)) {
+      return;
+    }
+    this.charts.set(to, this.charts.get(from));
+    this.charts.delete(from);
   }
 }
 

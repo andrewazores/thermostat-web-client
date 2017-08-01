@@ -104,12 +104,6 @@ describe('JvmInfoController', () => {
     ctrl.showErr.should.be.false();
   });
 
-  describe('isAlive', () => {
-    it('should return true', () => {
-      ctrl.isAlive().should.be.true();
-    });
-  });
-
   describe('killVm', () => {
     it('should delegate to killVmService', () => {
       killVmService.killVm.should.not.be.called();
@@ -132,11 +126,22 @@ describe('JvmInfoController', () => {
       killPromise.then.should.be.calledOnce();
       killPromise.then.should.be.calledWith(sinon.match.func, sinon.match.func);
       let fn = killPromise.then.args[0][0];
-      fn();
+      fn({ status:true });
       ctrl.showErr.should.be.false();
     });
 
-    it('should show error and set message on success', () => {
+    it('should show error and message if request succeeds with unsuccessful status', () => {
+      ctrl.showErr = true;
+      ctrl.killVm();
+      killPromise.then.should.be.calledOnce();
+      killPromise.then.should.be.calledWith(sinon.match.func, sinon.match.func);
+      let fn = killPromise.then.args[0][0];
+      fn({ status:false, reason:'some reason' });
+      ctrl.showErr.should.be.true();
+      ctrl.errMessage.should.equal('some reason');
+    });
+
+    it('should show error and set message on failure', () => {
       ctrl.showErr = false;
       ctrl.killVm();
       killPromise.then.should.be.calledOnce();

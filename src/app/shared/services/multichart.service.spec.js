@@ -295,4 +295,41 @@ describe('MultichartService', () => {
     });
   });
 
+  describe('rename', () => {
+    it('should rename existing charts', () => {
+      svc.addChart('foo');
+      svc.addService('foo', 'foo-svc-A', () => new Promise(resolve => resolve(100)));
+
+      svc.rename('foo', 'bar');
+
+      svc.hasChart('foo').should.be.false();
+      svc.hasChart('bar').should.be.true();
+
+      svc.hasServiceForChart('bar', 'foo-svc-A').should.be.true();
+      return svc.getData('bar').should.be.fulfilledWith({
+        yData: [ 'foo-svc-A', 100 ]
+      });
+    });
+
+    it('should do nothing if chart does not already exist', () => {
+      svc.rename('foo', 'bar');
+      svc.hasChart('foo').should.be.false();
+      svc.hasChart('bar').should.be.false();
+    });
+
+    it('should do nothing if rename would overwrite', () => {
+      svc.addChart('foo');
+      svc.addService('foo', 'foo-svc', angular.noop);
+
+      svc.addChart('bar');
+      svc.addService('bar', 'bar-svc', angular.noop);
+
+      svc.rename('foo', 'bar');
+      svc.hasChart('foo').should.be.true();
+      svc.hasChart('bar').should.be.true();
+      svc.countServicesForChart('foo').should.equal(1);
+      svc.countServicesForChart('bar').should.equal(1);
+    });
+  });
+
 });

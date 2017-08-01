@@ -49,14 +49,6 @@ class JvmListController {
       this.loadData();
     });
 
-    this.scope.isAlive = jvm => {
-      if (!jvm.hasOwnProperty('stopTime')) {
-        return false;
-      }
-
-      return parseInt(jvm.stopTime.$numberLong) < 0;
-    };
-
     this.title = 'JVM Listing';
     this.showErr = false;
     this.systemsOpen = {};
