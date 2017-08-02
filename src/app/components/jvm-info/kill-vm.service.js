@@ -41,13 +41,13 @@ class KillVmService {
       'commands',
       'v1',
       'actions',
-      'kill-vm',
+      'kill_vm',
       'systems',
-      'foo',
+      systemId,
       'agents',
-      'testAgent',
+      'testAgent', // TODO: replace with agentId once agent registers itself with correct id
       'jvms',
-      'abc',
+      jvmId,
       'sequence',
       this.commandChannel.sequence
     );
@@ -55,11 +55,7 @@ class KillVmService {
 
   killVm (systemId, agentId, jvmId, jvmPid) {
     return this.q((resolve, reject) => {
-      this.commandChannel.sendMessage(
-        this.getPath(systemId, agentId, jvmId),
-        'com.redhat.thermostat.killvm.agent.internal.KillVmReceiver',
-        { 'vm-pid': jvmPid }
-      ).then(
+      this.commandChannel.sendMessage(this.getPath(systemId, agentId, jvmId), { 'vm-pid': jvmPid }).then(
         success => {
           resolve({
             status: success.payload.respType.value === this.commandChannel.responseCodes.OK.value,

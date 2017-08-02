@@ -98,13 +98,13 @@ describe('CommandChannelService', () => {
     });
 
     it('should send message when socket is ready', () => {
-      svc.sendMessage('foo', 'bar');
+      svc.sendMessage('foo');
       webSocketFactory.addEventListener.should.be.calledWith('open', sinon.match.func);
       webSocketFactory.addEventListener.withArgs('open').args[0][1]();
       webSocketFactory.send.should.be.calledOnce();
       webSocketFactory.send.should.be.calledWith(JSON.stringify({
         type: 2,
-        payload: { receiver: 'bar' }
+        payload: {}
       }));
     });
 
@@ -167,19 +167,6 @@ describe('CommandChannelService', () => {
       scope.$apply();
     });
 
-    it('should append receiver to payload if specified', () => {
-      svc.sendMessage('foo', 'bar', { prop: 5 });
-      webSocketFactory.addEventListener.should.be.calledWith('open', sinon.match.func);
-      webSocketFactory.addEventListener.withArgs('open').args[0][1]();
-      webSocketFactory.send.should.be.calledOnce();
-      webSocketFactory.send.should.be.calledWith(JSON.stringify({
-        type: 2,
-        payload: {
-          prop: 5,
-          receiver: 'bar'
-        }
-      }));
-    });
   });
 
   describe('auth credentials', () => {

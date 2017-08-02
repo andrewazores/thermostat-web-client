@@ -83,7 +83,7 @@ class CommandChannelService {
     return val;
   }
 
-  sendMessage (connectPath, receiver, payload = {}) {
+  sendMessage (connectPath, payload = {}) {
     let defer = this.q.defer();
     let socket = this.socketFactory.createSocket(urlJoin(this.commandChannelUrl, connectPath));
     if (!socket) {
@@ -92,7 +92,6 @@ class CommandChannelService {
     }
 
     socket.addEventListener('open', open => {
-      payload.receiver = receiver;
       socket.send(JSON.stringify({
         type: CLIENT_REQUEST_TYPE,
         payload: payload
