@@ -42,6 +42,12 @@ if (process.env.PORT) {
 
 exports.config = {
   framework: 'mocha',
+  capabilities: {
+    browserName: 'chrome',
+    chromeOptions: {
+      args: [ '--headless', '--disable-gpu', '--window-size=1920x,1080' ]
+    }
+  },
   mochaOpts: {
     reporter: 'mocha-multi',
     reporterOptions: {
