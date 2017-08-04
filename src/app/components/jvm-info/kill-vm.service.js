@@ -45,7 +45,7 @@ class KillVmService {
       'systems',
       systemId,
       'agents',
-      'testAgent', // TODO: replace with agentId once agent registers itself with correct id
+      agentId,
       'jvms',
       jvmId,
       'sequence',
