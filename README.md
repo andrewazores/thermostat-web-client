@@ -96,6 +96,17 @@ scripts. You can save this file in your home directory and source it in your
 output of this command in the file `/etc/bash_completion.d/npm` will work for
 system-wide completion enabling.
 
+### Localization
+
+String localizations are provided by `{lang}.locale.yaml` files distributed throughout
+the project sources. These files are recommended (but not strictly required) to be placed
+adjacent to the views which reference them. The top-level locale file adjacent to
+index.html is the only one which does not use a component namespace; all other locale
+files should be namespaced to match their parent component. Locale namespaces should be
+named with camelCase. Localization keys should be named with UPPER_SNAKE_CASE.
+
+New locales must be registered in the $translateProvider configuration in app.module.js.
+
 ### Source-to-Image
 
 `s2i` can also be used to produce an application image. The expected base image

@@ -92,6 +92,9 @@ module.exports = function () {
       test: /\.html$/,
       loader: 'html-loader'
     }, {
+      test: /\.locale\.yaml$/,
+      loader: ['json-loader', 'yaml-loader']
+    }, {
       test: /^(?!.*\.spec\.js$).*\.js$/,
       include: __dirname + '/src/app/',
       loaders: ['istanbul-instrumenter-loader', 'babel-loader']
