@@ -28,7 +28,7 @@
 const fs = require('fs');
 const glob = require('glob');
 
-const FILE_GLOB = '**/*.js';
+const RECURSIVE_FILE_GLOB = '**/*.js';
 const NO_SUCH_YEAR_INDEX = -1;
 const YEAR_LINE_REGEX = /\* .+2\d{3}-2\d{3}.+/;
 
@@ -163,9 +163,8 @@ function checkFileForLicense (fullPath, licenseData) {
  * for a bad file path argument to cause it to exit early and set the error
  * field with a reason.
  */
-function walkDirectoryAndCheckLicenses (directoryRootPath, licenseData) {
-  let fileGlob = directoryRootPath + FILE_GLOB;
-  let files = glob.sync(fileGlob);
+function walkDirectoryAndCheckLicenses (directoryRootPath, licenseData, fileGlob = RECURSIVE_FILE_GLOB) {
+  let files = glob.sync(directoryRootPath + fileGlob);
   let returnResult = {
     improperLicensePaths: [],
     error: null,
