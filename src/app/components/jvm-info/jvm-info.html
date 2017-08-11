@@ -10,96 +10,126 @@
 
   <div class="row">
     <div class="col-xs-12 col-lg-8">
-      <table class="table table-fixed table-striped table-bordered">
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody class="break-word-wrap">
-          <tr>
-            <td>Username</td>
-            <td>{{ctrl.jvmInfo.username}}</td>
-          </tr>
-          <tr>
-            <td>UID</td>
-            <td>{{ctrl.jvmInfo.uid}}</td>
-          </tr>
-          <tr>
-            <td>JVM ID</td>
-            <td>{{ctrl.jvmInfo.jvmId}}</td>
-          </tr>
-          <tr>
-            <td>Main Class</td>
-            <td>{{ctrl.jvmInfo.mainClass}}</td>
-          </tr>
-          <tr>
-            <td>Start Time</td>
-            <td>{{ctrl.jvmInfo.startTime | date:"medium"}}</td>
-          </tr>
-          <tr ng-show="ctrl.jvmInfo.isAlive">
-            <td>Stop Time</td>
-            <td>{{ctrl.jvmInfo.stopTime | date:"medium"}}</td>
-          </tr>
-          <tr ng-show="ctrl.jvmInfo.isAlive"</tr>
-            <td>Last Updated</td>
-            <td>{{ctrl.jvmInfo.lastUpdated | date:"medium"}}</td>
-          </tr>
-          <tr>
-            <td>JVM PID</td>
-            <td>{{ctrl.jvmInfo.jvmPid}}</td>
-          </tr>
-          <tr>
-            <td>Java Version</td>
-            <td>{{ctrl.jvmInfo.javaVersion}}</td>
-          </tr>
-          <tr>
-            <td>Java Home</td>
-            <td>{{ctrl.jvmInfo.javaHome}}</td>
-          </tr>
-          <tr>
-            <td>Java Command Line</td>
-            <td>{{ctrl.jvmInfo.javaCommandLine}}</td>
-          </tr>
-          <tr>
-            <td>JVM Name</td>
-            <td>{{ctrl.jvmInfo.jvmName}}</td>
-          </tr>
-          <tr>
-            <td>JVM Info</td>
-            <td>{{ctrl.jvmInfo.jvmInfo}}</td>
-          </tr>
-          <tr>
-            <td>JVM Version</td>
-            <td>{{ctrl.jvmInfo.jvmVersion}}</td>
-          </tr>
-          <tr>
-            <td>JVM Arguments</td>
-            <td>{{ctrl.jvmInfo.jvmArguments}}</td>
-          </tr>
-          <tr>
-            <td>Classpath</td>
-            <td>{{ctrl.jvmInfo.classpath}}</td>
-          </tr>
-          <tr>
-            <td>Environment Variables</td>
-            <td>
-              <span ng-repeat="env in ctrl.jvmInfo.environment">
-                {{env.key}}="{{env.value}}"
-                <br/>
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <btn ng-show="ctrl.jvmInfo.isAlive" class="btn btn-default" ng-click="ctrl.killVm()">Kill VM</btn>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+
+      <div class="panel-group" id="accordion-markup">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                JVM Information
+              </a>
+            </h4>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse in">
+            <ul class="list-group">
+              <table class="table table-fixed table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody class="break-word-wrap">
+                  <tr>
+                    <td>Username</td>
+                    <td>{{ctrl.jvmInfo.username}}</td>
+                  </tr>
+                  <tr>
+                    <td>UID</td>
+                    <td>{{ctrl.jvmInfo.uid}}</td>
+                  </tr>
+                  <tr>
+                    <td>JVM ID</td>
+                    <td>{{ctrl.jvmInfo.jvmId}}</td>
+                  </tr>
+                  <tr>
+                    <td>Main Class</td>
+                    <td>{{ctrl.jvmInfo.mainClass}}</td>
+                  </tr>
+                  <tr>
+                    <td>Start Time</td>
+                    <td>{{ctrl.jvmInfo.startTime | date:"medium"}}</td>
+                  </tr>
+                  <tr ng-show="ctrl.jvmInfo.isAlive">
+                    <td>Stop Time</td>
+                    <td>{{ctrl.jvmInfo.stopTime | date:"medium"}}</td>
+                  </tr>
+                  <tr ng-show="ctrl.jvmInfo.isAlive" </tr>
+                    <td>Last Updated</td>
+                    <td>{{ctrl.jvmInfo.lastUpdated | date:"medium"}}</td>
+                  </tr>
+                  <tr>
+                    <td>JVM PID</td>
+                    <td>{{ctrl.jvmInfo.jvmPid}}</td>
+                  </tr>
+                  <tr>
+                    <td>Java Version</td>
+                    <td>{{ctrl.jvmInfo.javaVersion}}</td>
+                  </tr>
+                  <tr>
+                    <td>Java Home</td>
+                    <td>{{ctrl.jvmInfo.javaHome}}</td>
+                  </tr>
+                  <tr>
+                    <td>Java Command Line</td>
+                    <td>{{ctrl.jvmInfo.javaCommandLine}}</td>
+                  </tr>
+                  <tr>
+                    <td>JVM Name</td>
+                    <td>{{ctrl.jvmInfo.jvmName}}</td>
+                  </tr>
+                  <tr>
+                    <td>JVM Info</td>
+                    <td>{{ctrl.jvmInfo.jvmInfo}}</td>
+                  </tr>
+                  <tr>
+                    <td>JVM Version</td>
+                    <td>{{ctrl.jvmInfo.jvmVersion}}</td>
+                  </tr>
+                  <tr>
+                    <td>JVM Arguments</td>
+                    <td>{{ctrl.jvmInfo.jvmArguments}}</td>
+                  </tr>
+                  <tr>
+                    <td>Classpath</td>
+                    <td>{{ctrl.jvmInfo.classpath}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </ul>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Environment Variables
+              </a>
+            </h4>
+          </div>
+          <div id="collapseTwo" class="panel-collapse collapse">
+            <table class="table table-fixed table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>Key</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody class="break-word-wrap">
+                <tr ng-repeat="env in ctrl.jvmInfo.environment">
+                  <td>{{env.key}}</td>
+                  <td>{{env.value}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <btn ng-show="ctrl.jvmInfo.isAlive" class="btn btn-default" ng-click="ctrl.killVm()">Kill VM</btn>
 
   <div class="row">
 
