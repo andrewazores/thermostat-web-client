@@ -29,7 +29,9 @@ import servicesModule from 'shared/services/services.module.js';
 import _ from 'lodash';
 
 class MultiChartService {
-  constructor () {
+  constructor ($q, $translate) {
+    this.q = $q;
+    this.translate = $translate;
     this.charts = new Map();
   }
 
@@ -122,7 +124,11 @@ class MultiChartService {
 
   getData (chartName) {
     if (!this.hasChart(chartName)) {
-      return new Promise((resolve, reject) => reject(new Error('No such multichart ' + chartName)));
+      return new Promise((resolve, reject) => {
+        this.translate('services.multichart.NO_SUCH_MULTICHART_ERROR', {
+          chartName: chartName
+        }).then(s => reject(new Error(s)));
+      });
     }
 
     let svcs = this.charts.get(chartName);

@@ -29,7 +29,7 @@ import controllerModule from './chart.controller.js';
 
 describe('multichart chartController', () => {
 
-  let ctrl, svc, scope, interval, dateFilter;
+  let ctrl, svc, scope, interval, dateFilter, translate;
   beforeEach(() => {
     angular.mock.module(controllerModule);
     angular.mock.inject($controller => {
@@ -57,13 +57,20 @@ describe('multichart chartController', () => {
       interval = sinon.stub().returns('interval-sentinel');
       interval.cancel = sinon.spy();
       dateFilter = sinon.stub().returns('dateFilter-sentinel');
+      translate = sinon.stub().returns({
+        then: sinon.stub().yields({
+          'multicharts.chart.X_AXIS_LABEL': 'timestamp',
+          'multicharts.chart.X_AXIS_DATA_TYPE': 'timestamp'
+        })
+      });
 
       ctrl = $controller('MultiChartChartController', {
         multichartService: svc,
         $scope: scope,
         $interval: interval,
         dateFilter: dateFilter,
-        DATE_FORMAT: { time: { medium: 'medium-time' } }
+        DATE_FORMAT: { time: { medium: 'medium-time' } },
+        $translate: translate
       });
       ctrl.chartConfig.data = {};
     });
@@ -190,6 +197,12 @@ describe('multichart chartController', () => {
       Date.now.restore();
     });
 
+    it('should do nothing if chartData undefined', () => {
+      delete ctrl.chartData;
+      ctrl.trimData();
+      should(ctrl.chartData).be.undefined();
+    });
+
     it('should do nothing if no samples', () => {
       ctrl.trimData();
       ctrl.chartData.should.eql({
@@ -288,8 +301,8 @@ describe('multichart chartController', () => {
       let titleFmt = ctrl.chartConfig.tooltip.format.title;
       let valueFmt = ctrl.chartConfig.tooltip.format.value;
 
-      titleFmt('foo').should.equal('Time: foo');
-      titleFmt(100).should.equal('Time: 100');
+      titleFmt('foo').should.equal('foo');
+      titleFmt(100).should.equal(100);
 
       valueFmt('foo').should.equal('foo');
       valueFmt(100).should.equal(100);

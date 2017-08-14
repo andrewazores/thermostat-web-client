@@ -1,0 +1,8 @@
+jvmGc:
+  REFRESH_RATE_LABEL: Refresh Rate
+  MAX_DATA_AGE_LABEL: Max Data Age
+  CARD_TITLE: Garbage Collection Timeseries
+  chart:
+    UNITS: microseconds
+    X_AXIS_LABEL: timestamp
+    Y_AXIS_LABEL: elapsed

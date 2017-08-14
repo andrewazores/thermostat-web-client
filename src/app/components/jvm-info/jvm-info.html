@@ -1,24 +1,21 @@
 <div class="container-fluid container-cards-pf">
   <ol class="breadcrumb" style="margin-bottom: 0px;">
     <li><a ui-sref="landing">Thermostat</a></li>
-    <li><a ui-sref="jvmList({ '#': ctrl.systemId })">JVM List</a></li>
+    <li><a ui-sref="jvmList({ '#': ctrl.systemId })" translate>jvmInfo.JVM_LIST_BREADCRUMB</a></li>
     <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemId}}</a></li>
     <li><a ui-sref="jvmInfo({ systemId: ctrl.systemId, jvmId: ctrl.jvmId })">{{ctrl.jvmInfo.mainClass | extractClass}}</a></li>
   </ol>
 
-  <customizable-error-message ng-show="ctrl.showErr" dismissible="true" err-title="'Unable to kill JVM.'" err-message="ctrl.errMessage"></customizable-error-message>
+  <customizable-error-message ng-show="ctrl.showErr" dismissible="true" err-title="ctrl.errTitle" err-message="ctrl.errMessage"></customizable-error-message>
 
   <div class="row">
     <div class="col-xs-12 col-lg-8">
-
 
       <div class="panel-group" id="accordion-markup">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                JVM Information
-              </a>
+              <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" translate>jvmInfo.table.HEADER</a>
             </h4>
           </div>
           <div id="collapseOne" class="panel-collapse collapse in">
@@ -26,73 +23,73 @@
               <table class="table table-fixed table-striped table-bordered">
                 <thead>
                   <tr>
-                    <th>Key</th>
-                    <th>Value</th>
+                    <th translate>jvmInfo.table.KEY_COLUMN_LABEL</th>
+                    <th translate>jvmInfo.table.VALUE_COLUMN_LABEL</th>
                   </tr>
                 </thead>
                 <tbody class="break-word-wrap">
                   <tr>
-                    <td>Username</td>
+                    <td translate>jvmInfo.table.USERNAME</td>
                     <td>{{ctrl.jvmInfo.username}}</td>
                   </tr>
                   <tr>
-                    <td>UID</td>
+                    <td translate>jvmInfo.table.UID</td>
                     <td>{{ctrl.jvmInfo.uid}}</td>
                   </tr>
                   <tr>
-                    <td>JVM ID</td>
+                    <td translate>jvmInfo.table.JVM_ID</td>
                     <td>{{ctrl.jvmInfo.jvmId}}</td>
                   </tr>
                   <tr>
-                    <td>Main Class</td>
+                    <td translate>jvmInfo.table.MAIN_CLASS</td>
                     <td>{{ctrl.jvmInfo.mainClass}}</td>
                   </tr>
                   <tr>
-                    <td>Start Time</td>
+                    <td translate>jvmInfo.table.START_TIME</td>
                     <td>{{ctrl.jvmInfo.startTime | date:"medium"}}</td>
                   </tr>
                   <tr ng-show="ctrl.jvmInfo.isAlive">
-                    <td>Stop Time</td>
+                    <td translate>jvmInfo.table.STOP_TIME</td>
                     <td>{{ctrl.jvmInfo.stopTime | date:"medium"}}</td>
                   </tr>
-                  <tr ng-show="ctrl.jvmInfo.isAlive" </tr>
-                    <td>Last Updated</td>
+                  <tr ng-show="ctrl.jvmInfo.isAlive">
+                    <td translate>jvmInfo.table.LAST_UPDATED</td>
                     <td>{{ctrl.jvmInfo.lastUpdated | date:"medium"}}</td>
                   </tr>
                   <tr>
-                    <td>JVM PID</td>
+                    <td translate>jvmInfo.table.JVM_PID</td>
                     <td>{{ctrl.jvmInfo.jvmPid}}</td>
                   </tr>
                   <tr>
-                    <td>Java Version</td>
+                    <td translate>jvmInfo.table.JAVA_VERSION</td>
                     <td>{{ctrl.jvmInfo.javaVersion}}</td>
                   </tr>
                   <tr>
-                    <td>Java Home</td>
+                    <td translate>jvmInfo.table.JAVA_HOME</td>
                     <td>{{ctrl.jvmInfo.javaHome}}</td>
                   </tr>
                   <tr>
-                    <td>Java Command Line</td>
+                    <td translate>jvmInfo.table.COMMAND_LINE</td>
                     <td>{{ctrl.jvmInfo.javaCommandLine}}</td>
                   </tr>
                   <tr>
-                    <td>JVM Name</td>
+                    <td translate>jvmInfo.table.JVM_NAME</td>
                     <td>{{ctrl.jvmInfo.jvmName}}</td>
                   </tr>
                   <tr>
-                    <td>JVM Info</td>
+                    <td translate>jvmInfo.table.JVM_INFO</td>
                     <td>{{ctrl.jvmInfo.jvmInfo}}</td>
                   </tr>
                   <tr>
-                    <td>JVM Version</td>
+                    <td translate>jvmInfo.table.JVM_VERSION</td>
                     <td>{{ctrl.jvmInfo.jvmVersion}}</td>
                   </tr>
                   <tr>
-                    <td>JVM Arguments</td>
+                    <td translate>jvmInfo.table.JVM_ARGUMENTS</td>
                     <td>{{ctrl.jvmInfo.jvmArguments}}</td>
                   </tr>
                   <tr>
-                    <td>Classpath</td>
+                    <td translate>jvmInfo.table.CLASSPATH</td>
                     <td>{{ctrl.jvmInfo.classpath}}</td>
                   </tr>
                 </tbody>
@@ -103,17 +100,15 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Environment Variables
-              </a>
+              <a data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" translate>jvmInfo.table.ENV_VARS_HEADER</a>
             </h4>
           </div>
           <div id="collapseTwo" class="panel-collapse collapse">
             <table class="table table-fixed table-striped table-bordered">
               <thead>
                 <tr>
-                  <th>Key</th>
-                  <th>Value</th>
+                  <th translate>jvmInfo.table.KEY_COLUMN_LABEL</th>
+                  <th translate>jvmInfo.table.VALUE_COLUMN_LABEL</th>
                 </tr>
               </thead>
               <tbody class="break-word-wrap">
@@ -129,17 +124,17 @@
     </div>
   </div>
 
-  <btn ng-show="ctrl.jvmInfo.isAlive" class="btn btn-default" ng-click="ctrl.killVm()">Kill VM</btn>
+  <btn ng-show="ctrl.jvmInfo.isAlive" class="btn btn-default" ng-click="ctrl.killVm()" translate>jvmInfo.killVm.BUTTON_LABEL</btn>
 
   <div class="row">
 
     <div class="col-xs-12 col-md-3">
-      <label for="metricCombo" class="label label-primary">Metric</label>
+      <label for="metricCombo" class="label label-primary" translate>jvmInfo.subview.LABEL</label>
       <select name="metricCombo" class="combobox form-control" ng-model="comboValue">
-        <option value="" style="display:none" selected="selected" disabled>Select a Metric</option>
-        <option value="">None</option>
-        <option value="jvmMemory">Memory Usage</option>
-        <option value="jvmGc">Garbage Collection</option>
+        <option value="" style="display:none" selected="selected" disabled translate>jvmInfo.subview.DISABLED</option>
+        <option value="" translate>jvmInfo.subview.NONE</option>
+        <option value="jvmMemory" translate>jvmInfo.subview.MEMORY</option>
+        <option value="jvmGc" translate>jvmInfo.subview.GC</option>
       </select>
     </div>
 

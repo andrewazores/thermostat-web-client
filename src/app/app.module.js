@@ -70,6 +70,7 @@ export const appModule = angular
   .config($translateProvider => {
     'ngInject';
     $translateProvider
+      .useSanitizeValueStrategy('escapeParameters')
       .registerAvailableLanguageKeys(['en'], {
         'en_*': 'en'
       })

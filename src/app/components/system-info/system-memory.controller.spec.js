@@ -30,7 +30,7 @@ describe('SystemMemoryController', () => {
   beforeEach(angular.mock.module('systemMemory.controller'));
 
   let service, scope, interval, memoryPromise, controller,
-    dateFilterStub, dateFormatSpy;
+    dateFilterStub, dateFormatSpy, translate;
 
   beforeEach(inject($controller => {
     'ngInject';
@@ -63,6 +63,19 @@ describe('SystemMemoryController', () => {
     interval = sinon.stub().returns('interval-sentinel');
     interval.cancel = sinon.stub().returns(interval.sentinel);
 
+    translate = sinon.stub().returns({
+      then: sinon.stub().yields({
+        'systemInfo.systemMemory.X_AXIS_LABEL': 'Time',
+        'systemInfo.systemMemory.Y_AXIS_LABEL': 'Size (MiB)',
+        'systemInfo.systemMemory.xAxisTypes.TIMESTAMP': 'timestamp',
+        'systemInfo.systemMemory.xAxisTypes.TOTAL': 'Total Memory',
+        'systemInfo.systemMemory.xAxisTypes.FREE': 'Free Memory',
+        'systemInfo.systemMemory.xAxisTypes.USED': 'Used Memory',
+        'systemInfo.systemMemory.xAxisTypes.SWAP_TOTAL': 'Total Swap',
+        'systemInfo.systemMemory.xAxisTypes.SWAP_FREE': 'Free Swap',
+        'systemInfo.systemMemory.xAxisTypes.BUFFERS': 'Buffers',
+      })
+    });
 
     controller = $controller('SystemMemoryController', {
       systemId: 'foo-systemId',
@@ -70,7 +83,8 @@ describe('SystemMemoryController', () => {
       $scope: scope,
       $interval: interval,
       dateFilter: dateFilterStub,
-      DATE_FORMAT: dateFormatSpy
+      DATE_FORMAT: dateFormatSpy,
+      $translate: translate
     });
 
   }));

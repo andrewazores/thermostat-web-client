@@ -29,7 +29,7 @@ import controllerModule from './multichart.controller.js';
 
 describe('MultiChartController', () => {
 
-  let scope, svc, ctrl;
+  let scope, svc, ctrl, translate;
   beforeEach(() => {
     angular.mock.module(controllerModule);
     angular.mock.inject(($rootScope, $controller) => {
@@ -43,9 +43,13 @@ describe('MultiChartController', () => {
         addChart: sinon.spy(),
         chartNames: ['foo', 'bar']
       };
+      translate = sinon.stub().returns({
+        then: sinon.stub().yields()
+      });
       ctrl = $controller('MultichartController', {
         $scope: scope,
-        multichartService: svc
+        multichartService: svc,
+        $translate: translate
       });
     });
   });

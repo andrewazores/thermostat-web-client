@@ -30,7 +30,7 @@ import service from './jvm-list.service.js';
 import directives from 'shared/directives/directives.module.js';
 
 class JvmListController {
-  constructor (jvmListService, $scope, $location, $timeout, $anchorScroll) {
+  constructor (jvmListService, $scope, $location, $timeout, $anchorScroll, $translate) {
     'ngInject';
     this.jvmListService = jvmListService;
     this.scope = $scope;
@@ -38,8 +38,8 @@ class JvmListController {
     this.timeout = $timeout;
     this.anchorScroll = $anchorScroll;
 
-    $scope.errTitle = 'Unable to retrieve data.';
-    $scope.errMessage = 'Error while retrieving Thermostat JVM Listing.';
+    $translate('jvmList.ERR_TITLE').then(s => $scope.errTitle = s);
+    $translate('jvmList.ERR_MESSAGE').then(s => $scope.errMessage = s);
 
     this.aliveOnly = true;
     let aliveOnlySwitch = angular.element('#aliveOnlyState');

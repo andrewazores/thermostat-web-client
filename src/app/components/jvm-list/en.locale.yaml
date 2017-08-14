@@ -1,0 +1,8 @@
+jvmList:
+  BREADCRUMB: '@:landing.nav.JVM_LISTING'
+  ALIVE_ONLY: Alive Only
+  SYSTEM_CARD_LABEL: Monitored System
+  CREATED_ON: <strong>Created On</strong> {{date}}
+
+  ERR_TITLE: Unable to retrieve data.
+  ERR_MESSAGE: Error while retrieving Thermostat JVM Listing.

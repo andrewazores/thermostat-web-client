@@ -29,7 +29,7 @@ import filters from 'shared/filters/filters.module.js';
 import service from './jvm-info.service.js';
 
 class JvmInfoController {
-  constructor ($scope, $state, systemId, jvmId, jvmInfoService, killVmService) {
+  constructor ($scope, $state, systemId, jvmId, jvmInfoService, killVmService, $translate) {
     'ngInject';
     this.systemId = systemId;
     this.jvmId = jvmId;
@@ -37,6 +37,7 @@ class JvmInfoController {
     this.killVmService = killVmService;
     this.jvmInfo = {};
     this.showErr = false;
+    $translate('jvmInfo.killVm.FAIL_MSG_TITLE').then(s => this.errTitle = s);
 
     $scope.$watch('comboValue', cur => {
       if (cur === '') {

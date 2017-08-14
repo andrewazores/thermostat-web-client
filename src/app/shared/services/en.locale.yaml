@@ -1,0 +1,13 @@
+services:
+
+  commandChannel:
+    WEBSOCKETS_NOT_SUPPORTED: Browser does not support WebSockets
+    NO_RESPONSE_RECEIVED: No response received
+    responseCodes:
+      OK: Request succeeded
+      ERROR: Request failed for unknown reason
+      AUTH_FAIL: Failed due to authentication or authorization issues
+      UNKNOWN: Request failed with unknown response type
+
+  multichart:
+    NO_SUCH_MULTICHART_ERROR: 'No such multichart: {{chartName}}'

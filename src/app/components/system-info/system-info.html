@@ -1,7 +1,7 @@
 <div class="container-fluid container-cards-pf">
   <ol class="breadcrumb" style="margin-bottom: 0px;">
     <li><a ui-sref="landing">Thermostat</a></li>
-    <li><a ui-sref="jvmList({ '#': ctrl.systemId })">JVM List</a></li>
+    <li><a ui-sref="jvmList({ '#': ctrl.systemId })" translate>systemInfo.JVM_LIST_BREADCRUMB</a></li>
     <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemId}}</a></li>
   </ol>
 
@@ -13,29 +13,30 @@
         <table class="table table-striped table-bordered">
           <thead>
             <tr>
-              <th>Key</th>
-              <th>Value</th>
+              <th translate>systemInfo.table.KEY_COLUMN_LABEL</th>
+              <th translate>systemInfo.table.VALUE_COLUMN_LABEL</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Hostname</td>
+              <td translate>systemInfo.table.HOSTNAME</td>
               <td>{{ctrl.systemInfo.hostname}}</td>
             </tr>
             <tr>
-              <td>Operating System</td>
+              <td translate>systemInfo.table.OS</td>
               <td>{{ctrl.systemInfo.osName}}</td>
             </tr>
             <tr>
-              <td>Kernel</td>
+              <td translate>systemInfo.table.KERNEL</td>
               <td>{{ctrl.systemInfo.osKernel}}</td>
             </tr>
             <tr>
-              <td>CPU</td>
-              <td>{{ctrl.systemInfo.cpuModel}}<br/>({{ctrl.systemInfo.cpuCount}} cores)</td>
+              <td translate>systemInfo.table.CPU</td>
+              <td translate="systemInfo.table.CPU_MODEL_FMT"
+                  translate-values="{ model: ctrl.systemInfo.cpuModel, coreCount: ctrl.systemInfo.cpuCount }"></td>
             </tr>
             <tr>
-              <td>Memory</td>
+              <td translate>systemInfo.table.MEMORY</td>
               <td>{{ctrl.systemInfo.totalMemory | formatBytes}}</td>
             </tr>
           </tbody>
@@ -49,7 +50,7 @@
         <div class="col-xs-12 col-md-6" ng-controller="SystemCpuController as ctrl">
           <div class="card-pf card-pf-view">
             <div class="card-pf-heading">
-              <label class="card-pf-title">CPU Usage</label>
+              <label class="card-pf-title" translate>systemInfo.systemCpu.CHART_LABEL</label>
               <mc-add class="pull-right" svc-name="{{systemId}}-cpu" get-fn="ctrl.multichartFn()"></mc-add>
             </div>
             <div class="card-pf-body">
@@ -62,7 +63,7 @@
           <div class="col-xs-12 col-md-6">
             <div class="card-pf card-pf-view">
               <div class="card-pf-heading">
-                <label class="card-pf-title">Memory Usage</label>
+                <label class="card-pf-title" translate>systemInfo.systemMemory.DONUT_CHART_LABEL</label>
                 <mc-add class="pull-right" svc-name="{{systemId}}-memory" get-fn="ctrl.multichartFn()"></mc-add>
               </div>
               <div class="card-pf-body">
@@ -74,12 +75,12 @@
           <div class="col-xs-12 col-md-12">
             <div class="card-pf card-pf-view">
               <div class="card-pf-heading">
-                <label class="card-pf-title">Memory</label>
+                <label class="card-pf-title" translate>systemInfo.systemMemory.LINE_CHART_LABEL</label>
               </div>
               <!-- Metric Controls: Refresh Rate -->
               <div class="row" style="margin-top:2vh">
                 <div class="col-xs-12 col-md-3">
-                  <label for="refreshCombo" class="label label-info">Refresh Rate</label>
+                  <label for="refreshCombo" class="label label-info" translate>systemInfo.systemMemory.REFRESH_RATE_LABEL</label>
                   <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
                     <option value="-1">Disabled</option>
                     <option value="1000">1 Second (Default)</option>
@@ -91,7 +92,7 @@
                 </div>
                 <!-- Metric Controls: Max Data Age -->
                 <div class="col-xs-12 col-md-3">
-                  <label for="dataAgeCombo" class="label label-info">Max Data Age</label>
+                  <label for="dataAgeCombo" class="label label-info" translate>systemInfo.systemMemory.MAX_DATA_AGE_LABEL</label>
                   <select name="dataAgeCombo" class="combobox form-control" ng-model="dataAgeLimit">
                     <option value="10000">10 Seconds</option>
                     <option value="30000">30 Seconds (Default)</option>

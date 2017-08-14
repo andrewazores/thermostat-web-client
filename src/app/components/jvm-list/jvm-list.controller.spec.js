@@ -29,7 +29,7 @@ describe('JvmListController', () => {
 
   beforeEach(angular.mock.module('jvmList.controller'));
 
-  let ctrl, svc, scope, promise, location, timeout, anchorScroll;
+  let ctrl, svc, scope, promise, location, timeout, anchorScroll, translate;
   beforeEach(inject(($q, $rootScope, $controller) => {
     'ngInject';
     sinon.stub(angular, 'element').withArgs('#aliveOnlyState').returns({
@@ -43,6 +43,9 @@ describe('JvmListController', () => {
     };
     timeout = sinon.spy();
     anchorScroll = sinon.spy();
+    translate = sinon.stub().returns({
+      then: sinon.stub().yields()
+    });
 
     svc = {
       getSystems: sinon.stub().returns(promise.promise)
@@ -52,7 +55,8 @@ describe('JvmListController', () => {
       $location: location,
       $scope: scope,
       $timeout: timeout,
-      $anchorScroll: anchorScroll
+      $anchorScroll: anchorScroll,
+      $translate: translate
     });
     sinon.spy(ctrl, 'onload');
   }));

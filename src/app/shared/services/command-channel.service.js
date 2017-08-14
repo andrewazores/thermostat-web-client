@@ -31,22 +31,37 @@ import urlJoin from 'url-join';
 const CLIENT_REQUEST_TYPE = 2;
 
 class CommandChannelService {
-  constructor ($q, webSocketFactory, commandChannelUrl) {
+  constructor ($q, webSocketFactory, $translate, commandChannelUrl) {
     'ngInject';
     this._sequence = 1;
     this.q = $q;
     this.socketFactory = webSocketFactory;
+    this.translate = $translate;
     this._commandChannelUrl = commandChannelUrl;
 
     this.setCredentials('bar-client-user', 'client-pwd');
+
+    this._responseMessages = {};
+    $translate([
+      'services.commandChannel.responseCodes.OK',
+      'services.commandChannel.responseCodes.ERROR',
+      'services.commandChannel.responseCodes.AUTH_FAIL',
+      'services.commandChannel.responseCodes.UNKNOWN'
+    ]).then(translations => {
+      this._responseMessages.OK = translations['services.commandChannel.responseCodes.OK'];
+      this._responseMessages.ERROR = translations['services.commandChannel.responseCodes.ERROR'];
+      this._responseMessages.AUTH_FAIL = translations['services.commandChannel.responseCodes.AUTH_FAIL'];
+      this._responseMessages.UNKNOWN = translations['services.commandChannel.responseCodes.UNKNOWN'];
+      this._responseMessages = Object.freeze(this._responseMessages);
+    });
   }
 
   get responseCodes () {
     let responseCodes = [];
-    responseCodes.OK = Object.freeze({ value: 'OK', message: 'Request succeeded' });
-    responseCodes.ERROR = Object.freeze({ value: 'ERROR', message: 'Request failed for unknown reason' });
-    responseCodes.AUTH_FAIL = Object.freeze({ value: 'AUTH_FAIL', message: 'Failed due to authentication or authorization issues' });
-    responseCodes.UNKNOWN = Object.freeze({ value: 'UNKNOWN', message: 'Request failed with unknown response type' });
+    responseCodes.OK = Object.freeze({ value: 'OK', message: this._responseMessages.OK});
+    responseCodes.ERROR = Object.freeze({ value: 'ERROR', message: this._responseMessages.ERROR});
+    responseCodes.AUTH_FAIL = Object.freeze({ value: 'AUTH_FAIL', message: this._responseMessages.AUTH_FAIL});
+    responseCodes.UNKNOWN = Object.freeze({ value: 'UNKNOWN', message: this._responseMessages.UNKNOWN});
     return Object.freeze(responseCodes);
   }
 
@@ -87,7 +102,7 @@ class CommandChannelService {
     let defer = this.q.defer();
     let socket = this.socketFactory.createSocket(urlJoin(this.commandChannelUrl, connectPath));
     if (!socket) {
-      defer.reject('Browser does not support WebSockets');
+      this.translate('services.commandChannel.WEBSOCKETS_NOT_SUPPORTED').then(s => defer.reject(s));
       return defer.promise;
     }
 
@@ -99,13 +114,11 @@ class CommandChannelService {
     });
 
     let closeFn = close => {
-      let reason;
       if (!angular.isDefined(close.reason) || close.reason === '') {
-        reason = 'No response received';
+        this.translate('services.commandChannel.NO_RESPONSE_RECEIVED').then(s => defer.reject(s));
       } else {
-        reason = close.reason;
+        defer.reject(close.reason);
       }
-      defer.reject(reason);
     };
     socket.addEventListener('close', closeFn);
 
