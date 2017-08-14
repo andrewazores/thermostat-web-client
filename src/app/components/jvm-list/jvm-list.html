@@ -1,14 +1,14 @@
 <div class="container-fluid container-cards-pf">
   <ol class="breadcrumb" style="margin-bottom: 0px;">
     <li><a ui-sref="landing">Thermostat</a></li>
-    <li><a ui-sref="jvmList">JVM List</a></li>
+    <li><a ui-sref="jvmList" translate>jvmList.BREADCRUMB</a></li>
   </ol>
 
-  <dismissible-error-message ng-show="ctrl.showErr" err-message="errMessage" err-title="errTitle"></dismissible-error-message>
+  <customizable-error-message ng-show="ctrl.showErr" dismissible="true" err-message="errMessage" err-title="errTitle"></customizable-error-message>
 
   <div ng-show="!ctrl.showErr" >
     <div class="text-right">
-      <label for="aliveOnlySwitch" class="label label-default">Alive Only</label>
+      <label for="aliveOnlySwitch" class="label label-default" translate>jvmList.ALIVE_ONLY</label>
       <input class="bootstrap-switch pull-right" id="aliveOnlyState" name="aliveOnlySwitch" data-size="mini" type="checkbox" checked/>
       <button type="button" class="btn btn-default" id="refreshButton" ng-click="ctrl.loadData()"><span class="fa fa-refresh"></span></button>
     </div>
@@ -30,7 +30,7 @@
                   <h2 class="card-pf-title text-center ellipsis-word-wrap">
                     {{system.systemId}}
                   </h2>
-                  <p class="card-pf-info text-center">Monitored System</p>
+                  <p class="card-pf-info text-center" translate>jvmList.SYSTEM_CARD_LABEL</p>
                 </div>
               </div>
             </div>
@@ -46,8 +46,8 @@
                     <h2 class="card-pf-title text-center ellipsis-word-wrap">
                       {{jvm.mainClass | extractClass:true}}
                     </h2>
-                    <div class="card-pf-info text-center">
-                      <strong>Created On</strong> {{jvm.startTime | timestampToDate}}
+                    <div class="card-pf-info text-center" translate>
+                      <span translate="jvmList.CREATED_ON" translate-values="{ date: '{{jvm.startTime | timestampToDate}}' }"></span>
                       <span class="pull-right pficon" ng-class="jvm.isAlive ? 'pficon-ok' : 'pficon-error-circle-o'"></span>
                     </div>
                   </div>

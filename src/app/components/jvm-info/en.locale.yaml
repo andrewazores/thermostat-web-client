@@ -1,0 +1,36 @@
+jvmInfo:
+  JVM_LIST_BREADCRUMB: '@:jvmList.BREADCRUMB'
+
+  table:
+    HEADER: JVM Information
+    KEY_COLUMN_LABEL: Key
+    VALUE_COLUMN_LABEL: Value
+
+    USERNAME: Username
+    UID: UID
+    JVM_ID: JVM ID
+    MAIN_CLASS: Main Class
+    START_TIME: Start Time
+    STOP_TIME: Stop Time
+    LAST_UPDATED: Last Updated
+    JVM_PID: JVM PID
+    JAVA_VERSION: Java Version
+    JAVA_HOME: Java Home
+    COMMAND_LINE: Java Command Line
+    JVM_NAME: JVM Name
+    JVM_INFO: JVM Info
+    JVM_VERSION: JVM Version
+    JVM_ARGUMENTS: JVM Arguments
+    CLASSPATH: Classpath
+    ENV_VARS_HEADER: Environment Variables
+
+  killVm:
+    BUTTON_LABEL: Kill JVM
+    FAIL_MSG_TITLE: Unable to kill JVM.
+
+  subview:
+    LABEL: Metric
+    DISABLED: Disabled
+    NONE: None
+    MEMORY: Memory Usage
+    GC: Garbage Collection

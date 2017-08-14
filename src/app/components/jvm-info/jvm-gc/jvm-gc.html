@@ -2,7 +2,7 @@
 
   <div class="row" style="margin-top:2vh">
     <div class="col-xs-12 col-md-3">
-      <label for="refreshCombo" class="label label-info">Refresh Rate</label>
+      <label for="refreshCombo" class="label label-info" translate>jvmGc.REFRESH_RATE_LABEL</label>
       <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
         <option value="-1">Disabled</option>
         <option value="1000" selected>1 Second (Default)</option>
@@ -14,7 +14,7 @@
     </div>
 
     <div class="col-xs-12 col-md-3">
-      <label for="dataAgeCombo" class="label label-info">Max Data Age</label>
+      <label for="dataAgeCombo" class="label label-info" translate>jvmGc.MAX_DATA_AGE_LABEL</label>
       <select name="dataAgeCombo" class="combobox form-control" ng-model="dataAgeLimit">
         <option value="10000" selected>10 Seconds</option>
         <option value="30000" selected>30 Seconds (Default)</option>
@@ -31,7 +31,7 @@
       <div class="col">
         <div class="card-pf card-pf-view">
           <div class="card-pf-heading">
-            <label class="card-pf-title">Garbage Collection Timeseries</label>
+            <label class="card-pf-title" translate>jvmGc.CARD_TITLE</label>
           </div>
           <div ng-repeat="collector in ctrl.collectors">
             <div class="card-pf-body text-center">

@@ -25,53 +25,8 @@
  * exception statement from your version.
  */
 
-import services from 'shared/services/services.module.js';
-import directives from 'shared/directives/directives.module.js';
-
-class MultiChartController {
-  constructor ($scope, multichartService, $translate) {
-    this.scope = $scope;
-    this.svc = multichartService;
-    this.showErr = false;
-
-    $translate('multicharts.ERR_TITLE').then(s => this.scope.errTitle = s);
-    $translate('multicharts.ERR_MESSAGE').then(s => this.scope.errMessage = s);
-  }
-
-  createChart (chartName) {
-    if (!chartName) {
-      return false;
-    }
-    chartName = chartName.trim();
-    if (!this.isValid(chartName)) {
-      this.showErr = true;
-      return;
-    }
-    this.showErr = false;
-    this.svc.addChart(chartName);
-    this.scope.newChartName = '';
-    let form = this.scope.newChartForm;
-    form.$setPristine();
-    form.$setUntouched();
-  }
-
-  isValid (chartName) {
-    if (!chartName) {
-      return false;
-    }
-    return chartName.search(/^[\w-]+$/) > -1;
-  }
-
-  get chartNames () {
-    return this.svc.chartNames;
-  }
-}
+import directive from './customizable-error-message.directive.js';
 
 export default angular
-  .module('multichartController', [
-    'patternfly',
-    services,
-    directives
-  ])
-  .controller('MultichartController', MultiChartController)
+  .module('customizableErrorMessageDirective', [directive])
   .name;

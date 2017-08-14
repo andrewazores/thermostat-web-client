@@ -21,19 +21,22 @@ function jvmList (server) {
           'mainClass': 'c.r.t.A',
           'startTime': { $numberLong: (Date.now() - 10000000).toString() },
           'stopTime': { $numberLong: '-1' },
-          'jvmId': 'vm-0'
+          'jvmId': 'vm-0',
+          'isAlive': true
         },
         {
           'mainClass': 'c.r.t.B',
           'startTime': { $numberLong: (Date.now() - 1500000).toString() },
           'stopTime': { $numberLong: '-1' },
-          'jvmId': 'vm-1'
+          'jvmId': 'vm-1',
+          'isAlive': true
         },
         {
           'mainClass': 'c.r.t.C',
           'startTime': { $numberLong: (Date.now() - 25000000).toString() },
           'stopTime': { $numberLong: '-1' },
-          'jvmId': 'vm-2'
+          'jvmId': 'vm-2',
+          'isAlive': true
         }
       ];
       if (!aliveOnly) {
@@ -41,7 +44,8 @@ function jvmList (server) {
           'mainClass': 'c.r.t.D',
           'startTime': { $numberLong: (Date.now() - 350000000).toString() },
           'stopTime': { $numberLong: Date.now().toString() },
-          'jvmId': 'vm-3'
+          'jvmId': 'vm-3',
+          'isAlive': false
         });
       }
       var system = {

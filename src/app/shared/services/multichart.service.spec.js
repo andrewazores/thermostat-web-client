@@ -29,9 +29,16 @@ import servicesModule from 'shared/services/services.module.js';
 
 describe('MultichartService', () => {
 
-  let svc;
+  let svc, translate;
   beforeEach(() => {
     angular.mock.module(servicesModule);
+    translate = sinon.stub().returns({
+      then: sinon.stub().yields()
+    });
+    angular.mock.module($provide => {
+      'ngInject';
+      $provide.value('$translate', translate);
+    });
     angular.mock.inject(multichartService => {
       'ngInject';
       svc = multichartService;

@@ -30,7 +30,7 @@ import configModule from 'shared/config/config.module.js';
 
 describe('CommandChannelService', () => {
 
-  let svc, scope, webSocketFactory;
+  let svc, scope, webSocketFactory, translate;
   beforeEach(() => {
     let addEventListener = sinon.spy();
     let removeEventListener = sinon.spy();
@@ -48,6 +48,16 @@ describe('CommandChannelService', () => {
         close: close
       })
     };
+    let translateThen = sinon.stub().yields({
+      'services.commandChannel.responseCodes.OK': 'Request succeeded',
+      'services.commandChannel.responseCodes.ERROR': 'Request failed for unknown reason',
+      'services.commandChannel.responseCodes.AUTH_FAIL': 'Request failed for authentication or authorization reasons',
+      'services.commandChannel.responseCodes.UNKNOWN': 'Request failed with unknown response type'
+    });
+    translate = sinon.stub().returns({
+      then: translateThen
+    });
+    translate.then = translateThen;
     angular.mock.module(configModule, $provide => {
       'ngInject';
       $provide.constant('commandChannelUrl', 'ws://foo-host:1234');
@@ -56,6 +66,7 @@ describe('CommandChannelService', () => {
     angular.mock.module($provide => {
       'ngInject';
       $provide.value('webSocketFactory', webSocketFactory);
+      $provide.value('$translate', translate);
     });
     angular.mock.inject(($rootScope, commandChannelService) => {
       'ngInject';
@@ -91,20 +102,20 @@ describe('CommandChannelService', () => {
       scope.$apply();
     });
 
-    it('should reject if browser does not support WebSockets', done => {
+    it('$translate, should reject if browser does not support WebSockets', done => {
       webSocketFactory.createSocket.returns(null);
       svc.sendMessage('foo', 'bar').catch(() => done());
       scope.$apply();
     });
 
     it('should send message when socket is ready', () => {
-      svc.sendMessage('foo', 'bar');
+      svc.sendMessage('foo');
       webSocketFactory.addEventListener.should.be.calledWith('open', sinon.match.func);
       webSocketFactory.addEventListener.withArgs('open').args[0][1]();
       webSocketFactory.send.should.be.calledOnce();
       webSocketFactory.send.should.be.calledWith(JSON.stringify({
         type: 2,
-        payload: { receiver: 'bar' }
+        payload: {}
       }));
     });
 
@@ -162,24 +173,12 @@ describe('CommandChannelService', () => {
         v.should.equal('No response received');
         done();
       });
+      translate.then.yields('No response received');
       webSocketFactory.addEventListener.should.be.calledWith('close', sinon.match.func);
       webSocketFactory.addEventListener.withArgs('close').args[0][1]({});
       scope.$apply();
     });
 
-    it('should append receiver to payload if specified', () => {
-      svc.sendMessage('foo', 'bar', { prop: 5 });
-      webSocketFactory.addEventListener.should.be.calledWith('open', sinon.match.func);
-      webSocketFactory.addEventListener.withArgs('open').args[0][1]();
-      webSocketFactory.send.should.be.calledOnce();
-      webSocketFactory.send.should.be.calledWith(JSON.stringify({
-        type: 2,
-        payload: {
-          prop: 5,
-          receiver: 'bar'
-        }
-      }));
-    });
   });
 
   describe('auth credentials', () => {

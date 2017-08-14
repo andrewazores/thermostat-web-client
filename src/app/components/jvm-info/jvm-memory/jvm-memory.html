@@ -2,7 +2,7 @@
 
   <div class="row" style="margin-top:2vh">
     <div class="col-xs-12 col-md-3">
-      <label for="refreshCombo" class="label label-info">Refresh Rate</label>
+      <label for="refreshCombo" class="label label-info" translate>jvmMemory.REFRESH_RATE_LABEL</label>
       <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
         <option value="-1">Disabled</option>
         <option value="1000">1 Second</option>
@@ -20,7 +20,7 @@
       <div class="col-xs-12 col-sm-6 col-lg-4 col-xl-3">
         <div class="card-pf card-pf-view">
           <div class="card-pf-heading">
-            <label class="card-pf-title">Metaspace</label>
+            <label class="card-pf-title" translate>jvmMemory.METASPACE</label>
           </div>
           <div class="card-pf-body">
             <mc-add class="pull-right" svc-name="{{ctrl.jvmId}}-metaspace" get-fn="ctrl.multichartMetaspace()"></mc-add>
@@ -39,11 +39,11 @@
         <div ng-repeat="(index, generation) in ctrl.generationData" class="col-xs-12 col-sm-6 col-lg-4 col-xl-3">
           <div class="card-pf card-pf-view">
             <div class="card-pf-heading">
-              <label class="card-pf-title">{{generation.name}} ({{generation.collector}})</label>
+              <label class="card-pf-title" translate="jvmMemory.COLLECTOR" translate-values="{ name: generation.name, collector: generation.collector }"></label>
             </div>
             <div ng-repeat="space in generation.spaces">
               <div class="card-pf-body text-center">
-                <label>Space {{space.index}}</label>
+                <label translate="jvmMemory.SPACE" translate-values="{ index: space.index }"></label>
                 <mc-add class="pull-right" svc-name="{{ctrl.jvmId}}-{{sanitize(generation.name)}}-space{{space.index}}"
                                            get-fn="ctrl.multichartSpace(index, space.index)"></mc-add>
                 <div pf-donut-pct-chart id="gen-{{gen.index}}-space-{{space.index}}"

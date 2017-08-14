@@ -31,7 +31,7 @@ import service from './jvm-gc.service.js';
 
 class JvmGcController {
   constructor (jvmId, $scope, $interval, dateFilter, DATE_FORMAT,
-    metricToNumberFilter, jvmGcService, sanitizeService) {
+    metricToNumberFilter, jvmGcService, sanitizeService, $translate) {
     'ngInject';
     this.jvmId = jvmId;
     this.scope = $scope;
@@ -41,6 +41,7 @@ class JvmGcController {
     this.metricToNumberFilter = metricToNumberFilter;
     this.jvmGcService = jvmGcService;
     this.scope.sanitize = sanitizeService.sanitize;
+    this.translate = $translate;
 
     this.scope.refreshRate = '1000';
     this.scope.dataAgeLimit = '30000';
@@ -76,42 +77,48 @@ class JvmGcController {
     }
     this.collectors.push(collector);
     this.collectors.sort();
-    let config = {
-      chartId: 'chart-' + collector,
-      units: 'microseconds',
-      axis: {
-        x: {
-          label: 'timestamp',
-          type: 'timeseries',
-          localtime: false,
-          tick: {
-            format: timestamp => this.dateFilter(timestamp, this.dateFormat.time.medium),
-            count: 5
+    this.translate([
+      'jvmGc.chart.UNITS',
+      'jvmGc.chart.X_AXIS_LABEL',
+      'jvmGc.chart.Y_AXIS_LABEL'
+    ]).then(translations => {
+      let config = {
+        chartId: 'chart-' + collector,
+        units: translations['jvmGc.chart.UNITS'],
+        axis: {
+          x: {
+            label: translations['jvmGc.chart.X_AXIS_LABEL'],
+            type: 'timeseries',
+            localtime: false,
+            tick: {
+              format: timestamp => this.dateFilter(timestamp, this.dateFormat.time.medium),
+              count: 5
+            }
+          },
+          y: {
+            label: translations['jvmGc.chart.Y_AXIS_LABEL'],
+            tick: {
+              format: d => d
+            }
           }
         },
-        y: {
-          label: 'elapsed',
-          tick: {
-            format: d => d
+        tooltip: {
+          format: {
+            title: x => x,
+            value: y => y
           }
-        }
-      },
-      tooltip: {
-        format: {
-          title: x => 'Time: ' + x,
-          value: y => y + ' microseconds'
-        }
-      },
-      transition: {
-        duration: 0
-      },
-      point: {
-        r: 0
-      },
-      onmouseover: () => this.stop(),
-      onmouseout: () => this.start()
-    };
-    this.chartConfigs[collector] = config;
+        },
+        transition: {
+          duration: 0
+        },
+        point: {
+          r: 0
+        },
+        onmouseover: () => this.stop(),
+        onmouseout: () => this.start()
+      };
+      this.chartConfigs[collector] = config;
+    });
   }
 
   setRefreshRate (val) {

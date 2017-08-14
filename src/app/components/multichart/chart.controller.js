@@ -30,12 +30,13 @@ import services from 'shared/services/services.module.js';
 import filters from 'shared/filters/filters.module.js';
 
 class MultiChartController {
-  constructor (multichartService, $scope, $interval, dateFilter, DATE_FORMAT) {
+  constructor (multichartService, $scope, $interval, dateFilter, DATE_FORMAT, $translate) {
     this.svc = multichartService;
     this.scope = $scope;
     this.interval = $interval;
     this.dateFilter = dateFilter;
     this.dateFormat = DATE_FORMAT;
+    this.translate = $translate;
     this.chart = $scope.$parent.chart;
 
     this.initializeChartData();
@@ -81,6 +82,9 @@ class MultiChartController {
   }
 
   trimData () {
+    if (!angular.isDefined(this.chartData)) {
+      return;
+    }
     let now = Date.now();
     let oldestLimit = now - parseInt(this.scope.dataAgeLimit);
 
@@ -100,40 +104,45 @@ class MultiChartController {
   }
 
   initializeChartData () {
-    let self = this;
-    this.chartConfig = {
-      chartId: 'chart-' + this.chart,
-      axis: {
-        x: {
-          label: 'timestamp',
-          type: 'timeseries',
-          localtime: false,
-          tick: {
-            format: timestamp => this.dateFilter(timestamp, this.dateFormat.time.medium),
-            count: 5
+    this.translate([
+      'multicharts.chart.X_AXIS_LABEL',
+      'multicharts.chart.X_AXIS_DATA_TYPE'
+    ]).then(translations => {
+      let self = this;
+      this.chartConfig = {
+        chartId: 'chart-' + this.chart,
+        axis: {
+          x: {
+            label: translations['multicharts.chart.X_AXIS_LABEL'],
+            type: 'timeseries',
+            localtime: false,
+            tick: {
+              format: timestamp => this.dateFilter(timestamp, this.dateFormat.time.medium),
+              count: 5
+            }
+          },
+          y: {
+            tick: {
+              format: d => d
+            }
+          },
+          y2: {
+            get show () {
+              return self.svc.countServicesForChart(self.chart) > 1;
+            }
           }
         },
-        y: {
-          tick: {
-            format: d => d
-          }
-        },
-        y2: {
-          get show () {
-            return self.svc.countServicesForChart(self.chart) > 1;
+        tooltip: {
+          format: {
+            title: x => x,
+            value: y => y
           }
         }
-      },
-      tooltip: {
-        format: {
-          title: x => 'Time: ' + x,
-          value: y => y
-        }
-      }
-    };
-    this.chartData = {
-      xData: ['timestamp']
-    };
+      };
+      this.chartData = {
+        xData: [translations['multicharts.chart.X_AXIS_DATA_TYPE']]
+      };
+    });
   }
 
   removeChart () {
@@ -159,6 +168,7 @@ class MultiChartController {
   }
 
   isValid (chartName) {
+    // TODO: this needs to accept letters outside of the English alphabet
     return chartName.search(/^[\w-]+$/) > -1;
   }
 }

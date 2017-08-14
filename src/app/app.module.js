@@ -27,6 +27,7 @@
 
 import 'angular-patternfly';
 import '@uirouter/angularjs';
+import angularTranslate from 'angular-translate';
 import 'oclazyload';
 import 'bootstrap';
 import 'bootstrap-switch';
@@ -51,6 +52,7 @@ export const appModule = angular
   .module('appModule', [
     'ui.router',
     'ui.bootstrap',
+    angularTranslate,
     configModule,
     authModule,
     // non-core modules
@@ -64,6 +66,23 @@ export const appModule = angular
   .config($httpProvider => {
     'ngInject';
     $httpProvider.interceptors.push(authInterceptorFactory);
+  })
+  .config($translateProvider => {
+    'ngInject';
+    $translateProvider
+      .useSanitizeValueStrategy('escapeParameters')
+      .registerAvailableLanguageKeys(['en'], {
+        'en_*': 'en'
+      })
+      .fallbackLanguage('en')
+      .determinePreferredLanguage();
+
+    let req = require.context('./', true, /\.locale\.yaml/);
+    req.keys().map(key => {
+      let lang = /([a-z]+)\.locale\.yaml/.exec(key)[1];
+      let translations = req(key);
+      $translateProvider.translations(lang, translations);
+    });
   });
 
 authModBootstrap(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule.name])));

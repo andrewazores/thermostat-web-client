@@ -1,0 +1,5 @@
+jvmMemory:
+  REFRESH_RATE_LABEL: Refresh Rate
+  METASPACE: Metaspace
+  COLLECTOR: '{{name}} ({{collector}})'
+  SPACE: Space {{index}}

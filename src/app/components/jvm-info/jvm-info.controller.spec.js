@@ -29,7 +29,7 @@ describe('JvmInfoController', () => {
 
   beforeEach(angular.mock.module('jvmInfo.controller'));
 
-  let scope, state, jvmInfoService, killVmService, ctrl, infoPromise, killPromise;
+  let scope, state, jvmInfoService, killVmService, ctrl, infoPromise, killPromise, translate;
   beforeEach(inject($controller => {
     'ngInject';
 
@@ -55,13 +55,18 @@ describe('JvmInfoController', () => {
       killVm: sinon.stub().returns(killPromise)
     };
 
+    translate = sinon.stub().returns({
+      then: sinon.stub().yields()
+    });
+
     ctrl = $controller('JvmInfoController', {
       $scope: scope,
       $state: state,
       systemId: 'bar-systemId',
       jvmId: 'foo-jvmId',
       jvmInfoService: jvmInfoService,
-      killVmService: killVmService
+      killVmService: killVmService,
+      $translate: translate
     });
   }));
 

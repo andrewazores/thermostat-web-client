@@ -30,7 +30,7 @@ describe('JvmGcController', () => {
   beforeEach(angular.mock.module('app.filters'));
   beforeEach(angular.mock.module('jvmGc.controller'));
 
-  let scope, interval, dateFilterStub, dateFormatSpy, svc, promise, ctrl;
+  let scope, interval, dateFilterStub, dateFormatSpy, svc, promise, ctrl, translate;
   beforeEach(inject(($controller) => {
     'ngInject';
 
@@ -56,13 +56,22 @@ describe('JvmGcController', () => {
       getJvmGcData: sinon.stub().returns(promise)
     };
 
+    translate = sinon.stub().returns({
+      then: sinon.stub().yields({
+        'jvmGc.chart.UNITS': 'microseconds',
+        'jvmGc.chart.X_AXIS_LABEL': 'timestamp',
+        'jvmGc.chart.Y_AXIS_LABEL': 'elapsed'
+      })
+    });
+
     ctrl = $controller('JvmGcController', {
       jvmId: 'foo-jvmId',
       $scope: scope,
       $interval: interval,
       dateFilter: dateFilterStub,
       DATE_FORMAT: dateFormatSpy,
-      jvmGcService: svc
+      jvmGcService: svc,
+      $translate: translate
     });
   }));
 
@@ -216,8 +225,8 @@ describe('JvmGcController', () => {
       fmt.should.have.ownProperty('value');
       fmt.value.should.be.a.Function();
 
-      fmt.title(100).should.equal('Time: 100');
-      fmt.value(100).should.equal('100 microseconds');
+      fmt.title(100).should.equal(100);
+      fmt.value(200).should.equal(200);
     });
 
     it('should stop on mouseover', () => {

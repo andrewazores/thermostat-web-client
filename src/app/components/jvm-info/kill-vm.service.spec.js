@@ -71,9 +71,8 @@ describe('KillVmService', () => {
 
   describe('CommandChannel delegation', () => {
     it('should delegate', () => {
-      svc.killVm('foo', 'bar', 'baz');
-      commandChannel.sendMessage.should.be.calledWith(sinon.match(svc.getPath('foo', 'bar', 'baz')),
-        'com.redhat.thermostat.killvm.agent.internal.KillVmReceiver');
+      svc.killVm('foo', 'bar', 'baz', 9999);
+      commandChannel.sendMessage.should.be.calledWith(sinon.match(svc.getPath('foo', 'bar', 'baz')), sinon.match({ 'vm-pid': 9999 }));
       scope.$apply();
     });
 

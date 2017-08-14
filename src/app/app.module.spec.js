@@ -31,7 +31,7 @@ describe('AppModule', () => {
 
   beforeEach(angular.mock.module('appModule'));
 
-  let state, rootScope;
+  let state;
   beforeEach(angular.mock.module($provide => {
     'ngInject';
 
@@ -44,15 +44,7 @@ describe('AppModule', () => {
       params: {}
     };
 
-    rootScope = {
-      $on: sinon.spy(),
-      $apply: sinon.spy(),
-      $new: sinon.stub().returns({}),
-      $watch: sinon.spy()
-    };
-
     $provide.value('$state', state);
-    $provide.value('$rootScope', rootScope);
   }));
 
   // this is actually provided by the auth.module pseudo-module - see auth.module.spec.js

@@ -31,13 +31,15 @@ import service from './system-info.service.js';
 
 class SystemMemoryController {
   constructor (systemInfoService, $scope, $interval, pfUtils,
-    dateFilter, DATE_FORMAT) {
+    dateFilter, DATE_FORMAT, $q, $translate) {
     'ngInject';
     this.svc = systemInfoService;
     this.scope = $scope;
     this.interval = $interval;
     this.dateFilter = dateFilter;
     this.dateFormat = DATE_FORMAT;
+    this.q = $q;
+    this.translate = $translate;
 
     this.scope.refreshRate = '1000';
     this.scope.dataAgeLimit = '30000';
@@ -65,61 +67,79 @@ class SystemMemoryController {
   }
 
   setupLineChart (pfUtils) {
-    this.lineConfig = {
-      chartId: 'systemMemoryLineChart',
-      color: {
-        pattern: [
-          pfUtils.colorPalette.red,    // total memory
-          pfUtils.colorPalette.blue,   // free memory
-          pfUtils.colorPalette.orange, // used memory
-          pfUtils.colorPalette.gold,   // total swap
-          pfUtils.colorPalette.purple, // free swap
-          pfUtils.colorPalette.green   // buffers
-        ]
-      },
-      grid: { y: {show: true} },
-      point: { r: 2 },
-      legend : { 'show': true },
-      tooltip: {
-        format: {
-          value: memoryValue => { return memoryValue + ' MiB'; }
-        }
-      },
-      transition: { duration: 50 },
-      axis: {
-        x: {
-          type: 'timeseries',
-          label: {
-            text: 'Time',
-            position: 'outer-center'
-          },
-          tick : {
-            format: timestamp => this.dateFilter(timestamp, this.dateFormat.time.medium),
-            count: 5,
-            fit: false
+    this.translate([
+      'systemInfo.systemMemory.X_AXIS_LABEL',
+      'systemInfo.systemMemory.Y_AXIS_LABEL'
+    ]).then(translations => {
+      this.lineConfig = {
+        chartId: 'systemMemoryLineChart',
+        color: {
+          pattern: [
+            pfUtils.colorPalette.red,    // total memory
+            pfUtils.colorPalette.blue,   // free memory
+            pfUtils.colorPalette.orange, // used memory
+            pfUtils.colorPalette.gold,   // total swap
+            pfUtils.colorPalette.purple, // free swap
+            pfUtils.colorPalette.green   // buffers
+          ]
+        },
+        grid: { y: {show: true} },
+        point: { r: 2 },
+        legend : { 'show': true },
+        tooltip: {
+          format: {
+            // TODO: this should be localized too, but c3 doesn't allow for the tooltip
+            // formatter to be a promise, only a function, and angular-translate only
+            // returns promises
+            value: memoryValue => { return memoryValue + ' MiB'; }
           }
         },
-        y: {
-          min: 0,
-          padding: 0,
-          tick: 10,
-          label: {
-            text: 'Size (MiB)',
-            position: 'outer-middle'
+        transition: { duration: 50 },
+        axis: {
+          x: {
+            type: 'timeseries',
+            label: {
+              text: translations['systemInfo.systemMemory.X_AXIS_LABEL'],
+              position: 'outer-center'
+            },
+            tick : {
+              format: timestamp => this.dateFilter(timestamp, this.dateFormat.time.medium),
+              count: 5,
+              fit: false
+            }
+          },
+          y: {
+            min: 0,
+            padding: 0,
+            tick: 10,
+            label: {
+              text: translations['systemInfo.systemMemory.Y_AXIS_LABEL'],
+              position: 'outer-middle'
+            }
           }
         }
-      }
-    };
+      };
+    });
 
-    this.lineData = {
-      xData: ['timestamp'],
-      yData0: ['Total Memory'],
-      yData1: ['Free Memory'],
-      yData2: ['Used Memory'],
-      yData3: ['Total Swap'],
-      yData4: ['Free Swap'],
-      yData5: ['Buffers']
-    };
+    this.translate([
+      'systemInfo.systemMemory.xAxisTypes.TIMESTAMP',
+      'systemInfo.systemMemory.xAxisTypes.TOTAL',
+      'systemInfo.systemMemory.xAxisTypes.FREE',
+      'systemInfo.systemMemory.xAxisTypes.USED',
+      'systemInfo.systemMemory.xAxisTypes.SWAP_TOTAL',
+      'systemInfo.systemMemory.xAxisTypes.SWAP_FREE',
+      'systemInfo.systemMemory.xAxisTypes.BUFFERS'
+    ]).then(translations => {
+      this.lineData = {
+        xData: [translations['systemInfo.systemMemory.xAxisTypes.TIMESTAMP']],
+        yData0: [translations['systemInfo.systemMemory.xAxisTypes.TOTAL']],
+        yData1: [translations['systemInfo.systemMemory.xAxisTypes.FREE']],
+        yData2: [translations['systemInfo.systemMemory.xAxisTypes.USED']],
+        yData3: [translations['systemInfo.systemMemory.xAxisTypes.SWAP_TOTAL']],
+        yData4: [translations['systemInfo.systemMemory.xAxisTypes.SWAP_FREE']],
+        yData5: [translations['systemInfo.systemMemory.xAxisTypes.BUFFERS']]
+      };
+    });
   }
 
   processData (resp) {

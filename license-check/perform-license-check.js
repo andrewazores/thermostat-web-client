@@ -38,6 +38,7 @@ if (!licenseData.success) {
   exitWithErrorMessage(licenseData.error);
 }
 
+// Check specific files only.
 ['integration-test/integration-test.config.js', 'integration-test/test-env.js'].forEach((filePath) => {
   let fileCheckResult = licenseChecker.checkFileForLicense(filePath, licenseData);
   if (!fileCheckResult.success) {
@@ -45,6 +46,15 @@ if (!licenseData.success) {
   }
 });
 
+// Check specific directories that we do not want to recurse to any children on.
+['./'].forEach((folderPath) => {
+  let checkResult = licenseChecker.walkDirectoryAndCheckLicenses(folderPath, licenseData, '*.js');
+  if (!checkResult.success) {
+    exitWithErrorMessage(checkResult.error);
+  }
+});
+
+// Check all files in these folders and recursively walk all children.
 ['license-check/', 'src/app/'].forEach((folderPath) => {
   let checkResult = licenseChecker.walkDirectoryAndCheckLicenses(folderPath, licenseData);
   if (!checkResult.success) {

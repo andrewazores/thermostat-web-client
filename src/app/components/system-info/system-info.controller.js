@@ -29,14 +29,14 @@ import filters from 'shared/filters/filters.module.js';
 import service from './system-info.service.js';
 
 class SystemInfoController {
-  constructor (systemId, systemInfoService, $interval, $scope) {
+  constructor (systemId, systemInfoService, $interval, $scope, $translate) {
     'ngInject';
     this.systemId = systemId;
     this.showErr = false;
 
     $scope.systemId = systemId;
-    $scope.errTitle = 'Unable to retrieve data.';
-    $scope.errMessage = 'Error while retrieving system information.';
+    $translate('systemInfo.ERR_TITLE').then(s => $scope.errTitle = s);
+    $translate('systemInfo.ERR_MESSAGE').then(s => $scope.errMessage = s);
 
     systemInfoService.getSystemInfo(systemId).then(
       resp => {

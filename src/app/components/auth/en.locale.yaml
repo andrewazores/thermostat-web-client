@@ -1,0 +1,7 @@
+auth:
+  USERNAME: Username
+  PASSWORD: Password
+  REMEMBER_USERNAME_LABEL: <input type="checkbox" tabindex="3"/> Remember username
+  LOGIN_BUTTON_LABEL: Log In
+  WELCOME_TEXT: Welcome to Thermostat | JVM Instrumentation Tool
+  FORGOT_CREDENTIALS: Forgot <a href="" tabindex="5">username</a> or <a href="" tabindex="6">password</a>?

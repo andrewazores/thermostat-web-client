@@ -1,18 +1,18 @@
 <div class="container-fluid container-cards-pf">
   <ol class="breadcrumb" style="margin-bottom: 0px;">
     <li><a ui-sref="landing">Thermostat</a></li>
-    <li><a ui-serf="multichart">Multichart</a></li>
+    <li><a ui-serf="multichart" translate>multicharts.BREADCRUMB</a></li>
   </ol>
 
-  <dismissible-error-message ng-show="ctrl.showErr" err-title="'Invalid chart name.'"
-                                                    err-message="'Chart names may contain alphanumeric characters, underscores, and hyphens.'"/>
+  <customizable-error-message ng-show="ctrl.showErr" dismissible="true" err-title="errTitle"
+                                                    err-message="errMessage"/>
 
   <div class="row">
     <div class="col-xs-12 col-md-4">
       <form name="newChartForm" class="input-group" ng-submit="ctrl.createChart(newChartName)">
-        <span class="input-group-addon">Name</span>
-        <input type="text" class="form-control" placeholder="Enter new chart name" ng-model="newChartName"/>
-        <input type="submit" value="Create Chart"/>
+        <span class="input-group-addon" translate>multicharts.form.NAME</span>
+        <input type="text" class="form-control" translate-attr="{ placeholder: 'multicharts.form.PLACEHOLDER' }" ng-model="newChartName"/>
+        <input type="submit" translate-attr="{ value: 'multicharts.form.SUBMIT_LABEL' }"/>
       </form>
     </div>
   </div>
@@ -31,7 +31,7 @@
 
               <!-- Metric Controls: Refresh Rate -->
               <div class="col-xs-12 col-md-3">
-                <label for="refreshCombo" class="label label-info">Refresh Rate</label>
+                <label for="refreshCombo" class="label label-info" translate>multicharts.chart.REFRESH_RATE_LABEL</label>
                 <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
                   <option value="-1">Disabled</option>
                   <option value="1000">1 Second</option>
@@ -47,7 +47,7 @@
 
               <!-- Metric Controls: Max Data Age -->
               <div class="col-xs-12 col-md-3">
-                <label for="dataAgeCombo" class="label label-info">Max Data Age</label>
+                <label for="dataAgeCombo" class="label label-info" translate>multicharts.chart.MAX_DATA_AGE_LABEL</label>
                 <select name="dataAgeCombo" class="combobox form-control" ng-model="dataAgeLimit">
                   <option value="10000">10 Seconds</option>
                   <option value="30000">30 Seconds</option>
@@ -67,20 +67,20 @@
                 <ul class="dropdown-menu" aria-labelledby="{{chart}}-kebab">
                   <li>
                     <form name="renameForm" class="input-group" ng-submit="chartCtrl.rename(chartRename)">
-                      <input type="text" class="form-control" placeholder="Enter new chart name" ng-model="chartRename"/>
-                      <input type="submit" value="Rename chart"/>
+                      <input type="text" class="form-control" translate-attr="{ placeholder: 'multicharts.chart.rename.PLACEHOLDER' }" ng-model="chartRename"/>
+                      <input type="submit" translate-attr="{ value: 'multicharts.chart.rename.SUBMIT_LABEL' }"/>
                     </form>
                   </li>
                   <li role="separator" class="divider"></li>
                   <li>
-                    <a ng-click="chartCtrl.removeChart(chart)">Delete</a>
+                    <a ng-click="chartCtrl.removeChart(chart)" translate>multicharts.chart.DELETE_LABEL</a>
                   </li>
                 </ul>
               </div>
 
             </div>
 
-            <div class="card-pf-body">
+            <div class="card-pf-body" ng-if="chartCtrl.chartConfig">
               <div pf-line-chart id="chart-{{chart}}" config="chartCtrl.chartConfig"
                                                       chart-data="chartCtrl.chartData"
                                                       show-x-axis="true"
