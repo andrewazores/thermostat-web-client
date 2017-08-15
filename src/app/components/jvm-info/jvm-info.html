@@ -48,7 +48,7 @@
                     <td translate>jvmInfo.table.START_TIME</td>
                     <td>{{ctrl.jvmInfo.startTime | date:"medium"}}</td>
                   </tr>
-                  <tr ng-show="ctrl.jvmInfo.isAlive">
+                  <tr ng-show="!ctrl.jvmInfo.isAlive">
                     <td translate>jvmInfo.table.STOP_TIME</td>
                     <td>{{ctrl.jvmInfo.stopTime | date:"medium"}}</td>
                   </tr>
