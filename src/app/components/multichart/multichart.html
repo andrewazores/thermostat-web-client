@@ -33,15 +33,15 @@
               <div class="col-xs-12 col-md-3">
                 <label for="refreshCombo" class="label label-info" translate>multicharts.chart.REFRESH_RATE_LABEL</label>
                 <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
-                  <option value="-1">Disabled</option>
-                  <option value="1000">1 Second</option>
-                  <option value="2000" selected>2 Seconds (Default)</option>
-                  <option value="5000">5 Seconds</option>
-                  <option value="10000">10 Seconds</option>
-                  <option value="30000">30 Seconds</option>
-                  <option value="60000">1 Minute</option>
-                  <option value="300000">5 Minutes</option>
-                  <option value="600000">10 Minutes</option>
+                  <option value="-1" translate>multicharts.refresh.DISABLED</option>
+                  <option value="1000" translate="multicharts.refresh.SECONDS" translate-values="{ SECONDS: 1 }" translate-interpolation="messageformat"></option>
+                  <option value="2000" selected translate="multicharts.refresh.SECONDS" translate-values="{ SECONDS: 2, DEFAULT: true }" translate-interpolation="messageformat"></option>
+                  <option value="5000" translate="multicharts.refresh.SECONDS" translate-values="{ SECONDS: 5 }" translate-interpolation="messageformat"></option>
+                  <option value="10000" translate="multicharts.refresh.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+                  <option value="30000" translate="multicharts.refresh.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
+                  <option value="60000" translate="multicharts.refresh.MINUTES" translate-values="{ MINUTES: 1 }" translate-interpolation="messageformat"></option>
+                  <option value="300000" translate="multicharts.refresh.MINUTES" translate-values="{ MINUTES: 5 }" translate-interpolation="messageformat"></option>
+                  <option value="600000" translate="multicharts.refresh.MINUTES" translate-values="{ MINUTES: 10 }" translate-interpolation="messageformat"></option>
                 </select>
               </div>
 
@@ -49,14 +49,14 @@
               <div class="col-xs-12 col-md-3">
                 <label for="dataAgeCombo" class="label label-info" translate>multicharts.chart.MAX_DATA_AGE_LABEL</label>
                 <select name="dataAgeCombo" class="combobox form-control" ng-model="dataAgeLimit">
-                  <option value="10000">10 Seconds</option>
-                  <option value="30000">30 Seconds</option>
-                  <option value="60000" selected>1 Minute (Default)</option>
-                  <option value="300000">5 Minutes</option>
-                  <option value="600000">10 Minutes</option>
-                  <option value="900000">15 Minutes</option>
-                  <option value="1800000">30 Minutes</option>
-                  <option value="3600000">1 Hour</option>
+                  <option value="10000" translate="multicharts.dataAge.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+                  <option value="30000" translate="multicharts.dataAge.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
+                  <option value="60000" selected translate="multicharts.dataAge.MINUTES" translate-values="{ MINUTES: 1, DEFAULT: true}" translate-interpolation="messageformat"></option>
+                  <option value="300000" translate="multicharts.dataAge.MINUTES" translate-values="{ MINUTES: 5 }" translate-interpolation="messageformat"></option>
+                  <option value="600000" translate="multicharts.dataAge.MINUTES" translate-values="{ MINUTES: 10 }" translate-interpolation="messageformat"></option>
+                  <option value="900000" translate="multicharts.dataAge.MINUTES" translate-values="{ MINUTES: 15 }" translate-interpolation="messageformat"></option>
+                  <option value="1800000" translate="multicharts.dataAge.MINUTES" translate-values="{ MINUTES: 30 }" translate-interpolation="messageformat"></option>
+                  <option value="3600000" translate="multicharts.dataAge.HOURS" translate-values="{ HOURS: 1 }" translate-interpolation="messageformat"></option>
                 </select>
               </div>
 

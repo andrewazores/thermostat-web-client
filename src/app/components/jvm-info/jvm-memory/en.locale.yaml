@@ -3,3 +3,7 @@ jvmMemory:
   METASPACE: Metaspace
   COLLECTOR: '{{name}} ({{collector}})'
   SPACE: Space {{index}}
+
+  refresh:
+    DISABLED: Disabled
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'

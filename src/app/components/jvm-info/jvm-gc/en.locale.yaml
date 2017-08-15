@@ -2,7 +2,16 @@ jvmGc:
   REFRESH_RATE_LABEL: Refresh Rate
   MAX_DATA_AGE_LABEL: Max Data Age
   CARD_TITLE: Garbage Collection Timeseries
+
   chart:
     UNITS: microseconds
     X_AXIS_LABEL: timestamp
     Y_AXIS_LABEL: elapsed
+
+  refresh:
+    DISABLED: Disabled
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+
+  dataAge:
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+    MINUTES: '{MINUTES, plural, =0{0 Minutes} one{1 Minute} other{# Minutes}}{DEFAULT, select, true{ (Default)} other{}}'

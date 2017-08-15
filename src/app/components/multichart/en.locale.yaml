@@ -9,6 +9,16 @@ multicharts:
     PLACEHOLDER: Enter new chart name
     SUBMIT_LABEL: Create Chart
 
+  refresh:
+    DISABLED: Disabled
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+    MINUTES: '{MINUTES, plural, =0{0 Minutes} one{1 Minute} other{# Minutes}}{DEFAULT, select, true{ (Default)} other{}}'
+
+  dataAge:
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+    MINUTES: '{MINUTES, plural, =0{0 Minutes} one{1 Minute} other{# Minutes}}{DEFAULT, select, true{ (Default)} other{}}'
+    HOURS: '{HOURS, plural, =0{0 Hours} one{1 Hour} other{# Hours}}{DEFAULT, select, true{ (Default)} other{}}'
+
   chart:
     X_AXIS_LABEL: timestamp
     X_AXIS_DATA_TYPE: timestamp

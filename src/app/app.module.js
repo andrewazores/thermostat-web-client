@@ -28,6 +28,7 @@
 import 'angular-patternfly';
 import '@uirouter/angularjs';
 import angularTranslate from 'angular-translate';
+import 'angular-translate-interpolation-messageformat';
 import 'oclazyload';
 import 'bootstrap';
 import 'bootstrap-switch';
@@ -71,6 +72,7 @@ export const appModule = angular
     'ngInject';
     $translateProvider
       .useSanitizeValueStrategy('escapeParameters')
+      .addInterpolation('$translateMessageFormatInterpolation')
       .registerAvailableLanguageKeys(['en'], {
         'en_*': 'en'
       })

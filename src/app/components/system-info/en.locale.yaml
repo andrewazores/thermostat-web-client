@@ -16,6 +16,14 @@ systemInfo:
     CPU_MODEL_FMT: '{{model}} ({{coreCount}} cores)'
     MEMORY: Memory
 
+  refresh:
+    DISABLED: Disabled
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+
+  dataAge:
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+    MINUTES: '{MINUTES, plural, =0{0 Minutes} one{1 Minute} other{# Minutes}}{DEFAULT, select, true{ (Default)} other{}}'
+
   systemCpu:
     CHART_LABEL: CPU Usage
 

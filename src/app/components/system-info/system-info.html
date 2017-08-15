@@ -94,23 +94,23 @@
                 <div class="col-xs-12 col-md-3">
                   <label for="refreshCombo" class="label label-info" translate>systemInfo.systemMemory.REFRESH_RATE_LABEL</label>
                   <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
-                    <option value="-1">Disabled</option>
-                    <option value="1000">1 Second (Default)</option>
-                    <option value="2000">2 Seconds</option>
-                    <option value="5000">5 Seconds</option>
-                    <option value="10000">10 Seconds</option>
-                    <option value="30000">30 Seconds</option>
+                    <option value="-1" translate>systemInfo.refresh.DISABLED</option>
+                    <option value="1000" selected translate="systemInfo.refresh.SECONDS" translate-values="{ SECONDS: 1, DEFAULT: true }" translate-interpolation="messageformat"></option>
+                    <option value="2000" translate="systemInfo.refresh.SECONDS" translate-values="{ SECONDS: 2 }" translate-interpolation="messageformat"></option>
+                    <option value="5000" translate="systemInfo.refresh.SECONDS" translate-values="{ SECONDS: 5 }" translate-interpolation="messageformat"></option>
+                    <option value="10000" translate="systemInfo.refresh.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+                    <option value="30000" translate="systemInfo.refresh.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
                   </select>
                 </div>
                 <!-- Metric Controls: Max Data Age -->
                 <div class="col-xs-12 col-md-3">
                   <label for="dataAgeCombo" class="label label-info" translate>systemInfo.systemMemory.MAX_DATA_AGE_LABEL</label>
                   <select name="dataAgeCombo" class="combobox form-control" ng-model="dataAgeLimit">
-                    <option value="10000">10 Seconds</option>
-                    <option value="30000">30 Seconds (Default)</option>
-                    <option value="60000">1 Minute</option>
-                    <option value="300000">5 Minutes</option>
-                    <option value="600000">10 Minutes</option>
+                    <option value="10000" translate="systemInfo.dataAge.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+                    <option value="30000" selected translate="systemInfo.dataAge.SECONDS" translate-values="{ SECONDS: 30, DEFAULT: true }" translate-interpolation="messageformat"></option>
+                    <option value="60000" translate="systemInfo.dataAge.MINUTES" translate-values="{ MINUTES: 1 }" translate-interpolation="messageformat"></option>
+                    <option value="300000" translate="systemInfo.dataAge.MINUTES" translate-values="{ MINUTES: 5 }" translate-interpolation="messageformat"></option>
+                    <option value="900000" translate="systemInfo.dataAge.MINUTES" translate-values="{ MINUTES: 15 }" translate-interpolation="messageformat"></option>
                   </select>
                 </div>
               </div>
