@@ -5,6 +5,7 @@ systemInfo:
   ERR_MESSAGE: Error while retrieving system information.
 
   table:
+    HEADER: System Information
     KEY_COLUMN_LABEL: Key
     VALUE_COLUMN_LABEL: Value
 

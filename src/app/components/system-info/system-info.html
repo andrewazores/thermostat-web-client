@@ -9,38 +9,50 @@
 
   <div ng-show="!ctrl.showErr">
     <div class="row">
-      <div class="col-xs-12 col-lg-8">
-        <table class="table table-striped table-bordered">
-          <thead>
-            <tr>
-              <th translate>systemInfo.table.KEY_COLUMN_LABEL</th>
-              <th translate>systemInfo.table.VALUE_COLUMN_LABEL</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td translate>systemInfo.table.HOSTNAME</td>
-              <td>{{ctrl.systemInfo.hostname}}</td>
-            </tr>
-            <tr>
-              <td translate>systemInfo.table.OS</td>
-              <td>{{ctrl.systemInfo.osName}}</td>
-            </tr>
-            <tr>
-              <td translate>systemInfo.table.KERNEL</td>
-              <td>{{ctrl.systemInfo.osKernel}}</td>
-            </tr>
-            <tr>
-              <td translate>systemInfo.table.CPU</td>
-              <td translate="systemInfo.table.CPU_MODEL_FMT"
-                  translate-values="{ model: ctrl.systemInfo.cpuModel, coreCount: ctrl.systemInfo.cpuCount }"></td>
-            </tr>
-            <tr>
-              <td translate>systemInfo.table.MEMORY</td>
-              <td>{{ctrl.systemInfo.totalMemory | formatBytes}}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="col-xs-12 col-lg-12">
+        <div class="panel-group" id="accordion-markup">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" translate>systemInfo.table.HEADER</a>
+              </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+              <ul class="list-group">
+                <table class="table table-fixed table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th translate>systemInfo.table.KEY_COLUMN_LABEL</th>
+                      <th translate>systemInfo.table.VALUE_COLUMN_LABEL</th>
+                    </tr>
+                  </thead>
+                  <tbody class="break-word-wrap">
+                    <tr>
+                      <td translate>systemInfo.table.HOSTNAME</td>
+                      <td>{{ctrl.systemInfo.hostname}}</td>
+                    </tr>
+                    <tr>
+                      <td translate>systemInfo.table.OS</td>
+                      <td>{{ctrl.systemInfo.osName}}</td>
+                    </tr>
+                    <tr>
+                      <td translate>systemInfo.table.KERNEL</td>
+                      <td>{{ctrl.systemInfo.osKernel}}</td>
+                    </tr>
+                    <tr>
+                      <td translate>systemInfo.table.CPU</td>
+                      <td translate="systemInfo.table.CPU_MODEL_FMT" translate-values="{ model: ctrl.systemInfo.cpuModel, coreCount: ctrl.systemInfo.cpuCount }"></td>
+                    </tr>
+                    <tr>
+                      <td translate>systemInfo.table.MEMORY</td>
+                      <td>{{ctrl.systemInfo.totalMemory | formatBytes}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
