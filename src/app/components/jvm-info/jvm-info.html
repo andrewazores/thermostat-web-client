@@ -19,82 +19,80 @@
             </h4>
           </div>
           <div id="collapseOne" class="panel-collapse collapse in">
-            <ul class="list-group">
-              <table class="table table-fixed table-striped table-bordered">
-                <thead>
-                  <tr>
-                    <th translate>jvmInfo.table.KEY_COLUMN_LABEL</th>
-                    <th translate>jvmInfo.table.VALUE_COLUMN_LABEL</th>
-                  </tr>
-                </thead>
-                <tbody class="break-word-wrap">
-                  <tr>
-                    <td translate>jvmInfo.table.USERNAME</td>
-                    <td>{{ctrl.jvmInfo.username}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.UID</td>
-                    <td>{{ctrl.jvmInfo.uid}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.JVM_ID</td>
-                    <td>{{ctrl.jvmInfo.jvmId}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.MAIN_CLASS</td>
-                    <td>{{ctrl.jvmInfo.mainClass}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.START_TIME</td>
-                    <td>{{ctrl.jvmInfo.startTime | date:"medium"}}</td>
-                  </tr>
-                  <tr ng-show="!ctrl.jvmInfo.isAlive">
-                    <td translate>jvmInfo.table.STOP_TIME</td>
-                    <td>{{ctrl.jvmInfo.stopTime | date:"medium"}}</td>
-                  </tr>
-                  <tr ng-show="ctrl.jvmInfo.isAlive">
-                    <td translate>jvmInfo.table.LAST_UPDATED</td>
-                    <td>{{ctrl.jvmInfo.lastUpdated | date:"medium"}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.JVM_PID</td>
-                    <td>{{ctrl.jvmInfo.jvmPid}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.JAVA_VERSION</td>
-                    <td>{{ctrl.jvmInfo.javaVersion}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.JAVA_HOME</td>
-                    <td>{{ctrl.jvmInfo.javaHome}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.COMMAND_LINE</td>
-                    <td>{{ctrl.jvmInfo.javaCommandLine}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.JVM_NAME</td>
-                    <td>{{ctrl.jvmInfo.jvmName}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.JVM_INFO</td>
-                    <td>{{ctrl.jvmInfo.jvmInfo}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.JVM_VERSION</td>
-                    <td>{{ctrl.jvmInfo.jvmVersion}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.JVM_ARGUMENTS</td>
-                    <td>{{ctrl.jvmInfo.jvmArguments}}</td>
-                  </tr>
-                  <tr>
-                    <td translate>jvmInfo.table.CLASSPATH</td>
-                    <td>{{ctrl.jvmInfo.classpath}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </ul>
+            <table class="table table-fixed table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th translate>jvmInfo.table.KEY_COLUMN_LABEL</th>
+                  <th translate>jvmInfo.table.VALUE_COLUMN_LABEL</th>
+                </tr>
+              </thead>
+              <tbody class="break-word-wrap">
+                <tr>
+                  <td translate>jvmInfo.table.USERNAME</td>
+                  <td>{{ctrl.jvmInfo.username}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.UID</td>
+                  <td>{{ctrl.jvmInfo.uid}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.JVM_ID</td>
+                  <td>{{ctrl.jvmInfo.jvmId}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.MAIN_CLASS</td>
+                  <td>{{ctrl.jvmInfo.mainClass}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.START_TIME</td>
+                  <td>{{ctrl.jvmInfo.startTime | date:"medium"}}</td>
+                </tr>
+                <tr ng-show="!ctrl.jvmInfo.isAlive">
+                  <td translate>jvmInfo.table.STOP_TIME</td>
+                  <td>{{ctrl.jvmInfo.stopTime | date:"medium"}}</td>
+                </tr>
+                <tr ng-show="ctrl.jvmInfo.isAlive">
+                  <td translate>jvmInfo.table.LAST_UPDATED</td>
+                  <td>{{ctrl.jvmInfo.lastUpdated | date:"medium"}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.JVM_PID</td>
+                  <td>{{ctrl.jvmInfo.jvmPid}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.JAVA_VERSION</td>
+                  <td>{{ctrl.jvmInfo.javaVersion}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.JAVA_HOME</td>
+                  <td>{{ctrl.jvmInfo.javaHome}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.COMMAND_LINE</td>
+                  <td>{{ctrl.jvmInfo.javaCommandLine}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.JVM_NAME</td>
+                  <td>{{ctrl.jvmInfo.jvmName}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.JVM_INFO</td>
+                  <td>{{ctrl.jvmInfo.jvmInfo}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.JVM_VERSION</td>
+                  <td>{{ctrl.jvmInfo.jvmVersion}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.JVM_ARGUMENTS</td>
+                  <td>{{ctrl.jvmInfo.jvmArguments}}</td>
+                </tr>
+                <tr>
+                  <td translate>jvmInfo.table.CLASSPATH</td>
+                  <td>{{ctrl.jvmInfo.classpath}}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
         <div class="panel panel-default">
@@ -144,4 +142,5 @@
     <ui-view></ui-view>
   </div>
 
-</div><!-- /container -->
+</div>
+<!-- /container -->
