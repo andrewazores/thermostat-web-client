@@ -47,6 +47,16 @@ class SystemInfoController {
         this.showErr = true;
       }
     );
+
+    systemInfoService.getNetworkInfo(systemId).then(
+      resp => {
+        this.networkInfo = resp.data.response[0];
+        this.showErr = false;
+      },
+      () => {
+        this.showErr = true;
+      }
+    );
   }
 }
 

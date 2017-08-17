@@ -29,18 +29,20 @@ describe('SystemInfoController', () => {
 
   beforeEach(angular.mock.module('systemInfo.controller'));
 
-  let ctrl, scope, interval, promise, translate;
+  let ctrl, scope, interval, infoPromise, networkPromise, translate;
   beforeEach(inject(($q, $rootScope, $controller) => {
     'ngInject';
     scope = $rootScope;
-    promise = $q.defer();
+    infoPromise = $q.defer();
+    networkPromise = $q.defer();
     interval = sinon.spy();
     translate = sinon.stub().returns({
       then: sinon.stub().yields()
     });
 
     let systemInfoService = {
-      getSystemInfo: () => promise.promise
+      getSystemInfo: () => infoPromise.promise,
+      getNetworkInfo: () => networkPromise.promise
     };
     ctrl = $controller('SystemInfoController', {
       systemId: 'foo-systemId',
@@ -55,29 +57,60 @@ describe('SystemInfoController', () => {
     should.exist(ctrl);
   });
 
-  it('should set systemInfo when service resolves', done => {
-    let response = {
-      osName: 'Linux',
-      osKernel: '4.10.11-200.fc25.x86_64'
-    };
-    promise.resolve({
-      data: {
-        response: [response]
-      }
+  describe('systemInfo', () => {
+    it('should set systemInfo when service resolves', done => {
+      let response = {
+        osName: 'Linux',
+        osKernel: '4.10.11-200.fc25.x86_64'
+      };
+      infoPromise.resolve({
+        data: {
+          response: [response]
+        }
+      });
+      scope.$apply();
+      ctrl.should.have.ownProperty('systemInfo');
+      ctrl.systemInfo.should.deepEqual(response);
+      ctrl.showErr.should.equal(false);
+      done();
     });
-    scope.$apply();
-    ctrl.should.have.ownProperty('systemInfo');
-    ctrl.systemInfo.should.deepEqual(response);
-    ctrl.showErr.should.equal(false);
-    done();
+
+    it('should set error flag when service rejects', done => {
+      infoPromise.reject();
+      scope.$apply();
+      ctrl.should.have.ownProperty('showErr');
+      ctrl.showErr.should.equal(true);
+      done();
+    });
   });
 
-  it('should set error flag when service rejects', done => {
-    promise.reject();
-    scope.$apply();
-    ctrl.should.have.ownProperty('showErr');
-    ctrl.showErr.should.equal(true);
-    done();
+  describe('networkInfo', () => {
+    it('should set networkInfo when service resolves', done => {
+      let response = {
+        interfaceName: 'lo',
+        displayName: 'lo',
+        ip4Addr: '192.168.1.2',
+        ip6Addr: '0:0:0:0:0:0:1%lo'
+      };
+      networkPromise.resolve({
+        data: {
+          response: [response]
+        }
+      });
+      scope.$apply();
+      ctrl.should.have.ownProperty('networkInfo');
+      ctrl.networkInfo.should.deepEqual(response);
+      ctrl.showErr.should.equal(false);
+      done();
+    });
+
+    it('should set error flag when service rejects', done => {
+      networkPromise.reject();
+      scope.$apply();
+      ctrl.should.have.ownProperty('showErr');
+      ctrl.showErr.should.equal(true);
+      done();
+    });
   });
 
 });

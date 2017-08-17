@@ -14,37 +14,64 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title">
-                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" translate>systemInfo.table.HEADER</a>
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" translate>systemInfo.infoTable.HEADER</a>
               </h4>
             </div>
             <div id="collapseOne" class="panel-collapse collapse in">
               <table class="table table-fixed table-striped table-bordered">
                 <thead>
                   <tr>
-                    <th translate>systemInfo.table.KEY_COLUMN_LABEL</th>
-                    <th translate>systemInfo.table.VALUE_COLUMN_LABEL</th>
+                    <th translate>systemInfo.infoTable.KEY_COLUMN_LABEL</th>
+                    <th translate>systemInfo.infoTable.VALUE_COLUMN_LABEL</th>
                   </tr>
                 </thead>
                 <tbody class="break-word-wrap">
                   <tr>
-                    <td translate>systemInfo.table.HOSTNAME</td>
+                    <td translate>systemInfo.infoTable.HOSTNAME</td>
                     <td>{{ctrl.systemInfo.hostname}}</td>
                   </tr>
                   <tr>
-                    <td translate>systemInfo.table.OS</td>
+                    <td translate>systemInfo.infoTable.OS</td>
                     <td>{{ctrl.systemInfo.osName}}</td>
                   </tr>
                   <tr>
-                    <td translate>systemInfo.table.KERNEL</td>
+                    <td translate>systemInfo.infoTable.KERNEL</td>
                     <td>{{ctrl.systemInfo.osKernel}}</td>
                   </tr>
                   <tr>
-                    <td translate>systemInfo.table.CPU</td>
-                    <td translate="systemInfo.table.CPU_MODEL_FMT" translate-values="{ model: ctrl.systemInfo.cpuModel, coreCount: ctrl.systemInfo.cpuCount }"></td>
+                    <td translate>systemInfo.infoTable.CPU</td>
+                    <td translate="systemInfo.infoTable.CPU_MODEL_FMT" translate-values="{ model: ctrl.systemInfo.cpuModel, coreCount: ctrl.systemInfo.cpuCount }"></td>
                   </tr>
                   <tr>
-                    <td translate>systemInfo.table.MEMORY</td>
+                    <td translate>systemInfo.infoTable.MEMORY</td>
                     <td>{{ctrl.systemInfo.totalMemory | formatBytes}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" translate>systemInfo.networkTable.HEADER</a>
+              </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+              <table class="table table-fixed table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th translate>systemInfo.networkTable.DISPLAY_NAME_COLUMN_LABEL</th>
+                    <th translate>systemInfo.networkTable.INTERFACE_NAME_COLUMN_LABEL</th>
+                    <th translate>systemInfo.networkTable.IPV4_COLUMN_LABEL</th>
+                    <th translate>systemInfo.networkTable.IPV6_COLUMN_LABEL</th>
+                  </tr>
+                </thead>
+                <tbody class="break-word-wrap">
+                  <tr ng-repeat="iface in ctrl.networkInfo.interfaces">
+                    <td>{{iface.displayName}}</td>
+                    <td>{{iface.interfaceName}}</td>
+                    <td>{{iface.ip4Addr}}</td>
+                    <td>{{iface.ip6Addr}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -121,7 +148,9 @@
           </div>
         </div>
       </div>
+
     </div>
+
   </div>
 </div>
 <!-- /container -->

@@ -4,7 +4,7 @@ systemInfo:
   ERR_TITLE: Unable to retrieve data.
   ERR_MESSAGE: Error while retrieving system information.
 
-  table:
+  infoTable:
     HEADER: System Information
     KEY_COLUMN_LABEL: Key
     VALUE_COLUMN_LABEL: Value
@@ -15,6 +15,13 @@ systemInfo:
     CPU: CPU
     CPU_MODEL_FMT: '{{model}} ({{coreCount}} cores)'
     MEMORY: Memory
+
+  networkTable:
+    HEADER: Network Interfaces
+    DISPLAY_NAME_COLUMN_LABEL: Display Name
+    INTERFACE_NAME_COLUMN_LABEL: Interface Name
+    IPV4_COLUMN_LABEL: IPv4 Address
+    IPV6_COLUMN_LABEL: IPv6 Address
 
   refresh:
     DISABLED: Disabled
