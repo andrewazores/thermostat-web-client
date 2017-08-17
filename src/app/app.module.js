@@ -79,9 +79,9 @@ export const appModule = angular
       .fallbackLanguage('en')
       .determinePreferredLanguage();
 
-    let req = require.context('./', true, /\.locale\.yaml/);
+    let req = require.context('./', true, /\/([a-z]{2})\.locale\.yaml$/);
     req.keys().map(key => {
-      let lang = /([a-z]+)\.locale\.yaml/.exec(key)[1];
+      let lang = /\/([a-z]{2})\.locale\.yaml$/.exec(key)[1];
       let translations = req(key);
       $translateProvider.translations(lang, translations);
     });
