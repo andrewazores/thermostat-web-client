@@ -35,6 +35,7 @@ var path = require('path');
 var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === 'test' || ENV === 'test-watch';
 var isProd = process.env.NODE_ENV === 'production';
+var isTesting = process.env.NODE_ENV === 'testing';
 
 module.exports = function () {
   var config = {};
@@ -68,7 +69,7 @@ module.exports = function () {
 
   if (isTest) {
     config.devtool = 'inline-source-map';
-  } else if (isProd) {
+  } else if (isProd || isTesting) {
     config.devtool = 'source-map';
   } else {
     config.devtool = 'eval-source-map';
@@ -123,7 +124,7 @@ module.exports = function () {
     })
   );
 
-  if (isProd) {
+  if ((isProd || isTesting) && !isTest) {
     config.plugins.push(
       new webpack.optimize.UglifyJsPlugin({
         sourceMap: true
