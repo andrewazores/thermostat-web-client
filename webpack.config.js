@@ -29,6 +29,7 @@
 
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CompressionPlugin = require('compression-webpack-plugin');
 var path = require('path');
 
 var ENV = process.env.npm_lifecycle_event;
@@ -139,6 +140,16 @@ module.exports = function () {
       })
     );
   }
+
+  config.plugins.push(
+    new CompressionPlugin({
+      asset: '[path].gz[query]',
+      algorithm: 'gzip',
+      test: /\.js$/,
+      threshold: 10240,
+      minRatio: 0.8
+    })
+  );
 
   config.devServer = {
     host: '0.0.0.0',
