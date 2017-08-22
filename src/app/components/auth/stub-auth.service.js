@@ -68,4 +68,8 @@ export default class StubAuthService {
     return 'stubAuthMockToken';
   }
 
+  get username () {
+    return 'test-user';
+  }
+
 }

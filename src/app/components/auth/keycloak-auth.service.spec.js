@@ -43,7 +43,10 @@ describe('KeycloakAuthService', () => {
       logout: logout,
       updateToken: refresh,
       authenticated: authenticated,
-      token: 'fakeToken'
+      token: 'fakeToken',
+      idTokenParsed: {
+        'preferred_username': 'fakeUsername'
+      }
     };
     keycloakAuthService = new KeycloakAuthService(mockCloak);
   });
@@ -89,6 +92,12 @@ describe('KeycloakAuthService', () => {
     it('should delegate to Keycloak object', () => {
       let res = keycloakAuthService.token;
       res.should.equal('fakeToken');
+    });
+  });
+
+  describe('#get username()', () => {
+    it('should delegate to Keycloak object', () => {
+      keycloakAuthService.username.should.equal('fakeUsername');
     });
   });
 });

@@ -43,6 +43,8 @@ class AppController {
       authService.logout();
     };
 
+    $scope.username = authService.username;
+
   }
 }
 

@@ -53,4 +53,8 @@ export default class KeycloakAuthService {
     return this.keycloak.token;
   }
 
+  get username () {
+    return this.keycloak.idTokenParsed.preferred_username;
+  }
+
 }

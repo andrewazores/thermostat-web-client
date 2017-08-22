@@ -106,4 +106,30 @@ describe('AppController', () => {
     });
   });
 
+  describe('$scope.username', () => {
+    let scope, authService;
+    beforeEach(inject(($controller, $rootScope) => {
+      'ngInject';
+
+      scope = $rootScope.$new();
+      authService = {
+        status: sinon.stub().returns(true),
+        login: sinon.spy(),
+        logout: sinon.spy(),
+        username: 'fake-username'
+      };
+
+      $controller('AppController', {
+        $scope: scope,
+        environment: 'testing',
+        authService: authService
+      });
+    }));
+
+    it('should be set according to authService username', () => {
+      scope.should.have.ownProperty('username');
+      scope.username.should.equal(authService.username);
+    });
+  });
+
 });

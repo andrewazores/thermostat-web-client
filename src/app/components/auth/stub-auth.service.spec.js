@@ -119,4 +119,10 @@ describe('StubAuthService', () => {
       stubAuthService.token.should.equal('stubAuthMockToken');
     });
   });
+
+  describe('#get username()', () => {
+    it('should return "test-user"', () => {
+      stubAuthService.username.should.equal('test-user');
+    });
+  });
 });
