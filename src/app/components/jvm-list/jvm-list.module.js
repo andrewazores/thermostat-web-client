@@ -26,11 +26,13 @@
  */
 
 import JvmListController from './jvm-list.controller.js';
-import service from './jvm-list.service.js';
+import jvmListService from './jvm-list.service.js';
+import systemInfoService from 'components/system-info/system-info.service.js';
 
 export default angular
   .module('jvmList', [
     JvmListController,
-    service
+    jvmListService,
+    systemInfoService,
   ])
   .name;

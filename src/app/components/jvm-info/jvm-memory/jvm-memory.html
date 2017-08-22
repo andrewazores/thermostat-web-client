@@ -24,7 +24,7 @@
           </div>
           <div class="card-pf-body">
             <mc-add class="pull-right" svc-name="{{ctrl.jvmId}}-metaspace" get-fn="ctrl.multichartMetaspace()"></mc-add>
-            <div pf-donut-pct-chart id="metaspaceChart" config="ctrl.metaspaceConfig" data="ctrl.metaspaceData"></div>
+            <pf-donut-pct-chart id="metaspaceChart" config="ctrl.metaspaceConfig" data="ctrl.metaspaceData"></pf-donut-pct-chart>
           </div>
         </div>
       </div>
@@ -46,8 +46,8 @@
                 <label translate="jvmMemory.SPACE" translate-values="{ index: space.index }"></label>
                 <mc-add class="pull-right" svc-name="{{ctrl.jvmId}}-{{sanitize(generation.name)}}-space{{space.index}}"
                                            get-fn="ctrl.multichartSpace(index, space.index)"></mc-add>
-                <div pf-donut-pct-chart id="gen-{{gen.index}}-space-{{space.index}}"
-                  config="ctrl.spaceConfigs['gen-' + generation.index + '-space-' + space.index]" data="space"></div>
+                <pf-donut-pct-chart id="gen-{{gen.index}}-space-{{space.index}}"
+                  config="ctrl.spaceConfigs['gen-' + generation.index + '-space-' + space.index]" data="space"></pf-donut-pct-chart>
               </div>
             </div>
           </div>

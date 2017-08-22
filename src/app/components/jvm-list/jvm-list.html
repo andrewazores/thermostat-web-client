@@ -3,63 +3,70 @@
     <li><a ui-sref="landing">Thermostat</a></li>
     <li><a ui-sref="jvmList" translate>jvmList.BREADCRUMB</a></li>
   </ol>
-
-  <customizable-error-message ng-show="ctrl.showErr" dismissible="true" err-message="errMessage" err-title="errTitle"></customizable-error-message>
-
-  <div ng-show="!ctrl.showErr" >
+  <div class="jvmList-container" ng-controller="JvmListController as controller">
     <div class="text-right">
       <label for="aliveOnlySwitch" class="label label-default" translate>jvmList.ALIVE_ONLY</label>
       <input class="bootstrap-switch pull-right" id="aliveOnlyState" name="aliveOnlySwitch" data-size="mini" type="checkbox" checked/>
-      <button type="button" class="btn btn-default" id="refreshButton" ng-click="ctrl.loadData()"><span class="fa fa-refresh"></span></button>
+      <button type="button" class="btn btn-default" id="refreshButton" ng-click="controller.loadData()"><span class="fa fa-refresh"></span></button>
     </div>
-
-    <uib-accordion close-others="true">
-
-      <uib-accordion-group class="cards-pf" ng-repeat="system in ctrl.systems" id="{{system.systemId}}" is-open="ctrl.systemsOpen[system.systemId]">
-
-        <uib-accordion-heading><a ui-sref="{'#': system.systemId}">{{system.systemId}}</a></uib-accordion-heading>
-        <div class="container-fluid container-cards-pf">
-          <div class="row row-cards-pf">
-
-            <div class="col-xs-12 col-md-4 col-lg-3">
-              <div ui-sref="systemInfo({ systemId: system.systemId })" class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+    <div class="pfToolbar col-md-12">
+      <pf-toolbar id="jvmListToolbar" config="toolbarConfig"></pf-toolbar>
+    </div>
+    <div class="pfListView col-md-12">
+      <pf-list-view config="listConfig"
+                    items="items"
+                    empty-state-config="emptyStateConfig">
+        <div class="list-view-pf-left">
+          <span class="pficon pficon-screen list-view-pf-icon-med"></span>
+        </div>
+        <div class="list-view-pf-description">
+          <div class="list-group-item-heading">
+            {{item.hostname}}
+          </div>
+          <div class="list-view-pf-additional-info">
+            <div class="list-view-pf-additional-info-item">
+              <span class="pficon pficon-virtual-machine"></span>
+              <strong>{{item.jvms.length}}</strong> JVMs
+            </div>
+            <div class="list-view-pf-additional-info-item" ng-click="$event.stopPropagation()">
+              <span class="pficon pficon-server"></span>
+              <a ui-sref="systemInfo({ systemId: item.systemId })" translate>jvmList.SYSTEM_INFO_LABEL</a>
+            </div>
+            <div class="list-view-pf-additional-info-item">
+              <span class="fa fa-clock-o"></span>
+               <span translate="jvmList.START_TIME_LIST" translate-values="{ date: '{{item.timeCreated | timestampToDate}}' }"></span>
+            </div>
+          </div>
+        </div>
+        <list-expanded-content>
+          <div class="jvmPagination col-md-12">
+            <pf-pagination
+                page-size="pageSize"
+                page-number="pageNumber"
+                page-size-increments="pageSizeIncrements"
+                num-total-items="$parent.item.jvms.length">
+            </pf-pagination>
+          </div>
+          <div ng-repeat="jvm in $parent.item.jvms | startFrom:(pageNumber - 1) * pageSize | limitTo:pageSize">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div ui-sref="jvmInfo({ systemId: $parent.$parent.item.systemId, jvmId: jvm.jvmId })" class="card-pf card-pf-view card-pf-view-select">
                 <div class="card-pf-top-element">
-                  <span class="pficon pficon-server card-pf-icon-circle"></span>
+                  <span class="pficon pficon-virtual-machine card-pf-icon-circle"></span>
                 </div>
                 <div class="card-pf-body">
                   <h2 class="card-pf-title text-center ellipsis-word-wrap">
-                    {{system.systemId}}
+                    {{jvm.mainClass | extractClass:true}}
                   </h2>
-                  <p class="card-pf-info text-center" translate>jvmList.SYSTEM_CARD_LABEL</p>
-                </div>
-              </div>
-            </div>
-
-            <div ng-repeat="jvm in system.jvms">
-
-              <div class="col-xs-12 col-md-4 col-lg-3">
-                <div ui-sref="jvmInfo({ systemId: system.systemId, jvmId: jvm.jvmId })" class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
-                  <div class="card-pf-top-element">
-                    <span class="pficon pficon-virtual-machine card-pf-icon-circle"></span>
-                  </div>
-                  <div class="card-pf-body">
-                    <h2 class="card-pf-title text-center ellipsis-word-wrap">
-                      {{jvm.mainClass | extractClass:true}}
-                    </h2>
-                    <div class="card-pf-info text-center" translate>
-                      <span translate="jvmList.CREATED_ON" translate-values="{ date: '{{jvm.startTime | timestampToDate}}' }"></span>
-                      <span class="pull-right pficon" ng-class="jvm.isAlive ? 'pficon-ok' : 'pficon-error-circle-o'"></span>
-                    </div>
+                  <div class="card-pf-info text-center" translate>
+                    <span class="pull-right pficon" ng-class="jvm.isAlive ? 'pficon-ok' : 'pficon-error-circle-o'"></span>
+                    <span translate="jvmList.START_TIME_CARD" translate-values="{ date: '{{jvm.startTime | timestampToDate}}' }"></span>
                   </div>
                 </div>
               </div>
-
             </div>
-          </div><!-- /row -->
-        </div>
-        </uib-accordion-group>
-
-        </uib-accordion>
+          </div>
+        </list-expanded-content>
+      </pf-list-view>
+    </div>
   </div>
-
 </div><!-- /container -->

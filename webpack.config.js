@@ -54,6 +54,7 @@ module.exports = function () {
       'bootstrap-switch': 'angular-patternfly/node_modules/patternfly/node_modules/bootstrap-switch',
 
       'assets': path.resolve(__dirname, 'src', 'assets'),
+      'components': path.resolve(__dirname, 'src', 'app', 'components'),
       'images': 'assets/images',
       'scss': 'assets/scss',
       'shared': path.resolve(__dirname, 'src', 'app', 'shared'),

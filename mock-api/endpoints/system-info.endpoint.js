@@ -12,7 +12,8 @@ function systemInfo (server) {
           osKernel: '4.10.11-200.fc25.x86_64',
           cpuCount: 4,
           cpuModel: 'GenuineIntel',
-          totalMemory: 16 * 1024 * 1024 * 1024
+          totalMemory: 16 * 1024 * 1024 * 1024,
+          timeCreated: { $numberLong: (Date.now() - (Math.floor(Math.random() * 100000000))).toString() }
         }]
       }
     ));

@@ -12,7 +12,7 @@
   "devDependencies": {
     "@uirouter/angularjs": "^1.0.0",
     "angular-mocks": "1.5.*",
-    "angular-patternfly": "^3.23.3",
+    "angular-patternfly": "^4.4.1",
     "angular-translate": "^2.15.2",
     "angular-translate-interpolation-messageformat": "^2.15.2",
     "babel-core": "^6.24.0",

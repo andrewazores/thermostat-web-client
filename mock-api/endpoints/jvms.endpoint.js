@@ -5,46 +5,33 @@ function jvmList (server) {
     server.logRequest('jvm-list', req);
     res.setHeader('Content-Type', 'application/json');
 
-    var limit = 4;
+    var systemLimit = 4;
     var aliveOnly = req.query.aliveOnly === 'true';
     var resp = [];
     if (req.query.limit) {
-      limit = parseInt(req.query.limit);
+      systemLimit = parseInt(req.query.limit);
       // 0 means no limit, so we'll default to 4
-      if (limit === 0) {
-        limit = 4;
+      if (systemLimit === 0) {
+        systemLimit = 4;
       }
     }
-    for (var i = 0; i < limit; i++) {
-      var jvms = [
-        {
-          'mainClass': 'c.r.t.A',
+    for (var i = 0; i < systemLimit; i++) {
+      var jvms = [];
+      for (var j = 0; j < systemLimit - i; j++) {
+        jvms.push({
+          'mainClass': 'c.r.t.' + j,
           'startTime': { $numberLong: (Date.now() - 10000000).toString() },
           'stopTime': { $numberLong: '-1' },
-          'jvmId': 'vm-0',
+          'jvmId': 'vm-' + j,
           'isAlive': true
-        },
-        {
-          'mainClass': 'c.r.t.B',
-          'startTime': { $numberLong: (Date.now() - 1500000).toString() },
-          'stopTime': { $numberLong: '-1' },
-          'jvmId': 'vm-1',
-          'isAlive': true
-        },
-        {
-          'mainClass': 'c.r.t.C',
-          'startTime': { $numberLong: (Date.now() - 25000000).toString() },
-          'stopTime': { $numberLong: '-1' },
-          'jvmId': 'vm-2',
-          'isAlive': true
-        }
-      ];
+        });
+      }
       if (!aliveOnly) {
         jvms.push({
-          'mainClass': 'c.r.t.D',
+          'mainClass': 'c.r.t.DeadVM',
           'startTime': { $numberLong: (Date.now() - 350000000).toString() },
           'stopTime': { $numberLong: Date.now().toString() },
-          'jvmId': 'vm-3',
+          'jvmId': 'vm-dead',
           'isAlive': false
         });
       }

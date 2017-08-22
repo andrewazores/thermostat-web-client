@@ -84,27 +84,27 @@
     <div class="row row-cards-pf">
       <div class="container container-cards-pf">
         <!-- System-CPU Donut Chart -->
-        <div class="col-xs-12 col-md-6" ng-controller="SystemCpuController as ctrl">
+        <div class="col-xs-12 col-sm-6 col-md-6" ng-controller="SystemCpuController as ctrl">
           <div class="card-pf card-pf-view">
             <div class="card-pf-heading">
               <label class="card-pf-title" translate>systemInfo.systemCpu.CHART_LABEL</label>
               <mc-add class="pull-right" svc-name="{{systemId}}-cpu" get-fn="ctrl.multichartFn()"></mc-add>
             </div>
             <div class="card-pf-body">
-              <div pf-donut-pct-chart id="cpuChart" config="ctrl.config" data="ctrl.data"></div>
+              <pf-donut-pct-chart id="cpuChart" config="ctrl.config" data="ctrl.data"></pf-donut-pct-chart>
             </div>
           </div>
         </div>
         <div class="system-memory-charts" ng-controller="SystemMemoryController as ctrl">
           <!-- System-Memory Donut Chart -->
-          <div class="col-xs-12 col-md-6">
+          <div class="col-xs-12 col-sm-6 col-md-6">
             <div class="card-pf card-pf-view">
               <div class="card-pf-heading">
                 <label class="card-pf-title" translate>systemInfo.systemMemory.DONUT_CHART_LABEL</label>
                 <mc-add class="pull-right" svc-name="{{systemId}}-memory" get-fn="ctrl.multichartFn()"></mc-add>
               </div>
               <div class="card-pf-body">
-                <div pf-donut-pct-chart id="systemMemoryDonutChart" config="ctrl.donutConfig" data="ctrl.donutData"></div>
+                <pf-donut-pct-chart id="systemMemoryDonutChart" config="ctrl.donutConfig" data="ctrl.donutData"></pf-donut-pct-chart>
               </div>
             </div>
           </div>
@@ -141,7 +141,7 @@
               </div>
               <!-- Line Chart -->
               <div class="card-pf-body">
-                <div pf-line-chart id="systemMemoryLineChart" config="ctrl.lineConfig" chart-data="ctrl.lineData" set-area-chart="false" show-x-axis="true" show-y-axis="true">
+                <pf-line-chart id="systemMemoryLineChart" config="ctrl.lineConfig" chart-data="ctrl.lineData" set-area-chart="false" show-x-axis="true" show-y-axis="true"></pf-line-chart>
                 </div>
               </div>
             </div>

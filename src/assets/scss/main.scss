@@ -46,3 +46,20 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+// list-view selected row background colour
+.list-group-item-container {
+  background: $color-pf-black-100;
+}
+
+// makes pf-pagination line up with the vm cards
+.jvmPagination {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+}
+
+// aligns the 'alive vms only' component with the pf-list-view
+.text-right {
+  padding-right: 20px;
+}

@@ -28,7 +28,7 @@
   <div class="row row-cards-pf">
     <div class="container-fluid container-cards-pf">
 
-      <div class="col">
+      <div class="col-md-12">
         <div class="card-pf card-pf-view">
           <div class="card-pf-heading">
             <label class="card-pf-title" translate>jvmGc.CARD_TITLE</label>
@@ -36,11 +36,11 @@
           <div ng-repeat="collector in ctrl.collectors">
             <div class="card-pf-body text-center">
               <mc-add class="pull-right" svc-name="{{ctrl.jvmId}}-{{sanitize(collector)}}-gc" get-fn="ctrl.multichartFn(collector)"></mc-add>
-              <div pf-line-chart id="chart-{{collector}}" config="ctrl.chartConfigs[collector]"
+              <pf-line-chart id="chart-{{collector}}" config="ctrl.chartConfigs[collector]"
                                                           chart-data="ctrl.chartData[collector]"
                                                           show-x-axis="true"
                                                           show-y-axis="true"
-                                                          ></div>
+                                                          ></pf-line-chart>
             </div>
           </div>
         </div>
