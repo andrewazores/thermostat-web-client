@@ -136,4 +136,25 @@ describe('BasicAuthService', () => {
       });
     });
   });
+
+  describe('#getCommandChannelUrl()', () => {
+    it('should return provided value if not logged in', () => {
+      let mockUrl = 'http://example.com:1234/';
+      basicAuthService.getCommandChannelUrl(mockUrl).should.equal(mockUrl);
+    });
+
+    it('should only add basic auth username when only username provided', done => {
+      basicAuthService.login('foo', null, () => {
+        basicAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://foo@example.com/');
+        done();
+      });
+    });
+
+    it('should add basic auth username and password when provided', done => {
+      basicAuthService.login('foo', 'bar', () => {
+        basicAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://foo:bar@example.com/');
+        done();
+      });
+    });
+  });
 });

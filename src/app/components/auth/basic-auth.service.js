@@ -25,6 +25,8 @@
  * exception statement from your version.
  */
 
+import * as url from 'url';
+
 export default class BasicAuthService {
 
   constructor ($state) {
@@ -73,6 +75,20 @@ export default class BasicAuthService {
 
   get username () {
     return this._user;
+  }
+
+  getCommandChannelUrl (baseUrl) {
+    let parsed = url.parse(baseUrl);
+    if (this._user == null && this._pass == null) {
+      // no-op
+    }
+    if (this._user != null && this._pass == null) {
+      parsed.auth = this._user;
+    }
+    if (this._user != null && this._pass != null) {
+      parsed.auth = this.username + ':' + this._pass;
+    }
+    return url.format(parsed);
   }
 
 }

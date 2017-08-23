@@ -99,4 +99,13 @@ describe('KeycloakAuthService', () => {
       keycloakAuthService.username.should.equal('client');
     });
   });
+
+  describe('#getCommandChannelUrl()', () => {
+    it('should add the Keycloak token to the query', done => {
+      keycloakAuthService.login('foo', 'bar', () => {
+        keycloakAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://example.com/?token=fakeToken');
+        done();
+      });
+    });
+  });
 });

@@ -25,6 +25,8 @@
  * exception statement from your version.
  */
 
+import * as url from 'url';
+
 export default class KeycloakAuthService {
 
   constructor (keycloak) {
@@ -55,6 +57,12 @@ export default class KeycloakAuthService {
 
   get username () {
     return this.keycloak.idTokenParsed.preferred_username;
+  }
+
+  getCommandChannelUrl (baseUrl) {
+    let parsed = url.parse(baseUrl);
+    parsed.query = { token: this.keycloak.token };
+    return url.format(parsed);
   }
 
 }
