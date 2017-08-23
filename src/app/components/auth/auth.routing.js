@@ -33,7 +33,7 @@ function authRouting ($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('/', {
       url:'/',
-      controller: 'StubAuthController'
+      controller: 'BasicAuthController'
     })
     .state('login', {
       url: '/login',

@@ -44,7 +44,7 @@ describe('authInterceptorFactory', () => {
           success: refreshSuccess,
           error: refreshError
         }),
-        token: 'fakeToken'
+        authHeader: 'Basic foo64'
       };
       $provide.value('authService', authSvc);
     });
@@ -74,21 +74,21 @@ describe('authInterceptorFactory', () => {
       fn = interceptor.request;
     });
 
-    it('should refresh authService when token exists', () => {
+    it('should refresh authService when authHeader exists', () => {
       authSvc.refresh.should.not.be.called();
       fn();
       authSvc.refresh.should.be.calledOnce();
     });
 
-    it('should append header if token refresh succeeds', () => {
+    it('should append header if refresh succeeds', () => {
       let cfg = {};
       fn(cfg);
       authSvc.refreshSuccess.should.be.calledWith(sinon.match.func);
       authSvc.refreshSuccess.yield();
-      cfg.should.deepEqual({ headers: { Authorization: 'Bearer fakeToken'} });
+      cfg.should.deepEqual({ headers: { Authorization: 'Basic foo64'} });
     });
 
-    it('should do nothing if token refresh fails', () => {
+    it('should do nothing if refresh fails', () => {
       let cfg = {};
       fn(cfg);
       authSvc.refreshError.should.be.calledWith(sinon.match.func);
@@ -96,8 +96,8 @@ describe('authInterceptorFactory', () => {
       cfg.should.deepEqual({});
     });
 
-    it('should do nothing if token does not exist', () => {
-      delete authSvc.token;
+    it('should do nothing if authHeader does not exist', () => {
+      delete authSvc.authHeader;
       let cfg = {};
       fn(cfg);
       authSvc.refresh.should.not.be.called();

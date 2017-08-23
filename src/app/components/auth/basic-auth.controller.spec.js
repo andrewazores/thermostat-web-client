@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-describe('AuthController', () => {
+describe('BasicAuthController', () => {
   beforeEach(angular.mock.module($provide => {
     'ngInject';
     $provide.value('$transitions', { onBefore: angular.noop });
@@ -43,7 +43,7 @@ describe('AuthController', () => {
       stateGo = sinon.spy();
       alert = sinon.spy(window, 'alert');
 
-      $controller('StubAuthController', {
+      $controller('BasicAuthController', {
         $scope: scope,
         $state: { go: stateGo },
         authService: authService
@@ -85,12 +85,16 @@ describe('AuthController', () => {
       authStatus = sinon.stub(authService, 'status').returns(true);
       stateGo = sinon.spy();
 
-      $controller('StubAuthController', {
+      $controller('BasicAuthController', {
         $scope: scope,
         $state: { go: stateGo },
         authService: authService
       });
     }));
+
+    afterEach(() => {
+      authStatus.restore();
+    });
 
     it('should redirect to landing if already logged in', () => {
       authStatus.should.be.calledOnce();

@@ -25,51 +25,20 @@
  * exception statement from your version.
  */
 
-export default class StubAuthService {
+export default class BasicAuthController {
 
-  constructor ($state) {
+  constructor ($scope, $state, authService) {
     'ngInject';
-    this.$state = $state;
-    this.state = false;
-  }
 
-  status () {
-    return this.state;
-  }
-
-  login (user, pass, success = angular.noop, failure = angular.noop) {
-    if (user === 'test-user' && pass === 'test-pass') {
-      this.state = true;
-      success();
+    if (authService.status()) {
+      $state.go('landing');
     } else {
-      this.logout(failure);
+      $state.go('login');
     }
-  }
 
-  logout (callback = angular.noop) {
-    this.state = false;
-    this.$state.go('login');
-    callback();
-  }
-
-  refresh () {
-    return {
-      success: function (fn) {
-        fn();
-        return this;
-      },
-      error: function () {
-        return this;
-      }
+    $scope.login = () => {
+      authService.login($scope.username, $scope.password, () => $state.go('landing'), () => alert('Login failed'));
     };
-  }
-
-  get token () {
-    return 'stubAuthMockToken';
-  }
-
-  get username () {
-    return 'test-user';
   }
 
 }

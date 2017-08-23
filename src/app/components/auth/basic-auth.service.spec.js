@@ -27,30 +27,31 @@
 
 // AuthServices are set up before Angular is bootstrapped, so we manually import rather than
 // using Angular DI
-import StubAuthService from './stub-auth.service.js';
+import BasicAuthService from './basic-auth.service.js';
 
-describe('StubAuthService', () => {
-  let stubAuthService, state;
+describe('BasicAuthService', () => {
+  let basicAuthService, state;
   beforeEach(() => {
     state = { go: sinon.spy() };
-    stubAuthService = new StubAuthService(state);
+    basicAuthService = new BasicAuthService(state);
   });
 
   it('should be initially logged out', () => {
-    stubAuthService.status().should.equal(false);
+    basicAuthService.status().should.equal(false);
   });
 
   describe('#login()', () => {
     it('should set logged in status on successful login', done => {
-      stubAuthService.login('test-user', 'test-pass', () => {
-        stubAuthService.status().should.equal(true);
+      basicAuthService.login('client', 'client-pwd', () => {
+        basicAuthService.status().should.equal(true);
         done();
       });
     });
 
-    it('should not set logged in status on failed login', done => {
-      stubAuthService.login('', '', () => done('unexpected login success'), () => {
-        stubAuthService.status().should.equal(false);
+    it('should set username on successful login', done => {
+      should(basicAuthService.username).be.null();
+      basicAuthService.login('client', 'client-pwd', () => {
+        basicAuthService.username.should.equal('client');
         done();
       });
     });
@@ -58,25 +59,25 @@ describe('StubAuthService', () => {
 
   describe('#logout()', () => {
     it('should set logged out status', done => {
-      stubAuthService.login('test-user', 'test-pass');
-      stubAuthService.status().should.equal(true);
-      stubAuthService.logout(() => {
-        stubAuthService.status().should.equal(false);
+      basicAuthService.login('client', 'client-pwd');
+      basicAuthService.status().should.equal(true);
+      basicAuthService.logout(() => {
+        basicAuthService.status().should.equal(false);
         done();
       });
     });
 
     it('should call callback if provided', done => {
-      stubAuthService.logout(done);
+      basicAuthService.logout(done);
     });
 
     it('should not require callback', () => {
-      stubAuthService.logout();
+      basicAuthService.logout();
     });
 
     it('should redirect to login', done => {
       let callCount = state.go.callCount;
-      stubAuthService.logout(() => {
+      basicAuthService.logout(() => {
         state.go.callCount.should.equal(callCount + 1);
         done();
       });
@@ -85,44 +86,54 @@ describe('StubAuthService', () => {
 
   describe('#refresh()', () => {
     it('should return an object', () => {
-      let res = stubAuthService.refresh();
+      let res = basicAuthService.refresh();
       should.exist(res);
       res.should.be.an.Object();
     });
 
     it('should return an object with a success callback handler', () => {
-      let res = stubAuthService.refresh();
+      let res = basicAuthService.refresh();
       res.should.have.ownProperty('success');
       res.success.should.be.a.Function();
     });
 
     it('should return an object with an error callback handler', () => {
-      let res = stubAuthService.refresh();
+      let res = basicAuthService.refresh();
       res.should.have.ownProperty('error');
       res.error.should.be.a.Function();
     });
 
     it('should call success callbacks', done => {
-      stubAuthService.refresh().success(done);
+      basicAuthService.refresh().success(done);
     });
 
     it('should not call error callbacks', done => {
-      stubAuthService.refresh().error(() => {
+      basicAuthService.refresh().error(() => {
         done('should not reach here');
       });
       done();
     });
   });
 
-  describe('#get token()', () => {
-    it('should return stubAuthMockToken', () => {
-      stubAuthService.token.should.equal('stubAuthMockToken');
+  describe('#get authHeader()', () => {
+    it('should return base64-encoded credentials', done => {
+      basicAuthService.login('foo', 'bar', () => {
+        basicAuthService.authHeader.should.equal('Basic ' + btoa('foo:bar'));
+        done();
+      });
     });
   });
 
   describe('#get username()', () => {
-    it('should return "test-user"', () => {
-      stubAuthService.username.should.equal('test-user');
+    it('should be null before login', () => {
+      should(basicAuthService.username).be.null();
+    });
+
+    it('should return logged in user', done => {
+      basicAuthService.login('foo', 'bar', () => {
+        basicAuthService.username.should.equal('foo');
+        done();
+      });
     });
   });
 });

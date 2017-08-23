@@ -28,9 +28,9 @@
 import Keycloak from 'keycloak-js/dist/keycloak.js';
 
 import KeycloakAuthService from './keycloak-auth.service.js';
-import StubAuthService from './stub-auth.service.js';
+import BasicAuthService from './basic-auth.service.js';
 import LoginController from './login.controller.js';
-import StubAuthController from './stub-auth.controller.js';
+import BasicAuthController from './basic-auth.controller.js';
 
 let MOD_NAME = 'authModule';
 export default MOD_NAME;
@@ -52,7 +52,7 @@ export function config (env, done = angular.noop, keycloakProvider = () => {
 
   mod.constant('AUTH_MODULE', MOD_NAME);
   mod.controller('LoginController', LoginController);
-  mod.controller('StubAuthController', StubAuthController);
+  mod.controller('BasicAuthController', BasicAuthController);
 
   if (env === 'production') {
     let cloak = keycloakProvider();
@@ -63,7 +63,7 @@ export function config (env, done = angular.noop, keycloakProvider = () => {
       .success(done)
       .error(() => window.location.reload());
   } else {
-    mod.service('authService', StubAuthService);
+    mod.service('authService', BasicAuthService);
     done();
   }
 }

@@ -45,7 +45,7 @@ describe('KeycloakAuthService', () => {
       authenticated: authenticated,
       token: 'fakeToken',
       idTokenParsed: {
-        'preferred_username': 'fakeUsername'
+        'preferred_username': 'client'
       }
     };
     keycloakAuthService = new KeycloakAuthService(mockCloak);
@@ -88,16 +88,15 @@ describe('KeycloakAuthService', () => {
     });
   });
 
-  describe('#get token()', () => {
-    it('should delegate to Keycloak object', () => {
-      let res = keycloakAuthService.token;
-      res.should.equal('fakeToken');
+  describe('#get authHeader()', () => {
+    it('should return "Bearer fakeToken"', () => {
+      keycloakAuthService.authHeader.should.equal('Bearer fakeToken');
     });
   });
 
   describe('#get username()', () => {
     it('should delegate to Keycloak object', () => {
-      keycloakAuthService.username.should.equal('fakeUsername');
+      keycloakAuthService.username.should.equal('client');
     });
   });
 });

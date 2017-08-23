@@ -26,6 +26,7 @@ fs.readdir(endpoints, function (err, files) {
       console.info('[' + svc + '] requested');
       console.info('params: ' + JSON.stringify(req.params));
       console.info('query: ' + JSON.stringify(req.query));
+      console.info('authorization:' + JSON.stringify(req.headers.authorization));
       console.info('~~~~\n');
     }
   };

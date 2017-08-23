@@ -49,8 +49,8 @@ export default class KeycloakAuthService {
     return this.keycloak.updateToken(300);
   }
 
-  get token () {
-    return this.keycloak.token;
+  get authHeader () {
+    return 'Bearer ' + this.keycloak.token;
   }
 
   get username () {

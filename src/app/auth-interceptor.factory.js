@@ -37,11 +37,11 @@ export default angular
       request: config => {
         var defer = $q.defer();
 
-        if (authService.token) {
+        if (authService.authHeader) {
           authService.refresh()
             .success(() => {
               config.headers = config.headers || {};
-              config.headers.Authorization = 'Bearer ' + authService.token;
+              config.headers.Authorization = authService.authHeader;
               defer.resolve(config);
             })
             .error(() => {

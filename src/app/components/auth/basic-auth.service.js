@@ -25,20 +25,54 @@
  * exception statement from your version.
  */
 
-export default class AuthController {
+export default class BasicAuthService {
 
-  constructor ($scope, $state, authService) {
+  constructor ($state) {
     'ngInject';
+    this.$state = $state;
+    this.state = false;
 
-    if (authService.status()) {
-      $state.go('landing');
-    } else {
-      $state.go('login');
-    }
+    this._user = null;
+    this._pass = null;
+  }
 
-    $scope.login = () => {
-      authService.login($scope.username, $scope.password, () => $state.go('landing'), () => alert('Login failed'));
+  status () {
+    return this.state;
+  }
+
+  login (user, pass, success = angular.noop) {
+    this._user = user;
+    this._pass = pass;
+    this.state = true;
+    success();
+  }
+
+  logout (callback = angular.noop) {
+    this._user = null;
+    this._pass = null;
+    this.state = false;
+    this.$state.go('login');
+    callback();
+  }
+
+  refresh () {
+    return {
+      success: function (fn) {
+        fn();
+        return this;
+      },
+      error: function () {
+        return this;
+      }
     };
+  }
+
+  get authHeader () {
+    return 'Basic ' + btoa(this._user + ':' + this._pass);
+  }
+
+  get username () {
+    return this._user;
   }
 
 }
