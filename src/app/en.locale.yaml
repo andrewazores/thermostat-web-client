@@ -1,8 +1,12 @@
+CLIENT_VERSION: 0.1.0
+
 navbar:
   TOGGLE_NAV: Toggle Navigation
 
   HELP: Help
   HELP_URL: http://icedtea.classpath.org/thermostat/documentation
+
+  ABOUT: About
 
   USERNAME: Username
   LOGOUT: Log Out
