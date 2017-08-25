@@ -33,17 +33,24 @@ export default class KeycloakAuthService {
     this.keycloak = keycloak;
   }
 
+  set rootScope (rootScope) {
+    this._rootScope = rootScope;
+  }
+
   login () {
     // no-op
   }
 
   goToLogin (promise) {
     this.keycloak.login();
+    this._rootScope.$broadcast('userLoginChanged');
     promise.resolve();
   }
 
-  logout () {
+  logout (callback = angular.noop) {
+    this._rootScope.$broadcast('userLoginChanged');
     this.keycloak.logout();
+    callback();
   }
 
   status () {

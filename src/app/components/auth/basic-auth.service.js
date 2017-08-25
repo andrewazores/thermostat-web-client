@@ -40,6 +40,10 @@ export default class BasicAuthService {
     this._pass = null;
   }
 
+  set rootScope (rootScope) {
+    this._rootScope = rootScope;
+  }
+
   status () {
     return this.state;
   }
@@ -51,6 +55,7 @@ export default class BasicAuthService {
     if (this._rememberUser) {
       this.cookies.put('username', user);
     }
+    this._rootScope.$broadcast('userLoginChanged');
     success();
   }
 
@@ -63,6 +68,7 @@ export default class BasicAuthService {
     this._pass = null;
     this.state = false;
     this.$state.go('login');
+    this._rootScope.$broadcast('userLoginChanged');
     callback();
   }
 

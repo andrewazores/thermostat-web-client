@@ -39,13 +39,11 @@ class AppController {
 
     $scope.loginStatus = () => authService.status();
 
-    $scope.logout = () => {
-      authService.logout();
-    };
+    $scope.logout = () => authService.logout();
 
-    $scope.username = authService.username;
-
+    $scope.$on('userLoginChanged', () => $scope.username = authService.username);
   }
+
 }
 
 let name = 'AppController';

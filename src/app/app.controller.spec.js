@@ -30,6 +30,13 @@ describe('AppController', () => {
   beforeEach(angular.mock.module($provide => {
     'ngInject';
     $provide.value('$transitions', { onBefore: angular.noop });
+
+    let cookies = {
+      put: sinon.spy(),
+      get: sinon.stub().returns('fake-username'),
+      remove: sinon.spy()
+    };
+    $provide.value('$cookies', cookies);
   }));
 
   beforeEach(angular.mock.module('AppController'));
@@ -107,10 +114,11 @@ describe('AppController', () => {
   });
 
   describe('$scope.username', () => {
-    let scope, authService;
+    let rootScope, scope, authService;
     beforeEach(inject(($controller, $rootScope) => {
       'ngInject';
 
+      rootScope = $rootScope;
       scope = $rootScope.$new();
       authService = {
         status: sinon.stub().returns(true),
@@ -126,7 +134,9 @@ describe('AppController', () => {
       });
     }));
 
-    it('should be set according to authService username', () => {
+    it('should be set on userLoginChanged according to authService username', () => {
+      scope.should.not.have.ownProperty('username');
+      rootScope.$broadcast('userLoginChanged');
       scope.should.have.ownProperty('username');
       scope.username.should.equal(authService.username);
     });

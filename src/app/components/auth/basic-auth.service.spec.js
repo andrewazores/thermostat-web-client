@@ -30,7 +30,7 @@
 import BasicAuthService from './basic-auth.service.js';
 
 describe('BasicAuthService', () => {
-  let basicAuthService, q, qPromise, state, cookies;
+  let basicAuthService, q, qPromise, state, cookies, rootScope;
   beforeEach(() => {
     qPromise = sinon.stub().yields();
     q = {
@@ -51,7 +51,9 @@ describe('BasicAuthService', () => {
       get: sinon.stub(),
       remove: sinon.spy()
     };
+    rootScope = { $broadcast: sinon.spy() };
     basicAuthService = new BasicAuthService(q, state, cookies);
+    basicAuthService.rootScope = rootScope;
   });
 
   it('should be initially logged out', () => {
@@ -89,6 +91,15 @@ describe('BasicAuthService', () => {
         done();
       });
     });
+
+    it('should broadcast userLoginChanged event', done => {
+      rootScope.$broadcast.should.not.be.called();
+      basicAuthService.login('client', 'client-pwd', () => {
+        rootScope.$broadcast.should.be.calledOnce();
+        rootScope.$broadcast.should.be.calledWith('userLoginChanged');
+        done();
+      });
+    });
   });
 
   describe('#goToLogin()', () => {
@@ -122,6 +133,15 @@ describe('BasicAuthService', () => {
       let callCount = state.go.callCount;
       basicAuthService.logout(() => {
         state.go.callCount.should.equal(callCount + 1);
+        done();
+      });
+    });
+
+    it('should broadcast userLoginChanged event', done => {
+      rootScope.$broadcast.should.not.be.called();
+      basicAuthService.logout(() => {
+        rootScope.$broadcast.should.be.calledOnce();
+        rootScope.$broadcast.should.be.calledWith('userLoginChanged');
         done();
       });
     });

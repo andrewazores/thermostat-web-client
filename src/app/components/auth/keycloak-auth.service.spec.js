@@ -31,7 +31,7 @@ import KeycloakAuthService from './keycloak-auth.service.js';
 
 describe('KeycloakAuthService', () => {
 
-  let keycloakAuthService, mockCloak;
+  let keycloakAuthService, mockCloak, rootScope;
   beforeEach(() => {
     let login = sinon.spy();
     let logout = sinon.spy();
@@ -49,6 +49,9 @@ describe('KeycloakAuthService', () => {
       }
     };
     keycloakAuthService = new KeycloakAuthService(mockCloak);
+
+    rootScope = { $broadcast: sinon.spy() };
+    keycloakAuthService.rootScope = rootScope;
   });
 
   describe('#login()', () => {
@@ -67,12 +70,30 @@ describe('KeycloakAuthService', () => {
       mockCloak.login.should.be.calledOnce();
       promise.resolve.should.be.calledOnce();
     });
+
+    it('should broadcast userLoginChanged event', () => {
+      rootScope.$broadcast.should.not.be.called();
+      let promise = { resolve: sinon.spy() };
+      keycloakAuthService.goToLogin(promise);
+      rootScope.$broadcast.should.be.calledOnce();
+      rootScope.$broadcast.should.be.calledWith('userLoginChanged');
+      promise.resolve.should.be.calledOnce();
+    });
   });
 
   describe('#logout()', () => {
     it('should delegate to keycloak object', () => {
       keycloakAuthService.logout();
       mockCloak.logout.should.be.calledOnce();
+    });
+
+    it('should broadcast userLoginChanged event', done => {
+      rootScope.$broadcast.should.not.be.called();
+      keycloakAuthService.logout(() => {
+        rootScope.$broadcast.should.be.calledOnce();
+        rootScope.$broadcast.should.be.calledWith('userLoginChanged');
+        done();
+      });
     });
   });
 

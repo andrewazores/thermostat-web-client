@@ -51,6 +51,10 @@ export function config (env, done = angular.noop, keycloakProvider = () => {
 
   mod.constant('AUTH_MODULE', MOD_NAME);
   mod.controller('LoginController', LoginController);
+  mod.run((authService, $rootScope) => {
+    'ngInject';
+    authService.rootScope = $rootScope;
+  });
 
   if (env === 'production') {
     let cloak = keycloakProvider();
