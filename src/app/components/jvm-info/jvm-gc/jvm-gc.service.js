@@ -39,12 +39,11 @@ class JvmGcService {
     let params = {
       limit: limit,
       sort: '-timeStamp',
-      query: 'jvmId==' + jvmId
     };
     if (collectorName) {
-      params.query += ',collectorName==' + collectorName;
+      params.query = 'collectorName==' + collectorName;
     }
-    return this.http.get(urlJoin(this.gatewayUrl, 'jvm-gc', '0.0.2'), { params: params });
+    return this.http.get(urlJoin(this.gatewayUrl, 'jvm-gc', '0.0.3', 'jvms', jvmId), { params: params });
   }
 }
 

@@ -59,13 +59,13 @@ describe('JvmMemoryService', () => {
       let expected = {
         metaspace: 100
       };
-      httpBackend.when('GET', 'http://example.com:1234/jvm-memory/0.0.2?limit=1&sort=-timeStamp&query=jvmId%3D%3Dfoo-jvmId')
+      httpBackend.when('GET', 'http://example.com:1234/jvm-memory/0.0.3/jvms/foo-jvmId?limit=1&sort=-timeStamp')
         .respond(expected);
       svc.getJvmMemory('foo-jvmId').then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://example.com:1234/jvm-memory/0.0.2?limit=1&sort=-timeStamp&query=jvmId%3D%3Dfoo-jvmId');
+      httpBackend.expectGET('http://example.com:1234/jvm-memory/0.0.3/jvms/foo-jvmId?limit=1&sort=-timeStamp');
       httpBackend.flush();
       scope.$apply();
     });

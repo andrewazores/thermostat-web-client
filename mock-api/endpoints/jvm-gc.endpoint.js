@@ -2,7 +2,7 @@ function jvmGc (server) {
   var _ = require('lodash');
   server.init('jvmGc');
   var accumulatedMicros = 1000;
-  server.app.get('/jvm-gc/0.0.2', function (req, res, next) {
+  server.app.get('/jvm-gc/0.0.3/jvms', function (req, res, next) {
     server.logRequest('jvm-gc', req);
 
     var query = req.query.query;

@@ -59,13 +59,13 @@ describe('JvmGcService', () => {
       let expected = {
         metaspace: 100
       };
-      httpBackend.when('GET', 'http://example.com:1234/jvm-gc/0.0.2?limit=1&sort=-timeStamp&query=jvmId%3D%3Dfoo-jvmId')
+      httpBackend.when('GET', 'http://example.com:1234/jvm-gc/0.0.3/jvms/foo-jvmId?limit=1&sort=-timeStamp')
         .respond(expected);
       svc.getJvmGcData('foo-jvmId').then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://example.com:1234/jvm-gc/0.0.2?limit=1&sort=-timeStamp&query=jvmId%3D%3Dfoo-jvmId');
+      httpBackend.expectGET('http://example.com:1234/jvm-gc/0.0.3/jvms/foo-jvmId?limit=1&sort=-timeStamp');
       httpBackend.flush();
       scope.$apply();
     });
@@ -74,13 +74,13 @@ describe('JvmGcService', () => {
       let expected = {
         metaspace: 100
       };
-      httpBackend.when('GET', 'http://example.com:1234/jvm-gc/0.0.2?limit=5&sort=-timeStamp&query=jvmId%3D%3Dfoo-jvmId')
+      httpBackend.when('GET', 'http://example.com:1234/jvm-gc/0.0.3/jvms/foo-jvmId?limit=5&sort=-timeStamp')
         .respond(expected);
       svc.getJvmGcData('foo-jvmId', 5).then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://example.com:1234/jvm-gc/0.0.2?limit=5&sort=-timeStamp&query=jvmId%3D%3Dfoo-jvmId');
+      httpBackend.expectGET('http://example.com:1234/jvm-gc/0.0.3/jvms/foo-jvmId?limit=5&sort=-timeStamp');
       httpBackend.flush();
       scope.$apply();
     });
@@ -89,13 +89,13 @@ describe('JvmGcService', () => {
       let expected = {
         metaspace: 100
       };
-      httpBackend.when('GET', 'http://example.com:1234/jvm-gc/0.0.2?limit=5&query=jvmId%3D%3Dfoo-jvmId,collectorName%3D%3DfooCollector&sort=-timeStamp')
+      httpBackend.when('GET', 'http://example.com:1234/jvm-gc/0.0.3/jvms/foo-jvmId?limit=5&query=collectorName%3D%3DfooCollector&sort=-timeStamp')
         .respond(expected);
       svc.getJvmGcData('foo-jvmId', 5, 'fooCollector').then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://example.com:1234/jvm-gc/0.0.2?limit=5&query=jvmId%3D%3Dfoo-jvmId,collectorName%3D%3DfooCollector&sort=-timeStamp');
+      httpBackend.expectGET('http://example.com:1234/jvm-gc/0.0.3/jvms/foo-jvmId?limit=5&query=collectorName%3D%3DfooCollector&sort=-timeStamp');
       httpBackend.flush();
       scope.$apply();
     });
