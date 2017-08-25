@@ -2,18 +2,13 @@ function jvmGc (server) {
   var _ = require('lodash');
   server.init('jvmGc');
   var accumulatedMicros = 1000;
-  server.app.get('/jvm-gc/0.0.3/jvms', function (req, res, next) {
+  server.app.get('/jvm-gc/0.0.3/jvms/:jvmId', function (req, res, next) {
     server.logRequest('jvm-gc', req);
+
+    var jvmId = req.params.jvmId;
 
     var query = req.query.query;
     query = _.split(query, '&');
-    var jvmId = 'foo-jvmId';
-    for (var i = 0; i < query.length; i++) {
-      var str = query[i];
-      if (_.startsWith(str, 'jvmId')) {
-        jvmId = _.split(str, '==')[1];
-      }
-    }
     var limit = req.query.limit || 1;
 
     var response = [];

@@ -1,18 +1,10 @@
 function jvmMemory (server) {
   var _ = require('lodash');
   server.init('jvmMemory');
-  server.app.get('/jvm-memory/0.0.3', function (req, res, next) {
+  server.app.get('/jvm-memory/0.0.3/jvms/:jvmId', function (req, res, next) {
     server.logRequest('jvm-memory', req);
 
-    var query = req.query.query;
-    query = _.split(query, '&');
-    var jvmId = undefined;
-    for (var i = 0; i < query.length; i++) {
-      var str = query[i];
-      if (_.startsWith(str, 'jvmId')) {
-        jvmId = _.split(str, '==')[1];
-      }
-    }
+    var jvmId = req.params.jvmId;
 
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(
