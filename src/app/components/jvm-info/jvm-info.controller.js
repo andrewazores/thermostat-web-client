@@ -27,14 +27,16 @@
 
 import filters from 'shared/filters/filters.module.js';
 import service from './jvm-info.service.js';
+import systemService from 'components/system-info/system-info.service.js';
 
 class JvmInfoController {
-  constructor ($scope, $state, systemId, jvmId, jvmInfoService, killVmService, $translate) {
+  constructor ($scope, $state, systemId, jvmId, jvmInfoService, killVmService, systemInfoService, $translate) {
     'ngInject';
     this.systemId = systemId;
     this.jvmId = jvmId;
     this.jvmInfoService = jvmInfoService;
     this.killVmService = killVmService;
+    this.systemInfoService = systemInfoService;
     this.jvmInfo = {};
     this.showErr = false;
     $translate('jvmInfo.killVm.FAIL_MSG_TITLE').then(s => this.errTitle = s);
@@ -46,6 +48,9 @@ class JvmInfoController {
         $state.go('jvmInfo.' + cur, { systemId: systemId, jvmId: jvmId });
       }
     });
+
+    this.systemHostname = this.systemId;
+    systemInfoService.getSystemInfo(this.systemId).then(res => this.systemHostname = res.data.response[0].hostname);
 
     this.update();
   }
@@ -86,7 +91,8 @@ export default angular
     'patternfly',
     'ui.bootstrap',
     filters,
-    service
+    service,
+    systemService
   ])
   .controller('JvmInfoController', JvmInfoController)
   .name;

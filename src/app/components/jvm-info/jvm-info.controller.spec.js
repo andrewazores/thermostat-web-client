@@ -29,7 +29,7 @@ describe('JvmInfoController', () => {
 
   beforeEach(angular.mock.module('jvmInfo.controller'));
 
-  let scope, state, jvmInfoService, killVmService, ctrl, infoPromise, killPromise, translate;
+  let scope, state, jvmInfoService, killVmService, ctrl, infoPromise, killPromise, systemInfoService, systemInfoPromise, translate;
   beforeEach(inject($controller => {
     'ngInject';
 
@@ -55,6 +55,13 @@ describe('JvmInfoController', () => {
       killVm: sinon.stub().returns(killPromise)
     };
 
+    systemInfoPromise = {
+      then: sinon.stub()
+    };
+    systemInfoService = {
+      getSystemInfo: sinon.stub().returns(systemInfoPromise)
+    };
+
     translate = sinon.stub().returns({
       then: sinon.stub().yields()
     });
@@ -66,6 +73,7 @@ describe('JvmInfoController', () => {
       jvmId: 'foo-jvmId',
       jvmInfoService: jvmInfoService,
       killVmService: killVmService,
+      systemInfoService: systemInfoService,
       $translate: translate
     });
   }));
@@ -107,6 +115,35 @@ describe('JvmInfoController', () => {
 
   it('should set showErr false on initialization', () => {
     ctrl.showErr.should.be.false();
+  });
+
+  describe('systemHostname property', () => {
+    let successHandler, mockResult;
+    beforeEach(() => {
+      systemInfoPromise.then.should.be.calledOnce();
+      systemInfoPromise.then.should.be.calledWith(sinon.match.func);
+      successHandler = systemInfoPromise.then.args[0][0];
+      mockResult = {
+        data: {
+          response: [
+            {
+              hostname: 'foo-hostname'
+            }
+          ]
+        }
+      };
+    });
+
+    it('should default to systemId', () => {
+      ctrl.should.have.ownProperty('systemHostname');
+      ctrl.systemHostname.should.equal('bar-systemId');
+    });
+
+    it('should be set to resolved data', () => {
+      successHandler(mockResult);
+      ctrl.should.have.ownProperty('systemHostname');
+      ctrl.systemHostname.should.equal('foo-hostname');
+    });
   });
 
   describe('killVm', () => {
