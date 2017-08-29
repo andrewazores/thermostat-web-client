@@ -27,22 +27,18 @@
 
 describe('authInterceptorFactory', () => {
 
-  let authSvc, interceptor;
+  let authSvc, refreshPromise, interceptor;
   beforeEach(() => {
     angular.mock.module('authModule', $provide => {
       'ngInject';
 
-      let refreshError = sinon.spy();
-      let refreshSuccess = sinon.stub().returns({ error: refreshError });
+      refreshPromise = sinon.spy();
       authSvc = {
         status: sinon.stub().returns('mockStatus'),
         login: sinon.stub().yields(),
         logout: sinon.stub().yields(),
-        refreshSuccess: refreshSuccess,
-        refreshError: refreshError,
         refresh: sinon.stub().returns({
-          success: refreshSuccess,
-          error: refreshError
+          then: refreshPromise
         }),
         authHeader: 'Basic foo64'
       };
@@ -83,16 +79,16 @@ describe('authInterceptorFactory', () => {
     it('should append header if refresh succeeds', () => {
       let cfg = {};
       fn(cfg);
-      authSvc.refreshSuccess.should.be.calledWith(sinon.match.func);
-      authSvc.refreshSuccess.yield();
+      refreshPromise.should.be.calledWith(sinon.match.func, sinon.match.func);
+      refreshPromise.args[0][0]();
       cfg.should.deepEqual({ headers: { Authorization: 'Basic foo64'} });
     });
 
     it('should do nothing if refresh fails', () => {
       let cfg = {};
       fn(cfg);
-      authSvc.refreshError.should.be.calledWith(sinon.match.func);
-      authSvc.refreshError.yield();
+      refreshPromise.should.be.calledWith(sinon.match.func, sinon.match.func);
+      refreshPromise.args[0][1]();
       cfg.should.deepEqual({});
     });
 

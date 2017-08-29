@@ -27,6 +27,7 @@
 
 import 'angular-patternfly';
 import '@uirouter/angularjs';
+import 'angular-cookies';
 import angularTranslate from 'angular-translate';
 import 'angular-translate-interpolation-messageformat';
 import 'oclazyload';
@@ -53,6 +54,7 @@ export const appModule = angular
   .module('appModule', [
     'ui.router',
     'ui.bootstrap',
+    'ngCookies',
     angularTranslate,
     configModule,
     authModule,

@@ -54,16 +54,21 @@ req.keys().forEach(k => componentRoutingModules.push(req(k).default));
 
 let appRouter = angular.module('app.routing', componentRoutingModules);
 
-function transitionHook ($q, $transitions, authService) {
+function transitionHook ($q, $transitions, $state, authService) {
   'ngInject';
-  $transitions.onBefore({}, () => {
+  $transitions.onBefore({ to: '/' }, () => {
+    return $state.target('landing');
+  });
+
+  $transitions.onBefore({ to: state => {
+    return state.name !== 'about' && state.name !== 'login' && !authService.status();
+  }}, () => {
     let defer = $q.defer();
     authService.refresh()
-      .success(() => defer.resolve())
-      .error(() => {
-        defer.reject('Auth token update failed');
-        authService.login();
-      });
+      .then(() => defer.resolve(),
+        () => {
+          authService.goToLogin(defer);
+        });
     return defer.promise;
   });
 }

@@ -31,14 +31,14 @@ import KeycloakAuthService from './keycloak-auth.service.js';
 
 describe('KeycloakAuthService', () => {
 
-  let keycloakAuthService, login, logout, refresh, authenticated;
+  let keycloakAuthService, mockCloak;
   beforeEach(() => {
-    login = sinon.spy();
-    logout = sinon.spy();
+    let login = sinon.spy();
+    let logout = sinon.spy();
+    let refresh = sinon.stub().returns('refresh-foo');
+    let authenticated = 'invalid-testing-token';
 
-    refresh = sinon.stub().returns('refresh-foo');
-    authenticated = 'invalid-testing-token';
-    let mockCloak = {
+    mockCloak = {
       login: login,
       logout: logout,
       updateToken: refresh,
@@ -52,39 +52,42 @@ describe('KeycloakAuthService', () => {
   });
 
   describe('#login()', () => {
-    it('should call callback', done => {
-      keycloakAuthService.login('', '', done);
+    it('should be a no-op', () => {
+      mockCloak.login.should.not.be.called();
+      keycloakAuthService.login();
+      mockCloak.login.should.not.be.called();
     });
+  });
 
-    it('should not require callback', () => {
-      keycloakAuthService.login('', '');
-    });
-
-    it('should delegate to Keycloak object', done => {
-      keycloakAuthService.login('', '', done);
-      logout.should.be.calledOnce();
+  describe('#goToLogin()', () => {
+    it('should call Keycloak login, then resolve', () => {
+      mockCloak.login.should.not.be.called();
+      let promise = { resolve: sinon.spy() };
+      keycloakAuthService.goToLogin(promise);
+      mockCloak.login.should.be.calledOnce();
+      promise.resolve.should.be.calledOnce();
     });
   });
 
   describe('#logout()', () => {
     it('should delegate to keycloak object', () => {
       keycloakAuthService.logout();
-      logout.should.be.calledOnce();
+      mockCloak.logout.should.be.calledOnce();
     });
   });
 
   describe('#status()', () => {
     it('should delegate to Keycloak object', () => {
-      let res = keycloakAuthService.status();
-      res.should.equal(authenticated);
+      keycloakAuthService.status().should.equal(mockCloak.authenticated);
     });
   });
 
   describe('#refresh()', () => {
     it('should delegate to Keycloak object', () => {
+      mockCloak.updateToken.should.not.be.called();
       let res = keycloakAuthService.refresh();
       res.should.equal('refresh-foo');
-      refresh.should.be.calledOnce();
+      mockCloak.updateToken.should.be.calledOnce();
     });
   });
 
@@ -101,11 +104,8 @@ describe('KeycloakAuthService', () => {
   });
 
   describe('#getCommandChannelUrl()', () => {
-    it('should add the Keycloak token to the query', done => {
-      keycloakAuthService.login('foo', 'bar', () => {
-        keycloakAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://example.com/?token=fakeToken');
-        done();
-      });
+    it('should add the Keycloak token to the query', () => {
+      keycloakAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://example.com/?token=fakeToken');
     });
   });
 });

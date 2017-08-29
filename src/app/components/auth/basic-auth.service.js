@@ -29,9 +29,11 @@ import * as url from 'url';
 
 export default class BasicAuthService {
 
-  constructor ($state) {
+  constructor ($q, $state, $cookies) {
     'ngInject';
+    this.q = $q;
     this.$state = $state;
+    this.cookies = $cookies;
     this.state = false;
 
     this._user = null;
@@ -46,7 +48,14 @@ export default class BasicAuthService {
     this._user = user;
     this._pass = pass;
     this.state = true;
+    if (this._rememberUser) {
+      this.cookies.put('username', user);
+    }
     success();
+  }
+
+  goToLogin (promise) {
+    promise.resolve(this.$state.target('login'));
   }
 
   logout (callback = angular.noop) {
@@ -58,15 +67,13 @@ export default class BasicAuthService {
   }
 
   refresh () {
-    return {
-      success: function (fn) {
-        fn();
-        return this;
-      },
-      error: function () {
-        return this;
-      }
-    };
+    let defer = this.q.defer();
+    if (this.state) {
+      defer.resolve();
+    } else {
+      defer.reject();
+    }
+    return defer.promise;
   }
 
   get authHeader () {
@@ -75,6 +82,10 @@ export default class BasicAuthService {
 
   get username () {
     return this._user;
+  }
+
+  get rememberedUsername () {
+    return this.cookies.get('username');
   }
 
   getCommandChannelUrl (baseUrl) {
@@ -89,6 +100,13 @@ export default class BasicAuthService {
       parsed.auth = this.username + ':' + this._pass;
     }
     return url.format(parsed);
+  }
+
+  rememberUser (remember) {
+    this._rememberUser = remember;
+    if (!remember) {
+      this.cookies.remove('username');
+    }
   }
 
 }

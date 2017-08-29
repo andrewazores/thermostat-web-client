@@ -32,12 +32,17 @@ export default class LoginController {
 
     if (authService.status()) {
       $state.go('landing');
-    } else {
-      $state.go('login');
+      return;
+    }
+
+    $scope.rememberUser = angular.isDefined(authService.rememberedUsername);
+    if ($scope.rememberUser) {
+      $scope.username = authService.rememberedUsername;
     }
 
     $scope.login = () => {
-      authService.login($scope.username, $scope.password, () => $state.go('landing'), () => alert('Login failed'));
+      authService.rememberUser($scope.rememberUser);
+      authService.login($scope.username, $scope.password, () => $state.go('landing'));
     };
   }
 

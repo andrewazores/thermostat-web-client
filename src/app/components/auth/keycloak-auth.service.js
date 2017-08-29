@@ -33,9 +33,13 @@ export default class KeycloakAuthService {
     this.keycloak = keycloak;
   }
 
-  login (user, pass, success = angular.noop) {
+  login () {
+    // no-op
+  }
+
+  goToLogin (promise) {
     this.keycloak.login();
-    success();
+    promise.resolve();
   }
 
   logout () {

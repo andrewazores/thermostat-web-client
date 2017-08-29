@@ -39,12 +39,11 @@ export default angular
 
         if (authService.authHeader) {
           authService.refresh()
-            .success(() => {
+            .then(() => {
               config.headers = config.headers || {};
               config.headers.Authorization = authService.authHeader;
               defer.resolve(config);
-            })
-            .error(() => {
+            }, () => {
               defer.reject('Failed to refresh token');
             });
         }

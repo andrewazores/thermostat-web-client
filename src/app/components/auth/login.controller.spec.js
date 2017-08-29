@@ -35,14 +35,18 @@ describe('LoginController', () => {
   beforeEach(angular.mock.module('appModule'));
 
   describe('$scope.login()', () => {
-    let scope, authStatus, authLogin, stateGo, alert;
-    beforeEach(inject(($controller, $rootScope, authService) => {
+    let scope, authService, stateGo, alert;
+    beforeEach(inject(($controller, $rootScope) => {
       'ngInject';
 
       scope = $rootScope.$new();
 
-      authStatus = sinon.stub(authService, 'status').returns(false);
-      authLogin = sinon.stub(authService, 'login');
+      authService = {
+        status: sinon.stub().returns(false),
+        login: sinon.stub().yields(),
+        rememberUser: sinon.spy()
+      };
+
       stateGo = sinon.spy();
       alert = sinon.spy(window, 'alert');
 
@@ -54,8 +58,6 @@ describe('LoginController', () => {
     }));
 
     afterEach(() => {
-      authStatus.restore();
-      authLogin.restore();
       alert.restore();
     });
 
@@ -67,35 +69,29 @@ describe('LoginController', () => {
       scope.login.should.be.a.Function();
     });
 
-    it('should perform a login', () => {
-      authLogin.should.not.be.called();
-      stateGo.should.be.calledOnce();
+    it('should set remember user on authService if set in scope', () => {
+      authService.login.should.not.be.called();
+      stateGo.should.not.be.called();
 
+      scope.rememberUser = true;
       scope.login();
-
-      authLogin.should.be.calledOnce();
-      let fn = authLogin.args[0][2];
-      should.exist(fn);
-      fn.should.be.a.Function();
-      authLogin.yield();
-      stateGo.should.be.calledWith('landing');
+      authService.login.yield();
+      authService.rememberUser.should.be.calledOnce();
+      authService.rememberUser.should.be.calledWith(true);
     });
 
-    it('should present an alert on failed login', () => {
-      authLogin.callsArg(3);
-      scope.login();
-      alert.should.be.calledWith('Login failed');
-    });
   });
 
   describe('when logged in', () => {
-    let scope, authStatus, stateGo;
-    beforeEach(inject(($controller, $rootScope, authService) => {
+    let scope, authService, stateGo;
+    beforeEach(inject(($controller, $rootScope) => {
       'ngInject';
 
       scope = $rootScope.$new();
 
-      authStatus = sinon.stub(authService, 'status').returns(true);
+      authService = {
+        status: sinon.stub().returns(true)
+      };
       stateGo = sinon.spy();
 
       $controller('LoginController', {
@@ -105,40 +101,37 @@ describe('LoginController', () => {
       });
     }));
 
-    afterEach(() => {
-      authStatus.restore();
-    });
-
     it('should redirect to landing if already logged in', () => {
-      authStatus.should.be.calledOnce();
+      authService.status.should.be.calledOnce();
       stateGo.should.be.calledWith('landing');
     });
   });
 
-  describe('when logged out', () => {
-    let scope, authStatus, stateGo;
-    beforeEach(inject(($controller, $rootScope, authService) => {
+  describe('stored username fill', () => {
+    let scope, authService, stateGo;
+    beforeEach(inject(($controller, $rootScope) => {
       'ngInject';
 
       scope = $rootScope.$new();
-      stateGo = sinon.spy();
 
-      authStatus = sinon.stub(authService, 'status').returns(false);
+      authService = {
+        status: sinon.stub().returns(false),
+        rememberedUsername: 'foo-user'
+      };
+      stateGo = sinon.spy();
 
       $controller('LoginController', {
         $scope: scope,
-        $state: {go: stateGo},
+        $state: { go: stateGo },
         authService: authService
       });
     }));
 
-    afterEach(() => {
-      authStatus.restore();
-    });
-
-    it('should keep login state if not logged in', () => {
-      authStatus.should.be.calledOnce();
-      stateGo.should.be.calledWith('login');
+    it('should fill username from authService if available', () => {
+      scope.should.have.ownProperty('username');
+      scope.username.should.equal('foo-user');
+      scope.should.have.ownProperty('rememberUser');
+      scope.rememberUser.should.be.true();
     });
   });
 

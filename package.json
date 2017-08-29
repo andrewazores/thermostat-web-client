@@ -11,6 +11,7 @@
   "license": "",
   "devDependencies": {
     "@uirouter/angularjs": "^1.0.0",
+    "angular-cookies": "1.5.*",
     "angular-mocks": "1.5.*",
     "angular-patternfly": "^4.4.1",
     "angular-translate": "^2.15.2",

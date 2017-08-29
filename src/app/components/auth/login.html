@@ -25,9 +25,8 @@
           </div>
           <div class="form-group">
             <div class="col-xs-8 col-sm-offset-2 col-sm-6 col-md-offset-2 col-md-6">
-              <div class="checkbox">
-                <label translate>auth.REMEMBER_USERNAME_LABEL</label>
-              </div>
+              <input name="rememberUser" type="checkbox" tabindex="3" ng-model="rememberUser"/>
+              <label for="rememberUser" translate>auth.REMEMBER_USERNAME_LABEL</label>
               <span class="help-block" translate>auth.FORGOT_CREDENTIALS</span>
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 submit">

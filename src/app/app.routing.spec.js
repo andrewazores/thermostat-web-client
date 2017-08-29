@@ -29,7 +29,7 @@ describe('ErrorRouting', () => {
 
   let module = require('./app.routing.js');
 
-  let stateProvider, urlRouterProvider, q, transitions, authSvc;
+  let stateProvider, urlRouterProvider, q, transitions, state, authSvc, refreshPromise;
 
   beforeEach(() => {
     stateProvider = { state: sinon.spy() };
@@ -41,24 +41,26 @@ describe('ErrorRouting', () => {
       reject: sinon.spy()
     });
 
-    let authSvcRefreshError = sinon.stub();
-    let authSvcRefreshSuccess = sinon.stub().returns({ error: authSvcRefreshError });
+    state = {
+      target: sinon.stub().returns('stateTarget'),
+    };
+
+    refreshPromise = sinon.spy();
     authSvc = {
       login: sinon.spy(),
       logout: sinon.spy(),
       refresh: sinon.stub().returns({
-        success: authSvcRefreshSuccess
+        then: refreshPromise
       }),
-      refreshSuccess: authSvcRefreshSuccess,
-      refreshError: authSvcRefreshError,
-      status: () => true
+      status: () => true,
+      goToLogin: sinon.spy()
     };
     transitions = {
       onBefore: sinon.spy()
     };
 
     module.errorRouting(stateProvider, urlRouterProvider);
-    module.transitionHook(q, transitions, authSvc);
+    module.transitionHook(q, transitions, state, authSvc);
   });
 
   describe('stateProvider', () => {
@@ -105,44 +107,63 @@ describe('ErrorRouting', () => {
   });
 
   describe('state change hook', () => {
-    it('should be on state change start', () => {
-      transitions.onBefore.should.be.calledOnce();
+    it('should only be on state change start', () => {
+      transitions.onBefore.should.be.calledTwice();
     });
 
-    it('should match all transitions', () => {
-      transitions.onBefore.args[0][0].should.deepEqual({});
+    describe('first hook', () => {
+      it('should match root transitions', () => {
+        transitions.onBefore.args[0][0].should.have.ownProperty('to');
+        transitions.onBefore.args[0][0].to.should.equal('/');
+      });
+
+      it('should redirect to landing', () => {
+        state.target.should.not.be.called();
+        transitions.onBefore.args[0][1].should.be.a.Function();
+        let res = transitions.onBefore.args[0][1]();
+        state.target.should.be.calledOnce();
+        res.should.deepEqual('stateTarget');
+      });
     });
 
-    it('should provide a transition function', () => {
-      transitions.onBefore.args[0][1].should.be.a.Function();
-    });
+    describe('second hook', () => {
+      it('should match non-login transitions', () => {
+        transitions.onBefore.args[1][0].should.have.ownProperty('to');
+        let fn = transitions.onBefore.args[1][0].to;
+        fn.should.be.a.Function();
+        fn({ name: 'login' }).should.be.false();
+      });
 
-    it('should call authService.refresh()', () => {
-      authSvc.refresh.should.not.be.called();
+      it('should provide a transition function', () => {
+        transitions.onBefore.args[1][1].should.be.a.Function();
+      });
 
-      transitions.onBefore.args[0][1]();
+      it('should call authService.refresh()', () => {
+        authSvc.refresh.should.not.be.called();
 
-      authSvc.refresh.should.be.calledOnce();
-    });
+        transitions.onBefore.args[1][1]();
 
-    it('should resolve on success', () => {
-      q.defer().resolve.should.not.be.called();
+        authSvc.refresh.should.be.calledOnce();
+      });
 
-      authSvc.refreshSuccess.yields();
-      transitions.onBefore.args[0][1]();
+      it('should resolve on success', () => {
+        q.defer().resolve.should.not.be.called();
 
-      q.defer().resolve.should.be.calledOnce();
-    });
+        transitions.onBefore.args[1][1]();
+        refreshPromise.args[0][0]();
 
-    it('should reject on error', () => {
-      q.defer().reject.should.not.be.called();
-      authSvc.login.should.not.be.called();
+        q.defer().resolve.should.be.calledOnce();
+      });
 
-      authSvc.refreshError.yields();
-      transitions.onBefore.args[0][1]();
+      it('should go to login on error', () => {
+        q.defer().reject.should.not.be.called();
+        authSvc.login.should.not.be.called();
 
-      q.defer().reject.should.be.calledOnce();
-      authSvc.login.should.be.calledOnce();
+        transitions.onBefore.args[1][1]();
+        refreshPromise.args[0][1]();
+
+        authSvc.goToLogin.should.be.calledOnce();
+      });
     });
   });
 

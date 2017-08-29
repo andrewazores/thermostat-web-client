@@ -30,10 +30,28 @@
 import BasicAuthService from './basic-auth.service.js';
 
 describe('BasicAuthService', () => {
-  let basicAuthService, state;
+  let basicAuthService, q, qPromise, state, cookies;
   beforeEach(() => {
-    state = { go: sinon.spy() };
-    basicAuthService = new BasicAuthService(state);
+    qPromise = sinon.stub().yields();
+    q = {
+      defer: sinon.stub().returns({
+        promise: {
+          then: qPromise
+        },
+        resolve: sinon.spy(),
+        reject: sinon.spy()
+      })
+    };
+    state = {
+      go: sinon.spy(),
+      target: sinon.stub().returns('stateTarget')
+    };
+    cookies = {
+      put: sinon.spy(),
+      get: sinon.stub(),
+      remove: sinon.spy()
+    };
+    basicAuthService = new BasicAuthService(q, state, cookies);
   });
 
   it('should be initially logged out', () => {
@@ -54,6 +72,31 @@ describe('BasicAuthService', () => {
         basicAuthService.username.should.equal('client');
         done();
       });
+    });
+
+    it('should not store username in cookies by default', done => {
+      basicAuthService.login('client', 'client-pwd', () => {
+        cookies.put.should.not.be.called();
+        done();
+      });
+    });
+
+    it('should store username in cookies when set', done => {
+      basicAuthService.rememberUser(true);
+      basicAuthService.login('client', 'client-pwd', () => {
+        cookies.put.should.be.calledOnce();
+        cookies.put.should.be.calledWith('username', 'client');
+        done();
+      });
+    });
+  });
+
+  describe('#goToLogin()', () => {
+    it('should resolve with login state', () => {
+      let promise = { resolve: sinon.spy() };
+      basicAuthService.goToLogin(promise);
+      promise.resolve.should.be.calledOnce();
+      promise.resolve.should.be.calledWith('stateTarget');
     });
   });
 
@@ -85,33 +128,22 @@ describe('BasicAuthService', () => {
   });
 
   describe('#refresh()', () => {
-    it('should return an object', () => {
+    it('should return a Promise', () => {
       let res = basicAuthService.refresh();
       should.exist(res);
-      res.should.be.an.Object();
+      res.should.be.a.Promise();
     });
 
-    it('should return an object with a success callback handler', () => {
-      let res = basicAuthService.refresh();
-      res.should.have.ownProperty('success');
-      res.success.should.be.a.Function();
-    });
-
-    it('should return an object with an error callback handler', () => {
-      let res = basicAuthService.refresh();
-      res.should.have.ownProperty('error');
-      res.error.should.be.a.Function();
-    });
-
-    it('should call success callbacks', done => {
-      basicAuthService.refresh().success(done);
-    });
-
-    it('should not call error callbacks', done => {
-      basicAuthService.refresh().error(() => {
-        done('should not reach here');
+    it('should call success handler if logged in', done => {
+      basicAuthService.login('foo', 'bar', () => {
+        basicAuthService.refresh().then(done, angular.noop);
       });
-      done();
+    });
+
+    it('should call error handler if logged out', done => {
+      qPromise.callsArg(1);
+      basicAuthService.logout();
+      basicAuthService.refresh().then(angular.noop, done);
     });
   });
 
@@ -137,6 +169,15 @@ describe('BasicAuthService', () => {
     });
   });
 
+  describe('#get rememberedUsername()', () => {
+    it('should return username stored in cookie', () => {
+      cookies.get.returns('fakeUser');
+      cookies.get.should.not.be.called();
+      basicAuthService.rememberedUsername.should.equal('fakeUser');
+      cookies.get.should.be.calledOnce();
+    });
+  });
+
   describe('#getCommandChannelUrl()', () => {
     it('should return provided value if not logged in', () => {
       let mockUrl = 'http://example.com:1234/';
@@ -155,6 +196,15 @@ describe('BasicAuthService', () => {
         basicAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://foo:bar@example.com/');
         done();
       });
+    });
+  });
+
+  describe('rememberUser', () => {
+    it('should remove username stored in cookie when called with "false"', () => {
+      basicAuthService.rememberUser(true);
+      cookies.remove.should.not.be.called();
+      basicAuthService.rememberUser(false);
+      cookies.remove.should.be.calledWith('username');
     });
   });
 });
