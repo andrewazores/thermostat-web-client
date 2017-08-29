@@ -14,8 +14,8 @@
           <dd translate>CLIENT_VERSION</dd>
         </dl>
         <p translate>about.DOCUMENTATION</p>
-        <h2 translate>about.ACCOUNT</h2>
-        <p translate="about.ACCOUNT_DETAIL" translate-values="{ username: username }"></p>
+        <h2 ng-if="$ctrl.username" translate>about.ACCOUNT</h2>
+        <p ng-if="$ctrl.username" translate="about.ACCOUNT_DETAIL" translate-values="{ username: $ctrl.username }"></p>
       </div>
     </div>
   </div>

@@ -28,7 +28,12 @@
 import controller from './about.controller.js';
 
 export default angular
-  .module('aboutModule', [
-    controller
-  ])
+  .module('aboutComponent', [controller])
+  .component('about', {
+    bindings: {
+      username: '<'
+    },
+    controller: 'AboutController',
+    template: require('./about.html')
+  })
   .name;

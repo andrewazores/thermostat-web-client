@@ -30,20 +30,13 @@ function config ($stateProvider) {
 
   $stateProvider.state('about', {
     url: '/about',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => resolve(require('./about.html'))
-        )
-      );
-    },
-    controller: 'AboutController as ctrl',
+    component: 'about',
     resolve: {
       loadAbout: ($q, $ocLazyLoad) => {
         'ngInject';
         return $q(resolve => {
-          require.ensure(['./about.module.js'], () => {
-            let module = require('./about.module.js');
+          require.ensure(['./about.component.js'], () => {
+            let module = require('./about.component.js');
             $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });

@@ -47,7 +47,7 @@ describe('AboutRouting', () => {
       stateProvider.state.should.be.calledOnce();
     });
 
-    it('should define a \'about\' state', () => {
+    it('should define an \'about\' state', () => {
       args[0].should.equal('about');
     });
 
@@ -55,23 +55,7 @@ describe('AboutRouting', () => {
       args[1].url.should.equal('/about');
     });
 
-    it('template provider should return about.html', done => {
-      let providerFn = args[1].templateProvider[1];
-      providerFn.should.be.a.Function();
-      providerFn(q);
-      q.should.be.calledOnce();
-
-      let deferred = q.args[0][0];
-      deferred.should.be.a.Function();
-
-      let resolve = sinon.stub().callsFake(val => {
-        val.should.equal(require('./about.html'));
-        done();
-      });
-      deferred(resolve);
-    });
-
-    it('resolve should load about module', done => {
+    it('resolve should load about component', done => {
       let resolveFn = args[1].resolve.loadAbout[2];
       resolveFn.should.be.a.Function();
       resolveFn(q, ocLazyLoad);
@@ -81,8 +65,8 @@ describe('AboutRouting', () => {
       deferred.should.be.a.Function();
 
       let resolve = sinon.stub().callsFake(val => {
-        ocLazyLoad.load.should.be.calledWith({ name: require('./about.module.js').default});
-        val.should.equal(require('./about.module.js'));
+        ocLazyLoad.load.should.be.calledWith({ name: require('./about.component.js').default});
+        val.should.equal(require('./about.component.js'));
         done();
       });
       deferred(resolve);

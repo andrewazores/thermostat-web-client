@@ -28,8 +28,8 @@
 import services from 'shared/services/services.module.js';
 
 class AboutController {
-  constructor ($scope, authService) {
-    $scope.username = authService.username;
+  constructor (authService) {
+    this.username = authService.username;
   }
 }
 

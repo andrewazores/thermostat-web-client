@@ -52,8 +52,8 @@ describe('AboutController', () => {
   });
 
   it('should set username from authService', () => {
-    scope.should.have.ownProperty('username');
-    scope.username.should.equal(authSvc.username);
+    ctrl.should.have.ownProperty('username');
+    ctrl.username.should.equal(authSvc.username);
   });
 
 });
