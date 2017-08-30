@@ -30,20 +30,13 @@ function config ($stateProvider) {
 
   $stateProvider.state('multichart', {
     url: '/multichart',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => resolve(require('./multichart.html'))
-        )
-      );
-    },
-    controller: 'MultichartController as ctrl',
+    component: 'multichart',
     resolve: {
-      loadMultichart: ($q, $ocLazyLoad) => {
+      lazyLoad: ($q, $ocLazyLoad) => {
         'ngInject';
         return $q(resolve => {
-          require.ensure(['./multichart.module.js'], () => {
-            let module = require('./multichart.module.js');
+          require.ensure(['./multichart.component.js'], () => {
+            let module = require('./multichart.component.js');
             $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });

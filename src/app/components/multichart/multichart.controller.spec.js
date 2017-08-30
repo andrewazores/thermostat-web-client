@@ -79,7 +79,7 @@ describe('MultiChartController', () => {
       ctrl.createChart('foo');
       svc.addChart.should.be.calledOnce();
       svc.addChart.should.be.calledWith('foo');
-      scope.newChartName.should.equal('');
+      ctrl.newChartName.should.equal('');
       scope.newChartForm.$setUntouched.should.be.calledOnce();
       scope.newChartForm.$setPristine.should.be.calledOnce();
     });

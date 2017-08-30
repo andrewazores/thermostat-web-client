@@ -29,10 +29,9 @@ import 'c3';
 import services from 'shared/services/services.module.js';
 import filters from 'shared/filters/filters.module.js';
 
-class MultiChartController {
+class MultichartChartController {
   constructor (multichartService, $scope, $interval, dateFilter, DATE_FORMAT, $translate) {
     this.svc = multichartService;
-    this.scope = $scope;
     this.interval = $interval;
     this.dateFilter = dateFilter;
     this.dateFormat = DATE_FORMAT;
@@ -41,15 +40,12 @@ class MultiChartController {
 
     this.initializeChartData();
 
-    this.scope.$on('$destroy', () => this.stop());
+    $scope.$on('$destroy', () => this.stop());
 
-    this.scope.refreshRate = '2000';
-    this.scope.dataAgeLimit = '60000';
+    this._refreshRate = 2000;
+    this._dataAgeLimit = 60000;
 
-    this.scope.$watch('refreshRate', (cur, prev) => this.setRefreshRate(cur));
-    this.scope.$watch('dataAgeLimit', () => this.trimData());
-
-    this.refresh = $interval(() => this.update(), parseInt(this.scope.refreshRate));
+    this.refresh = $interval(() => this.update(), this._refreshRate);
     this.update();
   }
 
@@ -86,7 +82,7 @@ class MultiChartController {
       return;
     }
     let now = Date.now();
-    let oldestLimit = now - parseInt(this.scope.dataAgeLimit);
+    let oldestLimit = now - this._dataAgeLimit;
 
     while (true) {
       if (this.chartData.xData.length <= 2) {
@@ -149,11 +145,24 @@ class MultiChartController {
     this.svc.removeChart(this.chart);
   }
 
-  setRefreshRate (val) {
+  get refreshRate () {
+    return this._refreshRate.toString();
+  }
+
+  set refreshRate (val) {
     this.stop();
     if (val > 0) {
       this.refresh = this.interval(() => this.update(), val);
     }
+  }
+
+  get dataAgeLimit () {
+    return this._dataAgeLimit.toString();
+  }
+
+  set dataAgeLimit (val) {
+    this._dataAgeLimit = parseInt(val);
+    this.trimData();
   }
 
   rename (to) {
@@ -180,5 +189,5 @@ export default angular
     services,
     filters
   ])
-  .controller('MultiChartChartController', MultiChartController)
+  .controller('MultichartChartController', MultichartChartController)
   .name;

@@ -1,0 +1,23 @@
+multicharts:
+
+  chart:
+
+    X_AXIS_LABEL: timestamp
+    X_AXIS_DATA_TYPE: timestamp
+    DELETE_LABEL: Delete
+
+    refresh:
+      LABEL: Refresh Rate
+      DISABLED: Disabled
+      SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+      MINUTES: '{MINUTES, plural, =0{0 Minutes} one{1 Minute} other{# Minutes}}{DEFAULT, select, true{ (Default)} other{}}'
+
+    dataAge:
+      LABEL: Max Data Age
+      SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+      MINUTES: '{MINUTES, plural, =0{0 Minutes} one{1 Minute} other{# Minutes}}{DEFAULT, select, true{ (Default)} other{}}'
+      HOURS: '{HOURS, plural, =0{0 Hours} one{1 Hour} other{# Hours}}{DEFAULT, select, true{ (Default)} other{}}'
+
+    rename:
+      PLACEHOLDER: '@:multicharts.form.PLACEHOLDER'
+      SUBMIT_LABEL: Rename Chart

@@ -64,7 +64,7 @@ describe('multichart chartController', () => {
         })
       });
 
-      ctrl = $controller('MultiChartChartController', {
+      ctrl = $controller('MultichartChartController', {
         multichartService: svc,
         $scope: scope,
         $interval: interval,
@@ -101,13 +101,11 @@ describe('multichart chartController', () => {
   });
 
   it('should initialize refreshRate', () => {
-    scope.should.have.ownProperty('refreshRate');
-    scope.refreshRate.should.equal('2000');
+    ctrl.refreshRate.should.equal('2000');
   });
 
   it('should initialize dataAgeLimit', () => {
-    scope.should.have.ownProperty('dataAgeLimit');
-    scope.dataAgeLimit.should.equal('60000');
+    ctrl.dataAgeLimit.should.equal('60000');
   });
 
   it('should begin updating at refreshRate period', () => {
@@ -117,28 +115,6 @@ describe('multichart chartController', () => {
     let fn = interval.args[0][0];
     fn();
     svc.getData.should.be.calledTwice();
-  });
-
-  it('should watch refreshRate changes', () => {
-    interval.cancel.should.not.be.called();
-    scope.$watch.should.be.calledWithMatch(sinon.match('refreshRate'), sinon.match.func);
-    let fn = scope.$watch.withArgs('refreshRate').args[0][1];
-    fn.should.be.a.Function();
-    interval.returns('foo-sentinel');
-    fn(5);
-    interval.cancel.should.be.calledOnce();
-    ctrl.refresh.should.equal('foo-sentinel');
-    interval.should.be.calledWithMatch(sinon.match.func, sinon.match(5));
-  });
-
-  it('should watch dataAgeLimit changes', () => {
-    let spy = sinon.spy(ctrl, 'trimData');
-    scope.$watch.should.be.calledWithMatch(sinon.match('dataAgeLimit'), sinon.match.func);
-    let fn = scope.$watch.withArgs('dataAgeLimit').args[0][1];
-    fn.should.be.a.Function();
-    fn();
-    spy.should.be.calledOnce();
-    spy.restore();
   });
 
   describe('update', () => {
@@ -211,7 +187,7 @@ describe('multichart chartController', () => {
     });
 
     it('should not trim data if only one sample', () => {
-      scope.dataAgeLimit = 10;
+      ctrl.dataAgeLimit = 10;
       let updateFn = svc.getDataPromise.args[0][0];
 
       dateNowStub.returns(100);
@@ -231,7 +207,7 @@ describe('multichart chartController', () => {
     });
 
     it('should trim old data', () => {
-      scope.dataAgeLimit = 200;
+      ctrl.dataAgeLimit = 200;
       let updateFn = svc.getDataPromise.args[0][0];
 
       dateNowStub.returns(100);
@@ -318,22 +294,22 @@ describe('multichart chartController', () => {
     });
   });
 
-  describe('setRefreshRate', () => {
+  describe('#set refreshRate ()', () => {
     it('should stop previous refreshes', () => {
       interval.cancel.should.not.be.called();
-      ctrl.setRefreshRate(5);
+      ctrl.refreshRate = 5;
       interval.cancel.should.be.calledOnce();
     });
 
     it('should set the new update interval', () => {
       interval.should.be.calledOnce();
-      ctrl.setRefreshRate(5);
+      ctrl.refreshRate = 5;
       interval.should.be.calledTwice();
       interval.secondCall.should.be.calledWith(sinon.match.func, 5);
     });
 
     it('should perform updates at each interval', () => {
-      ctrl.setRefreshRate(5);
+      ctrl.refreshRate = 5;
       svc.getData.should.be.calledOnce();
       let fn = interval.secondCall.args[0];
       fn();
@@ -343,7 +319,7 @@ describe('multichart chartController', () => {
     it('should cancel if given non-positive value', () => {
       interval.cancel.should.not.be.called();
       svc.getData.should.be.calledOnce();
-      ctrl.setRefreshRate(-1);
+      ctrl.refreshRate = -1;
       interval.cancel.should.be.calledOnce();
       svc.getData.should.be.calledOnce();
     });

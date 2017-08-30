@@ -25,12 +25,15 @@
  * exception statement from your version.
  */
 
-import controller from './multichart.controller.js';
-import chartController from './chart.controller.js';
+import controller from './chart.controller.js';
 
 export default angular
-  .module('multichartModule', [
-    controller,
-    chartController
-  ])
+  .module('multichartChartComponent', [controller])
+  .component('multichartChart', {
+    bindings: {
+      chart: '<'
+    },
+    controller: 'MultichartChartController',
+    template: require('./chart.html')
+  })
   .name;

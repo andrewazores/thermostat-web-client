@@ -1,0 +1,69 @@
+<div class="card-pf card-pf-view">
+  <div class="card-pf-heading">
+    <label class="card-pf-title">{{$ctrl.chart}}</label>
+  </div>
+
+  <div class="row" style="margin-top:2vh">
+
+    <!-- Metric Controls: Refresh Rate -->
+    <div class="col-xs-12 col-md-3">
+      <label for="refreshCombo" class="label label-info" translate>multicharts.chart.refresh.LABEL</label>
+      <select name="refreshCombo" class="combobox form-control" ng-model="$ctrl.refreshRate">
+        <option value="-1" translate>multicharts.chart.refresh.DISABLED</option>
+        <option value="1000" translate="multicharts.chart.refresh.SECONDS" translate-values="{ SECONDS: 1 }" translate-interpolation="messageformat"></option>
+        <option value="2000" selected translate="multicharts.chart.refresh.SECONDS" translate-values="{ SECONDS: 2, DEFAULT: true }" translate-interpolation="messageformat"></option>
+        <option value="5000" translate="multicharts.chart.refresh.SECONDS" translate-values="{ SECONDS: 5 }" translate-interpolation="messageformat"></option>
+        <option value="10000" translate="multicharts.chart.refresh.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+        <option value="30000" translate="multicharts.chart.refresh.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
+        <option value="60000" translate="multicharts.chart.refresh.MINUTES" translate-values="{ MINUTES: 1 }" translate-interpolation="messageformat"></option>
+        <option value="300000" translate="multicharts.chart.refresh.MINUTES" translate-values="{ MINUTES: 5 }" translate-interpolation="messageformat"></option>
+        <option value="600000" translate="multicharts.chart.refresh.MINUTES" translate-values="{ MINUTES: 10 }" translate-interpolation="messageformat"></option>
+      </select>
+    </div>
+
+    <!-- Metric Controls: Max Data Age -->
+    <div class="col-xs-12 col-md-3">
+      <label for="dataAgeCombo" class="label label-info" translate>multicharts.chart.refresh.LABEL</label>
+      <select name="dataAgeCombo" class="combobox form-control" ng-model="$ctrl.dataAgeLimit">
+        <option value="10000" translate="multicharts.chart.dataAge.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+        <option value="30000" translate="multicharts.chart.dataAge.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
+        <option value="60000" selected translate="multicharts.chart.dataAge.MINUTES" translate-values="{ MINUTES: 1, DEFAULT: true}" translate-interpolation="messageformat"></option>
+        <option value="300000" translate="multicharts.chart.dataAge.MINUTES" translate-values="{ MINUTES: 5 }" translate-interpolation="messageformat"></option>
+        <option value="600000" translate="multicharts.chart.dataAge.MINUTES" translate-values="{ MINUTES: 10 }" translate-interpolation="messageformat"></option>
+        <option value="900000" translate="multicharts.chart.dataAge.MINUTES" translate-values="{ MINUTES: 15 }" translate-interpolation="messageformat"></option>
+        <option value="1800000" translate="multicharts.chart.dataAge.MINUTES" translate-values="{ MINUTES: 30 }" translate-interpolation="messageformat"></option>
+        <option value="3600000" translate="multicharts.chart.dataAge.HOURS" translate-values="{ HOURS: 1 }" translate-interpolation="messageformat"></option>
+      </select>
+    </div>
+
+    <div class="dropdown dropdown-kebab-pf pull-right" style="margin-right:2vw">
+      <button class="btn btn-link dropdown-toggle" type="button" id="{{$ctrl.chart}}-kebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <span class="fa fa-ellipsis-v"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="{{$ctrl.chart}}-kebab">
+        <li>
+          <form name="renameForm" class="input-group" ng-submit="$ctrl.rename(chartRename)">
+            <input type="text" class="form-control" translate-attr="{ placeholder: 'multicharts.chart.rename.PLACEHOLDER' }" ng-model="chartRename"/>
+            <input type="submit" translate-attr="{ value: 'multicharts.chart.rename.SUBMIT_LABEL' }"/>
+          </form>
+        </li>
+        <li role="separator" class="divider"></li>
+        <li>
+          <a ng-click="$ctrl.removeChart(chart)" translate>multicharts.chart.DELETE_LABEL</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="card-pf-body" ng-if="$ctrl.chartConfig">
+    <pf-line-chart id="chart-{{$ctrl.chart}}" config="$ctrl.chartConfig"
+                                        chart-data="$ctrl.chartData"
+                                        show-x-axis="true"
+                                        show-y-axis="true"
+                                        ></pf-line-chart>
+
+
+  </div>
+
+</div>
