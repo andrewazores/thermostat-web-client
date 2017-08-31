@@ -33,7 +33,6 @@ import systemInfoService from 'components/system-info/system-info.service.js';
 class JvmListController {
   constructor (jvmListService, systemInfoService, $scope, $location, $timeout, $translate) {
     'ngInject';
-    this.scope = $scope;
     this.jvmListService = jvmListService;
     this.systemInfoService = systemInfoService;
     this.scope = $scope;
@@ -42,6 +41,7 @@ class JvmListController {
     this.translate = $translate;
     this.systemsOpen = {};
 
+    $scope.pageConfig = { showPaginationControls: false };
     $scope.sortConfig = {};
     $scope.filterConfig = {};
     $scope.listConfig = {
@@ -114,7 +114,6 @@ class JvmListController {
       resp => {
         this.showErr = false;
         this.systems = resp.data.response;
-
         for (let i = 0; i < this.systems.length; i++) {
           let system = this.systems[i];
           this.systemsOpen[system.systemId] = false;
@@ -129,15 +128,19 @@ class JvmListController {
             }
           );
         }
-
         if (this.systems.length === 1) {
           this.systemsOpen[this.systems[0].systemId] = true;
         }
+        this.scope.pageConfig.numTotalItems = this.scope.allItems.length;
+        this.scope.pageConfig.pageSize = this.scope.allItems.length;
+        this.scope.pageConfig.pageNumber = 1;
         this.scope.listConfig.itemsAvailable = true;
         this.scope.toolbarConfig.filterConfig.resultsCount = this.systems.length;
       },
       () => {
         this.scope.listConfig.itemsAvailable = false;
+        this.scope.pageConfig.pageSize = 0;
+        this.scope.pageConfig.pageNumber = 0;
         this.showErr = true;
       }
     );
