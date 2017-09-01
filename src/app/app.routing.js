@@ -56,21 +56,18 @@ let appRouter = angular.module('app.routing', componentRoutingModules);
 
 function transitionHook ($q, $transitions, $state, authService) {
   'ngInject';
-  $transitions.onBefore({ to: '/' }, () => {
-    return $state.target('landing');
-  });
+  $transitions.onBefore({ to: '/' }, () => $state.target('landing'));
 
-  $transitions.onBefore({ to: state => {
-    return state.name !== 'about' && state.name !== 'login' && !authService.status();
-  }}, () => {
-    let defer = $q.defer();
-    authService.refresh()
-      .then(() => defer.resolve(),
-        () => {
-          authService.goToLogin(defer);
-        });
-    return defer.promise;
-  });
+  $transitions.onEnter({}, () => { authService.refresh() });
+
+  $transitions.onBefore(
+    { to: state => state.name !== 'about' && state.name !== 'login' && !authService.status() },
+    () => {
+      let defer = $q.defer();
+      authService.refresh().then(() => defer.resolve(), () => authService.goToLogin(defer));
+      return defer.promise;
+    }
+  );
 }
 appRouter.run(transitionHook);
 export default appRouter.name;

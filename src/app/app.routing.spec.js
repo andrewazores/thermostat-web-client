@@ -56,7 +56,8 @@ describe('ErrorRouting', () => {
       goToLogin: sinon.spy()
     };
     transitions = {
-      onBefore: sinon.spy()
+      onBefore: sinon.spy(),
+      onEnter: sinon.spy()
     };
 
     module.errorRouting(stateProvider, urlRouterProvider);
@@ -107,11 +108,20 @@ describe('ErrorRouting', () => {
   });
 
   describe('state change hook', () => {
-    it('should only be on state change start', () => {
-      transitions.onBefore.should.be.calledTwice();
+
+    describe('onEnter hook', () => {
+      it('should perform authService refresh on all transitions', () => {
+        authSvc.refresh.should.not.be.called();
+        let args = transitions.onEnter.args[0];
+        args[0].should.be.an.Object();
+        args[0].should.deepEqual({});
+        args[1].should.be.a.Function();
+        args[1]();
+        authSvc.refresh.should.be.calledOnce();
+      });
     });
 
-    describe('first hook', () => {
+    describe('first onBefore hook', () => {
       it('should match root transitions', () => {
         transitions.onBefore.args[0][0].should.have.ownProperty('to');
         transitions.onBefore.args[0][0].to.should.equal('/');
@@ -126,7 +136,7 @@ describe('ErrorRouting', () => {
       });
     });
 
-    describe('second hook', () => {
+    describe('second onBefore hook', () => {
       it('should match non-login transitions', () => {
         transitions.onBefore.args[1][0].should.have.ownProperty('to');
         let fn = transitions.onBefore.args[1][0].to;

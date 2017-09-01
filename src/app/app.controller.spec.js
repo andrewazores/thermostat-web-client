@@ -134,8 +134,13 @@ describe('AppController', () => {
       });
     }));
 
+    it('should be set on init', () => {
+      scope.should.have.ownProperty('username');
+      scope.username.should.equal(authService.username);
+    });
+
     it('should be set on userLoginChanged according to authService username', () => {
-      scope.should.not.have.ownProperty('username');
+      authService.username = 'new-username';
       rootScope.$broadcast('userLoginChanged');
       scope.should.have.ownProperty('username');
       scope.username.should.equal(authService.username);

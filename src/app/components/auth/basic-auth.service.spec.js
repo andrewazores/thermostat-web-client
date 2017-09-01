@@ -63,14 +63,18 @@ describe('BasicAuthService', () => {
   describe('#login()', () => {
     it('should set logged in status on successful login', done => {
       basicAuthService.login('client', 'client-pwd', () => {
+        cookies.put.should.be.calledWith('session', true, sinon.match.object);
+        cookies.get.withArgs('session').returns(true);
         basicAuthService.status().should.equal(true);
         done();
       });
     });
 
     it('should set username on successful login', done => {
-      should(basicAuthService.username).be.null();
+      should(basicAuthService.username).be.undefined();
       basicAuthService.login('client', 'client-pwd', () => {
+        cookies.put.should.be.calledWith('loggedInUser', 'client');
+        cookies.get.withArgs('loggedInUser').returns('client');
         basicAuthService.username.should.equal('client');
         done();
       });
@@ -78,7 +82,8 @@ describe('BasicAuthService', () => {
 
     it('should not store username in cookies by default', done => {
       basicAuthService.login('client', 'client-pwd', () => {
-        cookies.put.should.not.be.called();
+        cookies.put.should.be.called();
+        cookies.put.should.not.be.calledWith('username');
         done();
       });
     });
@@ -86,8 +91,10 @@ describe('BasicAuthService', () => {
     it('should store username in cookies when set', done => {
       basicAuthService.rememberUser(true);
       basicAuthService.login('client', 'client-pwd', () => {
-        cookies.put.should.be.calledOnce();
+        cookies.put.should.be.calledThrice();
+        cookies.put.should.be.calledWith('loggedInUser', 'client');
         cookies.put.should.be.calledWith('username', 'client');
+        cookies.put.should.be.calledWith('session', true, sinon.match.object);
         done();
       });
     });
@@ -114,8 +121,12 @@ describe('BasicAuthService', () => {
   describe('#logout()', () => {
     it('should set logged out status', done => {
       basicAuthService.login('client', 'client-pwd');
+      cookies.put.should.be.calledWith('session', true, sinon.match.object);
+      cookies.get.withArgs('session').returns(true);
       basicAuthService.status().should.equal(true);
       basicAuthService.logout(() => {
+        cookies.remove.should.be.calledWith('session');
+        cookies.get.withArgs('session').returns(undefined);
         basicAuthService.status().should.equal(false);
         done();
       });
@@ -156,6 +167,8 @@ describe('BasicAuthService', () => {
 
     it('should call success handler if logged in', done => {
       basicAuthService.login('foo', 'bar', () => {
+        cookies.put.should.be.calledWith('session', true, sinon.match.object);
+        cookies.get.withArgs('session').returns(true);
         basicAuthService.refresh().then(done, angular.noop);
       });
     });
@@ -163,6 +176,8 @@ describe('BasicAuthService', () => {
     it('should call error handler if logged out', done => {
       qPromise.callsArg(1);
       basicAuthService.logout();
+      cookies.remove.should.be.calledWith('session');
+      cookies.get.withArgs('session').returns(false);
       basicAuthService.refresh().then(angular.noop, done);
     });
   });
@@ -170,6 +185,7 @@ describe('BasicAuthService', () => {
   describe('#get authHeader()', () => {
     it('should return base64-encoded credentials', done => {
       basicAuthService.login('foo', 'bar', () => {
+        cookies.get.withArgs('loggedInUser').returns('foo');
         basicAuthService.authHeader.should.equal('Basic ' + btoa('foo:bar'));
         done();
       });
@@ -177,12 +193,13 @@ describe('BasicAuthService', () => {
   });
 
   describe('#get username()', () => {
-    it('should be null before login', () => {
-      should(basicAuthService.username).be.null();
+    it('should be undefined before login', () => {
+      should(basicAuthService.username).be.undefined();
     });
 
     it('should return logged in user', done => {
       basicAuthService.login('foo', 'bar', () => {
+        cookies.get.withArgs('loggedInUser').returns('foo');
         basicAuthService.username.should.equal('foo');
         done();
       });
@@ -206,6 +223,7 @@ describe('BasicAuthService', () => {
 
     it('should only add basic auth username when only username provided', done => {
       basicAuthService.login('foo', null, () => {
+        cookies.get.withArgs('loggedInUser').returns('foo');
         basicAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://foo@example.com/');
         done();
       });
@@ -213,6 +231,7 @@ describe('BasicAuthService', () => {
 
     it('should add basic auth username and password when provided', done => {
       basicAuthService.login('foo', 'bar', () => {
+        cookies.get.withArgs('loggedInUser').returns('foo');
         basicAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://foo:bar@example.com/');
         done();
       });

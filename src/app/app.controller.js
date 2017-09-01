@@ -31,6 +31,9 @@ class AppController {
   constructor ($scope, environment, $state, authService) {
     'ngInject';
 
+    this._scope = $scope;
+    this._authService = authService;
+
     angular.element('logoutButton').removeAttr('hidden');
     if (environment !== 'production') {
       $scope.env = environment;
@@ -41,7 +44,12 @@ class AppController {
 
     $scope.logout = () => authService.logout();
 
-    $scope.$on('userLoginChanged', () => $scope.username = authService.username);
+    $scope.$on('userLoginChanged', () => this.updateUsernameLabel());
+    this.updateUsernameLabel();
+  }
+
+  updateUsernameLabel () {
+    this._scope.username = this._authService.username;
   }
 
 }

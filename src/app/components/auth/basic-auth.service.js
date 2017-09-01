@@ -34,9 +34,7 @@ export default class BasicAuthService {
     this.q = $q;
     this.$state = $state;
     this.cookies = $cookies;
-    this.state = false;
 
-    this._user = null;
     this._pass = null;
   }
 
@@ -45,16 +43,18 @@ export default class BasicAuthService {
   }
 
   status () {
-    return this.state;
+    return angular.isDefined(this.cookies.get('session'));
   }
 
   login (user, pass, success = angular.noop) {
-    this._user = user;
     this._pass = pass;
-    this.state = true;
     if (this._rememberUser) {
       this.cookies.put('username', user);
     }
+
+    this._refreshSession();
+    this.cookies.put('loggedInUser', user);
+
     this._rootScope.$broadcast('userLoginChanged');
     success();
   }
@@ -64,30 +64,43 @@ export default class BasicAuthService {
   }
 
   logout (callback = angular.noop) {
-    this._user = null;
     this._pass = null;
-    this.state = false;
     this.$state.go('login');
+
+    this.cookies.remove('session');
+    this.cookies.remove('loggedInUser');
+
     this._rootScope.$broadcast('userLoginChanged');
     callback();
   }
 
+  _refreshSession () {
+    let now = new Date();
+    let expiry = new Date(now);
+    expiry.setMinutes(now.getMinutes() + 15);
+    this.cookies.put('session', true, { expires: expiry });
+  }
+
   refresh () {
     let defer = this.q.defer();
-    if (this.state) {
+    let session = this.cookies.get('session');
+    if (session) {
+      this._refreshSession();
       defer.resolve();
     } else {
+      this.cookies.remove('session');
+      this.cookies.remove('loggedInUser');
       defer.reject();
     }
     return defer.promise;
   }
 
   get authHeader () {
-    return 'Basic ' + btoa(this._user + ':' + this._pass);
+    return 'Basic ' + btoa(this.username + ':' + this._pass);
   }
 
   get username () {
-    return this._user;
+    return this.cookies.get('loggedInUser');
   }
 
   get rememberedUsername () {
@@ -96,13 +109,13 @@ export default class BasicAuthService {
 
   getCommandChannelUrl (baseUrl) {
     let parsed = url.parse(baseUrl);
-    if (this._user == null && this._pass == null) {
+    if (this.username == null && this._pass == null) {
       // no-op
     }
-    if (this._user != null && this._pass == null) {
-      parsed.auth = this._user;
+    if (this.username != null && this._pass == null) {
+      parsed.auth = this.username;
     }
-    if (this._user != null && this._pass != null) {
+    if (this.username != null && this._pass != null) {
       parsed.auth = this.username + ':' + this._pass;
     }
     return url.format(parsed);
