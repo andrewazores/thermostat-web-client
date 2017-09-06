@@ -30,7 +30,14 @@
 import BasicAuthService from './basic-auth.service.js';
 
 describe('BasicAuthService', () => {
-  let basicAuthService, q, qPromise, state, cookies, rootScope;
+
+  function future () {
+    let now = new Date();
+    now.setMinutes(now.getMinutes() + 30);
+    return now;
+  }
+
+  let basicAuthService, q, qPromise, state, localStorage, rootScope;
   beforeEach(() => {
     qPromise = sinon.stub().yields();
     q = {
@@ -46,13 +53,15 @@ describe('BasicAuthService', () => {
       go: sinon.spy(),
       target: sinon.stub().returns('stateTarget')
     };
-    cookies = {
-      put: sinon.spy(),
-      get: sinon.stub(),
-      remove: sinon.spy()
+    localStorage = {
+      getItem: sinon.stub(),
+      hasItem: sinon.stub(),
+      removeItem: sinon.spy(),
+      setItem: sinon.spy(),
+      clear: sinon.spy()
     };
     rootScope = { $broadcast: sinon.spy() };
-    basicAuthService = new BasicAuthService(q, state, cookies);
+    basicAuthService = new BasicAuthService(q, state, localStorage);
     basicAuthService.rootScope = rootScope;
   });
 
@@ -63,8 +72,10 @@ describe('BasicAuthService', () => {
   describe('#login()', () => {
     it('should set logged in status on successful login', done => {
       basicAuthService.login('client', 'client-pwd', () => {
-        cookies.put.should.be.calledWith('session', true, sinon.match.object);
-        cookies.get.withArgs('session').returns(true);
+        localStorage.setItem.should.be.calledWith('loggedInUser', 'client');
+        localStorage.setItem.should.be.calledWith('session', sinon.match.date);
+        localStorage.getItem.withArgs('session').returns(future());
+        localStorage.hasItem.withArgs('session').returns(true);
         basicAuthService.status().should.equal(true);
         done();
       });
@@ -73,8 +84,8 @@ describe('BasicAuthService', () => {
     it('should set username on successful login', done => {
       should(basicAuthService.username).be.undefined();
       basicAuthService.login('client', 'client-pwd', () => {
-        cookies.put.should.be.calledWith('loggedInUser', 'client');
-        cookies.get.withArgs('loggedInUser').returns('client');
+        localStorage.setItem.should.be.calledWith('loggedInUser', 'client');
+        localStorage.getItem.withArgs('loggedInUser').returns('client');
         basicAuthService.username.should.equal('client');
         done();
       });
@@ -82,8 +93,8 @@ describe('BasicAuthService', () => {
 
     it('should not store username in cookies by default', done => {
       basicAuthService.login('client', 'client-pwd', () => {
-        cookies.put.should.be.called();
-        cookies.put.should.not.be.calledWith('username');
+        localStorage.setItem.should.be.called();
+        localStorage.setItem.should.not.be.calledWith('username');
         done();
       });
     });
@@ -91,10 +102,10 @@ describe('BasicAuthService', () => {
     it('should store username in cookies when set', done => {
       basicAuthService.rememberUser(true);
       basicAuthService.login('client', 'client-pwd', () => {
-        cookies.put.should.be.calledThrice();
-        cookies.put.should.be.calledWith('loggedInUser', 'client');
-        cookies.put.should.be.calledWith('username', 'client');
-        cookies.put.should.be.calledWith('session', true, sinon.match.object);
+        localStorage.setItem.should.be.calledThrice();
+        localStorage.setItem.should.be.calledWith('loggedInUser', 'client');
+        localStorage.setItem.should.be.calledWith('username', 'client');
+        localStorage.setItem.should.be.calledWith('session', sinon.match.date);
         done();
       });
     });
@@ -121,12 +132,14 @@ describe('BasicAuthService', () => {
   describe('#logout()', () => {
     it('should set logged out status', done => {
       basicAuthService.login('client', 'client-pwd');
-      cookies.put.should.be.calledWith('session', true, sinon.match.object);
-      cookies.get.withArgs('session').returns(true);
+      localStorage.setItem.should.be.calledWith('session', sinon.match.date);
+      localStorage.getItem.withArgs('session').returns(future());
+      localStorage.hasItem.withArgs('session').returns(true);
       basicAuthService.status().should.equal(true);
       basicAuthService.logout(() => {
-        cookies.remove.should.be.calledWith('session');
-        cookies.get.withArgs('session').returns(undefined);
+        localStorage.removeItem.should.be.calledWith('session');
+        localStorage.getItem.withArgs('session').returns(null);
+        localStorage.hasItem.withArgs('session').returns(false);
         basicAuthService.status().should.equal(false);
         done();
       });
@@ -167,8 +180,9 @@ describe('BasicAuthService', () => {
 
     it('should call success handler if logged in', done => {
       basicAuthService.login('foo', 'bar', () => {
-        cookies.put.should.be.calledWith('session', true, sinon.match.object);
-        cookies.get.withArgs('session').returns(true);
+        localStorage.setItem.should.be.calledWith('session', sinon.match.date);
+        localStorage.getItem.withArgs('session').returns(future());
+        localStorage.hasItem.withArgs('session').returns(true);
         basicAuthService.refresh().then(done, angular.noop);
       });
     });
@@ -176,8 +190,9 @@ describe('BasicAuthService', () => {
     it('should call error handler if logged out', done => {
       qPromise.callsArg(1);
       basicAuthService.logout();
-      cookies.remove.should.be.calledWith('session');
-      cookies.get.withArgs('session').returns(false);
+      localStorage.removeItem.should.be.calledWith('session');
+      localStorage.getItem.withArgs('session').returns(null);
+      localStorage.hasItem.withArgs('session').returns(false);
       basicAuthService.refresh().then(angular.noop, done);
     });
   });
@@ -185,7 +200,7 @@ describe('BasicAuthService', () => {
   describe('#get authHeader()', () => {
     it('should return base64-encoded credentials', done => {
       basicAuthService.login('foo', 'bar', () => {
-        cookies.get.withArgs('loggedInUser').returns('foo');
+        localStorage.getItem.withArgs('loggedInUser').returns('foo');
         basicAuthService.authHeader.should.equal('Basic ' + btoa('foo:bar'));
         done();
       });
@@ -199,7 +214,7 @@ describe('BasicAuthService', () => {
 
     it('should return logged in user', done => {
       basicAuthService.login('foo', 'bar', () => {
-        cookies.get.withArgs('loggedInUser').returns('foo');
+        localStorage.getItem.withArgs('loggedInUser').returns('foo');
         basicAuthService.username.should.equal('foo');
         done();
       });
@@ -208,10 +223,10 @@ describe('BasicAuthService', () => {
 
   describe('#get rememberedUsername()', () => {
     it('should return username stored in cookie', () => {
-      cookies.get.returns('fakeUser');
-      cookies.get.should.not.be.called();
+      localStorage.getItem.returns('fakeUser');
+      localStorage.getItem.should.not.be.called();
       basicAuthService.rememberedUsername.should.equal('fakeUser');
-      cookies.get.should.be.calledOnce();
+      localStorage.getItem.should.be.calledOnce();
     });
   });
 
@@ -223,7 +238,7 @@ describe('BasicAuthService', () => {
 
     it('should only add basic auth username when only username provided', done => {
       basicAuthService.login('foo', null, () => {
-        cookies.get.withArgs('loggedInUser').returns('foo');
+        localStorage.getItem.withArgs('loggedInUser').returns('foo');
         basicAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://foo@example.com/');
         done();
       });
@@ -231,7 +246,7 @@ describe('BasicAuthService', () => {
 
     it('should add basic auth username and password when provided', done => {
       basicAuthService.login('foo', 'bar', () => {
-        cookies.get.withArgs('loggedInUser').returns('foo');
+        localStorage.getItem.withArgs('loggedInUser').returns('foo');
         basicAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://foo:bar@example.com/');
         done();
       });
@@ -241,9 +256,9 @@ describe('BasicAuthService', () => {
   describe('rememberUser', () => {
     it('should remove username stored in cookie when called with "false"', () => {
       basicAuthService.rememberUser(true);
-      cookies.remove.should.not.be.called();
+      localStorage.removeItem.should.not.be.called();
       basicAuthService.rememberUser(false);
-      cookies.remove.should.be.calledWith('username');
+      localStorage.removeItem.should.be.calledWith('username');
     });
   });
 });

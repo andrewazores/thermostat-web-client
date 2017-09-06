@@ -38,7 +38,7 @@ class LoginController {
       return;
     }
 
-    this.rememberUser = angular.isDefined(authService.rememberedUsername);
+    this.rememberUser = authService.rememberedUsername != null;
     if (this.rememberUser) {
       this.username = authService.rememberedUsername;
     }

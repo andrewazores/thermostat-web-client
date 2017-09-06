@@ -31,12 +31,14 @@ describe('AppController', () => {
     'ngInject';
     $provide.value('$transitions', { onBefore: angular.noop });
 
-    let cookies = {
-      put: sinon.spy(),
-      get: sinon.stub().returns('fake-username'),
-      remove: sinon.spy()
+    let localStorage = {
+      getItem: sinon.stub(),
+      hasItem: sinon.stub(),
+      removeItem: sinon.spy(),
+      setItem: sinon.spy(),
+      clear: sinon.spy()
     };
-    $provide.value('$cookies', cookies);
+    $provide.value('localStorage', localStorage);
   }));
 
   beforeEach(angular.mock.module('AppController'));

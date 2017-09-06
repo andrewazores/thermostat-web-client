@@ -27,13 +27,15 @@
 
 import * as url from 'url';
 
+const SESSION_EXPIRY_MINUTES = 15;
+
 export default class BasicAuthService {
 
-  constructor ($q, $state, $cookies) {
+  constructor ($q, $state, localStorage) {
     'ngInject';
     this.q = $q;
     this.$state = $state;
-    this.cookies = $cookies;
+    this._localStorage = localStorage;
 
     this._pass = null;
   }
@@ -43,17 +45,17 @@ export default class BasicAuthService {
   }
 
   status () {
-    return angular.isDefined(this.cookies.get('session'));
+    return this._sessionIsValid();
   }
 
   login (user, pass, success = angular.noop) {
     this._pass = pass;
     if (this._rememberUser) {
-      this.cookies.put('username', user);
+      this._localStorage.setItem('username', user);
     }
 
+    this._localStorage.setItem('loggedInUser', user);
     this._refreshSession();
-    this.cookies.put('loggedInUser', user);
 
     this._rootScope.$broadcast('userLoginChanged');
     success();
@@ -67,8 +69,8 @@ export default class BasicAuthService {
     this._pass = null;
     this.$state.go('login');
 
-    this.cookies.remove('session');
-    this.cookies.remove('loggedInUser');
+    this._localStorage.removeItem('session');
+    this._localStorage.removeItem('loggedInUser');
 
     this._rootScope.$broadcast('userLoginChanged');
     callback();
@@ -77,19 +79,28 @@ export default class BasicAuthService {
   _refreshSession () {
     let now = new Date();
     let expiry = new Date(now);
-    expiry.setMinutes(now.getMinutes() + 15);
-    this.cookies.put('session', true, { expires: expiry });
+    expiry.setMinutes(now.getMinutes() + SESSION_EXPIRY_MINUTES);
+    this._localStorage.setItem('session', expiry);
+  }
+
+  _sessionIsValid () {
+    if (!this._localStorage.hasItem('session')) {
+      return false;
+    }
+    let session = new Date(this._localStorage.getItem('session'));
+    let now = new Date();
+
+    return session.getTime() >= now.getTime();
   }
 
   refresh () {
     let defer = this.q.defer();
-    let session = this.cookies.get('session');
-    if (session) {
+    if (this._sessionIsValid()) {
       this._refreshSession();
       defer.resolve();
     } else {
-      this.cookies.remove('session');
-      this.cookies.remove('loggedInUser');
+      this._localStorage.removeItem('session');
+      this._localStorage.removeItem('loggedInUser');
       defer.reject();
     }
     return defer.promise;
@@ -100,11 +111,11 @@ export default class BasicAuthService {
   }
 
   get username () {
-    return this.cookies.get('loggedInUser');
+    return this._localStorage.getItem('loggedInUser');
   }
 
   get rememberedUsername () {
-    return this.cookies.get('username');
+    return this._localStorage.getItem('username');
   }
 
   getCommandChannelUrl (baseUrl) {
@@ -124,7 +135,7 @@ export default class BasicAuthService {
   rememberUser (remember) {
     this._rememberUser = remember;
     if (!remember) {
-      this.cookies.remove('username');
+      this._localStorage.removeItem('username');
     }
   }
 

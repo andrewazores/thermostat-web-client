@@ -25,43 +25,38 @@
  * exception statement from your version.
  */
 
-import services from 'shared/services/services.module.js';
-import service from './user-prefs.service.js';
+import servicesModule from 'shared/services/services.module.js';
 
-describe('userPrefsService', () => {
+class LocalStorageService {
 
-  let svc, storage;
-  beforeEach(() => {
-    storage = {
-      getItem: sinon.stub(),
-      setItem: sinon.spy(),
-      hasItem: sinon.stub()
-    };
-    angular.mock.module(services);
-    angular.mock.module($provide => {
-      'ngInject';
-      $provide.value('localStorage', storage);
-    });
-    angular.mock.module(service);
-    angular.mock.inject(userPrefsService => {
-      'ngInject';
-      svc = userPrefsService;
-    });
-  });
+  constructor ($window) {
+    'ngInject';
+    this._storage = $window.localStorage;
+  }
 
-  it('should exist', () => {
-    should.exist(svc);
-  });
+  setItem (key, value) {
+    this._storage.setItem(key, value);
+  }
 
-  it('should store tlsEnabled preference in storage', () => {
-    storage.setItem.should.not.be.called();
-    svc.tlsEnabled = 'false';
-    storage.setItem.should.be.calledWith('tlsEnabled', false);
-  });
+  getItem (key) {
+    return this._storage.getItem(key);
+  }
 
-  it('should return stored cookie value when present', () => {
-    storage.getItem.returns(true);
-    svc.tlsEnabled.should.equal(true);
-  });
+  removeItem (key) {
+    this._storage.removeItem(key);
+  }
 
-});
+  hasItem (key) {
+    let item = this.getItem(key);
+    return angular.isDefined(item) && item != null;
+  }
+
+  clear () {
+    this._storage.clear();
+  }
+
+}
+
+angular
+  .module(servicesModule)
+  .service('localStorage', LocalStorageService);

@@ -25,33 +25,32 @@
  * exception statement from your version.
  */
 
+import services from 'shared/services/services.module.js';
 import * as url from 'url';
 
 class UserPreferencesService {
-  constructor ($cookies) {
+  constructor (localStorage) {
     'ngInject';
-    this._cookies = $cookies;
+    this._storage = localStorage;
   }
 
   set tlsEnabled (tlsEnabled) {
-    this._cookies.put('tlsEnabled', JSON.parse(tlsEnabled));
+    this._storage.setItem('tlsEnabled', JSON.parse(tlsEnabled));
   }
 
   get tlsEnabled () {
-    let raw = this._cookies.get('tlsEnabled');
     // can't use gatewayUrl value here due to circular reference, but process.env
     // is not available in test suite
     /* istanbul ignore next */
-    if (!angular.isDefined(raw)) {
+    if (!this._storage.hasItem('tlsEnabled')) {
       let protocol = url.parse(process.env.GATEWAY_URL).protocol;
       this.tlsEnabled = protocol === 'https:';
-      raw = this._cookies.get('tlsEnabled');
     }
-    return JSON.parse(raw);
+    return JSON.parse(this._storage.getItem('tlsEnabled'));
   }
 }
 
 export default angular
-  .module('userPrefs.service', ['ngCookies'])
+  .module('userPrefs.service', [services])
   .service('userPrefsService', UserPreferencesService)
   .name;
