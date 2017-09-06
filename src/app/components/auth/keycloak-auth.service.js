@@ -72,7 +72,7 @@ export default class KeycloakAuthService {
 
   getCommandChannelUrl (baseUrl) {
     let parsed = url.parse(baseUrl);
-    parsed.query = { token: this.keycloak.token };
+    parsed.query = { access_token: this.keycloak.token };
     return url.format(parsed);
   }
 

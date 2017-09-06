@@ -126,7 +126,7 @@ describe('KeycloakAuthService', () => {
 
   describe('#getCommandChannelUrl()', () => {
     it('should add the Keycloak token to the query', () => {
-      keycloakAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://example.com/?token=fakeToken');
+      keycloakAuthService.getCommandChannelUrl('http://example.com/').should.equal('http://example.com/?access_token=fakeToken');
     });
   });
 });
