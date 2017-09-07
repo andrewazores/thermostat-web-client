@@ -29,7 +29,6 @@ import Keycloak from 'keycloak-js/dist/keycloak.js';
 
 import KeycloakAuthService from './keycloak-auth.service.js';
 import BasicAuthService from './basic-auth.service.js';
-import LoginController from './login.controller.js';
 
 let MOD_NAME = 'authModule';
 export default MOD_NAME;
@@ -49,8 +48,6 @@ export function config (env, done = angular.noop, keycloakProvider = () => {
 }) {
   let mod = angular.module(MOD_NAME, ['ui.router']);
 
-  mod.constant('AUTH_MODULE', MOD_NAME);
-  mod.controller('LoginController', LoginController);
   mod.run((authService, $rootScope) => {
     'ngInject';
     authService.rootScope = $rootScope;

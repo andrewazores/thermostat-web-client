@@ -76,12 +76,4 @@ describe('AppModule', () => {
     });
   });
 
-  it('should provide authModule', () => {
-    inject(AUTH_MODULE => {
-      'ngInject';
-      should.exist(AUTH_MODULE);
-      should.exist(angular.module(AUTH_MODULE));
-    });
-  });
-
 });

@@ -26,14 +26,31 @@
  */
 
 import authModule from 'components/auth/auth.module.js';
-import configModule from 'shared/config/config.module.js';
+
+class LoginController {
+  constructor ($state, authService) {
+    'ngInject';
+    this._state = $state;
+    this._authService = authService;
+
+    if (authService.status()) {
+      $state.go('landing');
+      return;
+    }
+
+    this.rememberUser = angular.isDefined(authService.rememberedUsername);
+    if (this.rememberUser) {
+      this.username = authService.rememberedUsername;
+    }
+  }
+
+  login () {
+    this._authService.rememberUser(this.rememberUser);
+    this._authService.login(this.username, this.password, () => this._state.go('landing'));
+  }
+}
 
 export default angular
-  .module('app.services', [
-    authModule,
-    configModule
-  ])
+  .module('login.controller', [authModule])
+  .controller('LoginController', LoginController)
   .name;
-
-let req = require.context('./', true, /\.service\.js/);
-req.keys().map(req);

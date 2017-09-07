@@ -25,23 +25,12 @@
  * exception statement from your version.
  */
 
-function authRouting ($stateProvider, $urlRouterProvider) {
-  'ngInject';
-  // define initial state behaviour
-  $urlRouterProvider.when('', '/');
-
-  $stateProvider
-    .state('/', {
-      url:'/'
-    })
-    .state('login', {
-      url: '/login',
-      template: require('./login.html'),
-      controller: 'LoginController'
-    });
-}
+import controller from './login.controller.js';
 
 export default angular
-  .module('auth.routing', ['ui.router'])
-  .config(authRouting)
+  .module('loginComponent', [controller])
+  .component('login', {
+    controller: 'LoginController',
+    template: require('./login.html')
+  })
   .name;

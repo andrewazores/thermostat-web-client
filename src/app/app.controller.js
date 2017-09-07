@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-import authModule from './components/auth/auth.module.js';
+import authModule from 'components/auth/auth.module.js';
 
 class AppController {
   constructor ($scope, environment, $state, authService) {

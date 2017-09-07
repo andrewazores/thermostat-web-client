@@ -25,10 +25,14 @@
  * exception statement from your version.
  */
 
+import authModule from 'components/auth/auth.module.js';
 import controller from './about.controller.js';
 
 export default angular
-  .module('aboutComponent', [controller])
+  .module('aboutComponent', [
+    authModule,
+    controller
+  ])
   .component('about', {
     bindings: {
       username: '<'

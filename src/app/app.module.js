@@ -35,7 +35,7 @@ import 'bootstrap';
 import 'bootstrap-switch';
 
 import configModule from 'shared/config/config.module.js';
-import {default as authModule, config as authModBootstrap} from './components/auth/auth.module.js';
+import {default as authModule, config as authModBootstrap} from 'components/auth/auth.module.js';
 import filters from 'shared/filters/filters.module.js';
 import services from 'shared/services/services.module.js';
 import directives from 'shared/directives/directives.module.js';

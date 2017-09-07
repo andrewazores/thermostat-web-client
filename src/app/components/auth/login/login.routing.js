@@ -25,25 +25,31 @@
  * exception statement from your version.
  */
 
-export default class LoginController {
+function config ($urlRouterProvider, $stateProvider) {
+  'ngInject';
+  $urlRouterProvider.when('', '/landing');
 
-  constructor ($scope, $state, authService) {
-    'ngInject';
-
-    if (authService.status()) {
-      $state.go('landing');
-      return;
+  $stateProvider.state('login', {
+    url: '/login',
+    component: 'login',
+    resolve: {
+      lazyLoad: ($q, $ocLazyLoad) => {
+        'ngInject';
+        return $q(resolve => {
+          require.ensure(['./login.component.js'], () => {
+            let module = require('./login.component.js');
+            $ocLazyLoad.load({ name: module.default });
+            resolve(module);
+          });
+        });
+      }
     }
-
-    $scope.rememberUser = angular.isDefined(authService.rememberedUsername);
-    if ($scope.rememberUser) {
-      $scope.username = authService.rememberedUsername;
-    }
-
-    $scope.login = () => {
-      authService.rememberUser($scope.rememberUser);
-      authService.login($scope.username, $scope.password, () => $state.go('landing'));
-    };
-  }
-
+  });
 }
+
+export { config };
+
+export default angular
+  .module('login.routing', ['ui.router'])
+  .config(config)
+  .name;

@@ -25,21 +25,16 @@
  * exception statement from your version.
  */
 
+import controllerModule from './login.controller.js';
+
 describe('LoginController', () => {
 
-  beforeEach(angular.mock.module($provide => {
-    'ngInject';
-    $provide.value('$transitions', { onBefore: angular.noop });
-  }));
+  beforeEach(angular.mock.module(controllerModule));
 
-  beforeEach(angular.mock.module('appModule'));
-
-  describe('$scope.login()', () => {
-    let scope, authService, stateGo, alert;
-    beforeEach(inject(($controller, $rootScope) => {
+  describe('#login ()', () => {
+    let ctrl, authService, state;
+    beforeEach(inject($controller => {
       'ngInject';
-
-      scope = $rootScope.$new();
 
       authService = {
         status: sinon.stub().returns(false),
@@ -47,34 +42,20 @@ describe('LoginController', () => {
         rememberUser: sinon.spy()
       };
 
-      stateGo = sinon.spy();
-      alert = sinon.spy(window, 'alert');
+      state = { go: sinon.spy() };
 
-      $controller('LoginController', {
-        $scope: scope,
-        $state: { go: stateGo },
+      ctrl = $controller('LoginController', {
+        $state: state,
         authService: authService
       });
     }));
 
-    afterEach(() => {
-      alert.restore();
-    });
-
-    it('should be supplied', () => {
-      scope.should.have.ownProperty('login');
-    });
-
-    it('should be a function', () => {
-      scope.login.should.be.a.Function();
-    });
-
-    it('should set remember user on authService if set in scope', () => {
+    it('should set remember user on authService if set on controller', () => {
       authService.login.should.not.be.called();
-      stateGo.should.not.be.called();
+      state.go.should.not.be.called();
 
-      scope.rememberUser = true;
-      scope.login();
+      ctrl.rememberUser = true;
+      ctrl.login();
       authService.login.yield();
       authService.rememberUser.should.be.calledOnce();
       authService.rememberUser.should.be.calledWith(true);
@@ -83,55 +64,47 @@ describe('LoginController', () => {
   });
 
   describe('when logged in', () => {
-    let scope, authService, stateGo;
-    beforeEach(inject(($controller, $rootScope) => {
+    let authService, state;
+    beforeEach(inject($controller => {
       'ngInject';
 
-      scope = $rootScope.$new();
-
-      authService = {
-        status: sinon.stub().returns(true)
-      };
-      stateGo = sinon.spy();
+      authService = { status: sinon.stub().returns(true) };
+      state = { go: sinon.spy() };
 
       $controller('LoginController', {
-        $scope: scope,
-        $state: { go: stateGo },
+        $state: state,
         authService: authService
       });
     }));
 
     it('should redirect to landing if already logged in', () => {
       authService.status.should.be.calledOnce();
-      stateGo.should.be.calledWith('landing');
+      state.go.should.be.calledWith('landing');
     });
   });
 
   describe('stored username fill', () => {
-    let scope, authService, stateGo;
-    beforeEach(inject(($controller, $rootScope) => {
+    let ctrl, authService, state;
+    beforeEach(inject($controller => {
       'ngInject';
-
-      scope = $rootScope.$new();
 
       authService = {
         status: sinon.stub().returns(false),
         rememberedUsername: 'foo-user'
       };
-      stateGo = sinon.spy();
+      state = { go: sinon.spy() };
 
-      $controller('LoginController', {
-        $scope: scope,
-        $state: { go: stateGo },
+      ctrl = $controller('LoginController', {
+        $state: state,
         authService: authService
       });
     }));
 
     it('should fill username from authService if available', () => {
-      scope.should.have.ownProperty('username');
-      scope.username.should.equal('foo-user');
-      scope.should.have.ownProperty('rememberUser');
-      scope.rememberUser.should.be.true();
+      ctrl.should.have.ownProperty('username');
+      ctrl.username.should.equal('foo-user');
+      ctrl.should.have.ownProperty('rememberUser');
+      ctrl.rememberUser.should.be.true();
     });
   });
 
