@@ -33,27 +33,18 @@ function config ($stateProvider) {
 
   $stateProvider.state('jvmInfo', {
     url: '/jvm-info/{systemId}/{jvmId}',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => resolve(require('./jvm-info.html'))
-        )
-      );
-    },
-    controller: 'JvmInfoController as ctrl',
+    component: 'jvmInfo',
     resolve: {
-      loadJvmInfo: ($q, $ocLazyLoad) => {
+      lazyLoad: ($q, $ocLazyLoad) => {
         'ngInject';
         return $q(resolve => {
-          require.ensure(['./jvm-info.module.js'], () => {
-            let module = require('./jvm-info.module.js');
+          require.ensure(['./jvm-info.component.js'], () => {
+            let module = require('./jvm-info.component.js');
             $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });
         });
-      },
-      systemId: $stateParams => $stateParams.systemId,
-      jvmId: $stateParams => $stateParams.jvmId
+      }
     }
   });
 }

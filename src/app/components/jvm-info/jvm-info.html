@@ -1,12 +1,12 @@
 <div class="container-fluid container-cards-pf">
   <ol class="breadcrumb" style="margin-bottom: 0px;">
     <li><a ui-sref="landing">Thermostat</a></li>
-    <li><a ui-sref="jvmList({ '#': ctrl.systemId })" translate>jvmInfo.JVM_LIST_BREADCRUMB</a></li>
-    <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemHostname}}</a></li>
-    <li><a ui-sref="jvmInfo({ systemId: ctrl.systemId, jvmId: ctrl.jvmId })">{{ctrl.jvmInfo.mainClass | extractClass}}</a></li>
+    <li><a ui-sref="jvmList({ '#': $ctrl.systemId })" translate>jvmInfo.JVM_LIST_BREADCRUMB</a></li>
+    <li><a ui-sref="systemInfo({ systemId: $ctrl.systemId })">{{$ctrl.systemHostname}}</a></li>
+    <li><a ui-sref="jvmInfo({ systemId: $ctrl.systemId, jvmId: $ctrl.jvmId })">{{$ctrl.jvmInfo.mainClass | extractClass}}</a></li>
   </ol>
 
-  <customizable-error-message ng-show="ctrl.showErr" dismissible="true" err-title="ctrl.errTitle" err-message="ctrl.errMessage"></customizable-error-message>
+  <customizable-error-message ng-show="$ctrl.showErr" dismissible="true" err-title="$ctrl.errTitle" err-message="$ctrl.errMessage"></customizable-error-message>
 
   <div class="row">
     <div class="col-xs-12 col-lg-8">
@@ -29,67 +29,67 @@
               <tbody class="break-word-wrap">
                 <tr>
                   <td translate>jvmInfo.table.USERNAME</td>
-                  <td>{{ctrl.jvmInfo.username}}</td>
+                  <td>{{$ctrl.jvmInfo.username}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.UID</td>
-                  <td>{{ctrl.jvmInfo.uid}}</td>
+                  <td>{{$ctrl.jvmInfo.uid}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.JVM_ID</td>
-                  <td>{{ctrl.jvmInfo.jvmId}}</td>
+                  <td>{{$ctrl.jvmInfo.jvmId}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.MAIN_CLASS</td>
-                  <td>{{ctrl.jvmInfo.mainClass}}</td>
+                  <td>{{$ctrl.jvmInfo.mainClass}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.START_TIME</td>
-                  <td>{{ctrl.jvmInfo.startTime | date:"medium"}}</td>
+                  <td>{{$ctrl.jvmInfo.startTime | date:"medium"}}</td>
                 </tr>
-                <tr ng-show="!ctrl.jvmInfo.isAlive">
+                <tr ng-show="!$ctrl.jvmInfo.isAlive">
                   <td translate>jvmInfo.table.STOP_TIME</td>
-                  <td>{{ctrl.jvmInfo.stopTime | date:"medium"}}</td>
+                  <td>{{$ctrl.jvmInfo.stopTime | date:"medium"}}</td>
                 </tr>
-                <tr ng-show="ctrl.jvmInfo.isAlive">
+                <tr ng-show="$ctrl.jvmInfo.isAlive">
                   <td translate>jvmInfo.table.LAST_UPDATED</td>
-                  <td>{{ctrl.jvmInfo.lastUpdated | date:"medium"}}</td>
+                  <td>{{$ctrl.jvmInfo.lastUpdated | date:"medium"}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.JVM_PID</td>
-                  <td>{{ctrl.jvmInfo.jvmPid}}</td>
+                  <td>{{$ctrl.jvmInfo.jvmPid}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.JAVA_VERSION</td>
-                  <td>{{ctrl.jvmInfo.javaVersion}}</td>
+                  <td>{{$ctrl.jvmInfo.javaVersion}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.JAVA_HOME</td>
-                  <td>{{ctrl.jvmInfo.javaHome}}</td>
+                  <td>{{$ctrl.jvmInfo.javaHome}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.COMMAND_LINE</td>
-                  <td>{{ctrl.jvmInfo.javaCommandLine}}</td>
+                  <td>{{$ctrl.jvmInfo.javaCommandLine}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.JVM_NAME</td>
-                  <td>{{ctrl.jvmInfo.jvmName}}</td>
+                  <td>{{$ctrl.jvmInfo.jvmName}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.JVM_INFO</td>
-                  <td>{{ctrl.jvmInfo.jvmInfo}}</td>
+                  <td>{{$ctrl.jvmInfo.jvmInfo}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.JVM_VERSION</td>
-                  <td>{{ctrl.jvmInfo.jvmVersion}}</td>
+                  <td>{{$ctrl.jvmInfo.jvmVersion}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.JVM_ARGUMENTS</td>
-                  <td>{{ctrl.jvmInfo.jvmArguments}}</td>
+                  <td>{{$ctrl.jvmInfo.jvmArguments}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.CLASSPATH</td>
-                  <td>{{ctrl.jvmInfo.classpath}}</td>
+                  <td>{{$ctrl.jvmInfo.classpath}}</td>
                 </tr>
               </tbody>
             </table>
@@ -110,7 +110,7 @@
                 </tr>
               </thead>
               <tbody class="break-word-wrap">
-                <tr ng-repeat="env in ctrl.jvmInfo.environment">
+                <tr ng-repeat="env in $ctrl.jvmInfo.environment">
                   <td>{{env.key}}</td>
                   <td>{{env.value}}</td>
                 </tr>
@@ -122,13 +122,13 @@
     </div>
   </div>
 
-  <btn ng-show="ctrl.jvmInfo.isAlive" class="btn btn-default" ng-click="ctrl.killVm()" translate>jvmInfo.killVm.BUTTON_LABEL</btn>
+  <btn ng-show="$ctrl.jvmInfo.isAlive" class="btn btn-default" ng-click="$ctrl.killVm()" translate>jvmInfo.killVm.BUTTON_LABEL</btn>
 
   <div class="row">
 
     <div class="col-xs-12 col-md-3">
       <label for="metricCombo" class="label label-primary" translate>jvmInfo.subview.LABEL</label>
-      <select name="metricCombo" class="combobox form-control" ng-model="comboValue">
+      <select name="metricCombo" class="combobox form-control" ng-model="$ctrl.subView">
         <option value="" style="display:none" selected="selected" disabled translate>jvmInfo.subview.DISABLED</option>
         <option value="" translate>jvmInfo.subview.NONE</option>
         <option value="jvmMemory" translate>jvmInfo.subview.MEMORY</option>

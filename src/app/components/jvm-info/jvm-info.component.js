@@ -35,4 +35,8 @@ export default angular
     jvmInfoService,
     killVmService
   ])
+  .component('jvmInfo', {
+    controller: 'JvmInfoController',
+    template: require('./jvm-info.html')
+  })
   .name;

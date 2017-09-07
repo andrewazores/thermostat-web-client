@@ -29,48 +29,29 @@ describe('JvmInfoController', () => {
 
   beforeEach(angular.mock.module('jvmInfo.controller'));
 
-  let scope, state, jvmInfoService, killVmService, ctrl, infoPromise, killPromise, systemInfoService, systemInfoPromise, translate;
+  let state, jvmInfoService, killVmService, ctrl, infoPromise, killPromise, systemInfoService, systemInfoPromise, translate;
   beforeEach(inject($controller => {
     'ngInject';
 
-    scope = {
-      $watch: sinon.spy()
-    };
+    state = { go: sinon.spy() };
 
-    state = {
-      go: sinon.spy()
-    };
+    infoPromise = { then: sinon.stub() };
+    jvmInfoService = { getJvmInfo: sinon.stub().returns(infoPromise) };
 
-    infoPromise = {
-      then: sinon.stub()
-    };
-    jvmInfoService = {
-      getJvmInfo: sinon.stub().returns(infoPromise)
-    };
+    killPromise = { then: sinon.stub().returns({ finally: sinon.stub().yields() }) };
+    killVmService = { killVm: sinon.stub().returns(killPromise) };
 
-    killPromise = {
-      then: sinon.stub().returns({ finally: sinon.stub().yields() })
-    };
-    killVmService = {
-      killVm: sinon.stub().returns(killPromise)
-    };
+    systemInfoPromise = { then: sinon.stub() };
+    systemInfoService = { getSystemInfo: sinon.stub().returns(systemInfoPromise) };
 
-    systemInfoPromise = {
-      then: sinon.stub()
-    };
-    systemInfoService = {
-      getSystemInfo: sinon.stub().returns(systemInfoPromise)
-    };
-
-    translate = sinon.stub().returns({
-      then: sinon.stub().yields()
-    });
+    translate = sinon.stub().returns({ then: sinon.stub().yields() });
 
     ctrl = $controller('JvmInfoController', {
-      $scope: scope,
       $state: state,
-      systemId: 'bar-systemId',
-      jvmId: 'foo-jvmId',
+      $stateParams: {
+        systemId: 'bar-systemId',
+        jvmId: 'foo-jvmId'
+      },
       jvmInfoService: jvmInfoService,
       killVmService: killVmService,
       systemInfoService: systemInfoService,
@@ -202,21 +183,13 @@ describe('JvmInfoController', () => {
   });
 
   describe('combobox state navigation', () => {
-    it('should register a scope-watcher for comboValue', () => {
-      scope.$watch.should.be.calledWith(sinon.match('comboValue'), sinon.match.func);
-    });
-
     it('should go to root jvm-info state on empty selection', () => {
-      let func = scope.$watch.args[0][1];
-      state.go.should.not.be.called();
-      func('', '');
+      ctrl.subView = '';
       state.go.should.be.calledWith(sinon.match('jvmInfo'), sinon.match.has('jvmId', 'foo-jvmId'));
     });
 
     it('should go to specified jvm-info child state on non-empty selection', () => {
-      let func = scope.$watch.args[0][1];
-      state.go.should.not.be.called();
-      func('fooState', '');
+      ctrl.subView = 'fooState';
       state.go.should.be.calledWith(sinon.match('jvmInfo.fooState'), sinon.match.has('jvmId', 'foo-jvmId'));
     });
   });
