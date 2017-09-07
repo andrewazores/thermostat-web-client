@@ -30,7 +30,7 @@ describe('JvmGcController', () => {
   beforeEach(angular.mock.module('app.filters'));
   beforeEach(angular.mock.module('jvmGc.controller'));
 
-  let scope, interval, dateFilterStub, dateFormatSpy, svc, promise, ctrl, translate;
+  let scope, interval, dateFilterStub, dateFormatSpy, svc, promise, ctrl, translate, sanitizeService;
   beforeEach(inject(($controller) => {
     'ngInject';
 
@@ -41,20 +41,15 @@ describe('JvmGcController', () => {
       }
     };
 
-    scope = {
-      $on: sinon.spy(),
-      $watch: sinon.spy()
-    };
+    scope = { $on: sinon.spy() };
 
     interval = sinon.stub().returns('interval-sentinel');
     interval.cancel = sinon.spy();
 
-    promise = {
-      then: sinon.spy()
-    };
-    svc = {
-      getJvmGcData: sinon.stub().returns(promise)
-    };
+    promise = { then: sinon.spy() };
+    svc = { getJvmGcData: sinon.stub().returns(promise) };
+
+    sanitizeService = { sanitize: sinon.spy() };
 
     translate = sinon.stub().returns({
       then: sinon.stub().yields({
@@ -65,12 +60,13 @@ describe('JvmGcController', () => {
     });
 
     ctrl = $controller('JvmGcController', {
-      jvmId: 'foo-jvmId',
+      $stateParams: { jvmId: 'foo-jvmId' },
       $scope: scope,
       $interval: interval,
       dateFilter: dateFilterStub,
       DATE_FORMAT: dateFormatSpy,
       jvmGcService: svc,
+      sanitizeService: sanitizeService,
       $translate: translate
     });
   }));
@@ -80,7 +76,7 @@ describe('JvmGcController', () => {
   });
 
   it('should update on init', () => {
-    svc.getJvmGcData.should.be.calledWith('foo-jvmId', 30);
+    svc.getJvmGcData.should.be.calledWith('foo-jvmId');
   });
 
   it('should call to service on update', () => {
@@ -112,19 +108,23 @@ describe('JvmGcController', () => {
   });
 
   it('should reset interval on refreshRate change', () => {
-    ctrl.should.not.have.ownProperty('refresh');
-    ctrl.setRefreshRate(1);
+    ctrl.should.have.ownProperty('_refresh');
+    ctrl.refreshRate = '1';
     interval.should.be.calledWith(sinon.match.func, sinon.match(1));
-    ctrl.should.have.ownProperty('refresh');
-    ctrl.refresh.should.equal('interval-sentinel');
+    ctrl.should.have.ownProperty('_refresh');
+    ctrl._refresh.should.equal('interval-sentinel');
+    ctrl.refreshRate.should.equal('1');
   });
 
   it('should trim data on dataAgeLimit change', () => {
-    scope.$watch.should.be.calledWith('dataAgeLimit');
-    scope.$watch.args[1][0].should.equal('dataAgeLimit');
-    let fn = scope.$watch.args[1][1];
-    fn.should.be.a.Function();
+    sinon.spy(ctrl, 'trimData');
+    ctrl.trimData.should.not.be.called();
+    ctrl.dataAgeLimit = 10000;
+    ctrl.trimData.should.be.calledOnce();
+    ctrl.trimData.restore();
+    ctrl.dataAgeLimit.should.equal('10000');
   });
+
 
   it('should trim old data', () => {
     let oldSample = {
@@ -138,7 +138,7 @@ describe('JvmGcController', () => {
     };
 
     ctrl.collectorData.set('fooCollector', [oldSample, futureSample]);
-    scope.$watch.args[1][1]();
+    ctrl.dataAgeLimit = '30000';
 
     let expected = new Map();
     expected.set('fooCollector', [futureSample]);
@@ -147,35 +147,28 @@ describe('JvmGcController', () => {
   });
 
   it('should set interval on start', () => {
-    interval.should.not.be.called();
+    interval.should.be.calledOnce();
+    interval.should.be.calledWith(sinon.match.func, 1000);
     interval.cancel.should.not.be.called();
-
-    ctrl.start();
-
-    interval.cancel.should.not.be.called();
-    interval.should.be.calledWith(sinon.match.func, '1000');
   });
 
-  it('should disable when setRefreshRate is called with a non-positive value', () => {
+  it('should disable when set refreshRate is called with a non-positive value', () => {
     interval.cancel.should.not.be.called();
-    ctrl.setRefreshRate.should.not.be.called();
     ctrl.update.should.not.be.called();
 
-    ctrl.setRefreshRate(1);
-
-    interval.cancel.should.not.be.called();
-    ctrl.should.have.ownProperty('refresh');
-
-    ctrl.setRefreshRate(-1);
+    ctrl.refreshRate = '1';
 
     interval.cancel.should.be.calledOnce();
-    ctrl.should.not.have.ownProperty('refresh');
+    ctrl.should.have.ownProperty('_refresh');
+
+    ctrl.refreshRate = '-1';
+
+    interval.cancel.should.be.calledTwice();
+    ctrl.should.not.have.ownProperty('_refresh');
   });
 
   it('should call controller#update() on refresh', () => {
-    scope.$watch.should.be.calledWith(sinon.match('refreshRate'), sinon.match.func);
-    let f = scope.$watch.args[0][1];
-    f(1);
+    ctrl.refreshRate = 1;
     let func = interval.args[0][0];
     let callCount = svc.getJvmGcData.callCount;
     func();
@@ -233,18 +226,18 @@ describe('JvmGcController', () => {
       ctrl.start();
       let fn = cfg.onmouseover;
       fn.should.be.a.Function();
-      interval.cancel.should.not.be.called();
-      fn();
       interval.cancel.should.be.calledOnce();
+      fn();
+      interval.cancel.should.be.calledTwice();
     });
 
     it('should start on mouseout', () => {
       ctrl.stop();
       let fn = cfg.onmouseout;
       fn.should.be.a.Function();
-      interval.should.not.be.called();
-      fn();
       interval.should.be.calledOnce();
+      fn();
+      interval.should.be.calledTwice();
     });
   });
 
@@ -422,17 +415,26 @@ describe('JvmGcController', () => {
     });
 
     it('should cancel refresh', () => {
-      ctrl.refresh = 'interval-sentinel';
+      ctrl._refresh = 'interval-sentinel';
       let func = scope.$on.args[0][1];
       func();
       interval.cancel.should.be.calledWith('interval-sentinel');
     });
 
     it('should do nothing if refresh is undefined', () => {
-      ctrl.refresh = undefined;
+      delete ctrl._refresh;
       let func = scope.$on.args[0][1];
       func();
       interval.cancel.should.not.be.called();
+    });
+  });
+
+  describe('sanitize()', () => {
+    it('should delegate to sanitizeService', () => {
+      sanitizeService.sanitize.should.not.be.called();
+      ctrl.sanitize('foo');
+      sanitizeService.sanitize.should.be.calledOnce();
+      sanitizeService.sanitize.should.be.calledWith('foo');
     });
   });
 

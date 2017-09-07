@@ -3,7 +3,7 @@
   <div class="row" style="margin-top:2vh">
     <div class="col-xs-12 col-md-3">
       <label for="refreshCombo" class="label label-info" translate>jvmGc.REFRESH_RATE_LABEL</label>
-      <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
+      <select name="refreshCombo" class="combobox form-control" ng-model="$ctrl.refreshRate">
         <option value="-1" translate>jvmGc.refresh.DISABLED</option>
         <option value="1000" selected translate="jvmGc.refresh.SECONDS" translate-values="{ SECONDS: 1, DEFAULT: true }" translate-interpolation="messageformat"></option>
         <option value="2000" translate="jvmGc.refresh.SECONDS" translate-values="{ SECONDS: 2 }" translate-interpolation="messageformat"></option>
@@ -15,7 +15,7 @@
 
     <div class="col-xs-12 col-md-3">
       <label for="dataAgeCombo" class="label label-info" translate>jvmGc.MAX_DATA_AGE_LABEL</label>
-      <select name="dataAgeCombo" class="combobox form-control" ng-model="dataAgeLimit">
+      <select name="dataAgeCombo" class="combobox form-control" ng-model="$ctrl.dataAgeLimit">
         <option value="10000" translate="jvmGc.dataAge.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
         <option value="30000" selected translate="jvmGc.dataAge.SECONDS" translate-values="{ SECONDS: 30, DEFAULT: true }" translate-interpolation="messageformat"></option>
         <option value="60000" translate="jvmGc.dataAge.MINUTES" translate-values="{ MINUTES: 1 }" translate-interpolation="messageformat"></option>
@@ -33,11 +33,11 @@
           <div class="card-pf-heading">
             <label class="card-pf-title" translate>jvmGc.CARD_TITLE</label>
           </div>
-          <div ng-repeat="collector in ctrl.collectors">
+          <div ng-repeat="collector in $ctrl.collectors">
             <div class="card-pf-body text-center">
-              <mc-add class="pull-right" svc-name="{{ctrl.jvmId}}-{{sanitize(collector)}}-gc" get-fn="ctrl.multichartFn(collector)"></mc-add>
-              <pf-line-chart id="chart-{{collector}}" config="ctrl.chartConfigs[collector]"
-                                                          chart-data="ctrl.chartData[collector]"
+              <mc-add class="pull-right" svc-name="{{$ctrl.jvmId}}-{{$ctrl.sanitize(collector)}}-gc" get-fn="$ctrl.multichartFn(collector)"></mc-add>
+              <pf-line-chart id="chart-{{collector}}" config="$ctrl.chartConfigs[collector]"
+                                                          chart-data="$ctrl.chartData[collector]"
                                                           show-x-axis="true"
                                                           show-y-axis="true"
                                                           ></pf-line-chart>

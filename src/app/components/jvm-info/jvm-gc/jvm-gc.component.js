@@ -33,4 +33,8 @@ export default angular
     JvmGcController,
     service
   ])
+  .component('jvmGc', {
+    controller: 'JvmGcController',
+    template: require('./jvm-gc.html')
+  })
   .name;
