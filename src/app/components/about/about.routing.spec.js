@@ -31,15 +31,11 @@ describe('AboutRouting', () => {
 
   let stateProvider, args, q, ocLazyLoad;
   beforeEach(() => {
-    stateProvider = {
-      state: sinon.spy()
-    };
+    stateProvider = { state: sinon.spy() };
     module.config(stateProvider);
     args = stateProvider.state.args[0];
     q = sinon.spy();
-    ocLazyLoad = {
-      load: sinon.spy()
-    };
+    ocLazyLoad = { load: sinon.spy() };
   });
 
   describe('stateProvider', () => {
@@ -56,7 +52,7 @@ describe('AboutRouting', () => {
     });
 
     it('resolve should load about component', done => {
-      let resolveFn = args[1].resolve.loadAbout[2];
+      let resolveFn = args[1].resolve.lazyLoad[2];
       resolveFn.should.be.a.Function();
       resolveFn(q, ocLazyLoad);
       q.should.be.calledOnce();

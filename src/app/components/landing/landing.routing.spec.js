@@ -29,14 +29,15 @@ describe('LandingModule', () => {
 
   let module = require('./landing.routing.js');
 
-  let stateProvider, args, q;
+  let stateProvider, args, q, ocLazyLoad;
   beforeEach(() => {
     stateProvider = {
       state: sinon.spy()
     };
-    module.landingRouting(stateProvider);
+    module.config(stateProvider);
     args = stateProvider.state.args[0];
     q = sinon.spy();
+    ocLazyLoad = { load: sinon.spy() };
   });
 
   describe('stateProvider', () => {
@@ -53,17 +54,18 @@ describe('LandingModule', () => {
       args[1].url.should.equal('/landing');
     });
 
-    it('template provider should return landing.html', done => {
-      let providerFn = args[1].templateProvider[1];
-      providerFn.should.be.a.Function();
-      providerFn(q);
+    it('resolve should load landing component', done => {
+      let resolveFn = stateProvider.state.args[0][1].resolve.lazyLoad[2];
+      resolveFn.should.be.a.Function();
+      resolveFn(q, ocLazyLoad);
       q.should.be.calledOnce();
 
       let deferred = q.args[0][0];
       deferred.should.be.a.Function();
 
       let resolve = sinon.stub().callsFake(val => {
-        val.should.equal(require('./landing.html'));
+        ocLazyLoad.load.should.be.calledWith({ name: require('./landing.component.js').default});
+        val.should.equal(require('./landing.component.js'));
         done();
       });
       deferred(resolve);

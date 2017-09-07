@@ -25,28 +25,33 @@
  * exception statement from your version.
  */
 
-function landingRouting ($stateProvider) {
+function config ($stateProvider) {
   'ngInject';
 
   $stateProvider.state('landing', {
     url: '/landing',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure(['./landing.html'], () => {
-          resolve(require('./landing.html'));
-        })
-      );
+    component: 'landing',
+    resolve: {
+      lazyLoad: ($q, $ocLazyLoad) => {
+        'ngInject';
+        return $q(resolve => {
+          require.ensure(['./landing.component.js'], () => {
+            let module = require('./landing.component.js');
+            $ocLazyLoad.load({ name: module.default });
+            resolve(module);
+          });
+        });
+      }
     }
   });
 }
 
-export { landingRouting };
+export { config };
 
 export default angular
   .module('landing.routing', [
     'ui.router',
     'ui.bootstrap'
   ])
-  .config(landingRouting)
+  .config(config)
   .name;
