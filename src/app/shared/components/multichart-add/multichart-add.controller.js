@@ -28,23 +28,23 @@
 import servicesModule from 'shared/services/services.module.js';
 
 class MultichartAddController {
-  constructor (multichartService, $scope, $timeout) {
+  constructor (multichartService, $timeout) {
     'ngInject';
-    this.svc = multichartService;
-    this.scope = $scope;
-    this.scope.multicharts = multichartService.chartNames;
+    this._svc = multichartService;
 
-    this.scope.$watch('multicharts', cur => {
-      $timeout(() => {
-        cur.forEach(chart => {
-          let el = angular.element('#' + chart + '-' + this.scope.svcName);
-          el.bootstrapSwitch();
-          el.on('switchChange.bootstrapSwitch', event => {
-            this.toggleChart(event.currentTarget.getAttribute('data-chart'));
-          });
+    $timeout(() => {
+      this.multicharts.forEach(chart => {
+        let el = angular.element('#' + chart + '-' + this.svcName);
+        el.bootstrapSwitch();
+        el.on('switchChange.bootstrapSwitch', event => {
+          this.toggleChart(event.currentTarget.getAttribute('data-chart'));
         });
       });
     });
+  }
+
+  get multicharts () {
+    return this._svc.chartNames;
   }
 
   toggleChart (chartName) {
@@ -56,19 +56,19 @@ class MultichartAddController {
   }
 
   removeFromChart (chartName) {
-    this.svc.removeService(chartName, this.scope.svcName);
+    this._svc.removeService(chartName, this.svcName);
   }
 
   addToChart (chartName) {
-    this.svc.addService(chartName, this.scope.svcName, this.scope.getFn);
+    this._svc.addService(chartName, this.svcName, this.getFn);
   }
 
   isInChart (chartName) {
-    return this.svc.hasServiceForChart(chartName, this.scope.svcName);
+    return this._svc.hasServiceForChart(chartName, this.svcName);
   }
 }
 
 export default angular
-  .module('multichartAddControllerModule', [servicesModule])
+  .module('multichartAddController', [servicesModule])
   .controller('MultichartAddController', MultichartAddController)
   .name;

@@ -25,12 +25,16 @@
  * exception statement from your version.
  */
 
-import directive from './multichart-add.directive.js';
 import controller from './multichart-add.controller.js';
 
 export default angular
-  .module('multichartAddModule', [
-    directive,
-    controller
-  ])
+  .module('multichartAdd.component', [controller])
+  .component('mcAdd', {
+    bindings: {
+      svcName: '@',
+      getFn: '&'
+    },
+    controller: 'MultichartAddController',
+    template: require('./multichart-add.html')
+  })
   .name;

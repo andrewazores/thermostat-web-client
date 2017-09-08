@@ -29,7 +29,7 @@ import controllerModule from './multichart-add.controller.js';
 
 describe('MultichartAddController', () => {
 
-  let svc, scope, timeout, ctrl;
+  let svc, timeout, ctrl;
 
   beforeEach(() => {
     angular.mock.module(controllerModule);
@@ -43,19 +43,14 @@ describe('MultichartAddController', () => {
         hasServiceForChart: sinon.stub().returns(true)
       };
 
-      scope = {
-        svcName: 'foo-svc',
-        getFn: sinon.spy(),
-        $watch: sinon.spy()
-      };
-
       timeout = sinon.spy();
 
       ctrl = $controller('MultichartAddController', {
         multichartService: svc,
-        $scope: scope,
         $timeout: timeout
       });
+      ctrl.svcName = 'foo-svc';
+      ctrl.getFn = angular.noop;
     });
   });
 
@@ -64,7 +59,7 @@ describe('MultichartAddController', () => {
   });
 
   it('should assign multichart names from service', () => {
-    scope.multicharts.should.deepEqual(svc.chartNames);
+    ctrl.multicharts.should.deepEqual(svc.chartNames);
   });
 
   describe('bootstrapSwitch', () => {
@@ -81,22 +76,14 @@ describe('MultichartAddController', () => {
       angular.element.restore();
     });
 
-    it('should watch on multicharts', () => {
-      scope.$watch.should.be.calledWith('multicharts', sinon.match.func);
-    });
-
-    it('should use $timeout to wait for $scope $digest to complete', () => {
-      timeout.should.not.be.called();
-      let fn = scope.$watch.firstCall.args[1];
-      fn();
+    it('should use $timeout to wait for $digest to complete', () => {
       timeout.should.be.calledOnce();
       timeout.should.be.calledWith(sinon.match.func);
     });
 
     it('should set up bootstrapSwitch functionality for each switch', () => {
       svc.removeService.should.not.be.called();
-      let fn = scope.$watch.firstCall.args[1];
-      fn(['foo']);
+      svc.chartNames = ['foo'];
       timeout.yield();
 
       angular.element.should.be.calledOnce();
@@ -120,7 +107,7 @@ describe('MultichartAddController', () => {
       svc.hasServiceForChart.should.not.be.called();
       ctrl.isInChart('foo').should.be.true();
       svc.hasServiceForChart.should.be.calledOnce();
-      svc.hasServiceForChart.should.be.calledWith('foo', scope.svcName);
+      svc.hasServiceForChart.should.be.calledWith('foo', ctrl.svcName);
     });
   });
 
@@ -129,7 +116,7 @@ describe('MultichartAddController', () => {
       svc.addService.should.not.be.called();
       ctrl.addToChart('foo');
       svc.addService.should.be.calledOnce();
-      svc.addService.should.be.calledWith('foo', scope.svcName, scope.getFn);
+      svc.addService.should.be.calledWith('foo', ctrl.svcName, ctrl.getFn);
     });
   });
 
@@ -138,7 +125,7 @@ describe('MultichartAddController', () => {
       svc.removeService.should.not.be.called();
       ctrl.removeFromChart('foo');
       svc.removeService.should.be.calledOnce();
-      svc.removeService.should.be.calledWith('foo', scope.svcName);
+      svc.removeService.should.be.calledWith('foo', ctrl.svcName);
     });
   });
 
@@ -149,10 +136,10 @@ describe('MultichartAddController', () => {
       svc.removeService.should.not.be.called();
       ctrl.toggleChart('foo');
       svc.hasServiceForChart.should.be.calledOnce();
-      svc.hasServiceForChart.should.be.calledWith('foo', scope.svcName);
+      svc.hasServiceForChart.should.be.calledWith('foo', ctrl.svcName);
       svc.addService.should.not.be.called();
       svc.removeService.should.be.calledOnce();
-      svc.removeService.should.be.calledWith('foo', scope.svcName);
+      svc.removeService.should.be.calledWith('foo', ctrl.svcName);
     });
 
     it('should add if not present', () => {
@@ -162,9 +149,9 @@ describe('MultichartAddController', () => {
       svc.removeService.should.not.be.called();
       ctrl.toggleChart('foo');
       svc.hasServiceForChart.should.be.calledOnce();
-      svc.hasServiceForChart.should.be.calledWith('foo', scope.svcName);
+      svc.hasServiceForChart.should.be.calledWith('foo', ctrl.svcName);
       svc.addService.should.be.calledOnce();
-      svc.addService.should.be.calledWith('foo', scope.svcName);
+      svc.addService.should.be.calledWith('foo', ctrl.svcName);
       svc.removeService.should.not.be.called();
     });
   });
