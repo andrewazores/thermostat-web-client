@@ -29,7 +29,7 @@ import SystemInfocontroller from './system-info.controller.js';
 import SystemCpuController from './system-cpu.controller.js';
 import SystemMemoryController from './system-memory.controller.js';
 import service from './system-info.service.js';
-import directives from 'shared/directives/directives.module.js';
+import components from 'shared/components/components.module.js';
 
 export default angular
   .module('systemInfo', [
@@ -37,6 +37,6 @@ export default angular
     SystemCpuController,
     SystemMemoryController,
     service,
-    directives
+    components
   ])
   .name;

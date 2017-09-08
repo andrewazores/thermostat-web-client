@@ -1,8 +1,8 @@
 <div ng-hide="showElement" class="alert alert-warning alert-dismissable" >
-  <button ng-show="{{dismissible}}" type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="showElement=true">
+  <button ng-show="{{$ctrl.dismissible}}" type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="showElement=true">
     <span class="pficon pficon-close"></span>
   </button>
 
   <span class="pficon pficon-warning-triangle-o"></span>
-  <strong>{{errTitle}}</strong> {{errMessage}}
+  <strong>{{$ctrl.errTitle}}</strong> {{$ctrl.errMessage}}
 </div>

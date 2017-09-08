@@ -25,21 +25,14 @@
  * exception statement from your version.
  */
 
-import customizableErrorMessageTemplate from './customizable-error-message.html';
-
-export let customizableErrorMessageFunc = () => {
-  return {
-    restrict: 'E',
-    scope: {
+export default angular
+  .module('customizableErrorMessage.component', [])
+  .component('customizableErrorMessage', {
+    bindings: {
       errTitle: '<',
       errMessage: '<',
       dismissible: '<'
     },
-    template: customizableErrorMessageTemplate
-  };
-};
-
-export default angular
-    .module('customizableErrorMessage.directive', [])
-    .directive('customizableErrorMessage', customizableErrorMessageFunc)
-    .name;
+    template: require('./customizable-error-message.html')
+  })
+  .name;

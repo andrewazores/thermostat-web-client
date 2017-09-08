@@ -26,7 +26,7 @@
  */
 
 import services from 'shared/services/services.module.js';
-import directives from 'shared/directives/directives.module.js';
+import components from 'shared/components/components.module.js';
 
 class MultiChartController {
   constructor ($scope, multichartService, $translate) {
@@ -71,7 +71,7 @@ export default angular
   .module('multichartController', [
     'patternfly',
     services,
-    directives
+    components
   ])
   .controller('MultichartController', MultiChartController)
   .name;

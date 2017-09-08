@@ -26,7 +26,7 @@
  */
 
 import filters from 'shared/filters/filters.module.js';
-import directives from 'shared/directives/directives.module.js';
+import components from 'shared/components/components.module.js';
 import jvmListService from './jvm-list.service.js';
 import systemInfoService from 'components/system-info/system-info.service.js';
 
@@ -273,7 +273,7 @@ export default angular
     'patternfly',
     'patternfly.toolbars',
     filters,
-    directives,
+    components,
     jvmListService,
     systemInfoService
   ])

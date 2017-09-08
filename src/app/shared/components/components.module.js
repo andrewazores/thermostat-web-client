@@ -25,15 +25,13 @@
  * exception statement from your version.
  */
 
-let mods = [];
-let req = require.context('./', true, /\.module\.js/);
+let components = [];
+let req = require.context('./', true, /\.component\.js/);
 req.keys().map(v => {
   let name = req(v).default;
-  if (name) {
-    mods.push(name);
-  }
+  components.push(name);
 });
 
 export default angular
-  .module('app.directives', mods)
+  .module('app.component', components)
   .name;
