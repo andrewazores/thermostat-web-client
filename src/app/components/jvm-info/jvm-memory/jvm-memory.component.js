@@ -25,14 +25,18 @@
  * exception statement from your version.
  */
 
-import JvmMemoryController from './jvm-memory.controller.js';
+import jvmMemoryController from './jvm-memory.controller.js';
 import service from './jvm-memory.service.js';
 import components from 'shared/components/components.module.js';
 
 export default angular
-  .module('jvmMemory', [
-    JvmMemoryController,
+  .module('jvmMemoryComponent', [
+    jvmMemoryController,
     service,
     components
   ])
+  .component('jvmMemory', {
+    controller: 'JvmMemoryController',
+    template: require('./jvm-memory.html')
+  })
   .name;

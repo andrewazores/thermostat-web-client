@@ -29,7 +29,7 @@ describe('JvmMemory controller', () => {
 
   beforeEach(angular.mock.module('jvmMemory.controller'));
 
-  let scope, interval, memSvc, scaleSvc, promise, ctrl;
+  let scope, interval, memSvc, scaleSvc, promise, ctrl, sanitizeSvc;
   beforeEach(inject($controller => {
     'ngInject';
 
@@ -54,21 +54,24 @@ describe('JvmMemory controller', () => {
       })
     };
 
+    sanitizeSvc = {
+      sanitize: sinon.stub().returns('sanitized-mock')
+    };
+
     ctrl = $controller('JvmMemoryController', {
-      jvmId: 'foo-jvmId',
+      $stateParams: { jvmId: 'foo-jvmId' },
       $scope: scope,
       $interval: interval,
       jvmMemoryService: memSvc,
-      scaleBytesService: scaleSvc
+      scaleBytesService: scaleSvc,
+      sanitizeService: sanitizeSvc
     });
 
-    sinon.spy(ctrl, 'setRefreshRate');
     sinon.spy(ctrl, 'update');
     sinon.spy(ctrl, 'cancel');
   }));
 
   afterEach(() => {
-    ctrl.setRefreshRate.restore();
     ctrl.update.restore();
     ctrl.cancel.restore();
   });
@@ -97,31 +100,31 @@ describe('JvmMemory controller', () => {
     memSvc.getJvmMemory.should.be.calledWith('foo-jvmId');
   });
 
-  it('should reset interval on refreshRate change', () => {
-    ctrl.should.not.have.ownProperty('refresh');
-    ctrl.setRefreshRate(1);
-    interval.should.be.calledWith(sinon.match.func, sinon.match(1));
-    ctrl.should.have.ownProperty('refresh');
-    ctrl.refresh.should.equal('interval-sentinel');
+  it('should initialize refreshRate to \'2000\'', () => {
+    ctrl.refreshRate.should.equal('2000');
   });
 
-  it('should disable when setRefreshRate is called with a non-positive value', () => {
+  it('should reset interval on refreshRate change', () => {
+    ctrl.should.have.ownProperty('_refresh');
+    ctrl.refreshRate = 1;
+    interval.should.be.calledWith(sinon.match.func, sinon.match(1));
+    ctrl.should.have.ownProperty('_refresh');
+    ctrl._refresh.should.equal('interval-sentinel');
+  });
+
+  it('should disable when set refreshRate is called with a non-positive value', () => {
     ctrl.cancel.should.not.be.called();
-    ctrl.setRefreshRate.should.not.be.called();
     ctrl.update.should.not.be.called();
 
-    ctrl.setRefreshRate(-1);
+    ctrl.refreshRate = -1;
 
     ctrl.cancel.should.be.calledOnce();
-    ctrl.setRefreshRate.should.be.calledOnce(); // the call we just made manually
     ctrl.update.should.not.be.called();
-    ctrl.should.not.have.ownProperty('refresh');
+    ctrl.should.not.have.ownProperty('_refresh');
   });
 
   it('should call controller#update() on refresh', () => {
-    scope.$watch.should.be.calledWith(sinon.match('refreshRate'), sinon.match.func);
-    let f = scope.$watch.args[0][1];
-    f(1);
+    ctrl.refreshRate = 1;
     let func = interval.args[0][0];
     let callCount = ctrl.update.callCount;
     func();
@@ -134,14 +137,14 @@ describe('JvmMemory controller', () => {
     });
 
     it('should cancel refresh', () => {
-      ctrl.refresh = 'interval-sentinel';
+      ctrl._refresh = 'interval-sentinel';
       let func = scope.$on.args[0][1];
       func();
       interval.cancel.should.be.calledWith('interval-sentinel');
     });
 
     it('should do nothing if refresh is undefined', () => {
-      ctrl.refresh = undefined;
+      ctrl._refresh = undefined;
       let func = scope.$on.args[0][1];
       func();
       interval.cancel.should.not.be.called();
@@ -320,6 +323,13 @@ describe('JvmMemory controller', () => {
         }
       });
     });
+  });
+
+  it('should delegate sanitization to sanitizeService', () => {
+    sanitizeSvc.sanitize.should.not.be.called();
+    ctrl.sanitize('foo').should.equal('sanitized-mock');
+    sanitizeSvc.sanitize.should.be.calledOnce();
+    sanitizeSvc.sanitize.should.be.calledWith('foo');
   });
 
 });
