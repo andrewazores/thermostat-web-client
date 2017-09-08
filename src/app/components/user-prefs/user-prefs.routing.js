@@ -25,20 +25,38 @@
  * exception statement from your version.
  */
 
-export function cmdChanUrl (gatewayUrl) {
-  if (gatewayUrl.startsWith('http://')) {
-    return 'ws://' + gatewayUrl.substring(7);
-  } else if (gatewayUrl.startsWith('https://')) {
-    return 'wss://' + gatewayUrl.substring(8);
-  } else {
-    throw new Error('GATEWAY_URL protocol unknown');
-  }
-};
+import service from './user-prefs.service.js';
+import gatewayDecorator from './gateway-decorator.service.js';
+
+function config ($stateProvider) {
+  'ngInject';
+
+  $stateProvider.state('user-prefs', {
+    url: '/user-prefs',
+    component: 'userPrefs',
+    resolve: {
+      lazyLoad: ($q, $ocLazyLoad) => {
+        'ngInject';
+        return $q(resolve => {
+          require.ensure(['./user-prefs.component.js'], () => {
+            let module = require('./user-prefs.component.js');
+            $ocLazyLoad.load({ name: module.default });
+            resolve(module);
+          });
+        });
+      }
+    }
+  });
+}
+
+export { config };
 
 export default angular
-  .module('configModule', [])
-  .constant('environment', process.env.NODE_ENV)
-  .constant('debug', process.env.DEBUG)
-  .value('gatewayUrl', process.env.GATEWAY_URL)
-  .value('commandChannelUrl', cmdChanUrl(process.env.GATEWAY_URL))
+  .module('userPrefs.routing', [
+    'ui.router',
+    'ui.bootstrap',
+    service,
+    gatewayDecorator
+  ])
+  .config(config)
   .name;

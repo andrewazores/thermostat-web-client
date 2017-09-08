@@ -25,20 +25,33 @@
  * exception statement from your version.
  */
 
-export function cmdChanUrl (gatewayUrl) {
-  if (gatewayUrl.startsWith('http://')) {
-    return 'ws://' + gatewayUrl.substring(7);
-  } else if (gatewayUrl.startsWith('https://')) {
-    return 'wss://' + gatewayUrl.substring(8);
-  } else {
-    throw new Error('GATEWAY_URL protocol unknown');
+import * as url from 'url';
+
+class UserPreferencesService {
+  constructor ($cookies) {
+    'ngInject';
+    this._cookies = $cookies;
   }
-};
+
+  set tlsEnabled (tlsEnabled) {
+    this._cookies.put('tlsEnabled', JSON.parse(tlsEnabled));
+  }
+
+  get tlsEnabled () {
+    let raw = this._cookies.get('tlsEnabled');
+    // can't use gatewayUrl value here due to circular reference, but process.env
+    // is not available in test suite
+    /* istanbul ignore next */
+    if (!angular.isDefined(raw)) {
+      let protocol = url.parse(process.env.GATEWAY_URL).protocol;
+      this.tlsEnabled = protocol === 'https:';
+      raw = this._cookies.get('tlsEnabled');
+    }
+    return JSON.parse(raw);
+  }
+}
 
 export default angular
-  .module('configModule', [])
-  .constant('environment', process.env.NODE_ENV)
-  .constant('debug', process.env.DEBUG)
-  .value('gatewayUrl', process.env.GATEWAY_URL)
-  .value('commandChannelUrl', cmdChanUrl(process.env.GATEWAY_URL))
+  .module('userPrefs.service', ['ngCookies'])
+  .service('userPrefsService', UserPreferencesService)
   .name;

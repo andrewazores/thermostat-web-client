@@ -10,3 +10,5 @@ navbar:
 
   USERNAME: Username
   LOGOUT: Log Out
+
+  USER_PREFS: Preferences

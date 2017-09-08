@@ -25,20 +25,12 @@
  * exception statement from your version.
  */
 
-export function cmdChanUrl (gatewayUrl) {
-  if (gatewayUrl.startsWith('http://')) {
-    return 'ws://' + gatewayUrl.substring(7);
-  } else if (gatewayUrl.startsWith('https://')) {
-    return 'wss://' + gatewayUrl.substring(8);
-  } else {
-    throw new Error('GATEWAY_URL protocol unknown');
-  }
-};
+import controller from './user-prefs.controller.js';
 
 export default angular
-  .module('configModule', [])
-  .constant('environment', process.env.NODE_ENV)
-  .constant('debug', process.env.DEBUG)
-  .value('gatewayUrl', process.env.GATEWAY_URL)
-  .value('commandChannelUrl', cmdChanUrl(process.env.GATEWAY_URL))
+  .module('userPrefsComponent', [controller])
+  .component('userPrefs', {
+    controller: 'UserPreferencesController',
+    template: require('./user-prefs.html')
+  })
   .name;

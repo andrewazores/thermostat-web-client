@@ -25,20 +25,31 @@
  * exception statement from your version.
  */
 
-export function cmdChanUrl (gatewayUrl) {
-  if (gatewayUrl.startsWith('http://')) {
-    return 'ws://' + gatewayUrl.substring(7);
-  } else if (gatewayUrl.startsWith('https://')) {
-    return 'wss://' + gatewayUrl.substring(8);
-  } else {
-    throw new Error('GATEWAY_URL protocol unknown');
+import service from './user-prefs.service.js';
+
+class UserPreferencesController {
+  constructor (userPrefsService) {
+    'ngInject';
+    this._userPrefsService = userPrefsService;
+
+    let tlsSwitch = angular.element('#tlsSwitch');
+    tlsSwitch.bootstrapSwitch();
+    tlsSwitch.bootstrapSwitch('state', userPrefsService.tlsEnabled);
+    tlsSwitch.on('switchChange.bootstrapSwitch', () => {
+      this.tlsEnabled = tlsSwitch.bootstrapSwitch('state');
+    });
   }
-};
+
+  set tlsEnabled (tlsEnabled) {
+    this._userPrefsService.tlsEnabled = tlsEnabled;
+  }
+
+  get tlsEnabled () {
+    return this._userPrefsService.tlsEnabled;
+  }
+}
 
 export default angular
-  .module('configModule', [])
-  .constant('environment', process.env.NODE_ENV)
-  .constant('debug', process.env.DEBUG)
-  .value('gatewayUrl', process.env.GATEWAY_URL)
-  .value('commandChannelUrl', cmdChanUrl(process.env.GATEWAY_URL))
+  .module('userPrefs.controller', [service])
+  .controller('UserPreferencesController', UserPreferencesController)
   .name;
