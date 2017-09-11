@@ -25,58 +25,55 @@
  * exception statement from your version.
  */
 
-describe('SystemInfoController', () => {
+import configModule from 'shared/config/config.module.js';
+import serviceModule from './system-network.service.js';
 
-  beforeEach(angular.mock.module('systemInfo.controller'));
+describe('SystemNetworkService', () => {
 
-  let ctrl, scope, interval, infoPromise, translate;
-  beforeEach(inject(($q, $rootScope, $controller) => {
-    'ngInject';
-    scope = $rootScope;
-    infoPromise = $q.defer();
-    interval = sinon.spy();
-    translate = sinon.stub().returns({
-      then: sinon.stub().yields()
+  beforeEach(() => {
+    angular.mock.module(configModule, $provide => {
+      'ngInject';
+      $provide.constant('gatewayUrl', 'http://example.com:1234');
     });
 
-    let systemInfoService = { getSystemInfo: () => infoPromise.promise };
-    ctrl = $controller('SystemInfoController', {
-      systemId: 'foo-systemId',
-      systemInfoService: systemInfoService,
-      $scope: scope,
-      $interval: interval,
-      $translate: translate
-    });
-  }));
-
-  it('should exist', () => {
-    should.exist(ctrl);
+    angular.mock.module(serviceModule);
   });
 
-  describe('systemInfo', () => {
-    it('should set systemInfo when service resolves', done => {
-      let response = {
-        osName: 'Linux',
-        osKernel: '4.10.11-200.fc25.x86_64'
-      };
-      infoPromise.resolve({
-        data: {
-          response: [response]
-        }
-      });
-      scope.$apply();
-      ctrl.should.have.ownProperty('systemInfo');
-      ctrl.systemInfo.should.deepEqual(response);
-      ctrl.showErr.should.equal(false);
-      done();
-    });
+  let httpBackend, scope, svc;
+  beforeEach(inject(($httpBackend, $rootScope, systemNetworkService) => {
+    'ngInject';
+    httpBackend = $httpBackend;
 
-    it('should set error flag when service rejects', done => {
-      infoPromise.reject();
+    scope = $rootScope;
+    svc = systemNetworkService;
+  }));
+
+  afterEach(() => {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
+  });
+
+  it('should exist', () => {
+    should.exist(svc);
+  });
+
+  describe('getNetworkInfo(systemId)', () => {
+    it('should resolve mock data', done => {
+      let expected = {
+        interfaceName: 'lo',
+        displayName: 'lo',
+        ip4Addr: '192.168.1.2',
+        ip6Addr: '0:0:0:0:0:0:1%lo'
+      };
+      httpBackend.when('GET', 'http://example.com:1234/system-network/0.0.1/systems/foo-systemId?limit=1&sort=-timeStamp')
+        .respond(expected);
+      svc.getNetworkInfo('foo-systemId').then(res => {
+        res.data.should.deepEqual(expected);
+        done();
+      });
+      httpBackend.expectGET('http://example.com:1234/system-network/0.0.1/systems/foo-systemId?limit=1&sort=-timeStamp');
+      httpBackend.flush();
       scope.$apply();
-      ctrl.should.have.ownProperty('showErr');
-      ctrl.showErr.should.equal(true);
-      done();
     });
   });
 

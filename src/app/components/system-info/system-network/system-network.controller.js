@@ -25,20 +25,27 @@
  * exception statement from your version.
  */
 
-import SystemInfocontroller from './system-info.controller.js';
-import systemCpu from './system-cpu/system-cpu.component.js';
-import SystemMemoryController from './system-memory.controller.js';
-import systemNetwork from './system-network/system-network.component.js';
-import service from './system-info.service.js';
-import components from 'shared/components/components.module.js';
+import service from './system-network.service.js';
+
+class SystemNetworkController {
+  constructor (systemNetworkService) {
+    'ngInject';
+    this._svc = systemNetworkService;
+  }
+
+  $onInit () {
+    this._svc.getNetworkInfo(this.systemId).then(
+      resp => {
+        this.networkInfo = resp.data.response[0];
+      }
+    );
+  }
+}
 
 export default angular
-  .module('systemInfo', [
-    SystemInfocontroller,
-    systemCpu,
-    SystemMemoryController,
-    systemNetwork,
-    service,
-    components
+  .module('systemNetwork.controller', [
+    'patternfly',
+    service
   ])
+  .controller('SystemNetworkController', SystemNetworkController)
   .name;

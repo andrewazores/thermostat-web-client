@@ -1,0 +1,19 @@
+<table class="table table-fixed table-striped table-bordered">
+  <thead>
+    <tr>
+      <th translate>systemNetwork.DISPLAY_NAME_COLUMN_LABEL</th>
+      <th translate>systemNetwork.INTERFACE_NAME_COLUMN_LABEL</th>
+      <th translate>systemNetwork.IPV4_COLUMN_LABEL</th>
+      <th translate>systemNetwork.IPV6_COLUMN_LABEL</th>
+    </tr>
+  </thead>
+  <tbody class="break-word-wrap">
+    <tr ng-repeat="iface in $ctrl.networkInfo.interfaces">
+      <td>{{iface.displayName}}</td>
+      <td>{{iface.interfaceName}}</td>
+      <td>{{iface.ip4Addr}}</td>
+      <td>{{iface.ip6Addr}}</td>
+    </tr>
+  </tbody>
+</table>
+

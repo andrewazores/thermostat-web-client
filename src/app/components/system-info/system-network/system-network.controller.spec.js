@@ -25,58 +25,55 @@
  * exception statement from your version.
  */
 
-describe('SystemInfoController', () => {
+import controllerModule from './system-network.controller.js';
 
-  beforeEach(angular.mock.module('systemInfo.controller'));
+describe('SystemNetworkController', () => {
 
-  let ctrl, scope, interval, infoPromise, translate;
-  beforeEach(inject(($q, $rootScope, $controller) => {
+  beforeEach(angular.mock.module(controllerModule));
+
+  let ctrl, svc;
+  beforeEach(inject(($controller) => {
     'ngInject';
-    scope = $rootScope;
-    infoPromise = $q.defer();
-    interval = sinon.spy();
-    translate = sinon.stub().returns({
-      then: sinon.stub().yields()
-    });
-
-    let systemInfoService = { getSystemInfo: () => infoPromise.promise };
-    ctrl = $controller('SystemInfoController', {
-      systemId: 'foo-systemId',
-      systemInfoService: systemInfoService,
-      $scope: scope,
-      $interval: interval,
-      $translate: translate
-    });
+    let promise = sinon.spy();
+    svc = {
+      getNetworkInfo: sinon.stub().returns({
+        then: promise
+      }),
+      promise: promise
+    };
+    ctrl = $controller('SystemNetworkController', { systemNetworkService: svc });
+    ctrl.systemId = 'foo-systemId';
   }));
 
   it('should exist', () => {
     should.exist(ctrl);
   });
 
-  describe('systemInfo', () => {
-    it('should set systemInfo when service resolves', done => {
+  describe('networkInfo', () => {
+    it('should be called on init', () => {
+      svc.getNetworkInfo.should.not.be.called();
+      ctrl.$onInit();
+      svc.getNetworkInfo.should.be.calledOnce();
+    });
+
+    it('should set networkInfo when service resolves', () => {
       let response = {
-        osName: 'Linux',
-        osKernel: '4.10.11-200.fc25.x86_64'
+        interfaceName: 'lo',
+        displayName: 'lo',
+        ip4Addr: '192.168.1.2',
+        ip6Addr: '0:0:0:0:0:0:1%lo'
       };
-      infoPromise.resolve({
+      svc.promise.should.not.be.called();
+      ctrl.$onInit();
+      svc.promise.should.be.calledOnce();
+      svc.promise.should.be.calledWith(sinon.match.func);
+      svc.promise.args[0][0]({
         data: {
           response: [response]
         }
       });
-      scope.$apply();
-      ctrl.should.have.ownProperty('systemInfo');
-      ctrl.systemInfo.should.deepEqual(response);
-      ctrl.showErr.should.equal(false);
-      done();
-    });
-
-    it('should set error flag when service rejects', done => {
-      infoPromise.reject();
-      scope.$apply();
-      ctrl.should.have.ownProperty('showErr');
-      ctrl.showErr.should.equal(true);
-      done();
+      ctrl.should.have.ownProperty('networkInfo');
+      ctrl.networkInfo.should.deepEqual(response);
     });
   });
 

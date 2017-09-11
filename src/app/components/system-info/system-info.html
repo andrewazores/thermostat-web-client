@@ -57,24 +57,7 @@
               </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse">
-              <table class="table table-fixed table-striped table-bordered">
-                <thead>
-                  <tr>
-                    <th translate>systemInfo.networkTable.DISPLAY_NAME_COLUMN_LABEL</th>
-                    <th translate>systemInfo.networkTable.INTERFACE_NAME_COLUMN_LABEL</th>
-                    <th translate>systemInfo.networkTable.IPV4_COLUMN_LABEL</th>
-                    <th translate>systemInfo.networkTable.IPV6_COLUMN_LABEL</th>
-                  </tr>
-                </thead>
-                <tbody class="break-word-wrap">
-                  <tr ng-repeat="iface in ctrl.networkInfo.interfaces">
-                    <td>{{iface.displayName}}</td>
-                    <td>{{iface.interfaceName}}</td>
-                    <td>{{iface.ip4Addr}}</td>
-                    <td>{{iface.ip6Addr}}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <system-network system-id="ctrl.systemId"></system-network>
             </div>
           </div>
         </div>

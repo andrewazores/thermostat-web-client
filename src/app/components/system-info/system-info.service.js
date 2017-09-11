@@ -52,15 +52,6 @@ class SystemInfoService {
       }
     });
   }
-
-  getNetworkInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'system-network', '0.0.1', 'systems', systemId), {
-      params: {
-        sort: '-timeStamp',
-        limit: 1
-      }
-    });
-  }
 }
 
 export default angular

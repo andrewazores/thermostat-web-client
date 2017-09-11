@@ -90,24 +90,4 @@ describe('SystemInfoService', () => {
     });
   });
 
-  describe('getNetworkInfo(systemId)', () => {
-    it('should resolve mock data', done => {
-      let expected = {
-        interfaceName: 'lo',
-        displayName: 'lo',
-        ip4Addr: '192.168.1.2',
-        ip6Addr: '0:0:0:0:0:0:1%lo'
-      };
-      httpBackend.when('GET', 'http://example.com:1234/system-network/0.0.1/systems/foo-systemId?limit=1&sort=-timeStamp')
-        .respond(expected);
-      svc.getNetworkInfo('foo-systemId').then(res => {
-        res.data.should.deepEqual(expected);
-        done();
-      });
-      httpBackend.expectGET('http://example.com:1234/system-network/0.0.1/systems/foo-systemId?limit=1&sort=-timeStamp');
-      httpBackend.flush();
-      scope.$apply();
-    });
-  });
-
 });

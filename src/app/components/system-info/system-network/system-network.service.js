@@ -25,20 +25,28 @@
  * exception statement from your version.
  */
 
-import SystemInfocontroller from './system-info.controller.js';
-import systemCpu from './system-cpu/system-cpu.component.js';
-import SystemMemoryController from './system-memory.controller.js';
-import systemNetwork from './system-network/system-network.component.js';
-import service from './system-info.service.js';
-import components from 'shared/components/components.module.js';
+import config from 'shared/config/config.module.js';
+import urlJoin from 'url-join';
+
+class SystemNetworkService {
+  constructor ($q, $http, gatewayUrl) {
+    'ngInject';
+    this.q = $q;
+    this.http = $http;
+    this.gatewayUrl = gatewayUrl;
+  }
+
+  getNetworkInfo (systemId) {
+    return this.http.get(urlJoin(this.gatewayUrl, 'system-network', '0.0.1', 'systems', systemId), {
+      params: {
+        sort: '-timeStamp',
+        limit: 1
+      }
+    });
+  }
+}
 
 export default angular
-  .module('systemInfo', [
-    SystemInfocontroller,
-    systemCpu,
-    SystemMemoryController,
-    systemNetwork,
-    service,
-    components
-  ])
+  .module('systemNetwork.service', [config])
+  .service('systemNetworkService', SystemNetworkService)
   .name;
