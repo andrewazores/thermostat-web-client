@@ -76,7 +76,8 @@ describe('MultiChartController', () => {
 
     it('should reset form and call to service on success', () => {
       svc.addChart.should.not.be.called();
-      ctrl.createChart('foo');
+      ctrl.newChartName = 'foo';
+      ctrl.createChart();
       svc.addChart.should.be.calledOnce();
       svc.addChart.should.be.calledWith('foo');
       ctrl.newChartName.should.equal('');
@@ -85,7 +86,8 @@ describe('MultiChartController', () => {
     });
 
     it('should trim spaces from chart names', () => {
-      ctrl.createChart(' foo ');
+      ctrl.newChartName = ' foo ';
+      ctrl.createChart();
       svc.addChart.should.be.calledWith('foo');
     });
 
@@ -95,7 +97,8 @@ describe('MultiChartController', () => {
     });
 
     it('should set showErr to true on error', () => {
-      ctrl.createChart('<script>alert();</script>');
+      ctrl.newChartName = '<script>alert();</script>';
+      ctrl.createChart();
       ctrl.showErr.should.be.true();
       svc.addChart.should.not.be.called();
     });

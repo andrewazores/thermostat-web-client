@@ -33,22 +33,23 @@ class MultiChartController {
     this.scope = $scope;
     this.svc = multichartService;
     this.showErr = false;
+    this.newChartName = '';
 
     $translate('multicharts.ERR_TITLE').then(s => this.errTitle = s);
     $translate('multicharts.ERR_MESSAGE').then(s => this.errMessage = s);
   }
 
-  createChart (chartName) {
-    if (!chartName) {
+  createChart () {
+    if (!this.newChartName) {
       return false;
     }
-    chartName = chartName.trim();
-    if (!this.isValid(chartName)) {
+    this.newChartName = this.newChartName.trim();
+    if (!this.isValid(this.newChartName)) {
       this.showErr = true;
       return;
     }
     this.showErr = false;
-    this.svc.addChart(chartName);
+    this.svc.addChart(this.newChartName);
     this.newChartName = '';
     let form = this.scope.newChartForm;
     form.$setPristine();
