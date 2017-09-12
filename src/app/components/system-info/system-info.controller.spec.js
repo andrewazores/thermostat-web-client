@@ -25,14 +25,16 @@
  * exception statement from your version.
  */
 
+import controllerModule from './system-info.controller.js';
+
 describe('SystemInfoController', () => {
 
-  beforeEach(angular.mock.module('systemInfo.controller'));
+  beforeEach(angular.mock.module(controllerModule));
 
-  let ctrl, scope, interval, infoPromise, translate;
+  let ctrl, rootScope, interval, infoPromise, translate;
   beforeEach(inject(($q, $rootScope, $controller) => {
     'ngInject';
-    scope = $rootScope;
+    rootScope = $rootScope;
     infoPromise = $q.defer();
     interval = sinon.spy();
     translate = sinon.stub().returns({
@@ -43,7 +45,6 @@ describe('SystemInfoController', () => {
     ctrl = $controller('SystemInfoController', {
       systemId: 'foo-systemId',
       systemInfoService: systemInfoService,
-      $scope: scope,
       $interval: interval,
       $translate: translate
     });
@@ -54,6 +55,10 @@ describe('SystemInfoController', () => {
   });
 
   describe('systemInfo', () => {
+    beforeEach(() => {
+      ctrl.$onInit();
+    });
+
     it('should set systemInfo when service resolves', done => {
       let response = {
         osName: 'Linux',
@@ -64,7 +69,7 @@ describe('SystemInfoController', () => {
           response: [response]
         }
       });
-      scope.$apply();
+      rootScope.$apply();
       ctrl.should.have.ownProperty('systemInfo');
       ctrl.systemInfo.should.deepEqual(response);
       ctrl.showErr.should.equal(false);
@@ -73,7 +78,7 @@ describe('SystemInfoController', () => {
 
     it('should set error flag when service rejects', done => {
       infoPromise.reject();
-      scope.$apply();
+      rootScope.$apply();
       ctrl.should.have.ownProperty('showErr');
       ctrl.showErr.should.equal(true);
       done();

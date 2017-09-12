@@ -1,13 +1,13 @@
 <div class="container-fluid container-cards-pf">
   <ol class="breadcrumb" style="margin-bottom: 0px;">
     <li><a ui-sref="landing">Thermostat</a></li>
-    <li><a ui-sref="jvmList({ '#': ctrl.systemId })" translate>systemInfo.JVM_LIST_BREADCRUMB</a></li>
-    <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemInfo.hostname || ctrl.systemId}}</a></li>
+    <li><a ui-sref="jvmList({ '#': $ctrl.systemId })" translate>systemInfo.JVM_LIST_BREADCRUMB</a></li>
+    <li><a ui-sref="systemInfo({ systemId: $ctrl.systemId })">{{$ctrl.systemInfo.hostname || $ctrl.systemId}}</a></li>
   </ol>
 
-  <customizable-error-message ng-show="ctrl.showErr" dismissible="true" err-message="errMessage" err-title="errTitle"></customizable-error-message>
+  <customizable-error-message ng-show="$ctrl.showErr" dismissible="true" err-message="errMessage" err-title="errTitle"></customizable-error-message>
 
-  <div ng-show="!ctrl.showErr">
+  <div ng-show="!$ctrl.showErr">
     <div class="row">
       <div class="col-xs-12 col-lg-12">
         <div class="panel-group" id="accordion-markup">
@@ -28,23 +28,23 @@
                 <tbody class="break-word-wrap">
                   <tr>
                     <td translate>systemInfo.infoTable.HOSTNAME</td>
-                    <td>{{ctrl.systemInfo.hostname}}</td>
+                    <td>{{$ctrl.systemInfo.hostname}}</td>
                   </tr>
                   <tr>
                     <td translate>systemInfo.infoTable.OS</td>
-                    <td>{{ctrl.systemInfo.osName}}</td>
+                    <td>{{$ctrl.systemInfo.osName}}</td>
                   </tr>
                   <tr>
                     <td translate>systemInfo.infoTable.KERNEL</td>
-                    <td>{{ctrl.systemInfo.osKernel}}</td>
+                    <td>{{$ctrl.systemInfo.osKernel}}</td>
                   </tr>
                   <tr>
                     <td translate>systemInfo.infoTable.CPU</td>
-                    <td translate="systemInfo.infoTable.CPU_MODEL_FMT" translate-values="{ model: ctrl.systemInfo.cpuModel, coreCount: ctrl.systemInfo.cpuCount }"></td>
+                    <td translate="systemInfo.infoTable.CPU_MODEL_FMT" translate-values="{ model: $ctrl.systemInfo.cpuModel, coreCount: $ctrl.systemInfo.cpuCount }"></td>
                   </tr>
                   <tr>
                     <td translate>systemInfo.infoTable.MEMORY</td>
-                    <td>{{ctrl.systemInfo.totalMemory | formatBytes}}</td>
+                    <td>{{$ctrl.systemInfo.totalMemory | formatBytes}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -57,7 +57,7 @@
               </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse">
-              <system-network system-id="ctrl.systemId"></system-network>
+              <system-network system-id="$ctrl.systemId"></system-network>
             </div>
           </div>
         </div>
@@ -66,8 +66,8 @@
 
     <div class="row row-cards-pf">
       <div class="container container-cards-pf">
-        <system-cpu system-id="ctrl.systemId"></system-cpu>
-        <system-memory system-id="ctrl.systemId"></system-memory>
+        <system-cpu system-id="$ctrl.systemId"></system-cpu>
+        <system-memory system-id="$ctrl.systemId"></system-memory>
       </div>
     </div>
 

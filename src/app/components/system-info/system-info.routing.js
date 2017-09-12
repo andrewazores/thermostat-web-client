@@ -30,28 +30,17 @@ function config ($stateProvider) {
 
   $stateProvider.state('systemInfo', {
     url: '/system-info/{systemId}',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => resolve(require('./system-info.html'))
-        )
-      );
-    },
-    controller: 'SystemInfoController as ctrl',
+    component: 'systemInfo',
     resolve: {
-      loadSystemInfo: ($q, $ocLazyLoad) => {
+      lazyLoad: ($q, $ocLazyLoad) => {
         'ngInject';
         return $q(resolve => {
-          require.ensure(['./system-info.module.js'], () => {
-            let module = require('./system-info.module.js');
+          require.ensure(['./system-info.component.js'], () => {
+            let module = require('./system-info.component.js');
             $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });
         });
-      },
-      systemId: $stateParams => {
-        'ngInject';
-        return $stateParams.systemId;
       }
     }
   });

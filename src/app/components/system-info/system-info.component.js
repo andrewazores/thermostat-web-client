@@ -25,20 +25,24 @@
  * exception statement from your version.
  */
 
-import SystemInfocontroller from './system-info.controller.js';
 import systemCpu from './system-cpu/system-cpu.component.js';
 import systemMemory from './system-memory/system-memory.component.js';
 import systemNetwork from './system-network/system-network.component.js';
+import controller from './system-info.controller.js';
 import service from './system-info.service.js';
 import components from 'shared/components/components.module.js';
 
 export default angular
-  .module('systemInfo', [
-    SystemInfocontroller,
+  .module('systemInfo.component', [
     systemCpu,
     systemMemory,
     systemNetwork,
+    controller,
     service,
     components
   ])
+  .component('systemInfo', {
+    controller: 'SystemInfoController',
+    template: require('./system-info.html')
+  })
   .name;
