@@ -83,18 +83,7 @@
 
     <div class="row row-cards-pf">
       <div class="container container-cards-pf">
-        <!-- System-CPU Donut Chart -->
-        <div class="col-xs-12 col-sm-6 col-md-6" ng-controller="SystemCpuController as ctrl">
-          <div class="card-pf card-pf-view">
-            <div class="card-pf-heading">
-              <label class="card-pf-title" translate>systemInfo.systemCpu.CHART_LABEL</label>
-              <mc-add class="pull-right" svc-name="{{systemId}}-cpu" get-fn="ctrl.multichartFn()"></mc-add>
-            </div>
-            <div class="card-pf-body">
-              <pf-donut-pct-chart id="cpuChart" config="ctrl.config" data="ctrl.data"></pf-donut-pct-chart>
-            </div>
-          </div>
-        </div>
+        <system-cpu system-id="ctrl.systemId"></system-cpu>
         <div class="system-memory-charts" ng-controller="SystemMemoryController as ctrl">
           <!-- System-Memory Donut Chart -->
           <div class="col-xs-12 col-sm-6 col-md-6">

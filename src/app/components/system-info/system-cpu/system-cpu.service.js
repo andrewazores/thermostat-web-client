@@ -25,18 +25,28 @@
  * exception statement from your version.
  */
 
-import SystemInfocontroller from './system-info.controller.js';
-import systemCpu from './system-cpu/system-cpu.component.js';
-import SystemMemoryController from './system-memory.controller.js';
-import service from './system-info.service.js';
-import components from 'shared/components/components.module.js';
+import config from 'shared/config/config.module.js';
+import urlJoin from 'url-join';
+
+class SystemCpuService {
+  constructor ($q, $http, gatewayUrl) {
+    'ngInject';
+    this.q = $q;
+    this.http = $http;
+    this.gatewayUrl = gatewayUrl;
+  }
+
+  getCpuInfo (systemId) {
+    return this.http.get(urlJoin(this.gatewayUrl, 'system-cpu', '0.0.1', 'systems', systemId), {
+      params: {
+        sort: '-timeStamp',
+        limit: 1
+      }
+    });
+  }
+}
 
 export default angular
-  .module('systemInfo', [
-    SystemInfocontroller,
-    systemCpu,
-    SystemMemoryController,
-    service,
-    components
-  ])
+  .module('systemCpu.service', [config])
+  .service('systemCpuService', SystemCpuService)
   .name;

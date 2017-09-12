@@ -25,74 +25,66 @@
  * exception statement from your version.
  */
 
+import controllerModule from './system-cpu.controller.js';
+
 describe('SystemCpuController', () => {
 
-  beforeEach(angular.mock.module('systemCpu.controller'));
+  beforeEach(angular.mock.module(controllerModule));
 
-  let service, scope, interval, controller;
+  let service, interval, ctrl;
   beforeEach(inject($controller => {
     'ngInject';
 
-    let systemPromise = sinon.spy();
     let cpuPromise = sinon.spy();
-    let memoryPromise = sinon.spy();
     service = {
-      systemPromise: systemPromise,
       cpuPromise: cpuPromise,
-      memoryPromise: memoryPromise,
-      getSystemInfo: sinon.stub().returns({ then: systemPromise }),
       getCpuInfo: sinon.stub().returns({ then: cpuPromise }),
-      getMemoryInfo: sinon.stub().returns({ then: memoryPromise })
-    };
-
-    scope = {
-      $on: sinon.spy(),
-      systemId: 'foo-systemId'
     };
 
     interval = sinon.stub().returns('interval-sentinel');
     interval.cancel = sinon.stub().returns(interval.sentinel);
-    controller = $controller('SystemCpuController', {
-      systemInfoService: service,
-      $scope: scope,
+    ctrl = $controller('SystemCpuController', {
+      systemCpuService: service,
       $interval: interval
     });
+    ctrl.systemId = 'foo-systemId';
+    ctrl.$onInit();
   }));
 
   it('should exist', () => {
-    should.exist(controller);
+    should.exist(ctrl);
     should.exist(service);
   });
 
   it('should set an initial data object', () => {
-    controller.should.have.ownProperty('data');
-    controller.data.should.deepEqual({
+    ctrl.should.have.ownProperty('data');
+    ctrl.data.should.deepEqual({
       used: 0,
-      total: 0
+      total: 100
     });
   });
 
   it('should set an initial config object', () => {
-    controller.should.have.ownProperty('config');
-    controller.config.should.deepEqual({
+    ctrl.should.have.ownProperty('config');
+    ctrl.config.should.deepEqual({
       chartId: 'cpuChart',
       units: '%'
     });
   });
 
   it('should have a refresh property', () => {
-    controller.should.have.ownProperty('refresh');
-    controller.refresh.should.equal('interval-sentinel');
+    ctrl.should.have.ownProperty('_refresh');
+    ctrl._refresh.should.equal('interval-sentinel');
   });
 
   describe('interval', () => {
     it('should call service.getCpuInfo', () => {
+      service.getCpuInfo.should.be.calledOnce();
       let func = interval.args[0][0];
       func.should.be.a.Function();
-      service.getCpuInfo.should.be.calledOnce(); // on initial load
       func();
       service.getCpuInfo.should.be.calledTwice();
-      service.getCpuInfo.should.be.calledWith(scope.systemId);
+      service.getCpuInfo.should.be.calledWith(ctrl.systemId);
     });
 
     it('should be every 2 seconds', () => {
@@ -113,7 +105,7 @@ describe('SystemCpuController', () => {
           }
         };
         func(mockData);
-        controller.data.should.deepEqual({
+        ctrl.data.should.deepEqual({
           used: mockData.data.response[0].perProcessorUsage[0],
           total: 100
         });
@@ -122,39 +114,33 @@ describe('SystemCpuController', () => {
   });
 
   describe('on destroy', () => {
-    it('should set an ondestroy handler', () => {
-      scope.$on.should.be.calledWith('$destroy', sinon.match.func);
-    });
-
     it('should cancel refresh', () => {
-      let func = scope.$on.args[0][1];
-      func();
+      ctrl.$onDestroy();
       interval.cancel.should.be.calledWith('interval-sentinel');
     });
 
     it('should do nothing if refresh undefined', () => {
-      controller.refresh = undefined;
-      let func = scope.$on.args[0][1];
-      func();
+      delete ctrl._refresh;
+      ctrl.$onDestroy();
       interval.cancel.should.not.be.called();
     });
   });
 
   describe('multichartFn', () => {
     it('should return a promise', () => {
-      let res = controller.multichartFn();
+      let res = ctrl.multichartFn();
       res.should.be.a.Promise();
     });
 
     it('should resolve system-cpu stat', done => {
       service.cpuPromise.should.be.calledOnce();
-      let res = controller.multichartFn();
+      let res = ctrl.multichartFn();
       res.then(v => {
         v.should.equal(90);
         done();
       });
       service.cpuPromise.should.be.calledTwice();
-      let prom = service.cpuPromise.secondCall.args[0];
+      let prom = service.cpuPromise.args[1][0];
       prom({
         data: {
           response: [

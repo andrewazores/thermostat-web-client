@@ -25,18 +25,71 @@
  * exception statement from your version.
  */
 
-import SystemInfocontroller from './system-info.controller.js';
-import systemCpu from './system-cpu/system-cpu.component.js';
-import SystemMemoryController from './system-memory.controller.js';
-import service from './system-info.service.js';
-import components from 'shared/components/components.module.js';
+import 'c3';
+import _ from 'lodash';
+import service from './system-cpu.service.js';
+
+class SystemCpuController {
+  constructor (systemCpuService, $interval) {
+    this._svc = systemCpuService;
+    this._interval = $interval;
+
+    this.data = {
+      used: 0,
+      total: 100
+    };
+
+    this.config = {
+      chartId: 'cpuChart',
+      units: '%'
+    };
+  }
+
+  $onInit () {
+    this._start();
+  }
+
+  _start () {
+    this._stop();
+    this._update();
+    this._refresh = this._interval(() => this._update(), 2000);
+  }
+
+  _stop () {
+    if (angular.isDefined(this._refresh)) {
+      this._interval.cancel(this._refresh);
+      delete this._refresh;
+    }
+  }
+
+  $onDestroy () {
+    this._stop();
+  }
+
+  _update () {
+    this._svc.getCpuInfo(this.systemId).then(resp => {
+      let cpuInfo = resp.data.response[0];
+      this.data = {
+        used: _.floor(_.mean(cpuInfo.perProcessorUsage)),
+        total: 100
+      };
+    });
+  }
+
+  multichartFn () {
+    return new Promise(resolve =>
+      this._svc.getCpuInfo(this.systemId).then(resp =>
+        resolve(_.floor(_.mean(resp.data.response[0].perProcessorUsage)))
+      )
+    );
+  }
+}
 
 export default angular
-  .module('systemInfo', [
-    SystemInfocontroller,
-    systemCpu,
-    SystemMemoryController,
-    service,
-    components
+  .module('systemCpu.controller', [
+    'patternfly',
+    'patternfly.charts',
+    service
   ])
+  .controller('SystemCpuController', SystemCpuController)
   .name;

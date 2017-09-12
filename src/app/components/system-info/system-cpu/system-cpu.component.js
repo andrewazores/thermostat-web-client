@@ -25,62 +25,19 @@
  * exception statement from your version.
  */
 
-import 'c3';
-import _ from 'lodash';
-import filters from 'shared/filters/filters.module.js';
-import service from './system-info.service.js';
-
-class SystemCpuController {
-  constructor (systemInfoService, $scope, $interval) {
-    this.svc = systemInfoService;
-    this.scope = $scope;
-
-    this.data = {
-      used: 0,
-      total: 0
-    };
-
-    this.config = {
-      chartId: 'cpuChart',
-      units: '%'
-    };
-
-    this.refresh = $interval(() => this.update(), 2000);
-
-    $scope.$on('$destroy', () => {
-      if (angular.isDefined(this.refresh)) {
-        $interval.cancel(this.refresh);
-      }
-    });
-
-    this.update();
-  }
-
-  update () {
-    this.svc.getCpuInfo(this.scope.systemId).then(resp => {
-      let cpuInfo = resp.data.response[0];
-      this.data = {
-        used: _.floor(_.mean(cpuInfo.perProcessorUsage)),
-        total: 100
-      };
-    });
-  }
-
-  multichartFn () {
-    return new Promise(resolve =>
-      this.svc.getCpuInfo(this.scope.systemId).then(resp =>
-        resolve(_.floor(_.mean(resp.data.response[0].perProcessorUsage)))
-      )
-    );
-  }
-}
+import controller from './system-cpu.controller.js';
+import service from './system-cpu.service.js';
 
 export default angular
-  .module('systemCpu.controller', [
-    'patternfly',
-    'patternfly.charts',
-    filters,
+  .module('systemCpu.component', [
+    controller,
     service
   ])
-  .controller('SystemCpuController', SystemCpuController)
+  .component('systemCpu', {
+    bindings: {
+      systemId: '<'
+    },
+    controller: 'SystemCpuController',
+    template: require('./system-cpu.html')
+  })
   .name;

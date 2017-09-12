@@ -45,15 +45,6 @@ class SystemInfoService {
     });
   }
 
-  getCpuInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'system-cpu', '0.0.1', 'systems', systemId), {
-      params: {
-        sort: '-timeStamp',
-        limit: 1
-      }
-    });
-  }
-
   getMemoryInfo (systemId) {
     return this.http.get(urlJoin(this.gatewayUrl, 'system-memory', '0.0.1', 'systems', systemId), {
       params: {
