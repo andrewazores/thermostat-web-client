@@ -27,34 +27,34 @@
 
 import 'c3';
 import filters from 'shared/filters/filters.module.js';
-import service from './system-info.service.js';
+import service from './system-memory.service.js';
 
 class SystemMemoryController {
-  constructor (systemInfoService, $scope, $interval, pfUtils,
-    dateFilter, DATE_FORMAT, $q, $translate) {
+  constructor (systemMemoryService, $interval, pfUtils,
+    dateFilter, DATE_FORMAT, $translate) {
     'ngInject';
-    this.svc = systemInfoService;
-    this.scope = $scope;
-    this.interval = $interval;
-    this.dateFilter = dateFilter;
-    this.dateFormat = DATE_FORMAT;
-    this.q = $q;
-    this.translate = $translate;
+    this._svc = systemMemoryService;
+    this._interval = $interval;
+    this._dateFilter = dateFilter;
+    this._dateFormat = DATE_FORMAT;
+    this._translate = $translate;
 
-    this.scope.refreshRate = '1000';
-    this.scope.dataAgeLimit = '30000';
+    this._refreshRate = 1000;
+    this._dataAgeLimit = 30000;
 
-    this.scope.$watch('refreshRate', newRefreshRate => this.setRefreshRate(newRefreshRate));
-    this.scope.$watch('dataAgeLimit', () => this.trimData());
-    this.scope.$on('$destroy', () => this.stopUpdating());
-
-    this.setupDonutChart();
-    this.setupLineChart(pfUtils);
-
-    this.update();
+    this._setupDonutChart();
+    this._setupLineChart(pfUtils);
   }
 
-  setupDonutChart () {
+  $onInit () {
+    this._start();
+  }
+
+  $onDestroy () {
+    this._stop();
+  }
+
+  _setupDonutChart () {
     this.donutConfig = {
       chartId: 'systemMemoryDonutChart',
       units: '%'
@@ -66,10 +66,10 @@ class SystemMemoryController {
     };
   }
 
-  setupLineChart (pfUtils) {
-    this.translate([
-      'systemInfo.systemMemory.X_AXIS_LABEL',
-      'systemInfo.systemMemory.Y_AXIS_LABEL'
+  _setupLineChart (pfUtils) {
+    this._translate([
+      'systemMemory.X_AXIS_LABEL',
+      'systemMemory.Y_AXIS_LABEL'
     ]).then(translations => {
       this.lineConfig = {
         chartId: 'systemMemoryLineChart',
@@ -99,11 +99,11 @@ class SystemMemoryController {
           x: {
             type: 'timeseries',
             label: {
-              text: translations['systemInfo.systemMemory.X_AXIS_LABEL'],
+              text: translations['systemMemory.X_AXIS_LABEL'],
               position: 'outer-center'
             },
             tick : {
-              format: timestamp => this.dateFilter(timestamp, this.dateFormat.time.medium),
+              format: timestamp => this._dateFilter(timestamp, this._dateFormat.time.medium),
               count: 5,
               fit: false
             }
@@ -113,7 +113,7 @@ class SystemMemoryController {
             padding: 0,
             tick: 10,
             label: {
-              text: translations['systemInfo.systemMemory.Y_AXIS_LABEL'],
+              text: translations['systemMemory.Y_AXIS_LABEL'],
               position: 'outer-middle'
             }
           }
@@ -121,28 +121,28 @@ class SystemMemoryController {
       };
     });
 
-    this.translate([
-      'systemInfo.systemMemory.xAxisTypes.TIMESTAMP',
-      'systemInfo.systemMemory.xAxisTypes.TOTAL',
-      'systemInfo.systemMemory.xAxisTypes.FREE',
-      'systemInfo.systemMemory.xAxisTypes.USED',
-      'systemInfo.systemMemory.xAxisTypes.SWAP_TOTAL',
-      'systemInfo.systemMemory.xAxisTypes.SWAP_FREE',
-      'systemInfo.systemMemory.xAxisTypes.BUFFERS'
+    this._translate([
+      'systemMemory.xAxisTypes.TIMESTAMP',
+      'systemMemory.xAxisTypes.TOTAL',
+      'systemMemory.xAxisTypes.FREE',
+      'systemMemory.xAxisTypes.USED',
+      'systemMemory.xAxisTypes.SWAP_TOTAL',
+      'systemMemory.xAxisTypes.SWAP_FREE',
+      'systemMemory.xAxisTypes.BUFFERS'
     ]).then(translations => {
       this.lineData = {
-        xData: [translations['systemInfo.systemMemory.xAxisTypes.TIMESTAMP']],
-        yData0: [translations['systemInfo.systemMemory.xAxisTypes.TOTAL']],
-        yData1: [translations['systemInfo.systemMemory.xAxisTypes.FREE']],
-        yData2: [translations['systemInfo.systemMemory.xAxisTypes.USED']],
-        yData3: [translations['systemInfo.systemMemory.xAxisTypes.SWAP_TOTAL']],
-        yData4: [translations['systemInfo.systemMemory.xAxisTypes.SWAP_FREE']],
-        yData5: [translations['systemInfo.systemMemory.xAxisTypes.BUFFERS']]
+        xData: [translations['systemMemory.xAxisTypes.TIMESTAMP']],
+        yData0: [translations['systemMemory.xAxisTypes.TOTAL']],
+        yData1: [translations['systemMemory.xAxisTypes.FREE']],
+        yData2: [translations['systemMemory.xAxisTypes.USED']],
+        yData3: [translations['systemMemory.xAxisTypes.SWAP_TOTAL']],
+        yData4: [translations['systemMemory.xAxisTypes.SWAP_FREE']],
+        yData5: [translations['systemMemory.xAxisTypes.BUFFERS']]
       };
     });
   }
 
-  processData (resp) {
+  _processData (resp) {
     for (let i = resp.data.response.length - 1; i >= 0; i--) {
       let data = resp.data.response[i];
       let free = data.free;
@@ -159,36 +159,55 @@ class SystemMemoryController {
       this.lineData.yData3.push(data.swapTotal);
       this.lineData.yData4.push(data.swapFree);
       this.lineData.yData5.push(data.buffers);
-      this.trimData();
+      this._trimData();
 
       // update the memory donut chart
       this.donutData.used = usage;
     }
   }
 
-  update () {
-    this.svc.getMemoryInfo(this.scope.systemId)
-      .then(response => this.processData(response), angular.noop);
+  _start () {
+    this._stop();
+    this._update();
+    this._refresh = this._interval(() => this._update(), this._refreshRate);
   }
 
-  setRefreshRate (refreshRate) {
-    this.stopUpdating();
+  _update () {
+    this._svc.getMemoryInfo(this.systemId)
+      .then(response => this._processData(response), angular.noop);
+  }
+
+  set refreshRate (refreshRate) {
+    this._stop();
+    this._refreshRate = parseInt(refreshRate);
     if (refreshRate > 0) {
-      this.refresh = this.interval(() => this.update(), refreshRate);
-      this.update();
+      this._start();
     }
   }
 
-  stopUpdating () {
-    if (angular.isDefined(this.refresh)) {
-      this.interval.cancel(this.refresh);
-      delete this.refresh;
+  get refreshRate () {
+    return this._refreshRate.toString();
+  }
+
+  set dataAgeLimit (val) {
+    this._dataAgeLimit = val;
+    this._trimData();
+  }
+
+  get dataAgeLimit () {
+    return this._dataAgeLimit.toString();
+  }
+
+  _stop () {
+    if (angular.isDefined(this._refresh)) {
+      this._interval.cancel(this._refresh);
+      delete this._refresh;
     }
   }
 
-  trimData () {
+  _trimData () {
     let now = Date.now();
-    let oldestLimit = now - parseInt(this.scope.dataAgeLimit);
+    let oldestLimit = now - this._dataAgeLimit;
     while (true) {
       let oldest = this.lineData.xData[1];
       if (angular.isDefined(oldest) && oldest < oldestLimit) {
@@ -207,7 +226,7 @@ class SystemMemoryController {
 
   multichartFn () {
     return new Promise(resolve =>
-      this.svc.getMemoryInfo(this.scope.systemId).then(resp => {
+      this._svc.getMemoryInfo(this.systemId).then(resp => {
         let data = resp.data.response[0];
         let free = data.free;
         let total = data.total;

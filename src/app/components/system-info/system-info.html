@@ -67,60 +67,8 @@
     <div class="row row-cards-pf">
       <div class="container container-cards-pf">
         <system-cpu system-id="ctrl.systemId"></system-cpu>
-        <div class="system-memory-charts" ng-controller="SystemMemoryController as ctrl">
-          <!-- System-Memory Donut Chart -->
-          <div class="col-xs-12 col-sm-6 col-md-6">
-            <div class="card-pf card-pf-view">
-              <div class="card-pf-heading">
-                <label class="card-pf-title" translate>systemInfo.systemMemory.DONUT_CHART_LABEL</label>
-                <mc-add class="pull-right" svc-name="{{systemId}}-memory" get-fn="ctrl.multichartFn()"></mc-add>
-              </div>
-              <div class="card-pf-body">
-                <pf-donut-pct-chart id="systemMemoryDonutChart" config="ctrl.donutConfig" data="ctrl.donutData"></pf-donut-pct-chart>
-              </div>
-            </div>
-          </div>
-          <!-- System-Memory Line Chart -->
-          <div class="col-xs-12 col-md-12">
-            <div class="card-pf card-pf-view">
-              <div class="card-pf-heading">
-                <label class="card-pf-title" translate>systemInfo.systemMemory.LINE_CHART_LABEL</label>
-              </div>
-              <!-- Metric Controls: Refresh Rate -->
-              <div class="row" style="margin-top:2vh">
-                <div class="col-xs-12 col-md-3">
-                  <label for="refreshCombo" class="label label-info" translate>systemInfo.systemMemory.REFRESH_RATE_LABEL</label>
-                  <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
-                    <option value="-1" translate>systemInfo.refresh.DISABLED</option>
-                    <option value="1000" selected translate="systemInfo.refresh.SECONDS" translate-values="{ SECONDS: 1, DEFAULT: true }" translate-interpolation="messageformat"></option>
-                    <option value="2000" translate="systemInfo.refresh.SECONDS" translate-values="{ SECONDS: 2 }" translate-interpolation="messageformat"></option>
-                    <option value="5000" translate="systemInfo.refresh.SECONDS" translate-values="{ SECONDS: 5 }" translate-interpolation="messageformat"></option>
-                    <option value="10000" translate="systemInfo.refresh.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
-                    <option value="30000" translate="systemInfo.refresh.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
-                  </select>
-                </div>
-                <!-- Metric Controls: Max Data Age -->
-                <div class="col-xs-12 col-md-3">
-                  <label for="dataAgeCombo" class="label label-info" translate>systemInfo.systemMemory.MAX_DATA_AGE_LABEL</label>
-                  <select name="dataAgeCombo" class="combobox form-control" ng-model="dataAgeLimit">
-                    <option value="10000" translate="systemInfo.dataAge.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
-                    <option value="30000" selected translate="systemInfo.dataAge.SECONDS" translate-values="{ SECONDS: 30, DEFAULT: true }" translate-interpolation="messageformat"></option>
-                    <option value="60000" translate="systemInfo.dataAge.MINUTES" translate-values="{ MINUTES: 1 }" translate-interpolation="messageformat"></option>
-                    <option value="300000" translate="systemInfo.dataAge.MINUTES" translate-values="{ MINUTES: 5 }" translate-interpolation="messageformat"></option>
-                    <option value="900000" translate="systemInfo.dataAge.MINUTES" translate-values="{ MINUTES: 15 }" translate-interpolation="messageformat"></option>
-                  </select>
-                </div>
-              </div>
-              <!-- Line Chart -->
-              <div class="card-pf-body">
-                <pf-line-chart id="systemMemoryLineChart" config="ctrl.lineConfig" chart-data="ctrl.lineData" set-area-chart="false" show-x-axis="true" show-y-axis="true"></pf-line-chart>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <system-memory system-id="ctrl.systemId"></system-memory>
       </div>
-
     </div>
 
   </div>

@@ -25,27 +25,23 @@
  * exception statement from your version.
  */
 
+import controllerModule from './system-memory.controller.js';
+
 describe('SystemMemoryController', () => {
 
-  beforeEach(angular.mock.module('systemMemory.controller'));
+  beforeEach(angular.mock.module(controllerModule));
 
-  let service, scope, interval, memoryPromise, controller,
+  let service, interval, memoryPromise, controller,
     dateFilterStub, dateFormatSpy, translate;
 
   beforeEach(inject($controller => {
     'ngInject';
 
-    let systemPromise = sinon.spy();
-    let cpuPromise = sinon.spy();
     memoryPromise = {
       then: sinon.spy()
     };
     service = {
-      systemPromise: systemPromise,
-      cpuPromise: cpuPromise,
       memoryPromise: memoryPromise,
-      getSystemInfo: sinon.stub().returns({ then: systemPromise }),
-      getCpuInfo: sinon.stub().returns({ then: cpuPromise }),
       getMemoryInfo: sinon.stub().returns(memoryPromise)
     };
 
@@ -55,38 +51,33 @@ describe('SystemMemoryController', () => {
         medium: sinon.spy()
       }
     };
-    scope = {
-      $on: sinon.spy(),
-      $watch: sinon.spy()
-    };
 
     interval = sinon.stub().returns('interval-sentinel');
     interval.cancel = sinon.stub().returns(interval.sentinel);
 
     translate = sinon.stub().returns({
       then: sinon.stub().yields({
-        'systemInfo.systemMemory.X_AXIS_LABEL': 'Time',
-        'systemInfo.systemMemory.Y_AXIS_LABEL': 'Size (MiB)',
-        'systemInfo.systemMemory.xAxisTypes.TIMESTAMP': 'timestamp',
-        'systemInfo.systemMemory.xAxisTypes.TOTAL': 'Total Memory',
-        'systemInfo.systemMemory.xAxisTypes.FREE': 'Free Memory',
-        'systemInfo.systemMemory.xAxisTypes.USED': 'Used Memory',
-        'systemInfo.systemMemory.xAxisTypes.SWAP_TOTAL': 'Total Swap',
-        'systemInfo.systemMemory.xAxisTypes.SWAP_FREE': 'Free Swap',
-        'systemInfo.systemMemory.xAxisTypes.BUFFERS': 'Buffers',
+        'systemMemory.X_AXIS_LABEL': 'Time',
+        'systemMemory.Y_AXIS_LABEL': 'Size (MiB)',
+        'systemMemory.xAxisTypes.TIMESTAMP': 'timestamp',
+        'systemMemory.xAxisTypes.TOTAL': 'Total Memory',
+        'systemMemory.xAxisTypes.FREE': 'Free Memory',
+        'systemMemory.xAxisTypes.USED': 'Used Memory',
+        'systemMemory.xAxisTypes.SWAP_TOTAL': 'Total Swap',
+        'systemMemory.xAxisTypes.SWAP_FREE': 'Free Swap',
+        'systemMemory.xAxisTypes.BUFFERS': 'Buffers',
       })
     });
 
     controller = $controller('SystemMemoryController', {
-      systemId: 'foo-systemId',
-      systemInfoService: service,
-      $scope: scope,
+      systemMemoryService: service,
       $interval: interval,
       dateFilter: dateFilterStub,
       DATE_FORMAT: dateFormatSpy,
       $translate: translate
     });
-
+    controller.systemId = 'foo-systemId';
+    controller.$onInit();
   }));
 
   it('should exist', () => {
@@ -94,15 +85,15 @@ describe('SystemMemoryController', () => {
     should.exist(service);
   });
 
-  it('should update on initialization', () => {
-    service.getMemoryInfo.should.be.called();
+  it('should start on initialization', () => {
+    interval.should.be.calledOnce();
   });
 
   it('should call to service on update', () => {
-    controller.update();
+    controller._update();
     service.getMemoryInfo.should.be.called();
     memoryPromise.then.should.be.calledWith(sinon.match.func);
-    let successHandler = memoryPromise.then.args[1][0];
+    let successHandler = memoryPromise.then.args[0][0];
     successHandler({
       data: {
         response: {
@@ -119,9 +110,8 @@ describe('SystemMemoryController', () => {
         }
       }
     });
-    let errorHandler = memoryPromise.then.args[1][1];
+    let errorHandler = memoryPromise.then.args[0][1];
     errorHandler.should.equal(angular.noop);
-    errorHandler();
   });
 
   it('should set initial data objects', () => {
@@ -143,27 +133,26 @@ describe('SystemMemoryController', () => {
   });
 
   it('should set interval on setting refresh rate', () => {
-    interval.should.not.be.called();
+    interval.should.be.calledOnce();
     interval.cancel.should.not.be.called();
-    controller.setRefreshRate(1);
-    interval.should.be.called();
-    interval.cancel.should.not.be.called();
+    controller.refreshRate = 1;
+    interval.should.be.calledTwice();
+    interval.cancel.should.be.calledOnce();
   });
 
-  it('should disable when setRefreshRate is called with a non-positive value', () => {
+  it('should disable when refresh rate is set to non-positive value', () => {
+    interval.should.be.calledOnce();
     interval.cancel.should.not.be.called();
-    controller.setRefreshRate.should.not.be.called();
-    controller.update.should.not.be.called();
 
-    controller.setRefreshRate(1);
+    controller.refreshRate = 1;
 
-    interval.cancel.should.not.be.called();
-    controller.should.have.ownProperty('refresh');
-
-    controller.setRefreshRate(-1);
-
+    interval.should.be.calledTwice();
     interval.cancel.should.be.calledOnce();
-    controller.should.not.have.ownProperty('refresh');
+
+    controller.refreshRate = -1;
+
+    interval.should.be.calledTwice();
+    interval.cancel.should.be.calledTwice();
   });
 
   describe('multichartFn', () => {
@@ -181,7 +170,7 @@ describe('SystemMemoryController', () => {
           done();
         });
         service.memoryPromise.then.should.be.calledTwice();
-        let prom = service.memoryPromise.then.secondCall.args[0];
+        let prom = service.memoryPromise.then.args[1][0];
         prom({
           data: {
             response: [
@@ -197,27 +186,21 @@ describe('SystemMemoryController', () => {
 
   });
 
-  it('should call update() on refresh', () => {
-    scope.$watch.should.be.calledWith(sinon.match('refreshRate'), sinon.match.func);
-    let refreshFn = scope.$watch.args[0][1];
-    refreshFn.should.be.a.Function();
-    refreshFn(1);
+  it('should call _update() on refresh', () => {
+    controller.refreshRate = 1;
+    controller.refreshRate.should.equal('1');
     let intervalFn = interval.args[0][0];
     let callCount = service.getMemoryInfo.callCount;
     intervalFn();
     service.getMemoryInfo.callCount.should.equal(callCount + 1);
-
   });
 
   it ('should call trimData() on dataAgeLimit change', () => {
-    scope.$watch.should.be.calledWith(sinon.match('dataAgeLimit'));
-    scope.$watch.args[1][0].should.equal('dataAgeLimit');
-    let watchFn = scope.$watch.args[1][1];
-    watchFn.should.be.a.Function();
-    controller.trimData = sinon.spy();
-    let callCount = controller.trimData.callCount;
-    watchFn();
-    controller.trimData.callCount.should.equal(callCount + 1);
+    sinon.spy(controller, '_trimData');
+    controller._trimData.should.not.be.called();
+    controller.dataAgeLimit = 30000;
+    controller.dataAgeLimit.should.equal('30000');
+    controller._trimData.should.be.calledOnce();
   });
 
   describe('chart configs', () => {
@@ -242,7 +225,7 @@ describe('SystemMemoryController', () => {
     });
   });
 
-  describe('processData', () => {
+  describe('_processData', () => {
     it('should process singleton service results', () => {
       controller.donutData.should.deepEqual({
         used: 0,
@@ -258,7 +241,7 @@ describe('SystemMemoryController', () => {
         yData5: ['Buffers']
       });
       let timestamp = Date.now();
-      controller.processData({
+      controller._processData({
         data: {
           response: [
             {
@@ -307,7 +290,7 @@ describe('SystemMemoryController', () => {
       });
       let timestampA = Date.now();
       let timestampB = Date.now() - 1000;
-      controller.processData({
+      controller._processData({
         data: {
           response: [
             {
@@ -345,7 +328,7 @@ describe('SystemMemoryController', () => {
     it('should append new data to line chart data object', () => {
       let timestampA = Date.now();
       let timestampB = Date.now() + 1000;
-      controller.processData({
+      controller._processData({
         data: {
           response: [
             {
@@ -363,7 +346,7 @@ describe('SystemMemoryController', () => {
           ]
         }
       });
-      controller.processData({
+      controller._processData({
         data: {
           response: [
             {
@@ -390,7 +373,7 @@ describe('SystemMemoryController', () => {
       controller.dataAgeLimit = 30000;
       let timestampA = Date.now() - 30001;
       let timestampB = Date.now;
-      controller.processData({
+      controller._processData({
         data: {
           response: [
             {
@@ -408,7 +391,7 @@ describe('SystemMemoryController', () => {
           ]
         }
       });
-      controller.processData({
+      controller._processData({
         data: {
           response: [
             {
@@ -432,21 +415,14 @@ describe('SystemMemoryController', () => {
   });
 
   describe('on destroy', () => {
-    it('should set an ondestroy handler', () => {
-      scope.$on.should.be.calledWith('$destroy', sinon.match.func);
-    });
-
     it('should cancel refresh', () => {
-      controller.refresh = 'interval-sentinel';
-      let refreshFn = scope.$on.args[0][1];
-      refreshFn();
+      controller.$onDestroy();
       interval.cancel.should.be.calledWith('interval-sentinel');
     });
 
     it('should do nothing if refresh undefined', () => {
-      controller.refresh = undefined;
-      let refreshFn = scope.$on.args[0][1];
-      refreshFn();
+      delete controller._refresh;
+      controller.$onDestroy();
       interval.cancel.should.not.be.called();
     });
   });

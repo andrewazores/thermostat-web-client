@@ -25,24 +25,27 @@
  * exception statement from your version.
  */
 
-describe('SystemInfoService', () => {
+import configModule from 'shared/config/config.module.js';
+import serviceModule from './system-memory.service.js';
+
+describe('SystemMemoryService', () => {
 
   beforeEach(() => {
-    angular.mock.module('configModule', $provide => {
+    angular.mock.module(configModule, $provide => {
       'ngInject';
       $provide.constant('gatewayUrl', 'http://example.com:1234');
     });
 
-    angular.mock.module('systemInfo.service');
+    angular.mock.module(serviceModule);
   });
 
   let httpBackend, scope, svc;
-  beforeEach(inject(($httpBackend, $rootScope, systemInfoService) => {
+  beforeEach(inject(($httpBackend, $rootScope, systemMemoryService) => {
     'ngInject';
     httpBackend = $httpBackend;
 
     scope = $rootScope;
-    svc = systemInfoService;
+    svc = systemMemoryService;
   }));
 
   afterEach(() => {
@@ -54,22 +57,21 @@ describe('SystemInfoService', () => {
     should.exist(svc);
   });
 
-  describe('getSystemInfo(systemId)', () => {
+  describe('getMemoryInfo(systemId)', () => {
     it('should resolve mock data', done => {
       let expected = {
-        osName: 'Linux',
-        osKernel: '4.10.11-200.fc25.x86_64'
+        total: 16384,
+        used: 9001
       };
-      httpBackend.when('GET', 'http://example.com:1234/systems/0.0.1/systems/foo-systemId?limit=1&sort=-timeStamp')
+      httpBackend.when('GET', 'http://example.com:1234/system-memory/0.0.1/systems/foo-systemId?sort=-timeStamp')
         .respond(expected);
-      svc.getSystemInfo('foo-systemId').then(res => {
+      svc.getMemoryInfo('foo-systemId').then(res => {
         res.data.should.deepEqual(expected);
         done();
       });
-      httpBackend.expectGET('http://example.com:1234/systems/0.0.1/systems/foo-systemId?limit=1&sort=-timeStamp');
+      httpBackend.expectGET('http://example.com:1234/system-memory/0.0.1/systems/foo-systemId?sort=-timeStamp');
       httpBackend.flush();
       scope.$apply();
     });
   });
-
 });

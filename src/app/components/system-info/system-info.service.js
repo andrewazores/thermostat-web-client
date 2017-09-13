@@ -45,13 +45,6 @@ class SystemInfoService {
     });
   }
 
-  getMemoryInfo (systemId) {
-    return this.http.get(urlJoin(this.gatewayUrl, 'system-memory', '0.0.1', 'systems', systemId), {
-      params: {
-        sort: '-timeStamp'
-      }
-    });
-  }
 }
 
 export default angular
