@@ -120,8 +120,7 @@ module.exports = function () {
   config.plugins.push(
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
-      DEBUG: false,
-      GATEWAY_URL: 'http://localhost:8888'
+      DEBUG: false
     })
   );
 
@@ -158,7 +157,14 @@ module.exports = function () {
     contentBase: './src/assets',
     stats: 'minimal',
     inline: true,
-    historyApiFallback: true
+    historyApiFallback: true,
+    setup: function (app) {
+      app.get('/gatewayurl', function (req, res, next) {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({ gatewayUrl: 'http://localhost:8888/' }));
+        next();
+      });
+    }
   };
 
   return config;

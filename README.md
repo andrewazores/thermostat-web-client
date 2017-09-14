@@ -20,11 +20,12 @@ look like:
         "clientId": "BarClientId"
     }
 
-## Environments
+The webserver which serves the client should expose a path `/gatewayurl`, which returns
+a string representation of a JSON object like this:
+`{ "gatewayUrl": "http://example.com:1234/" }`, where the URL returned points to the
+root of the associated Thermostat Web-Gateway server.
 
-`GATEWAY_URL` should be set to the URL of a Thermostat Web-Gateway instance.
-The default value of this variable is the default URL for the web-client
-mockapi server.
+## Environments
 
 Expected values for `NODE_ENV`:
 

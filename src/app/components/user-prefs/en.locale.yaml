@@ -2,6 +2,8 @@ userPrefs:
   USE_TLS: Use TLS
   TLS_DESCRIPTION: Use secure connections to the web-gateway and command channel.
 
+  GATEWAY_URL: Web-Gateway URL
+
   RESTART_NOTE: >
     <i>App restart is recommended after changing this setting.
     You may refresh the application in your browser, or close the tab

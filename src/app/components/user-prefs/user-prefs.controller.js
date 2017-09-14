@@ -28,13 +28,14 @@
 import service from './user-prefs.service.js';
 
 class UserPreferencesController {
-  constructor (userPrefsService) {
+  constructor (userPrefsService, gatewayUrl) {
     'ngInject';
     this._userPrefsService = userPrefsService;
+    this.gatewayUrl = gatewayUrl;
 
     let tlsSwitch = angular.element('#tlsSwitch');
     tlsSwitch.bootstrapSwitch();
-    tlsSwitch.bootstrapSwitch('state', userPrefsService.tlsEnabled);
+    tlsSwitch.bootstrapSwitch('state', this._userPrefsService.tlsEnabled);
     tlsSwitch.on('switchChange.bootstrapSwitch', () => {
       this.tlsEnabled = tlsSwitch.bootstrapSwitch('state');
     });

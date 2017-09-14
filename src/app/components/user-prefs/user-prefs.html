@@ -1,4 +1,10 @@
 <div class="container-fluid container-cards-pf">
+
+  <div class="form-group">
+    <label for="gatewayUrl" class="label label-info pull-left" translate>userPrefs.GATEWAY_URL</label>
+    <input name="gatewayUrl" type="text" value="{{$ctrl.gatewayUrl}}" disabled/>
+  </div>
+
   <div class="form-group">
     <label for="tlsSwitch" class="label label-info pull-left" translate>userPrefs.USE_TLS</label>
     <input class="bootstrap-switch pull-right" id="tlsSwitch" name="tlsSwitch"
@@ -12,4 +18,5 @@
       <span translate>userPrefs.RESTART_NOTE</span>
     </p>
   </div>
+
 </div>

@@ -120,18 +120,45 @@ describe('ConfigModule', () => {
     });
 
     it('should yield ws:// URL when gateway URL is http://', () => {
-      fn('http://example.com:8888').should.equal('ws://example.com:8888');
+      fn('http://example.com:8888/').should.equal('ws://example.com:8888/');
     });
 
     it('should yield wss:// URL when gateway URL is https://', () => {
-      fn('https://example.com:8888').should.equal('wss://example.com:8888');
+      fn('https://example.com:8888/').should.equal('wss://example.com:8888/');
+    });
+
+    it('should throw error when gateway URL is undefined', done => {
+      try {
+        fn(undefined);
+      } catch (e) {
+        e.message.should.equal('gatewayUrl could not be determined');
+        done();
+      }
+    });
+
+    it('should throw error when gateway URL is empty string', done => {
+      try {
+        fn('');
+      } catch (e) {
+        e.message.should.equal('gatewayUrl could not be determined');
+        done();
+      }
+    });
+
+    it('should throw error when gateway URL string is not URL formatted', done => {
+      try {
+        fn('this is not a url');
+      } catch (e) {
+        e.message.should.equal('gatewayUrl protocol unknown');
+        done();
+      }
     });
 
     it('should throw error when gateway URL protocol is unknown', done => {
       try {
         fn('ftp://example.com');
       } catch (e) {
-        e.message.should.equal('GATEWAY_URL protocol unknown');
+        e.message.should.equal('gatewayUrl protocol unknown');
         done();
       }
     });

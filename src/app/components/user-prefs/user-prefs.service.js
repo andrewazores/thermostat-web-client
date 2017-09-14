@@ -39,11 +39,11 @@ class UserPreferencesService {
   }
 
   get tlsEnabled () {
-    // can't use gatewayUrl value here due to circular reference, but process.env
-    // is not available in test suite
+    // can't use gatewayUrl value here due to circular reference,
+    // and we don't want to reassign window.tmsGatewayUrl in test suite
     /* istanbul ignore next */
     if (!this._storage.hasItem('tlsEnabled')) {
-      let protocol = url.parse(process.env.GATEWAY_URL).protocol;
+      let protocol = url.parse(window.tmsGatewayUrl).protocol;
       this.tlsEnabled = protocol === 'https:';
     }
     return JSON.parse(this._storage.getItem('tlsEnabled'));

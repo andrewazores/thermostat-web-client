@@ -25,20 +25,28 @@
  * exception statement from your version.
  */
 
+import * as url from 'url';
+
 export function cmdChanUrl (gatewayUrl) {
-  if (gatewayUrl.startsWith('http://')) {
-    return 'ws://' + gatewayUrl.substring(7);
-  } else if (gatewayUrl.startsWith('https://')) {
-    return 'wss://' + gatewayUrl.substring(8);
-  } else {
-    throw new Error('GATEWAY_URL protocol unknown');
+  if (!gatewayUrl) {
+    throw new Error('gatewayUrl could not be determined');
   }
+  let parsed = url.parse(gatewayUrl);
+  let protocol = parsed.protocol;
+  if (protocol === 'http:') {
+    parsed.protocol = 'ws:';
+  } else if (protocol === 'https:') {
+    parsed.protocol = 'wss:';
+  } else {
+    throw new Error('gatewayUrl protocol unknown');
+  }
+  return url.format(parsed);
 };
 
 export default angular
   .module('configModule', [])
   .constant('environment', process.env.NODE_ENV)
   .constant('debug', process.env.DEBUG)
-  .value('gatewayUrl', process.env.GATEWAY_URL)
-  .value('commandChannelUrl', cmdChanUrl(process.env.GATEWAY_URL))
+  .value('gatewayUrl', window.tmsGatewayUrl)
+  .value('commandChannelUrl', cmdChanUrl(window.tmsGatewayUrl))
   .name;

@@ -45,7 +45,8 @@ describe('UserPreferencesController', () => {
       sinon.stub(angular, 'element').returns(bootstrapSwitch);
 
       ctrl = $controller('UserPreferencesController', {
-        userPrefsService: userPrefsSvc
+        userPrefsService: userPrefsSvc,
+        gatewayUrl: 'fake-url'
       });
     });
   });
@@ -82,6 +83,11 @@ describe('UserPreferencesController', () => {
     ctrl.tlsEnabled.should.equal('fake-state');
     userPrefsSvc.tlsEnabled = 'new-state';
     ctrl.tlsEnabled.should.equal('new-state');
+  });
+
+  it('should set gatewayUrl', () => {
+    ctrl.should.have.ownProperty('gatewayUrl');
+    ctrl.gatewayUrl.should.equal('fake-url');
   });
 
 });

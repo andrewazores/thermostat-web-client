@@ -45,3 +45,9 @@ app.set('host', host);
 app.listen(app.get('port'), app.get('host'), function () {
   console.info('Server started on http://' + app.get('host') + ':' + app.get('port'));
 });
+
+app.get('/gatewayurl', function (req, res, next) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify({ gatewayUrl: 'http://localhost:8888/' }));
+  next();
+});

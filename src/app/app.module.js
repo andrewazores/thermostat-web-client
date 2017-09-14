@@ -33,14 +33,8 @@ import 'oclazyload';
 import 'bootstrap';
 import 'bootstrap-switch';
 
-import configModule from 'shared/config/config.module.js';
 import {default as authModule, config as authModBootstrap} from 'components/auth/auth.module.js';
-import filters from 'shared/filters/filters.module.js';
-import services from 'shared/services/services.module.js';
-import components from 'shared/components/components.module.js';
-import appRouting from './app.routing.js';
 import authInterceptorFactory from './auth-interceptor.factory.js';
-import AppController from './app.controller.js';
 
 require.ensure([], () => {
   require('angular-patternfly/node_modules/patternfly/dist/css/patternfly.css');
@@ -49,42 +43,63 @@ require.ensure([], () => {
   require('scss/app.scss');
 });
 
-export const appModule = angular
-  .module('appModule', [
-    'ui.router',
-    'ui.bootstrap',
-    angularTranslate,
-    configModule,
-    authModule,
-    // non-core modules
-    services,
-    filters,
-    components,
-    appRouting,
-    authInterceptorFactory,
-    AppController
-  ])
-  .config($httpProvider => {
-    'ngInject';
-    $httpProvider.interceptors.push(authInterceptorFactory);
-  })
-  .config($translateProvider => {
-    'ngInject';
-    $translateProvider
-      .useSanitizeValueStrategy('escapeParameters')
-      .addInterpolation('$translateMessageFormatInterpolation')
-      .registerAvailableLanguageKeys(['en'], {
-        'en_*': 'en'
-      })
-      .fallbackLanguage('en')
-      .determinePreferredLanguage();
+function initializeApplication () {
+  return angular
+    .module('appModule', [
+      'ui.router',
+      'ui.bootstrap',
+      angularTranslate,
+      authModule,
+      // non-core modules
+      require('./app.routing.js').default,
+      require('./app.controller.js').default,
+      authInterceptorFactory
+    ])
+    .config($httpProvider => {
+      'ngInject';
+      $httpProvider.interceptors.push(authInterceptorFactory);
+    })
+    .config($translateProvider => {
+      'ngInject';
+      $translateProvider
+        .useSanitizeValueStrategy('escapeParameters')
+        .addInterpolation('$translateMessageFormatInterpolation')
+        .registerAvailableLanguageKeys(['en'], {
+          'en_*': 'en'
+        })
+        .fallbackLanguage('en')
+        .determinePreferredLanguage();
 
-    let req = require.context('./', true, /\/([a-z]{2})\.locale\.yaml$/);
-    req.keys().map(key => {
-      let lang = /\/([a-z]{2})\.locale\.yaml$/.exec(key)[1];
-      let translations = req(key);
-      $translateProvider.translations(lang, translations);
+      let req = require.context('./', true, /\/([a-z]{2})\.locale\.yaml$/);
+      req.keys().map(key => {
+        let lang = /\/([a-z]{2})\.locale\.yaml$/.exec(key)[1];
+        let translations = req(key);
+        $translateProvider.translations(lang, translations);
+      });
+    })
+    .name;
+}
+
+/* istanbul ignore next */
+if (window.tmsGatewayUrl) {
+  let appModule = initializeApplication();
+  authModBootstrap(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule])));
+} else {
+  $.get('/gatewayurl')
+    .done(res => {
+      window.tmsGatewayUrl = res.gatewayUrl;
+    })
+    .fail(() => {
+      let url = require('url');
+      let parsed = url.parse(window.location.href);
+      let gateway = {
+        protocol: parsed.protocol,
+        host: parsed.host
+      };
+      window.tmsGatewayUrl = url.format(gateway);
+    })
+    .always(() => {
+      let appModule = initializeApplication();
+      authModBootstrap(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule])));
     });
-  });
-
-authModBootstrap(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule.name])));
+}

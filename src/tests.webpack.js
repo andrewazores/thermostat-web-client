@@ -29,6 +29,8 @@ import 'angular';
 import 'angular-mocks/angular-mocks';
 import 'babel-polyfill';
 
+window.tmsGatewayUrl = 'http://localhost:8888/';
+
 const context = require.context('./app', true, /\.js$/);
 
 context.keys().forEach(context);
