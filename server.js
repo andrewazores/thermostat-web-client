@@ -49,5 +49,4 @@ app.listen(app.get('port'), app.get('host'), function () {
 app.get('/gatewayurl', function (req, res, next) {
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({ gatewayUrl: 'http://localhost:8888/' }));
-  next();
 });
