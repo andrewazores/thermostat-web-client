@@ -30,7 +30,7 @@ describe('JvmGcController', () => {
   beforeEach(angular.mock.module('app.filters'));
   beforeEach(angular.mock.module('jvmGc.controller'));
 
-  let scope, interval, dateFilterStub, dateFormatSpy, svc, promise, ctrl, translate, sanitizeService;
+  let interval, dateFilterStub, dateFormatSpy, svc, promise, ctrl, translate, sanitizeService;
   beforeEach(inject(($controller) => {
     'ngInject';
 
@@ -40,8 +40,6 @@ describe('JvmGcController', () => {
         medium: sinon.spy()
       }
     };
-
-    scope = { $on: sinon.spy() };
 
     interval = sinon.stub().returns('interval-sentinel');
     interval.cancel = sinon.spy();
@@ -61,7 +59,6 @@ describe('JvmGcController', () => {
 
     ctrl = $controller('JvmGcController', {
       $stateParams: { jvmId: 'foo-jvmId' },
-      $scope: scope,
       $interval: interval,
       dateFilter: dateFilterStub,
       DATE_FORMAT: dateFormatSpy,
@@ -69,6 +66,7 @@ describe('JvmGcController', () => {
       sanitizeService: sanitizeService,
       $translate: translate
     });
+    ctrl.$onInit();
   }));
 
   it('should exist', () => {
@@ -148,7 +146,7 @@ describe('JvmGcController', () => {
 
   it('should set interval on start', () => {
     interval.should.be.calledOnce();
-    interval.should.be.calledWith(sinon.match.func, 1000);
+    interval.should.be.calledWith(sinon.match.func, '1000');
     interval.cancel.should.not.be.called();
   });
 
@@ -410,21 +408,14 @@ describe('JvmGcController', () => {
   });
 
   describe('ondestroy handler', () => {
-    it('should exist', () => {
-      scope.$on.should.be.calledWith(sinon.match('$destroy'), sinon.match.func);
-    });
-
     it('should cancel refresh', () => {
-      ctrl._refresh = 'interval-sentinel';
-      let func = scope.$on.args[0][1];
-      func();
+      ctrl.$onDestroy();
       interval.cancel.should.be.calledWith('interval-sentinel');
     });
 
     it('should do nothing if refresh is undefined', () => {
       delete ctrl._refresh;
-      let func = scope.$on.args[0][1];
-      func();
+      ctrl.$onDestroy();
       interval.cancel.should.not.be.called();
     });
   });

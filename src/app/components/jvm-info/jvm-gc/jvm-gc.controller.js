@@ -30,7 +30,7 @@ import filters from 'shared/filters/filters.module.js';
 import service from './jvm-gc.service.js';
 
 class JvmGcController {
-  constructor ($stateParams, $scope, $interval, dateFilter, DATE_FORMAT,
+  constructor ($stateParams, $interval, dateFilter, DATE_FORMAT,
     metricToNumberFilter, jvmGcService, sanitizeService, $translate) {
     'ngInject';
     this.jvmId = $stateParams.jvmId;
@@ -41,21 +41,29 @@ class JvmGcController {
     this.jvmGcService = jvmGcService;
     this.sanitizeService = sanitizeService;
     this.translate = $translate;
+  }
 
-    $scope.$on('$destroy', () => this.stop());
-
+  $onInit () {
     this.collectors = [];
     this.chartConfigs = {};
     this.chartData = {};
     this.collectorData = new Map();
     this.constructChartData();
 
-    this.refreshRate = '1000';
-    this.dataAgeLimit = '30000';
+    this._refreshRate = 1000;
+    this._dataAgeLimit = 30000;
+
+    this.start();
+  }
+
+  $onDestroy () {
+    this.stop();
   }
 
   start () {
-    this.refreshRate = this._refreshRate.toString();
+    this.stop();
+    this.update();
+    this._refresh = this.interval(() => this.update(), this.refreshRate);
   }
 
   stop () {
@@ -69,8 +77,7 @@ class JvmGcController {
     this.stop();
     this._refreshRate = parseInt(val);
     if (this._refreshRate > 0) {
-      this._refresh = this.interval(() => this.update(), this._refreshRate);
-      this.update();
+      this.start();
     }
   }
 
