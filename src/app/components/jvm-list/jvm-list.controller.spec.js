@@ -89,7 +89,7 @@ describe('JvmListController', () => {
     };
     timeout = sinon.spy();
     translate = sinon.stub().returns({
-      then: sinon.stub().yields()
+      then: sinon.stub().yields({})
     });
 
     jvmListSvc = {
@@ -209,7 +209,7 @@ describe('JvmListController', () => {
         foo: false,
         bar: false
       });
-      controller.listConfig.itemsAvailable = true;
+      controller.listConfig.itemsAvailable.should.be.True();
       done();
     });
 
@@ -230,7 +230,7 @@ describe('JvmListController', () => {
         foo: false,
         bar: false
       });
-      controller.listConfig.itemsAvailable = true;
+      controller.listConfig.itemsAvailable.should.be.True();
       done();
     });
 
@@ -247,7 +247,7 @@ describe('JvmListController', () => {
       controller.systemsOpen.should.deepEqual({
         foo: true
       });
-      controller.listConfig.itemsAvailable = true;
+      controller.listConfig.itemsAvailable.should.be.True();
       done();
     });
 
@@ -256,7 +256,7 @@ describe('JvmListController', () => {
       rootScope.$apply();
       controller.should.have.ownProperty('showErr');
       controller.showErr.should.equal(true);
-      controller.listConfig.itemsAvailable = false;
+      controller.listConfig.itemsAvailable.should.be.False();
       done();
     });
   });

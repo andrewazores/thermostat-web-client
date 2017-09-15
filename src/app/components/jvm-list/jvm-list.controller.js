@@ -40,9 +40,9 @@ class JvmListController {
     this.translate = $translate;
     this.systemsOpen = {};
 
+    this.aliveOnly = true;
+
     this.pageConfig = { showPaginationControls: false };
-    this.sortConfig = {};
-    this.filterConfig = {};
     this.listConfig = {
       showSelectBox: false,
       useExpandingRows: true,
@@ -56,6 +56,8 @@ class JvmListController {
     this.emptyStateConfig = {
       icon: 'pficon-warning-triangle-o',
     };
+
+    this.constructToolbarSettings();
   }
 
   $onInit () {
@@ -63,7 +65,6 @@ class JvmListController {
     this.translate('jvmList.ERR_MESSAGE').then(s => this.emptyStateConfig.info = s);
 
     this.location.hash('');
-    this.aliveOnly = true;
     let aliveOnlySwitch = angular.element('#aliveOnlyState');
     aliveOnlySwitch.bootstrapSwitch();
     aliveOnlySwitch.on('switchChange.bootstrapSwitch', (event, state) => {
@@ -72,7 +73,6 @@ class JvmListController {
     });
 
     this.loadData();
-    this.constructToolbarSettings();
   }
 
   /**
@@ -130,17 +130,18 @@ class JvmListController {
                   pageSize: 5
                 }
               });
+              if (this.systems.length === 1) {
+                this.systemsOpen[this.systems[0].systemId] = true;
+              }
+              this.pageConfig.numTotalItems = this.allItems.length;
+              this.pageConfig.pageSize = this.allItems.length;
+              this.pageConfig.pageNumber = 1;
+              this.listConfig.itemsAvailable = true;
+              this.toolbarConfig.filterConfig.resultsCount = this.systems.length;
+              this.toolbarConfig.filterConfig.totalCount = this.allItems.length;
             }
           );
         }
-        if (this.systems.length === 1) {
-          this.systemsOpen[this.systems[0].systemId] = true;
-        }
-        this.pageConfig.numTotalItems = this.allItems.length;
-        this.pageConfig.pageSize = this.allItems.length;
-        this.pageConfig.pageNumber = 1;
-        this.listConfig.itemsAvailable = true;
-        this.toolbarConfig.filterConfig.resultsCount = this.systems.length;
       },
       () => {
         this.listConfig.itemsAvailable = false;
@@ -152,57 +153,66 @@ class JvmListController {
   }
 
   constructToolbarSettings () {
-    this.filterConfig = {
-      fields: [
-        {
-          id: 'hostname',
-          filterType: 'text'
-        },
-        {
-          id: 'jvmName',
-          filterType: 'text'
+    this.translate([
+      'jvmList.HOSTNAME_TITLE',
+      'jvmList.filterConfig.HOSTNAME_PLACEHOLDER',
+      'jvmList.filterConfig.JVM_NAME_TITLE',
+      'jvmList.filterConfig.JVM_NAME_PLACEHOLDER',
+      'jvmList.sortConfig.TIME_CREATED_TITLE',
+      'jvmList.sortConfig.NUM_JVMS_TITLE'
+    ]).then(translations => {
+      this.filterConfig = {
+        fields: [
+          {
+            id: 'hostname',
+            filterType: 'text',
+            title: translations['jvmList.HOSTNAME_TITLE'],
+            placeholder: translations['jvmList.filterConfig.HOSTNAME_PLACEHOLDER']
+          },
+          {
+            id: 'jvmName',
+            filterType: 'text',
+            title: translations['jvmList.filterConfig.JVM_NAME_TITLE'],
+            placeholder: translations['jvmList.filterConfig.JVM_NAME_PLACEHOLDER']
+          }
+        ],
+        resultsCount: 0,
+        totalCount: 0,
+        appliedFilters: [],
+        onFilterChange: filters => {
+          this.applyFilters(filters);
+          this.toolbarConfig.filterConfig.resultsCount = this.items.length;
         }
-      ],
-      resultsCount: this.items.length,
-      totalCount: this.allItems.length,
-      appliedFilters: [],
-      onFilterChange: filters => {
-        this.applyFilters(filters);
-        this.toolbarConfig.filterConfig.resultsCount = this.items.length;
-      }
-    };
-    this.translate('jvmList.HOSTNAME_TITLE').then(s => this.filterConfig.fields[0].title = s);
-    this.translate('jvmList.filterConfig.HOSTNAME_PLACEHOLDER').then(s => this.filterConfig.fields[0].placeholder = s);
-    this.translate('jvmList.filterConfig.JVM_NAME_TITLE').then(s => this.filterConfig.fields[1].title = s);
-    this.translate('jvmList.filterConfig.JVM_NAME_PLACEHOLDER').then(s => this.filterConfig.fields[1].placeholder = s);
+      };
 
-    this.sortConfig = {
-      fields: [
-        {
-          id: 'name',
-          sortType: 'alpha'
-        },
-        {
-          id: 'timeCreated',
-          sortType: 'numeric'
-        },
-        {
-          id: 'numJvms',
-          sortType: 'numeric'
+      this.sortConfig = {
+        fields: [
+          {
+            id: 'name',
+            sortType: 'alpha',
+            title: translations['jvmList.HOSTNAME_TITLE']
+          },
+          {
+            id: 'timeCreated',
+            sortType: 'numeric',
+            title: translations['jvmList.sortConfig.TIME_CREATED_TITLE']
+          },
+          {
+            id: 'numJvms',
+            sortType: 'numeric',
+            title: translations['jvmList.sortConfig.NUM_JVMS_TITLE']
+          }
+        ],
+        onSortChange: () => {
+          this.sortItems();
         }
-      ],
-      onSortChange: () => {
-        this.sortItems();
-      }
-    };
-    this.translate('jvmList.HOSTNAME_TITLE').then(s => this.sortConfig.fields[0].title = s);
-    this.translate('jvmList.sortConfig.TIME_CREATED_TITLE').then(s => this.sortConfig.fields[1].title = s);
-    this.translate('jvmList.sortConfig.NUM_JVMS_TITLE').then(s => this.sortConfig.fields[2].title = s);
+      };
 
-    this.toolbarConfig = {
-      filterConfig: this.filterConfig,
-      sortConfig: this.sortConfig
-    };
+      this.toolbarConfig = {
+        filterConfig: this.filterConfig,
+        sortConfig: this.sortConfig
+      };
+    });
   }
 
   /**
