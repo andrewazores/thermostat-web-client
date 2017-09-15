@@ -31,7 +31,7 @@ import filters from 'shared/filters/filters.module.js';
 import service from './jvm-memory.service.js';
 
 class JvmMemoryController {
-  constructor ($stateParams, $scope, $interval, jvmMemoryService, metricToBigIntFilter,
+  constructor ($stateParams, $interval, jvmMemoryService, metricToBigIntFilter,
     bigIntToStringFilter, stringToNumberFilter, scaleBytesService, sanitizeService) {
     'ngInject';
 
@@ -44,27 +44,36 @@ class JvmMemoryController {
     this._bigIntToString = bigIntToStringFilter;
     this._stringToNumber = stringToNumberFilter;
     this._scaleBytes = scaleBytesService;
+  }
 
+  $onInit () {
     this.metaspaceData = {
       used: 0,
       total: 0
     };
-
     this.metaspaceConfig = {
       chartId: 'metaspaceChart',
       units: 'B'
     };
-
     this.spaceConfigs = [];
-
     this.generationData = {};
 
-    $scope.$on('$destroy', () => this.cancel());
+    this._refreshRate = 2000;
 
-    this.refreshRate = '2000';
+    this._start();
   }
 
-  cancel () {
+  $onDestroy () {
+    this._stop();
+  }
+
+  _start () {
+    this._stop();
+    this._update();
+    this._refresh = this._interval(() => this._update(), this.refreshRate);
+  }
+
+  _stop () {
     if (angular.isDefined(this._refresh)) {
       this._interval.cancel(this._refresh);
       delete this._refresh;
@@ -72,11 +81,10 @@ class JvmMemoryController {
   }
 
   set refreshRate (val) {
-    this.cancel();
+    this._stop();
     this._refreshRate = parseInt(val);
     if (this._refreshRate > 0) {
-      this._refresh = this._interval(() => this.update(), this._refreshRate);
-      this.update();
+      this._start();
     }
   }
 
@@ -105,7 +113,7 @@ class JvmMemoryController {
     );
   }
 
-  update () {
+  _update () {
     this._jvmMemoryService.getJvmMemory(this.jvmId).then(resp => {
       let data = resp.data.response[0];
 

@@ -29,14 +29,9 @@ describe('JvmMemory controller', () => {
 
   beforeEach(angular.mock.module('jvmMemory.controller'));
 
-  let scope, interval, memSvc, scaleSvc, promise, ctrl, sanitizeSvc;
+  let interval, memSvc, scaleSvc, promise, ctrl, sanitizeSvc;
   beforeEach(inject($controller => {
     'ngInject';
-
-    scope = {
-      $on: sinon.spy(),
-      $watch: sinon.spy()
-    };
 
     interval = sinon.stub().returns('interval-sentinel');
     interval.cancel = sinon.spy();
@@ -60,20 +55,20 @@ describe('JvmMemory controller', () => {
 
     ctrl = $controller('JvmMemoryController', {
       $stateParams: { jvmId: 'foo-jvmId' },
-      $scope: scope,
       $interval: interval,
       jvmMemoryService: memSvc,
       scaleBytesService: scaleSvc,
       sanitizeService: sanitizeSvc
     });
+    ctrl.$onInit();
 
-    sinon.spy(ctrl, 'update');
-    sinon.spy(ctrl, 'cancel');
+    sinon.spy(ctrl, '_update');
+    sinon.spy(ctrl, '_stop');
   }));
 
   afterEach(() => {
-    ctrl.update.restore();
-    ctrl.cancel.restore();
+    ctrl._update.restore();
+    ctrl._stop.restore();
   });
 
   it('should exist', () => {
@@ -113,45 +108,38 @@ describe('JvmMemory controller', () => {
   });
 
   it('should disable when set refreshRate is called with a non-positive value', () => {
-    ctrl.cancel.should.not.be.called();
-    ctrl.update.should.not.be.called();
+    ctrl._stop.should.not.be.called();
+    ctrl._update.should.not.be.called();
 
     ctrl.refreshRate = -1;
 
-    ctrl.cancel.should.be.calledOnce();
-    ctrl.update.should.not.be.called();
+    ctrl._stop.should.be.calledOnce();
+    ctrl._update.should.not.be.called();
     ctrl.should.not.have.ownProperty('_refresh');
   });
 
-  it('should call controller#update() on refresh', () => {
+  it('should call controller#_update() on refresh', () => {
     ctrl.refreshRate = 1;
     let func = interval.args[0][0];
-    let callCount = ctrl.update.callCount;
+    let callCount = ctrl._update.callCount;
     func();
-    ctrl.update.callCount.should.equal(callCount + 1);
+    ctrl._update.callCount.should.equal(callCount + 1);
   });
 
   describe('ondestroy handler', () => {
-    it('should exist', () => {
-      scope.$on.should.be.calledWith(sinon.match('$destroy'), sinon.match.func);
-    });
-
     it('should cancel refresh', () => {
-      ctrl._refresh = 'interval-sentinel';
-      let func = scope.$on.args[0][1];
-      func();
+      ctrl.$onDestroy();
       interval.cancel.should.be.calledWith('interval-sentinel');
     });
 
-    it('should do nothing if refresh is undefined', () => {
-      ctrl._refresh = undefined;
-      let func = scope.$on.args[0][1];
-      func();
+    it('should do nothing if _refresh is undefined', () => {
+      delete ctrl._refresh;
+      ctrl.$onDestroy();
       interval.cancel.should.not.be.called();
     });
   });
 
-  describe('update', () => {
+  describe('_update', () => {
     let data, func;
     beforeEach(() => {
       func = promise.then.args[0][0];
