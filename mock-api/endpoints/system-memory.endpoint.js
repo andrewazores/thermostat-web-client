@@ -1,7 +1,7 @@
 function systemMemory (server) {
   let _ = require('lodash');
   server.init('systemMemory');
-  server.app.get('/system-memory/0.0.1/systems/:systemId', function (req, res, next) {
+  server.app.get('/system-memory/0.0.1/systems/:systemId', function (req, res) {
     server.logRequest('system-info', req);
 
     let query = req.query;
@@ -19,7 +19,7 @@ function systemMemory (server) {
     for (let i = 0; i < limit; i++) {
       var data = {
         systemId: systemId,
-        agentId: 'mock-agentId',
+        agentId: 'foo-agentId',
         timeStamp: new Date().getTime(),
         total: 16384,
         free: _.round(Math.random() * (16384 / 4)),
@@ -38,7 +38,6 @@ function systemMemory (server) {
         response: response
       }
     ));
-    next();
   });
 }
 

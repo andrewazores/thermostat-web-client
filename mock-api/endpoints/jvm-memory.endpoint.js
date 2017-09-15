@@ -1,7 +1,7 @@
 function jvmMemory (server) {
   var _ = require('lodash');
   server.init('jvmMemory');
-  server.app.get('/jvm-memory/0.0.3/jvms/:jvmId', function (req, res, next) {
+  server.app.get('/jvm-memory/0.0.3/jvms/:jvmId', function (req, res) {
     server.logRequest('jvm-memory', req);
 
     var jvmId = req.params.jvmId;
@@ -90,7 +90,6 @@ function jvmMemory (server) {
         ]
       }
     ));
-    next();
   });
 }
 

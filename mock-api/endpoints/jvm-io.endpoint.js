@@ -2,7 +2,7 @@ function jvmIo (server) {
   var _ = require('lodash');
   server.init('jvmIo');
 
-  server.app.get('/jvm-io/0.0.1/jvms/:jvmId', function (req, res, next) {
+  server.app.get('/jvm-io/0.0.1/jvms/:jvmId', function (req, res) {
     server.logRequest('jvm-io', req);
 
     var jvmId = req.params.jvmId;
@@ -25,7 +25,6 @@ function jvmIo (server) {
         response: response
       }
     ));
-    next();
   });
 }
 

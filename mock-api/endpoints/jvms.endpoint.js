@@ -1,7 +1,7 @@
 function jvmList (server) {
   var _ = require('lodash');
   server.init('jvms');
-  server.app.get('/jvms/0.0.1/tree', function (req, res, next) {
+  server.app.get('/jvms/0.0.1/tree', function (req, res) {
     server.logRequest('jvm-list', req);
     res.setHeader('Content-Type', 'application/json');
 
@@ -19,10 +19,10 @@ function jvmList (server) {
       var jvms = [];
       for (var j = 0; j < systemLimit - i; j++) {
         jvms.push({
-          'mainClass': 'c.r.t.' + j,
+          'mainClass': 'c.r.t.' + i + '.' + j,
           'startTime': { $numberLong: (Date.now() - 10000000).toString() },
           'stopTime': { $numberLong: '-1' },
-          'jvmId': 'vm-' + j,
+          'jvmId': i + '-vm-' + j,
           'isAlive': true
         });
       }
@@ -31,7 +31,7 @@ function jvmList (server) {
           'mainClass': 'c.r.t.DeadVM',
           'startTime': { $numberLong: (Date.now() - 350000000).toString() },
           'stopTime': { $numberLong: Date.now().toString() },
-          'jvmId': 'vm-dead',
+          'jvmId': i + '-vm-dead-',
           'isAlive': false
         });
       }
@@ -42,7 +42,6 @@ function jvmList (server) {
       resp.push(system);
     }
     res.send(JSON.stringify({ response: resp }));
-    next();
   });
 
   server.app.get('/jvms/0.0.1/systems/:systemId/jvms/:jvmId', function (req, res, next) {

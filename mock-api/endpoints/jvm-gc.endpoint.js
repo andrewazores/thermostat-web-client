@@ -2,13 +2,11 @@ function jvmGc (server) {
   var _ = require('lodash');
   server.init('jvmGc');
   var accumulatedMicros = 1000;
-  server.app.get('/jvm-gc/0.0.3/jvms/:jvmId', function (req, res, next) {
+  server.app.get('/jvm-gc/0.0.3/jvms/:jvmId', function (req, res) {
     server.logRequest('jvm-gc', req);
 
     var jvmId = req.params.jvmId;
 
-    var query = req.query.query;
-    query = _.split(query, '&');
     var limit = req.query.limit || 1;
 
     var response = [];
@@ -38,7 +36,6 @@ function jvmGc (server) {
         response: response
       }
     ));
-    next();
   });
 }
 

@@ -9,7 +9,7 @@ function killVm (server) {
             respType: 'OK'
           }
         }
-      ))
+      ));
     });
   });
 }

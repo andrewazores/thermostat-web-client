@@ -1,6 +1,6 @@
 function systemInfo (server) {
   server.init('systemInfo');
-  server.app.get('/systems/0.0.1/systems/:systemId', function (req, res, next) {
+  server.app.get('/systems/0.0.1/systems/:systemId', function (req, res) {
     server.logRequest('system-info', req);
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(
@@ -17,7 +17,6 @@ function systemInfo (server) {
         }]
       }
     ));
-    next();
   });
 }
 
