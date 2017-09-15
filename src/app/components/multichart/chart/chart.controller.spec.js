@@ -29,7 +29,7 @@ import controllerModule from './chart.controller.js';
 
 describe('multichart chartController', () => {
 
-  let ctrl, svc, scope, interval, dateFilter, translate;
+  let ctrl, svc, interval, dateFilter, translate;
   beforeEach(() => {
     angular.mock.module(controllerModule);
     angular.mock.inject($controller => {
@@ -44,15 +44,9 @@ describe('multichart chartController', () => {
         getDataPromise: getDataPromise,
         getAxesForChart: sinon.stub().returns(['y']),
         countServicesForChart: sinon.stub().returns(2),
+        getServicesForChart: sinon.stub().returns(['foo-svc', 'bar-svc']),
         removeChart: sinon.spy(),
         rename: sinon.spy()
-      };
-      scope = {
-        $parent: {
-          chart: 'foo-chart'
-        },
-        $on: sinon.spy(),
-        $watch: sinon.spy()
       };
       interval = sinon.stub().returns('interval-sentinel');
       interval.cancel = sinon.spy();
@@ -61,18 +55,20 @@ describe('multichart chartController', () => {
         then: sinon.stub().yields({
           'multicharts.chart.X_AXIS_LABEL': 'timestamp',
           'multicharts.chart.X_AXIS_DATA_TYPE': 'timestamp'
+        }).returns({
+          then: sinon.stub().yields()
         })
       });
 
       ctrl = $controller('MultichartChartController', {
         multichartService: svc,
-        $scope: scope,
         $interval: interval,
         dateFilter: dateFilter,
         DATE_FORMAT: { time: { medium: 'medium-time' } },
         $translate: translate
       });
-      ctrl.chartConfig.data = {};
+      ctrl.chart = 'foo-chart';
+      ctrl.$onInit();
     });
   });
 
@@ -81,13 +77,8 @@ describe('multichart chartController', () => {
   });
 
   it('should stop on destroy', () => {
-    scope.$on.should.be.calledWith('$destroy');
-    scope.$on.callCount.should.equal(1);
-    let fn = scope.$on.args[0][1];
-    fn.should.be.a.Function();
-
     interval.cancel.should.not.be.called();
-    fn();
+    ctrl.$onDestroy();
     interval.cancel.should.be.calledOnce();
     interval.cancel.should.be.calledWith('interval-sentinel');
   });
@@ -126,40 +117,35 @@ describe('multichart chartController', () => {
 
     it('should pass chart ID', () => {
       ctrl.update();
-      svc.getData.should.be.calledWith(scope.$parent.chart);
+      svc.getData.should.be.calledWith(ctrl.chart);
     });
 
     it('should do nothing if data is empty', () => {
-      ctrl.chartData.xData.length.should.equal(1);
+      ctrl.chartConfig.data.rows.length.should.equal(1);
       fn({});
-      ctrl.chartData.xData.length.should.equal(1);
+      ctrl.chartConfig.data.rows.length.should.equal(1);
     });
 
     it('should append new data', () => {
-      ctrl.chartData.xData.length.should.equal(1);
+      ctrl.chartConfig.data.rows.length.should.equal(1);
       ctrl.should.not.have.ownProperty('yData');
       fn({
         yData: ['someMetric', 100]
       });
-      ctrl.chartData.xData.length.should.equal(2);
-      ctrl.chartData.should.have.ownProperty('yData');
-      ctrl.chartData.yData.length.should.equal(2);
+      ctrl.chartConfig.data.rows.length.should.equal(2);
+      ctrl.chartConfig.data.rows[1][1].should.equal(100);
     });
 
     it('should append data for existing metric', () => {
-      ctrl.chartData.xData.length.should.equal(1);
-      ctrl.should.not.have.ownProperty('yData');
+      ctrl.chartConfig.data.rows.length.should.equal(1);
       fn({
         yData: ['someMetric', 100]
       });
-      ctrl.chartData.xData.length.should.equal(2);
-      ctrl.chartData.should.have.ownProperty('yData');
-      ctrl.chartData.yData.length.should.equal(2);
+      ctrl.chartConfig.data.rows.length.should.equal(2);
       fn({
         yData: ['someMetric', 200]
       });
-      ctrl.chartData.xData.length.should.equal(3);
-      ctrl.chartData.yData.length.should.equal(3);
+      ctrl.chartConfig.data.rows.length.should.equal(3);
     });
   });
 
@@ -173,17 +159,9 @@ describe('multichart chartController', () => {
       Date.now.restore();
     });
 
-    it('should do nothing if chartData undefined', () => {
-      delete ctrl.chartData;
-      ctrl.trimData();
-      should(ctrl.chartData).be.undefined();
-    });
-
     it('should do nothing if no samples', () => {
       ctrl.trimData();
-      ctrl.chartData.should.eql({
-        xData: ['timestamp']
-      });
+      ctrl.chartConfig.data.rows.should.deepEqual([['timestamp', 'foo-svc', 'bar-svc']]);
     });
 
     it('should not trim data if only one sample', () => {
@@ -192,18 +170,17 @@ describe('multichart chartController', () => {
 
       dateNowStub.returns(100);
       updateFn({
-        yData: ['foo', 500],
-        yData1: ['bar', 5000]
+        yData: ['foo-svc', 500],
+        yData1: ['bar-svc', 5000]
       });
 
       dateNowStub.returns(200);
       ctrl.trimData();
 
-      ctrl.chartData.should.eql({
-        xData: ['timestamp', 100],
-        yData: ['foo', 500],
-        yData1: ['bar', 5000]
-      });
+      ctrl.chartConfig.data.rows.should.deepEqual([
+        ['timestamp', 'foo-svc', 'bar-svc'],
+        [100, 500, 5000]
+      ]);
     });
 
     it('should trim old data', () => {
@@ -230,19 +207,20 @@ describe('multichart chartController', () => {
 
       dateNowStub.returns(350);
 
-      ctrl.chartData.should.eql({
-        xData: ['timestamp', 100, 200, 300],
-        yData: ['foo', 500, 600, 700],
-        yData1: ['bar', 5000, 6000, 7000]
-      });
+      ctrl.chartConfig.data.rows.should.deepEqual([
+        ['timestamp', 'foo-svc', 'bar-svc'],
+        [100, 500, 5000],
+        [200, 600, 6000],
+        [300, 700, 7000]
+      ]);
 
       ctrl.trimData();
 
-      ctrl.chartData.should.eql({
-        xData: ['timestamp', 200, 300],
-        yData: ['foo', 600, 700],
-        yData1: ['bar', 6000, 7000]
-      });
+      ctrl.chartConfig.data.rows.should.deepEqual([
+        ['timestamp', 'foo-svc', 'bar-svc'],
+        [200, 600, 6000],
+        [300, 700, 7000]
+      ]);
     });
   });
 

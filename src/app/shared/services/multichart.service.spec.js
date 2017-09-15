@@ -339,4 +339,29 @@ describe('MultichartService', () => {
     });
   });
 
+  describe('getServicesForChart', () => {
+    it('should be empty for non-existent chart', () => {
+      svc.getServicesForChart('foo').should.deepEqual([]);
+    });
+
+    it('should be empty initially', () => {
+      svc.addChart('foo');
+      svc.getServicesForChart('foo').should.deepEqual([]);
+    });
+
+    it('should reflect added service names', () => {
+      svc.addChart('foo');
+      svc.addService('foo', 'foo-svc', angular.noop);
+      svc.getServicesForChart('foo').should.deepEqual(['foo-svc']);
+    });
+
+    it('should reflect removed service names', () => {
+      svc.addChart('foo');
+      svc.addService('foo', 'foo-svc', angular.noop);
+      svc.addService('foo', 'foo-svc-2', angular.noop);
+      svc.removeService('foo', 'foo-svc');
+      svc.getServicesForChart('foo').should.deepEqual(['foo-svc-2']);
+    });
+  });
+
 });

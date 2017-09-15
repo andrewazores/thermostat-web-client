@@ -57,11 +57,7 @@
   </div>
 
   <div class="card-pf-body" ng-if="$ctrl.chartConfig">
-    <pf-line-chart id="chart-{{$ctrl.chart}}" config="$ctrl.chartConfig"
-                                        chart-data="$ctrl.chartData"
-                                        show-x-axis="true"
-                                        show-y-axis="true"
-                                        ></pf-line-chart>
+    <pf-c3-chart id="chart-{{$ctrl.chart}}" config="$ctrl.chartConfig"></pf-c3-chart>
 
 
   </div>

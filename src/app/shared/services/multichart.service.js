@@ -73,6 +73,16 @@ class MultiChartService {
     return ret;
   }
 
+  getServicesForChart (chartName) {
+    if (!this.hasChart(chartName)) {
+      return [];
+    }
+    let charts = this.charts.get(chartName);
+    let res = [];
+    charts.forEach(chart => res.push(chart.svcName));
+    return res;
+  }
+
   addChart (chartName) {
     if (this.charts.has(chartName)) {
       return;

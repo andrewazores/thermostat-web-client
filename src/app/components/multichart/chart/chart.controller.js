@@ -30,23 +30,29 @@ import services from 'shared/services/services.module.js';
 import filters from 'shared/filters/filters.module.js';
 
 class MultichartChartController {
-  constructor (multichartService, $scope, $interval, dateFilter, DATE_FORMAT, $translate) {
+  constructor (multichartService, $interval, dateFilter, DATE_FORMAT, $translate) {
     this.svc = multichartService;
     this.interval = $interval;
     this.dateFilter = dateFilter;
     this.dateFormat = DATE_FORMAT;
     this.translate = $translate;
-    this.chart = $scope.$parent.chart;
-
-    this.initializeChartData();
-
-    $scope.$on('$destroy', () => this.stop());
 
     this._refreshRate = 2000;
     this._dataAgeLimit = 60000;
+  }
 
-    this.refresh = $interval(() => this.update(), this._refreshRate);
+  $onInit () {
+    this.initializeChartData().then(() => this.start());
+  }
+
+  $onDestroy () {
+    this.stop();
+  }
+
+  start () {
+    this.stop();
     this.update();
+    this.refresh = this.interval(() => this.update(), this._refreshRate);
   }
 
   update () {
@@ -56,15 +62,11 @@ class MultichartChartController {
         return;
       }
 
-      this.chartData.xData.push(Date.now());
-      keys.forEach(prop => {
-        if (this.chartData.hasOwnProperty(prop)) {
-          this.chartData[prop].push(data[prop][1]);
-        } else {
-          this.chartData[prop] = data[prop];
-        }
+      let update = [Date.now()];
+      keys.forEach(key => {
+        update.push(data[key][1]);
       });
-      this.chartConfig.data.axes = this.svc.getAxesForChart(this.chart);
+      this.chartConfig.data.rows.push(update);
 
       this.trimData();
     }, angular.noop);
@@ -78,21 +80,13 @@ class MultichartChartController {
   }
 
   trimData () {
-    if (!angular.isDefined(this.chartData)) {
-      return;
-    }
     let now = Date.now();
     let oldestLimit = now - this._dataAgeLimit;
 
-    while (true) {
-      if (this.chartData.xData.length <= 2) {
-        break;
-      }
-      let oldest = this.chartData.xData[1];
-      if (oldest < oldestLimit) {
-        Object.keys(this.chartData).forEach(key => {
-          this.chartData[key].splice(1, 1);
-        });
+    while (this.chartConfig.data.rows.length > 2) {
+      let oldest = this.chartConfig.data.rows[1];
+      if (oldest[0] < oldestLimit) {
+        this.chartConfig.data.rows.splice(1, 1);
       } else {
         break;
       }
@@ -100,13 +94,18 @@ class MultichartChartController {
   }
 
   initializeChartData () {
-    this.translate([
+    return this.translate([
       'multicharts.chart.X_AXIS_LABEL',
       'multicharts.chart.X_AXIS_DATA_TYPE'
     ]).then(translations => {
       let self = this;
       this.chartConfig = {
         chartId: 'chart-' + this.chart,
+        grid: {
+          y: {
+            show: true
+          }
+        },
         axis: {
           x: {
             label: translations['multicharts.chart.X_AXIS_LABEL'],
@@ -128,15 +127,17 @@ class MultichartChartController {
             }
           }
         },
+        data: {
+          x: translations['multicharts.chart.X_AXIS_DATA_TYPE'],
+          axes: this.svc.getAxesForChart(this.chart),
+          rows: [[translations['multicharts.chart.X_AXIS_DATA_TYPE']].concat(this.svc.getServicesForChart(this.chart))]
+        },
         tooltip: {
           format: {
             title: x => x,
             value: y => y
           }
         }
-      };
-      this.chartData = {
-        xData: [translations['multicharts.chart.X_AXIS_DATA_TYPE']]
       };
     });
   }
