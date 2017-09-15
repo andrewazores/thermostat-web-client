@@ -2,7 +2,7 @@ multicharts:
   BREADCRUMB: Multicharts
 
   ERR_TITLE: Invalid chart name.
-  ERR_MESSAGE: Chart names may contain alphanumeric characters, underscores, and hyphens.
+  ERR_MESSAGE: Chart names may contain alphanumeric characters, underscores, and hyphens and must not be empty.
 
   form:
     NAME: Name

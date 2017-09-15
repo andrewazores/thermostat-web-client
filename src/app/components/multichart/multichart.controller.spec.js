@@ -67,11 +67,11 @@ describe('MultiChartController', () => {
   });
 
   describe('createChart', () => {
-    it('should do nothing if chartName is undefined', () => {
+    it('should set showErr to true if newChartName is undefined', () => {
       svc.addChart.should.not.be.called();
       ctrl.createChart();
       svc.addChart.should.not.be.called();
-      ctrl.showErr.should.be.false();
+      ctrl.showErr.should.be.true();
     });
 
     it('should reset form and call to service on success', () => {
@@ -92,7 +92,8 @@ describe('MultiChartController', () => {
     });
 
     it('should set showErr to false on success', () => {
-      ctrl.createChart('foo');
+      ctrl.newChartName = 'foo';
+      ctrl.createChart();
       ctrl.showErr.should.be.false();
     });
 

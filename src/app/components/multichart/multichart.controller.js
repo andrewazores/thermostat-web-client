@@ -40,7 +40,8 @@ class MultiChartController {
 
   createChart () {
     if (!this.newChartName) {
-      return false;
+      this.showErr = true;
+      return;
     }
     this.newChartName = this.newChartName.trim();
     if (!this.isValid(this.newChartName)) {
@@ -49,6 +50,10 @@ class MultiChartController {
     }
     this.showErr = false;
     this.svc.addChart(this.newChartName);
+    this.resetForm();
+  }
+
+  resetForm () {
     this.newChartName = '';
     this.form.$setPristine();
     this.form.$setUntouched();
