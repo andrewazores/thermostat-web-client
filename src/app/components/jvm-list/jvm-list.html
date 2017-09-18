@@ -10,13 +10,13 @@
       <button type="button" class="btn btn-default" id="refreshButton" ng-click="$ctrl.loadData()"><span class="fa fa-refresh"></span></button>
     </div>
     <div class="pfToolbar col-md-12">
-      <pf-toolbar id="jvmListToolbar" config="toolbarConfig"></pf-toolbar>
+      <pf-toolbar id="jvmListToolbar" config="$ctrl.toolbarConfig"></pf-toolbar>
     </div>
     <div class="pfListView col-md-12">
-      <pf-list-view config="listConfig"
-                    items="items"
-                    page-config="pageConfig"
-                    empty-state-config="emptyStateConfig">
+      <pf-list-view config="$ctrl.listConfig"
+                    items="$ctrl.items"
+                    page-config="$ctrl.pageConfig"
+                    empty-state-config="$ctrl.emptyStateConfig">
         <div class="list-view-pf-left">
           <span class="pficon pficon-screen list-view-pf-icon-med"></span>
         </div>
@@ -45,7 +45,7 @@
                 custom-scope="{ systemId: $parent.item.systemId }"
                 items="$parent.item.jvms"
                 page-config="$parent.item.pageConfig"
-                config="jvmConfig">
+                config="$ctrl.jvmConfig">
 
             <div class="list-view-pf-left">
               <span class="pficon pficon-virtual-machine list-view-pf-icon-med"></span>

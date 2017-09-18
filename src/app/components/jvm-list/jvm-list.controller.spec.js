@@ -29,7 +29,7 @@ describe('JvmListController', () => {
 
   beforeEach(angular.mock.module('jvmList.controller'));
 
-  let controller, jvmListSvc, systemInfoSvc, scope, promise, location, timeout, translate;
+  let rootScope, controller, jvmListSvc, systemInfoSvc, promise, location, timeout, translate;
 
   let fooItem = {
     hostname: 'foo',
@@ -78,11 +78,11 @@ describe('JvmListController', () => {
 
   beforeEach(inject(($q, $rootScope, $controller) => {
     'ngInject';
+    rootScope = $rootScope;
     sinon.stub(angular, 'element').withArgs('#aliveOnlyState').returns({
       bootstrapSwitch: sinon.spy(),
       on: sinon.spy()
     });
-    scope = $rootScope;
     promise = $q.defer();
     location = {
       hash: sinon.stub().returns('')
@@ -101,18 +101,18 @@ describe('JvmListController', () => {
     controller = $controller('JvmListController', {
       jvmListService: jvmListSvc,
       systemInfoService: systemInfoSvc,
-      $scope: scope,
       $location: location,
       $timeout: timeout,
       $translate: translate
     });
+    controller.$onInit();
     sinon.spy(controller, 'applyFilters');
     sinon.spy(controller, 'changeLocationHash');
     sinon.spy(controller, 'compareFn');
     sinon.spy(controller, 'matchesFilter');
     sinon.spy(controller, 'matchesFilters');
     sinon.spy(controller, 'sortItems');
-    sinon.spy(scope.items, 'sort');
+    sinon.spy(controller.items, 'sort');
   }));
 
   afterEach(() => {
@@ -125,7 +125,7 @@ describe('JvmListController', () => {
 
   describe('listConfig', () => {
     it('should use a fn (changeLocationHash) for onClick attribute', () => {
-      let fn = scope.listConfig.onClick;
+      let fn = controller.listConfig.onClick;
       fn.should.be.a.Function();
       fn('');
       controller.changeLocationHash.should.be.calledOnce();
@@ -201,7 +201,7 @@ describe('JvmListController', () => {
         ]
       };
       promise.resolve({ data: data });
-      scope.$apply();
+      rootScope.$apply();
       controller.should.have.ownProperty('systems');
       controller.systems.should.deepEqual(data.response);
       controller.showErr.should.equal(false);
@@ -209,7 +209,7 @@ describe('JvmListController', () => {
         foo: false,
         bar: false
       });
-      scope.listConfig.itemsAvailable = true;
+      controller.listConfig.itemsAvailable = true;
       done();
     });
 
@@ -225,12 +225,12 @@ describe('JvmListController', () => {
         ]
       };
       promise.resolve({ data: data });
-      scope.$apply();
+      rootScope.$apply();
       controller.systemsOpen.should.deepEqual({
         foo: false,
         bar: false
       });
-      scope.listConfig.itemsAvailable = true;
+      controller.listConfig.itemsAvailable = true;
       done();
     });
 
@@ -243,28 +243,28 @@ describe('JvmListController', () => {
         ]
       };
       promise.resolve({ data: data });
-      scope.$apply();
+      rootScope.$apply();
       controller.systemsOpen.should.deepEqual({
         foo: true
       });
-      scope.listConfig.itemsAvailable = true;
+      controller.listConfig.itemsAvailable = true;
       done();
     });
 
     it('should set error flag when service rejects', done => {
       promise.reject();
-      scope.$apply();
+      rootScope.$apply();
       controller.should.have.ownProperty('showErr');
       controller.showErr.should.equal(true);
-      scope.listConfig.itemsAvailable = false;
+      controller.listConfig.itemsAvailable = false;
       done();
     });
   });
 
   describe('constructToolbarSettings', () => {
     it('should use a function for filterConfig.onFilterChange', () => {
-      scope.items.length = 2;
-      let fn = scope.filterConfig.onFilterChange;
+      controller.items.length = 2;
+      let fn = controller.filterConfig.onFilterChange;
       fn.should.be.a.Function();
       let filter = {
         id: 'hostname',
@@ -273,11 +273,11 @@ describe('JvmListController', () => {
       };
       fn(filter);
       controller.applyFilters.should.be.calledOnce();
-      scope.toolbarConfig.filterConfig.resultsCount.should.equal(2);
+      controller.toolbarConfig.filterConfig.resultsCount.should.equal(2);
     });
 
     it('should use fn sortItems() for sortConfig.onSortChange', () => {
-      let fn = scope.sortConfig.onSortChange;
+      let fn = controller.sortConfig.onSortChange;
       fn.should.be.a.Function();
       fn();
       controller.sortItems.should.be.calledOnce();
@@ -339,29 +339,29 @@ describe('JvmListController', () => {
     });
 
     it('applyFilters should delegate filtering to matchesFilters', () => {
-      scope.allItems = [fooItem, barbazItem];
+      controller.allItems = [fooItem, barbazItem];
       controller.applyFilters(filters);
       controller.matchesFilters.should.be.calledTwice();
-      scope.items[0].should.equal(scope.allItems[0]);
-      scope.items.length.should.equal(1);
+      controller.items[0].should.equal(controller.allItems[0]);
+      controller.items.length.should.equal(1);
     });
 
     it('sortItems should sort the array using the compareFn', () => {
-      controller.scope.sortConfig = generateSortConfig(true, 'hostname');
-      scope.items = [fooItem, barbazItem];
+      controller.sortConfig = generateSortConfig(true, 'hostname');
+      controller.items = [fooItem, barbazItem];
       controller.sortItems();
       controller.compareFn.should.be.calledOnce();
     });
 
     describe('compareFn', () => {
       it('compareFn should compare hostnames', () => {
-        controller.scope.sortConfig = generateSortConfig(true, 'name');
+        controller.sortConfig = generateSortConfig(true, 'name');
         let result = controller.compareFn(fooItem, barbazItem);
         result.should.equal(1);
       });
 
       it('compareFn should compare by timeCreated', () => {
-        controller.scope.sortConfig = generateSortConfig(true, 'timeCreated');
+        controller.sortConfig = generateSortConfig(true, 'timeCreated');
         let result = controller.compareFn(fooItem, barbazItem);
         result.should.equal(1);
 
@@ -370,7 +370,7 @@ describe('JvmListController', () => {
       });
 
       it('compareFn should compare by numJvms', () => {
-        controller.scope.sortConfig = generateSortConfig(true, 'numJvms');
+        controller.sortConfig = generateSortConfig(true, 'numJvms');
 
         let result = controller.compareFn(fooItem, barbazItem);
         result.should.equal(-1);
@@ -380,8 +380,8 @@ describe('JvmListController', () => {
       });
 
       it('compareFn should allow for descending order', () => {
-        controller.scope.sortConfig = generateSortConfig(false, 'numJvms');
-        scope.sortConfig.currentField.id = 'numJvms';
+        controller.sortConfig = generateSortConfig(false, 'numJvms');
+        controller.sortConfig.currentField.id = 'numJvms';
         let result = controller.compareFn(fooItem, barbazItem);
         result.should.equal(1);
 
@@ -390,8 +390,8 @@ describe('JvmListController', () => {
       });
 
       it('compareFn should return 0 if an invalid field id is supplied', () => {
-        controller.scope.sortConfig = generateSortConfig(true, 'numJvms');
-        scope.sortConfig.currentField.id = 'fakeId';
+        controller.sortConfig = generateSortConfig(true, 'numJvms');
+        controller.sortConfig.currentField.id = 'fakeId';
         let result = controller.compareFn(fooItem, barbazItem);
         result.should.equal(0);
       });

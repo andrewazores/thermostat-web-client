@@ -31,40 +31,38 @@ import jvmListService from './jvm-list.service.js';
 import systemInfoService from 'components/system-info/system-info.service.js';
 
 class JvmListController {
-  constructor (jvmListService, systemInfoService, $scope, $location, $timeout, $translate) {
+  constructor (jvmListService, systemInfoService, $location, $timeout, $translate) {
     'ngInject';
     this.jvmListService = jvmListService;
     this.systemInfoService = systemInfoService;
-    this.scope = $scope;
     this.location = $location;
     this.timeout = $timeout;
     this.translate = $translate;
     this.systemsOpen = {};
 
-    $scope.pageConfig = { showPaginationControls: false };
-    $scope.sortConfig = {};
-    $scope.filterConfig = {};
-    $scope.listConfig = {
+    this.pageConfig = { showPaginationControls: false };
+    this.sortConfig = {};
+    this.filterConfig = {};
+    this.listConfig = {
       showSelectBox: false,
       useExpandingRows: true,
       onClick: item => $location.hash(this.changeLocationHash(item))
     };
-    $scope.jvmConfig = {
+    this.jvmConfig = {
       showSelectBox: false,
       useExpandingRows: false
     };
 
-    // Settings for pfPagination
-    $scope.pageNumber = 1;
-    $scope.pageSize = 10;
-
-    $scope.emptyStateConfig = {
+    this.emptyStateConfig = {
       icon: 'pficon-warning-triangle-o',
     };
-    $translate('jvmList.ERR_TITLE').then(s => $scope.emptyStateConfig.title = s);
-    $translate('jvmList.ERR_MESSAGE').then(s => $scope.emptyStateConfig.info = s);
+  }
 
-    $location.hash('');
+  $onInit () {
+    this.translate('jvmList.ERR_TITLE').then(s => this.emptyStateConfig.title = s);
+    this.translate('jvmList.ERR_MESSAGE').then(s => this.emptyStateConfig.info = s);
+
+    this.location.hash('');
     this.aliveOnly = true;
     let aliveOnlySwitch = angular.element('#aliveOnlyState');
     aliveOnlySwitch.bootstrapSwitch();
@@ -111,8 +109,8 @@ class JvmListController {
   }
 
   loadData () {
-    this.scope.allItems = [];
-    this.scope.items = this.scope.allItems;
+    this.allItems = [];
+    this.items = this.allItems;
     this.jvmListService.getSystems(this.aliveOnly).then(
       resp => {
         this.showErr = false;
@@ -122,7 +120,7 @@ class JvmListController {
           this.systemsOpen[system.systemId] = false;
           this.systemInfoService.getSystemInfo(system.systemId).then(
             resp => {
-              this.scope.allItems.push({
+              this.allItems.push({
                 systemId: system.systemId,
                 hostname: resp.data.response[0].hostname,
                 jvms: system.jvms,
@@ -138,23 +136,23 @@ class JvmListController {
         if (this.systems.length === 1) {
           this.systemsOpen[this.systems[0].systemId] = true;
         }
-        this.scope.pageConfig.numTotalItems = this.scope.allItems.length;
-        this.scope.pageConfig.pageSize = this.scope.allItems.length;
-        this.scope.pageConfig.pageNumber = 1;
-        this.scope.listConfig.itemsAvailable = true;
-        this.scope.toolbarConfig.filterConfig.resultsCount = this.systems.length;
+        this.pageConfig.numTotalItems = this.allItems.length;
+        this.pageConfig.pageSize = this.allItems.length;
+        this.pageConfig.pageNumber = 1;
+        this.listConfig.itemsAvailable = true;
+        this.toolbarConfig.filterConfig.resultsCount = this.systems.length;
       },
       () => {
-        this.scope.listConfig.itemsAvailable = false;
-        this.scope.pageConfig.pageSize = 0;
-        this.scope.pageConfig.pageNumber = 0;
+        this.listConfig.itemsAvailable = false;
+        this.pageConfig.pageSize = 0;
+        this.pageConfig.pageNumber = 0;
         this.showErr = true;
       }
     );
   }
 
   constructToolbarSettings () {
-    this.scope.filterConfig = {
+    this.filterConfig = {
       fields: [
         {
           id: 'hostname',
@@ -165,20 +163,20 @@ class JvmListController {
           filterType: 'text'
         }
       ],
-      resultsCount: this.scope.items.length,
-      totalCount: this.scope.allItems.length,
+      resultsCount: this.items.length,
+      totalCount: this.allItems.length,
       appliedFilters: [],
       onFilterChange: filters => {
         this.applyFilters(filters);
-        this.scope.toolbarConfig.filterConfig.resultsCount = this.scope.items.length;
+        this.toolbarConfig.filterConfig.resultsCount = this.items.length;
       }
     };
-    this.translate('jvmList.HOSTNAME_TITLE').then(s => this.scope.filterConfig.fields[0].title = s);
-    this.translate('jvmList.filterConfig.HOSTNAME_PLACEHOLDER').then(s => this.scope.filterConfig.fields[0].placeholder = s);
-    this.translate('jvmList.filterConfig.JVM_NAME_TITLE').then(s => this.scope.filterConfig.fields[1].title = s);
-    this.translate('jvmList.filterConfig.JVM_NAME_PLACEHOLDER').then(s => this.scope.filterConfig.fields[1].placeholder = s);
+    this.translate('jvmList.HOSTNAME_TITLE').then(s => this.filterConfig.fields[0].title = s);
+    this.translate('jvmList.filterConfig.HOSTNAME_PLACEHOLDER').then(s => this.filterConfig.fields[0].placeholder = s);
+    this.translate('jvmList.filterConfig.JVM_NAME_TITLE').then(s => this.filterConfig.fields[1].title = s);
+    this.translate('jvmList.filterConfig.JVM_NAME_PLACEHOLDER').then(s => this.filterConfig.fields[1].placeholder = s);
 
-    this.scope.sortConfig = {
+    this.sortConfig = {
       fields: [
         {
           id: 'name',
@@ -197,13 +195,13 @@ class JvmListController {
         this.sortItems();
       }
     };
-    this.translate('jvmList.HOSTNAME_TITLE').then(s => this.scope.sortConfig.fields[0].title = s);
-    this.translate('jvmList.sortConfig.TIME_CREATED_TITLE').then(s => this.scope.sortConfig.fields[1].title = s);
-    this.translate('jvmList.sortConfig.NUM_JVMS_TITLE').then(s => this.scope.sortConfig.fields[2].title = s);
+    this.translate('jvmList.HOSTNAME_TITLE').then(s => this.sortConfig.fields[0].title = s);
+    this.translate('jvmList.sortConfig.TIME_CREATED_TITLE').then(s => this.sortConfig.fields[1].title = s);
+    this.translate('jvmList.sortConfig.NUM_JVMS_TITLE').then(s => this.sortConfig.fields[2].title = s);
 
-    this.scope.toolbarConfig = {
-      filterConfig: this.scope.filterConfig,
-      sortConfig: this.scope.sortConfig
+    this.toolbarConfig = {
+      filterConfig: this.filterConfig,
+      sortConfig: this.sortConfig
     };
   }
 
@@ -242,35 +240,35 @@ class JvmListController {
   }
 
   applyFilters (filters) {
-    this.scope.items = [];
+    this.items = [];
     if (filters && filters.length > 0) {
-      this.scope.allItems.forEach(item => {
+      this.allItems.forEach(item => {
         if (this.matchesFilters(item, filters)) {
-          this.scope.items.push(item);
+          this.items.push(item);
         }
       });
     } else {
-      this.scope.items = this.scope.allItems;
+      this.items = this.allItems;
     }
   }
 
   compareFn (item1, item2) {
     let compValue = 0;
-    if (this.scope.sortConfig.currentField.id === 'name') {
+    if (this.sortConfig.currentField.id === 'name') {
       compValue = item1.hostname.localeCompare(item2.systemId);
-    } else if (this.scope.sortConfig.currentField.id === 'timeCreated') {
+    } else if (this.sortConfig.currentField.id === 'timeCreated') {
       compValue = item1.timeCreated.$numberLong > item2.timeCreated.$numberLong ? 1 : -1;
-    } else if (this.scope.sortConfig.currentField.id === 'numJvms') {
+    } else if (this.sortConfig.currentField.id === 'numJvms') {
       compValue = item1.jvms.length > item2.jvms.length ? 1 : -1;
     }
-    if (!this.scope.sortConfig.isAscending) {
+    if (!this.sortConfig.isAscending) {
       compValue = compValue * -1;
     }
     return compValue;
   }
 
   sortItems () {
-    this.scope.items.sort((item1, item2) => this.compareFn(item1, item2));
+    this.items.sort((item1, item2) => this.compareFn(item1, item2));
   }
 
 }
