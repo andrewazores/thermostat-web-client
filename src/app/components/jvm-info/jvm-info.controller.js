@@ -49,11 +49,16 @@ class JvmInfoController {
   }
 
   set subView (val) {
+    this._subView = val;
     if (val === '') {
       this._state.go('jvmInfo', { systemId: this.systemId, jvmId: this.jvmId });
     } else {
       this._state.go('jvmInfo.' + val, { systemId: this.systemId, jvmId: this.jvmId });
     }
+  }
+
+  get subView () {
+    return this._subView;
   }
 
   update () {

@@ -190,6 +190,7 @@ describe('JvmInfoController', () => {
 
     it('should go to specified jvm-info child state on non-empty selection', () => {
       ctrl.subView = 'fooState';
+      ctrl.subView.should.equal('fooState');
       state.go.should.be.calledWith(sinon.match('jvmInfo.fooState'), sinon.match.has('jvmId', 'foo-jvmId'));
     });
   });
