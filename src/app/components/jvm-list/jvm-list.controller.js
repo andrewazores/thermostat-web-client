@@ -49,11 +49,14 @@ class JvmListController {
       useExpandingRows: true,
       onClick: item => $location.hash(this.changeLocationHash(item))
     };
+    $scope.jvmConfig = {
+      showSelectBox: false,
+      useExpandingRows: false
+    };
 
     // Settings for pfPagination
     $scope.pageNumber = 1;
-    $scope.pageSize = 4;
-    $scope.pageSizeIncrements = [4, 8, 12, 16, 20];
+    $scope.pageSize = 10;
 
     $scope.emptyStateConfig = {
       icon: 'pficon-warning-triangle-o',
@@ -123,7 +126,11 @@ class JvmListController {
                 systemId: system.systemId,
                 hostname: resp.data.response[0].hostname,
                 jvms: system.jvms,
-                timeCreated: resp.data.response[0].timeCreated
+                timeCreated: resp.data.response[0].timeCreated,
+                pageConfig: {
+                  pageNumber: 1,
+                  pageSize: 5
+                }
               });
             }
           );

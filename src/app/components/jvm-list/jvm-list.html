@@ -40,32 +40,33 @@
           </div>
         </div>
         <list-expanded-content>
-          <div class="jvmPagination col-md-12">
-            <pf-pagination
-                page-size="pageSize"
-                page-number="pageNumber"
-                page-size-increments="pageSizeIncrements"
-                num-total-items="$parent.item.jvms.length">
-            </pf-pagination>
-          </div>
-          <div ng-repeat="jvm in $parent.item.jvms | startFrom:(pageNumber - 1) * pageSize | limitTo:pageSize">
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-              <div ui-sref="jvmInfo({ systemId: $parent.$parent.item.systemId, jvmId: jvm.jvmId })" class="card-pf card-pf-view card-pf-view-select">
-                <div class="card-pf-top-element">
-                  <span class="pficon pficon-virtual-machine card-pf-icon-circle"></span>
+
+          <pf-list-view
+                custom-scope="{ systemId: $parent.item.systemId }"
+                items="$parent.item.jvms"
+                page-config="$parent.item.pageConfig"
+                config="jvmConfig">
+
+            <div class="list-view-pf-left">
+              <span class="pficon pficon-virtual-machine list-view-pf-icon-med"></span>
+            </div>
+            <div class="list-view-pf-description">
+              <div class="list-group-item-heading">
+                {{item.mainClass}}
+              </div>
+              <div class="list-view-pf-additional-info">
+                <div class="list-view-pf-additional-info-item" ng-click="$event.stopPropagation()">
+                  <span class="pficon pficon-container-node"></span>
+                  <a ui-sref="jvmInfo({ systemId: $parent.$ctrl.customScope.systemId, jvmId: $parent.item.jvmId })" translate>jvmList.jvmEntry.JVM_INFO_LINK</a>
                 </div>
-                <div class="card-pf-body">
-                  <h2 class="card-pf-title text-center ellipsis-word-wrap">
-                    {{jvm.mainClass | extractClass:true}}
-                  </h2>
-                  <div class="card-pf-info text-center" translate>
-                    <span class="pull-right pficon" ng-class="jvm.isAlive ? 'pficon-ok' : 'pficon-error-circle-o'"></span>
-                    <span translate="jvmList.START_TIME_CARD" translate-values="{ date: '{{jvm.startTime | timestampToDate}}' }"></span>
-                  </div>
+                <div class="list-view-pf-additional-info-item">
+                  <span class="fa fa-clock-o"></span>
+                  <span translate="jvmList.START_TIME_LIST" translate-values="{ date: '{{item.startTime | timestampToDate}}' }"></span>
                 </div>
               </div>
             </div>
-          </div>
+          </pf-list-view>
+
         </list-expanded-content>
       </pf-list-view>
     </div>
