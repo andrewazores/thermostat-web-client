@@ -28,28 +28,33 @@
 import authModule from 'components/auth/auth.module.js';
 
 class AppController {
-  constructor ($scope, environment, $state, authService) {
+  constructor ($scope, environment, authService) {
     'ngInject';
-
-    this._scope = $scope;
+    this.env = environment;
     this._authService = authService;
 
+    $scope.$on('userLoginChanged', () => this._updateUsernameLabel());
+  }
+
+  $onInit () {
     angular.element('logoutButton').removeAttr('hidden');
-    if (environment !== 'production') {
-      $scope.env = environment;
+    if (this.env !== 'production') {
       angular.element('envHeader').removeAttr('hidden');
     }
 
-    $scope.loginStatus = () => authService.status();
-
-    $scope.logout = () => authService.logout();
-
-    $scope.$on('userLoginChanged', () => this.updateUsernameLabel());
-    this.updateUsernameLabel();
+    this._updateUsernameLabel();
   }
 
-  updateUsernameLabel () {
-    this._scope.username = this._authService.username;
+  get loginStatus () {
+    return this._authService.status();
+  }
+
+  logout () {
+    return this._authService.logout();
+  }
+
+  _updateUsernameLabel () {
+    this.username = this._authService.username;
   }
 
 }

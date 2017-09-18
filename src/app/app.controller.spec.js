@@ -44,79 +44,62 @@ describe('AppController', () => {
   beforeEach(angular.mock.module('AppController'));
 
   ['testing', 'development', 'production'].forEach(env => {
-    describe(env + ' $scope', () => {
-      let scope, authService;
-      beforeEach(inject(($controller, $rootScope) => {
+    describe(env, () => {
+      let ctrl, scope, authService;
+      beforeEach(inject($controller => {
         'ngInject';
 
-        scope = $rootScope.$new();
+        scope = { $on: sinon.spy() };
         authService = {
           status: sinon.stub().returns(true),
           login: sinon.spy(),
           logout: sinon.spy()
         };
 
-        $controller('AppController', {
-          $scope: scope,
+        ctrl = $controller('AppController', {
           environment: env,
+          $scope: scope,
           authService: authService
         });
+        ctrl.$onInit();
       }));
 
       it('should set loginStatus', () => {
-        scope.should.have.ownProperty('loginStatus');
-        scope.loginStatus.should.be.a.Function();
-
-        scope.loginStatus();
+        ctrl.loginStatus.should.be.True();
         authService.status.should.be.calledOnce();
       });
-
-      if (env === 'production') {
-        it('should not copy env to $scope', () => {
-          scope.should.not.have.ownProperty('env');
-        });
-      } else {
-        it('should copy env to $scope', () => {
-          scope.should.have.ownProperty('env');
-          scope.env.should.equal(env);
-        });
-      }
     });
   });
 
-  describe('$scope.logout()', () => {
-    let scope, authService;
-    beforeEach(inject(($controller, $rootScope) => {
+  describe('logout()', () => {
+    let ctrl, scope, authService;
+    beforeEach(inject($controller => {
       'ngInject';
 
-      scope = $rootScope.$new();
+      scope = { $on: sinon.spy() };
       authService = {
         status: sinon.stub().returns(true),
         login: sinon.spy(),
         logout: sinon.spy()
       };
 
-      $controller('AppController', {
-        $scope: scope,
+      ctrl = $controller('AppController', {
         environment: 'testing',
+        $scope: scope,
         authService: authService
       });
+      ctrl.$onInit();
     }));
-
-    it('should exist', () => {
-      scope.should.have.ownProperty('logout');
-      scope.logout.should.be.a.Function();
-    });
 
     it('should delegate to AuthService', () => {
       authService.logout.should.not.be.called();
-      scope.logout();
+      ctrl.logout();
       authService.logout.should.be.calledOnce();
     });
   });
 
-  describe('$scope.username', () => {
-    let rootScope, scope, authService;
+  describe('username', () => {
+    let rootScope, scope, ctrl, authService;
     beforeEach(inject(($controller, $rootScope) => {
       'ngInject';
 
@@ -129,23 +112,24 @@ describe('AppController', () => {
         username: 'fake-username'
       };
 
-      $controller('AppController', {
+      ctrl = $controller('AppController', {
         $scope: scope,
         environment: 'testing',
         authService: authService
       });
+      ctrl.$onInit();
     }));
 
     it('should be set on init', () => {
-      scope.should.have.ownProperty('username');
-      scope.username.should.equal(authService.username);
+      ctrl.should.have.ownProperty('username');
+      ctrl.username.should.equal(authService.username);
     });
 
     it('should be set on userLoginChanged according to authService username', () => {
       authService.username = 'new-username';
       rootScope.$broadcast('userLoginChanged');
-      scope.should.have.ownProperty('username');
-      scope.username.should.equal(authService.username);
+      ctrl.should.have.ownProperty('username');
+      ctrl.username.should.equal(authService.username);
     });
   });
 
