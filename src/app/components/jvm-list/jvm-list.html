@@ -60,6 +60,9 @@
                   <a ui-sref="jvmInfo({ systemId: $parent.$ctrl.customScope.systemId, jvmId: $parent.item.jvmId })" translate>jvmList.jvmEntry.JVM_INFO_LINK</a>
                 </div>
                 <div class="list-view-pf-additional-info-item">
+                    <span class="pficon" ng-class="item.isAlive ? 'pficon-ok' : 'pficon-error-circle-o'"></span>
+                </div>
+                <div class="list-view-pf-additional-info-item">
                   <span class="fa fa-clock-o"></span>
                   <span translate="jvmList.START_TIME_LIST" translate-values="{ date: '{{item.startTime | timestampToDate}}' }"></span>
                 </div>
