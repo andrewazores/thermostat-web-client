@@ -9,7 +9,7 @@
 
     <div class="row">
       <div class="col-xs-12 col-md-4">
-        <form name="newChartForm" class="input-group" ng-submit="$ctrl.createChart()">
+        <form name="$ctrl.form" class="input-group" ng-submit="$ctrl.createChart()">
           <span class="input-group-addon" translate>multicharts.form.NAME</span>
           <input type="text" class="form-control" translate-attr="{ placeholder: 'multicharts.form.PLACEHOLDER' }" ng-model="$ctrl.newChartName"/>
           <input type="submit" translate-attr="{ value: 'multicharts.form.SUBMIT_LABEL' }"/>

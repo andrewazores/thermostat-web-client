@@ -29,8 +29,7 @@ import services from 'shared/services/services.module.js';
 import components from 'shared/components/components.module.js';
 
 class MultiChartController {
-  constructor ($scope, multichartService, $translate) {
-    this.scope = $scope;
+  constructor (multichartService, $translate) {
     this.svc = multichartService;
     this.showErr = false;
     this.newChartName = '';
@@ -51,9 +50,8 @@ class MultiChartController {
     this.showErr = false;
     this.svc.addChart(this.newChartName);
     this.newChartName = '';
-    let form = this.scope.newChartForm;
-    form.$setPristine();
-    form.$setUntouched();
+    this.form.$setPristine();
+    this.form.$setUntouched();
   }
 
   isValid (chartName) {
