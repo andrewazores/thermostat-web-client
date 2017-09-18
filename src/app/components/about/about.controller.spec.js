@@ -29,20 +29,15 @@ import controllerModule from './about.controller.js';
 
 describe('AboutController', () => {
 
-  let ctrl, authSvc, scope;
+  let ctrl, authSvc;
   beforeEach(() => {
     angular.mock.module(controllerModule);
-    angular.mock.inject(($controller, $rootScope) => {
+    angular.mock.inject($controller => {
       'ngInject';
 
-      authSvc = {
-        username: 'fake-username'
-      };
-      scope = $rootScope.$new();
-
+      authSvc = { username: 'fake-username' };
       ctrl = $controller('AboutController', {
-        authService: authSvc,
-        $scope: scope
+        authService: authSvc
       });
     });
   });
