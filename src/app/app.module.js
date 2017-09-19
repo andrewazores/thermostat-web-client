@@ -48,6 +48,8 @@ function initializeApplication () {
     .module('appModule', [
       'ui.router',
       'ui.bootstrap',
+      'patternfly',
+      'patternfly.navigation',
       angularTranslate,
       authModule,
       // non-core modules

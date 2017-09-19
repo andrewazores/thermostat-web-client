@@ -12,3 +12,7 @@ navbar:
   LOGOUT: Log Out
 
   USER_PREFS: Preferences
+
+  states:
+    JVM_LISTING: JVM Listing
+    MULTICHARTS: Multicharts

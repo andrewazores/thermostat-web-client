@@ -45,7 +45,7 @@ describe('AppController', () => {
 
   ['testing', 'development', 'production'].forEach(env => {
     describe(env, () => {
-      let ctrl, scope, authService;
+      let ctrl, scope, authService, translate;
       beforeEach(inject($controller => {
         'ngInject';
 
@@ -55,11 +55,20 @@ describe('AppController', () => {
           login: sinon.spy(),
           logout: sinon.spy()
         };
+        translate = sinon.stub().returns({
+          then: sinon.stub().yields(
+            {
+              'navbar.states.JVM_LISTING': 'JVM Listing',
+              'navbar.states.MULTICHARTS': 'Multicharts'
+            }
+          )
+        });
 
         ctrl = $controller('AppController', {
           environment: env,
           $scope: scope,
-          authService: authService
+          authService: authService,
+          $translate: translate
         });
         ctrl.$onInit();
       }));
@@ -72,7 +81,7 @@ describe('AppController', () => {
   });
 
   describe('logout()', () => {
-    let ctrl, scope, authService;
+    let ctrl, scope, authService, translate;
     beforeEach(inject($controller => {
       'ngInject';
 
@@ -82,11 +91,20 @@ describe('AppController', () => {
         login: sinon.spy(),
         logout: sinon.spy()
       };
+      translate = sinon.stub().returns({
+        then: sinon.stub().yields(
+          {
+            'navbar.states.JVM_LISTING': 'JVM Listing',
+            'navbar.states.MULTICHARTS': 'Multicharts'
+          }
+        )
+      });
 
       ctrl = $controller('AppController', {
         environment: 'testing',
         $scope: scope,
-        authService: authService
+        authService: authService,
+        $translate: translate
       });
       ctrl.$onInit();
     }));
@@ -99,7 +117,7 @@ describe('AppController', () => {
   });
 
   describe('username', () => {
-    let rootScope, scope, ctrl, authService;
+    let rootScope, scope, ctrl, authService, translate;
     beforeEach(inject(($controller, $rootScope) => {
       'ngInject';
 
@@ -111,11 +129,20 @@ describe('AppController', () => {
         logout: sinon.spy(),
         username: 'fake-username'
       };
+      translate = sinon.stub().returns({
+        then: sinon.stub().yields(
+          {
+            'navbar.states.JVM_LISTING': 'JVM Listing',
+            'navbar.states.MULTICHARTS': 'Multicharts'
+          }
+        )
+      });
 
       ctrl = $controller('AppController', {
         $scope: scope,
         environment: 'testing',
-        authService: authService
+        authService: authService,
+        $translate: translate
       });
       ctrl.$onInit();
     }));

@@ -28,10 +28,11 @@
 import authModule from 'components/auth/auth.module.js';
 
 class AppController {
-  constructor ($scope, environment, authService) {
+  constructor ($scope, environment, authService, $translate) {
     'ngInject';
     this.env = environment;
     this._authService = authService;
+    this._translate = $translate;
 
     $scope.$on('userLoginChanged', () => this._updateUsernameLabel());
   }
@@ -43,6 +44,24 @@ class AppController {
     }
 
     this._updateUsernameLabel();
+
+    this._translate([
+      'navbar.states.JVM_LISTING',
+      'navbar.states.MULTICHARTS'
+    ]).then(translations => {
+      this.navigationItems = [
+        {
+          title: translations['navbar.states.JVM_LISTING'],
+          iconClass: 'fa pficon-domain',
+          uiSref: 'jvmList'
+        },
+        {
+          title: translations['navbar.states.MULTICHARTS'],
+          iconClass: 'fa pficon-trend-up',
+          uiSref: 'multichart'
+        }
+      ];
+    });
   }
 
   get loginStatus () {
