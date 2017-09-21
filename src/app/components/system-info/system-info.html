@@ -1,6 +1,5 @@
 <div class="container-fluid container-cards-pf">
   <ol class="breadcrumb" style="margin-bottom: 0px;">
-    <li><a ui-sref="landing">Thermostat</a></li>
     <li><a ui-sref="jvmList({ '#': $ctrl.systemId })" translate>systemInfo.JVM_LIST_BREADCRUMB</a></li>
     <li><a ui-sref="systemInfo({ systemId: $ctrl.systemId })">{{$ctrl.systemInfo.hostname || $ctrl.systemId}}</a></li>
   </ol>

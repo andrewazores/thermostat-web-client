@@ -1,5 +1,5 @@
 jvmList:
-  BREADCRUMB: '@:landing.nav.JVM_LISTING'
+  BREADCRUMB: JVM Listing
   ALIVE_ONLY: Alive JVMs Only
   SYSTEM_INFO_LABEL: System Information
   START_TIME_LIST: Start Time:&#160;{{date}}

@@ -34,7 +34,7 @@ class LoginController {
     this._authService = authService;
 
     if (authService.status()) {
-      $state.go('landing');
+      $state.go('jvmList');
       return;
     }
 
@@ -46,7 +46,7 @@ class LoginController {
 
   login () {
     this._authService.rememberUser(this.rememberUser);
-    this._authService.login(this.username, this.password, () => this._state.go('landing'));
+    this._authService.login(this.username, this.password, () => this._state.go('jvmList'));
   }
 }
 

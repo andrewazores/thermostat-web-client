@@ -27,7 +27,7 @@
 
 function config ($urlRouterProvider, $stateProvider) {
   'ngInject';
-  $urlRouterProvider.when('', '/landing');
+  $urlRouterProvider.when('', '/jvm-list');
 
   $stateProvider.state('login', {
     url: '/login',

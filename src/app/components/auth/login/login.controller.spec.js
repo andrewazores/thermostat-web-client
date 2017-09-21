@@ -77,9 +77,9 @@ describe('LoginController', () => {
       });
     }));
 
-    it('should redirect to landing if already logged in', () => {
+    it('should redirect to jvm-list if already logged in', () => {
       authService.status.should.be.calledOnce();
-      state.go.should.be.calledWith('landing');
+      state.go.should.be.calledWith('jvmList');
     });
   });
 

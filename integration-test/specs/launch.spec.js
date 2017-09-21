@@ -33,8 +33,8 @@ describe('Basic web-client launch', () => {
     browser.getTitle().should.eventually.equal('Thermostat');
   });
 
-  it('should navigate to landing state', () => {
-    browser.getCurrentUrl().should.eventually.containEql('landing');
+  it('should navigate to default state', () => {
+    browser.getCurrentUrl().should.eventually.containEql('jvm-list');
   });
 
 });

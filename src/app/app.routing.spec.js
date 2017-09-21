@@ -127,7 +127,7 @@ describe('ErrorRouting', () => {
         transitions.onBefore.args[0][0].to.should.equal('/');
       });
 
-      it('should redirect to landing', () => {
+      it('should redirect to jvm-list', () => {
         state.target.should.not.be.called();
         transitions.onBefore.args[0][1].should.be.a.Function();
         let res = transitions.onBefore.args[0][1]();

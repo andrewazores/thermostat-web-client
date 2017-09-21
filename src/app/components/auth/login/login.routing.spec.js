@@ -39,8 +39,8 @@ describe('LoginRouting', () => {
   });
 
   describe('urlRouterProvider', () => {
-    it('should redirect blank path to landing', () => {
-      urlRouterProvider.when.should.be.calledWith('', '/landing');
+    it('should redirect blank path to jvm-list', () => {
+      urlRouterProvider.when.should.be.calledWith('', '/jvm-list');
     });
   });
 

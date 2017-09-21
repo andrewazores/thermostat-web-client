@@ -54,9 +54,16 @@ req.keys().forEach(k => componentRoutingModules.push(req(k).default));
 
 let appRouter = angular.module('app.routing', componentRoutingModules);
 
+function defaultState ($stateProvider) {
+  'ngInject';
+  $stateProvider.state('default', {
+    redirectTo: 'jvmList'
+  });
+}
+appRouter.config(defaultState);
 function transitionHook ($q, $transitions, $state, authService) {
   'ngInject';
-  $transitions.onBefore({ to: '/' }, () => $state.target('landing'));
+  $transitions.onBefore({ to: '/' }, () => $state.target('jvmList'));
 
   $transitions.onEnter({}, () => { authService.refresh() });
 
