@@ -35,3 +35,4 @@ jvmInfo:
     MEMORY: Memory Usage
     GC: Garbage Collection
     IO: File I/O
+    BYTEMAN: Byteman
