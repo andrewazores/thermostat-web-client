@@ -244,5 +244,26 @@ describe('BytemanService', () => {
     });
   });
 
+  describe('getJvmMainClass (systemId, jvmId)', () => {
+    it('should resolve mock data', done => {
+      let response = {
+        response: [
+          {
+            mainClass: 'com.example.FooClass'
+          }
+        ]
+      };
+      httpBackend.when('GET', 'http://example.com:1234/jvms/0.0.1/systems/foo-systemId/jvms/foo-jvmId')
+        .respond(response);
+      svc.getJvmMainClass('foo-systemId', 'foo-jvmId').then(res => {
+        res.should.equal(response.response[0].mainClass);
+        done();
+      });
+      httpBackend.expectGET('http://example.com:1234/jvms/0.0.1/systems/foo-systemId/jvms/foo-jvmId');
+      httpBackend.flush();
+      scope.$apply();
+    });
+  });
+
 });
 

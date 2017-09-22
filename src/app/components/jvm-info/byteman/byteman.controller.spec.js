@@ -45,7 +45,8 @@ describe('BytemanController', () => {
     svc = {
       getLoadedRules: sinon.stub(),
       loadRule: sinon.stub(),
-      unloadRules: sinon.stub()
+      unloadRules: sinon.stub(),
+      getJvmMainClass: sinon.stub()
     };
 
     angular.mock.inject($controller => {
@@ -173,9 +174,14 @@ describe('BytemanController', () => {
   });
 
   describe('generateTemplate ()', () => {
-    it('should set rule text from translate service', () => {
+    it('should set rule text to template', () => {
+      svc.getJvmMainClass.returns({
+        then: sinon.stub().yields('com.example.FooClass')
+      });
       translate.then.yields('rule template');
       ctrl.generateTemplate();
+      translate.should.be.calledOnce();
+      translate.should.be.calledWith('byteman.RULE_TEMPLATE', { mainClass: 'com.example.FooClass' });
       ctrl.ruleText.should.equal('rule template');
     });
   });

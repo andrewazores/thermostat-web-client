@@ -60,6 +60,10 @@ class BytemanService {
     return this._sendCmdChanRequest(systemId, jvmId, UNLOAD_RULE_ACTION);
   }
 
+  getJvmMainClass (systemId, jvmId) {
+    return this._getJvmInfo(systemId, jvmId).then(res => res.mainClass);
+  }
+
   _sendCmdChanRequest (systemId, jvmId, action, rule) {
     let defer = this._q.defer();
 

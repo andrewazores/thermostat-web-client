@@ -85,8 +85,11 @@ class BytemanController {
   }
 
   generateTemplate () {
-    return this._translate('byteman.RULE_TEMPLATE')
-      .then(res => this.ruleText = res);
+    return this._svc.getJvmMainClass(this.systemId, this.jvmId)
+      .then(mainClass => {
+        return this._translate('byteman.RULE_TEMPLATE', { mainClass: mainClass })
+          .then(res => this.ruleText = res);
+      });
   }
 }
 

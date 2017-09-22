@@ -7,12 +7,12 @@ byteman:
   UNLOAD_BTN_LABEL: Unload Rule
   GENERATE_RULE_BTN_LABEL: Generate Rule Template
   RULE_TEMPLATE: |
-    RULE Thermostat byteman template rule for com.redhat.thermostat.main.Thermostat
-    CLASS com.redhat.thermostat.main.Thermostat
+    RULE Thermostat byteman template rule for {{mainClass}}
+    CLASS {{mainClass}}
     METHOD main
     HELPER org.jboss.byteman.thermostat.helper.ThermostatHelper
     AT ENTRY
     IF true
     DO
-    send("foo-marker", "action", "com.redhat.thermostat.main.Thermostat.main() called");
+    send("foo-marker", "action", "{{mainClass}}.main() called");
     ENDRULE
