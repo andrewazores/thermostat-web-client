@@ -25,75 +25,20 @@
  * exception statement from your version.
  */
 
-import service from './byteman.service.js';
-
 class BytemanController {
-  constructor ($stateParams, $translate, bytemanService) {
+  constructor ($state) {
     'ngInject';
-    this.jvmId = $stateParams.jvmId;
-    this.systemId = $stateParams.systemId;
-    this._translate = $translate;
-    this._svc = bytemanService;
-
-    this.loadedRule = '';
+    this._state = $state;
   }
 
   $onInit () {
-    this._updateRules();
-  }
-
-  $onDestroy () {
-  }
-
-  _updateRules () {
-    return this._svc.getLoadedRules(this.jvmId)
-      .then(res => {
-        this.loadedRule = res;
-        this._clearInput();
-      });
-  }
-
-  _clearInput () {
-    this.ruleText = '';
-  }
-
-  refresh () {
-    return this._updateRules();
-  }
-
-  unload () {
-    if (!this.loadedRule) {
-      return;
+    if (this._state.is('jvmInfo.byteman')) {
+      this._state.go('jvmInfo.byteman.rules');
     }
-    return this._svc.unloadRules(this.systemId, this.jvmId)
-      .then(() => this._updateRules());
-  }
-
-  push () {
-    return this._svc.loadRule(this.systemId, this.jvmId, this.ruleText)
-      .then(() => this._updateRules());
-  }
-
-  pull () {
-    return this._svc.getLoadedRules(this.jvmId)
-      .then(res => {
-        this.loadedRule = res;
-        if (res) {
-          this.ruleText = res;
-        }
-      });
-  }
-
-  generateTemplate () {
-    return this._svc.getJvmMainClass(this.systemId, this.jvmId)
-      .then(mainClass => {
-        return this._translate('byteman.RULE_TEMPLATE', { mainClass: mainClass })
-          .then(res => this.ruleText = res);
-      });
   }
 }
 
 export default angular
-  .module('byteman.controller', [service])
+  .module('byteman.controller', [])
   .controller('BytemanController', BytemanController)
   .name;

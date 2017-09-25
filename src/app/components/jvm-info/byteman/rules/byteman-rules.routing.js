@@ -25,16 +25,33 @@
  * exception statement from your version.
  */
 
-import BytemanController from './byteman.controller.js';
-import BytemanRulesComponent from './rules/byteman-rules.component.js';
+function config ($stateProvider) {
+  'ngInject';
+
+  $stateProvider.state('jvmInfo.byteman.rules', {
+    url: '/rules',
+    component: 'bytemanRules',
+    resolve: {
+      lazyLoad: ($q, $ocLazyLoad) => {
+        'ngInject';
+        return $q(resolve => {
+          require.ensure(['./byteman-rules.component.js'], () => {
+            let module = require('./byteman-rules.component.js');
+            $ocLazyLoad.load({ name: module.default });
+            resolve(module);
+          });
+        });
+      }
+    }
+  });
+}
+
+export { config };
 
 export default angular
-  .module('byteman', [
-    BytemanController,
-    BytemanRulesComponent
+  .module('byteman.rules.routing', [
+    'ui.router',
+    'oc.lazyLoad'
   ])
-  .component('byteman', {
-    controller: 'BytemanController',
-    template: require('./byteman.html')
-  })
+  .config(config)
   .name;

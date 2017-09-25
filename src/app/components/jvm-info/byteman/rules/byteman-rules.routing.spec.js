@@ -25,46 +25,52 @@
  * exception statement from your version.
  */
 
-import controllerModule from './byteman.controller.js';
+describe('BytemanRulesRouting', () => {
 
-describe('BytemanController', () => {
-
-  let ctrl, state;
+  let module = require('./byteman-rules.routing.js');
+  let stateProvider, args, q, ocLazyLoad;
   beforeEach(() => {
-    angular.mock.module(controllerModule);
-
-    state = {
-      go: sinon.spy(),
-      is: sinon.stub()
+    angular.mock.module(module.default);
+    stateProvider = {
+      state: sinon.spy()
     };
-    angular.mock.inject($controller => {
-      'ngInject';
-      ctrl = $controller('BytemanController', {
-        $state: state
-      });
-    });
+    module.config(stateProvider);
+    args = stateProvider.state.args[0];
+    q = sinon.spy();
+    ocLazyLoad = {
+      load: sinon.spy()
+    };
   });
 
-  describe('$onInit ()', () => {
-    it('should default to rules state', () => {
-      state.go.should.not.be.called();
-      state.is.should.not.be.called();
-      state.is.returns(true);
-
-      ctrl.$onInit();
-
-      state.go.should.be.calledOnce();
-      state.go.should.be.calledWith('jvmInfo.byteman.rules');
+  describe('stateProvider', () => {
+    it('should call $stateProvider.state', () => {
+      stateProvider.state.should.be.calledOnce();
     });
 
-    it('should not redirect if URL contains non-rules state', () => {
-      state.go.should.not.be.called();
-      state.is.should.not.be.called();
-      state.is.returns(false);
+    it('should define a \'jvmInfo.byteman.rules\' state', () => {
+      args[0].should.equal('jvmInfo.byteman.rules');
+    });
 
-      ctrl.$onInit();
+    it('should map to /rules', () => {
+      args[1].url.should.equal('/rules');
+    });
 
-      state.go.should.not.be.called();
+    it('resolve should load byteman-rules component', done => {
+      let resolveFn = args[1].resolve.lazyLoad[2];
+      resolveFn.should.be.a.Function();
+      resolveFn(q, ocLazyLoad);
+      q.should.be.calledOnce();
+
+      let deferred = q.args[0][0];
+      deferred.should.be.a.Function();
+
+      let resolve = sinon.stub().callsFake(val => {
+        let mod = require('./byteman-rules.component.js');
+        ocLazyLoad.load.should.be.calledWith({ name: mod.default });
+        val.should.equal(mod);
+        done();
+      });
+      deferred(resolve);
     });
   });
 

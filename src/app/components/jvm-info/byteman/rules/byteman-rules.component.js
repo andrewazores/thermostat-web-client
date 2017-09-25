@@ -25,16 +25,12 @@
  * exception statement from your version.
  */
 
-import BytemanController from './byteman.controller.js';
-import BytemanRulesComponent from './rules/byteman-rules.component.js';
+import BytemanRulesController from './byteman-rules.controller.js';
 
 export default angular
-  .module('byteman', [
-    BytemanController,
-    BytemanRulesComponent
-  ])
-  .component('byteman', {
-    controller: 'BytemanController',
-    template: require('./byteman.html')
+  .module('byteman.rules', [BytemanRulesController])
+  .component('bytemanRules', {
+    controller: 'BytemanRulesController',
+    template: require('./byteman-rules.html')
   })
   .name;

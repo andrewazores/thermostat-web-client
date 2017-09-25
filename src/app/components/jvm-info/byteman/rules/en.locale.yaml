@@ -1,0 +1,19 @@
+byteman:
+  rules:
+    LOCAL_RULE_LABEL: Local Rule
+    REMOTE_RULE_LABEL: Injected Rule
+    NO_RULES_LABEL: '<no-rules-loaded>'
+    PUSH_BTN_LABEL: '&gt;'
+    PULL_BTN_LABEL: '&lt;'
+    UNLOAD_BTN_LABEL: Unload Rule
+    GENERATE_RULE_BTN_LABEL: Generate Rule Template
+    RULE_TEMPLATE: |
+      RULE Thermostat byteman template rule for {{mainClass}}
+      CLASS {{mainClass}}
+      METHOD main
+      HELPER org.jboss.byteman.thermostat.helper.ThermostatHelper
+      AT ENTRY
+      IF true
+      DO
+      send("foo-marker", "action", "{{mainClass}}.main() called");
+      ENDRULE
