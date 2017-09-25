@@ -24,6 +24,34 @@ function jvmByteman (server) {
       }
     ));
   });
+  server.app.get('/jvm-byteman/0.0.1/metrics/jvms/:jvmId', function (req, res) {
+    server.logRequest('jvm-byteman', req);
+
+    var jvmId = req.params.jvmId;
+
+    var response = [];
+    response.push({
+      agentId: 'foo-agentId',
+      jvmId: jvmId,
+      timeStamp: { $numberLong: Date.now().toString() },
+      marker: 'foo-marker',
+      payload: '{"action":"ExampleClass.method() called"}'
+    });
+    response.push({
+      agentId: 'foo-agentId',
+      jvmId: jvmId,
+      timeStamp: { $numberLong: Date.now().toString() },
+      marker: 'rand-marker',
+      payload: { doubleKey: Math.random() }
+    });
+
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(
+      {
+        response: response
+      }
+    ));
+  });
 
   // command channel
   server.init('byteman-command');

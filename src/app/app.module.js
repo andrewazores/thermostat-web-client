@@ -33,10 +33,17 @@ import 'oclazyload';
 import 'bootstrap';
 import 'bootstrap-switch';
 
+import 'angular-patternfly/node_modules/patternfly/node_modules/jquery/dist/jquery.js';
+import 'angular-patternfly/node_modules/patternfly/node_modules/datatables.net/js/jquery.dataTables.js';
+import 'angular-patternfly/node_modules/patternfly/node_modules/datatables.net-select/js/dataTables.select.js';
+import 'angularjs-datatables/dist/angular-datatables.min.js';
+import 'angularjs-datatables/dist/plugins/select/angular-datatables.select.min.js';
+
 import {default as authModule, config as authModBootstrap} from 'components/auth/auth.module.js';
 import authInterceptorFactory from './auth-interceptor.factory.js';
 
 require.ensure([], () => {
+  require('angular-patternfly/node_modules/datatables.net-dt/css/jquery.dataTables.css');
   require('angular-patternfly/node_modules/patternfly/dist/css/patternfly.css');
   require('angular-patternfly/node_modules/patternfly/dist/css/patternfly-additions.css');
   require('bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css');
@@ -50,6 +57,7 @@ function initializeApplication () {
       'ui.bootstrap',
       'patternfly',
       'patternfly.navigation',
+      'patternfly.table',
       angularTranslate,
       authModule,
       // non-core modules

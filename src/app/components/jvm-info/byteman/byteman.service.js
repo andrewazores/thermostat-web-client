@@ -32,6 +32,7 @@ import urlJoin from 'url-join';
 const LOAD_RULE_ACTION = 0;
 const UNLOAD_RULE_ACTION = 1;
 const INITIAL_LISTEN_PORT = -1;
+const METRICS_QUERY_LIMIT = 0;
 
 class BytemanService {
 
@@ -62,6 +63,37 @@ class BytemanService {
 
   getJvmMainClass (systemId, jvmId) {
     return this._getJvmInfo(systemId, jvmId).then(res => res.mainClass);
+  }
+
+  getMetrics (jvmId, oldestLimit) {
+    return this._http.get(urlJoin(this._gatewayUrl, 'jvm-byteman', '0.0.1', 'metrics', 'jvms', jvmId), {
+      params: {
+        query: `timeStamp>=${oldestLimit}`,
+        sort: '-timeStamp',
+        limit: METRICS_QUERY_LIMIT
+      }
+    })
+      .then(res => {
+        let results = [];
+        for (let i = 0; i < res.data.response.length; i++) {
+          let metric = res.data.response[i];
+          let payload;
+          if (typeof metric.payload === 'string') {
+            payload = JSON.parse(metric.payload);
+          } else {
+            payload = metric.payload;
+          }
+          let prop = Object.getOwnPropertyNames(payload)[0];
+
+          results.push({
+            timestamp: metric.timeStamp,
+            marker: metric.marker,
+            name: prop,
+            value: payload[prop]
+          });
+        }
+        return results;
+      });
   }
 
   _sendCmdChanRequest (systemId, jvmId, action, rule) {

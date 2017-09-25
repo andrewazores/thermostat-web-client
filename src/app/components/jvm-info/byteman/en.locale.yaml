@@ -1,2 +1,3 @@
 byteman:
   RULES_VIEW: Rules
+  METRICS_VIEW: Metrics

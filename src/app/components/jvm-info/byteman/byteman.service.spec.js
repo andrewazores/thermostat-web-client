@@ -265,5 +265,59 @@ describe('BytemanService', () => {
     });
   });
 
+  describe('getMetrics (jvmId, oldestLimit)', () => {
+    it('should resolve mock data when payload is a string type', done => {
+      let response = {
+        response: [
+          {
+            timeStamp: { $numberLong: '5000' },
+            marker: 'foo-marker',
+            payload: '{"action":"foo-method called"}'
+          }
+        ]
+      };
+      httpBackend.when('GET', 'http://example.com:1234/jvm-byteman/0.0.1/metrics/jvms/foo-systemId?limit=0&query=timeStamp%3E%3D6789&sort=-timeStamp')
+        .respond(response);
+      svc.getMetrics('foo-systemId', 6789).then(res => {
+        res.should.deepEqual([{
+          timestamp: { $numberLong: '5000' },
+          marker: 'foo-marker',
+          name: 'action',
+          value: 'foo-method called'
+        }]);
+        done();
+      });
+      httpBackend.expectGET('http://example.com:1234/jvm-byteman/0.0.1/metrics/jvms/foo-systemId?limit=0&query=timeStamp%3E%3D6789&sort=-timeStamp');
+      httpBackend.flush();
+      scope.$apply();
+    });
+
+    it('should resolve mock data when payload is a non-string type', done => {
+      let response = {
+        response: [
+          {
+            timeStamp: { $numberLong: '5000' },
+            marker: 'foo-marker',
+            payload: { doubleKey: 0.125 }
+          }
+        ]
+      };
+      httpBackend.when('GET', 'http://example.com:1234/jvm-byteman/0.0.1/metrics/jvms/foo-systemId?limit=0&query=timeStamp%3E%3D6789&sort=-timeStamp')
+        .respond(response);
+      svc.getMetrics('foo-systemId', 6789).then(res => {
+        res.should.deepEqual([{
+          timestamp: { $numberLong: '5000' },
+          marker: 'foo-marker',
+          name: 'doubleKey',
+          value: 0.125
+        }]);
+        done();
+      });
+      httpBackend.expectGET('http://example.com:1234/jvm-byteman/0.0.1/metrics/jvms/foo-systemId?limit=0&query=timeStamp%3E%3D6789&sort=-timeStamp');
+      httpBackend.flush();
+      scope.$apply();
+    });
+  });
+
 });
 

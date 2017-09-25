@@ -1,0 +1,16 @@
+<div class="col-xs-12 col-md-3">
+  <label for="dataAgeCombo" class="label label-info" translate>byteman.metrics.MAX_DATA_AGE_LABEL</label>
+  <select name="dataAgeCombo" class="combobox form-control" ng-model="$ctrl.dataAgeLimit">
+    <option value="10000" translate="byteman.metrics.dataAge.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+    <option value="30000" translate="byteman.metrics.dataAge.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
+    <option value="60000" translate="byteman.metrics.dataAge.MINUTES" translate-values="{ MINUTES: 1 }" translate-interpolation="messageformat"></option>
+    <option value="600000" selected translate="byteman.metrics.dataAge.MINUTES" translate-values="{ MINUTES: 10, DEFAULT: true }" translate-interpolation="messageformat"></option>
+    <option value="900000" translate="byteman.metrics.dataAge.MINUTES" translate-values="{ MINUTES: 15 }" translate-interpolation="messageformat"></option>
+    <option value="1800000" translate="byteman.metrics.dataAge.MINUTES" translate-values="{ MINUTES: 30 }" translate-interpolation="messageformat"></option>
+  </select>
+</div>
+
+<pf-table-view
+                                                                                                config="$ctrl.config"
+                                                                                                items="$ctrl.items"
+                                                                                                columns="$ctrl.columns"></pf-table-view>
