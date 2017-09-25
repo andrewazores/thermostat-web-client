@@ -41,12 +41,12 @@
         <list-expanded-content>
 
           <pf-list-view
-                custom-scope="{ systemId: $parent.item.systemId }"
                 items="$parent.item.jvms"
                 page-config="$parent.item.pageConfig"
                 config="$ctrl.jvmConfig">
 
             <div class="list-view-pf-left">
+              <span class="fa fa-angle-right"></span>
               <span class="pficon pficon-virtual-machine list-view-pf-icon-med"></span>
             </div>
             <div class="list-view-pf-description">
@@ -56,7 +56,7 @@
               <div class="list-view-pf-additional-info">
                 <div class="list-view-pf-additional-info-item" ng-click="$event.stopPropagation()">
                   <span class="pficon pficon-container-node"></span>
-                  <a ui-sref="jvmInfo({ systemId: $parent.$ctrl.customScope.systemId, jvmId: $parent.item.jvmId })" translate>jvmList.jvmEntry.JVM_INFO_LINK</a>
+                  <a ui-sref="jvmInfo({ systemId: $parent.item.systemId, jvmId: $parent.item.jvmId })" translate>jvmList.jvmEntry.JVM_INFO_LINK</a>
                 </div>
                 <div class="list-view-pf-additional-info-item">
                     <span class="pficon" ng-class="item.isAlive ? 'pficon-ok' : 'pficon-error-circle-o'"></span>

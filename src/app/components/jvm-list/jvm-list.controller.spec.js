@@ -29,7 +29,7 @@ describe('JvmListController', () => {
 
   beforeEach(angular.mock.module('jvmList.controller'));
 
-  let rootScope, controller, jvmListSvc, systemInfoSvc, promise, location, timeout, translate;
+  let rootScope, controller, jvmListSvc, systemInfoSvc, promise, location, state, timeout, translate;
 
   let fooItem = {
     hostname: 'foo',
@@ -87,6 +87,9 @@ describe('JvmListController', () => {
     location = {
       hash: sinon.stub().returns('')
     };
+    state = {
+      go: sinon.spy()
+    };
     timeout = sinon.spy();
     translate = sinon.stub().returns({
       then: sinon.stub().yields({})
@@ -102,6 +105,7 @@ describe('JvmListController', () => {
       jvmListService: jvmListSvc,
       systemInfoService: systemInfoSvc,
       $location: location,
+      $state: state,
       $timeout: timeout,
       $translate: translate
     });
@@ -129,6 +133,20 @@ describe('JvmListController', () => {
       fn.should.be.a.Function();
       fn('');
       controller.changeLocationHash.should.be.calledOnce();
+    });
+  });
+
+  describe('jvmConfig', () => {
+    it('should navigate to state on click', () => {
+      state.go.should.not.be.called();
+      let fn = controller.jvmConfig.onClick;
+      fn.should.be.a.Function();
+      fn({
+        systemId: 'foo-systemId',
+        jvmId: 'foo-jvmId'
+      });
+      state.go.should.be.calledOnce();
+      state.go.should.be.calledWith('jvmInfo', sinon.match({ systemId: 'foo-systemId', jvmId: 'foo-jvmId' }));
     });
   });
 
@@ -193,10 +211,12 @@ describe('JvmListController', () => {
       let data = {
         response: [
           {
-            systemId: 'foo'
+            systemId: 'foo',
+            jvms: []
           },
           {
-            systemId: 'bar'
+            systemId: 'bar',
+            jvms: []
           }
         ]
       };
@@ -217,10 +237,12 @@ describe('JvmListController', () => {
       let data = {
         response: [
           {
-            systemId: 'foo'
+            systemId: 'foo',
+            jvms: []
           },
           {
-            systemId: 'bar'
+            systemId: 'bar',
+            jvms: []
           }
         ]
       };
@@ -238,7 +260,8 @@ describe('JvmListController', () => {
       let data = {
         response: [
           {
-            systemId: 'foo'
+            systemId: 'foo',
+            jvms: []
           }
         ]
       };
@@ -257,6 +280,23 @@ describe('JvmListController', () => {
       controller.should.have.ownProperty('showErr');
       controller.showErr.should.equal(true);
       controller.listConfig.itemsAvailable.should.be.False();
+      done();
+    });
+
+    it('should append systemId to jvm items', done => {
+      let data = {
+        response: [
+          {
+            systemId: 'foo',
+            jvms: [{}]
+          }
+        ]
+      };
+      promise.resolve({ data: data });
+      rootScope.$apply();
+      controller.allItems[0].jvms[0].should.have.ownProperty('systemId');
+      controller.allItems[0].jvms[0].systemId.should.equal('foo');
+      controller.listConfig.itemsAvailable.should.be.True();
       done();
     });
   });

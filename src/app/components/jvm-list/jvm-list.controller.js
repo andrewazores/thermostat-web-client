@@ -31,7 +31,7 @@ import jvmListService from './jvm-list.service.js';
 import systemInfoService from 'components/system-info/system-info.service.js';
 
 class JvmListController {
-  constructor (jvmListService, systemInfoService, $location, $timeout, $translate) {
+  constructor (jvmListService, systemInfoService, $location, $state, $timeout, $translate) {
     'ngInject';
     this.jvmListService = jvmListService;
     this.systemInfoService = systemInfoService;
@@ -50,7 +50,8 @@ class JvmListController {
     };
     this.jvmConfig = {
       showSelectBox: false,
-      useExpandingRows: false
+      useExpandingRows: false,
+      onClick: item => $state.go('jvmInfo', { systemId: item.systemId, jvmId: item.jvmId })
     };
 
     this.emptyStateConfig = {
@@ -120,10 +121,14 @@ class JvmListController {
           this.systemsOpen[system.systemId] = false;
           this.systemInfoService.getSystemInfo(system.systemId).then(
             resp => {
+              let jvms = system.jvms;
+              jvms.forEach(jvm => {
+                jvm.systemId = system.systemId;
+              });
               this.allItems.push({
                 systemId: system.systemId,
                 hostname: resp.data.response[0].hostname,
-                jvms: system.jvms,
+                jvms: jvms,
                 timeCreated: resp.data.response[0].timeCreated,
                 pageConfig: {
                   pageNumber: 1,
