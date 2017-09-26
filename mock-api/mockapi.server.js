@@ -1,5 +1,6 @@
 var express = require('express'),
   expressWs = require('express-ws'),
+  basicAuth = require('express-basic-auth'),
   cors = require('cors'),
   path = require('path'),
   fs = require('fs'),
@@ -11,6 +12,13 @@ var host = process.env.MOCKAPI_HOST || '0.0.0.0';
 var app = express();
 expressWs(app);
 app.use(cors());
+app.use(basicAuth({
+  users: {
+    'client': 'client-pwd'
+  },
+  challenge: true,
+  unauthorizedResponse: fs.readFileSync(path.resolve(__dirname, '401.html'), 'utf8')
+}));
 
 app.set('port', port);
 app.set('host', host);
