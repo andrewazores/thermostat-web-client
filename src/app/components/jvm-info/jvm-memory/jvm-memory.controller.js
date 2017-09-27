@@ -120,7 +120,13 @@ class JvmMemoryController {
       let metaspaceScale = this._scaleBytes.format(data.metaspaceUsed);
       this.metaspaceData.used = this.convertMemStat(data.metaspaceUsed, metaspaceScale.scale);
       this.metaspaceData.total = this.convertMemStat(data.metaspaceCapacity, metaspaceScale.scale);
-      this.metaspaceConfig.units = metaspaceScale.unit;
+
+      // re-assign chart config so that Angular picks up the change. If we only re-assign property values
+      // on the same config object, those config updates are not detected and do not reflect in the charts.
+      this.metaspaceConfig = {
+        chartId: this.metaspaceConfig.chartId,
+        units: metaspaceScale.unit
+      };
 
       for (let i = 0; i < data.generations.length; i++) {
         let generation = data.generations[i];
@@ -152,14 +158,10 @@ class JvmMemoryController {
           }
 
           let spaceKey = 'gen-' + gen.index + '-space-' + space.index;
-          if (!this.spaceConfigs.hasOwnProperty(spaceKey)) {
-            this.spaceConfigs[spaceKey] = {
-              chartId: spaceKey,
-              units: genScale.unit
-            };
-          } else {
-            this.spaceConfigs[spaceKey].units = genScale.unit;
-          }
+          this.spaceConfigs[spaceKey] = {
+            chartId: spaceKey,
+            units: genScale.unit
+          };
         }
         this.generationData[i] = gen;
       }
