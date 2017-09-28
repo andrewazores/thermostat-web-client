@@ -1,10 +1,13 @@
+<div class="row panel panel-default" style="position: sticky; top: 60px; z-index: 1">
+  <div class="panel-body">
+    <ol class="breadcrumb" style="margin-top: 0px; margin-bottom: 0px;">
+      <li><a ui-sref="jvmList({ '#': $ctrl.systemId })" translate>jvmInfo.JVM_LIST_BREADCRUMB</a></li>
+      <li><a ui-sref="systemInfo({ systemId: $ctrl.systemId })">{{$ctrl.systemHostname}}</a></li>
+      <li><a ui-sref="jvmInfo({ systemId: $ctrl.systemId, jvmId: $ctrl.jvmId })">{{$ctrl.jvmInfo.mainClass | extractClass}}</a></li>
+    </ol>
+  </div>
+</div>
 <div class="container-fluid container-cards-pf">
-  <ol class="breadcrumb" style="margin-bottom: 0px;">
-    <li><a ui-sref="jvmList({ '#': $ctrl.systemId })" translate>jvmInfo.JVM_LIST_BREADCRUMB</a></li>
-    <li><a ui-sref="systemInfo({ systemId: $ctrl.systemId })">{{$ctrl.systemHostname}}</a></li>
-    <li><a ui-sref="jvmInfo({ systemId: $ctrl.systemId, jvmId: $ctrl.jvmId })">{{$ctrl.jvmInfo.mainClass | extractClass}}</a></li>
-  </ol>
-
   <customizable-error-message ng-show="$ctrl.showErr" dismissible="true" err-title="$ctrl.errTitle" err-message="$ctrl.errMessage"></customizable-error-message>
 
   <div class="row">
