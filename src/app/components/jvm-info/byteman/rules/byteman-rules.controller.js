@@ -49,12 +49,7 @@ class BytemanRulesController {
     return this._svc.getLoadedRules(this.jvmId)
       .then(res => {
         this.loadedRule = res;
-        this._clearInput();
       });
-  }
-
-  _clearInput () {
-    this.ruleText = '';
   }
 
   refresh () {

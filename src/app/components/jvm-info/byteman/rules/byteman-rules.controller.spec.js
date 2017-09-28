@@ -74,14 +74,6 @@ describe('BytemanController', () => {
     });
   });
 
-  describe('_clearInput ()', () => {
-    it('should reset ruleText property to the empty string', () => {
-      ctrl.ruleText = 'foo';
-      ctrl._clearInput();
-      ctrl.ruleText.should.equal('');
-    });
-  });
-
   describe('refresh ()', () => {
     it('should load injected rules', () => {
       svc.getLoadedRules.should.not.be.called();
