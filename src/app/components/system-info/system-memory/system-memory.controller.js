@@ -91,7 +91,7 @@ class SystemMemoryController {
             // TODO: this should be localized too, but c3 doesn't allow for the tooltip
             // formatter to be a promise, only a function, and angular-translate only
             // returns promises
-            value: memoryValue => { return memoryValue + ' MiB'; }
+            value: memoryValue => memoryValue + ' MiB'
           }
         },
         transition: { duration: 50 },
@@ -150,15 +150,16 @@ class SystemMemoryController {
       let used = total - free;
       let usage = Math.round((used) / total * 100);
 
+      let mib = 1024 * 1024;
       // update the memory time series chart
-      this.lineConfig.axis.y.max = total;
+      this.lineConfig.axis.y.max = total / mib;
       this.lineData.xData.push(data.timeStamp);
-      this.lineData.yData0.push(total);
-      this.lineData.yData1.push(free);
-      this.lineData.yData2.push(used);
-      this.lineData.yData3.push(data.swapTotal);
-      this.lineData.yData4.push(data.swapFree);
-      this.lineData.yData5.push(data.buffers);
+      this.lineData.yData0.push(total / mib);
+      this.lineData.yData1.push(free / mib);
+      this.lineData.yData2.push(used / mib);
+      this.lineData.yData3.push(data.swapTotal / mib);
+      this.lineData.yData4.push(data.swapFree / mib);
+      this.lineData.yData5.push(data.buffers / mib);
       this._trimData();
 
       // update the memory donut chart

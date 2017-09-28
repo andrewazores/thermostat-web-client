@@ -15,18 +15,19 @@ function systemMemory (server) {
     }
     let limit = req.query.l || 1;
 
+    let gib = 1024 * 1024 * 1024;
     let response = [];
     for (let i = 0; i < limit; i++) {
       var data = {
         systemId: systemId,
         agentId: 'foo-agentId',
         timeStamp: new Date().getTime(),
-        total: 16384,
-        free: _.round(Math.random() * (16384 / 4)),
-        buffers: 16384 / 32,
+        total: 16 * gib,
+        free: _.round(Math.random() * (16 * gib / 4)),
+        buffers: 16 * gib / 32,
         cached: 0,
-        swapTotal: 16384 / 2,
-        swapFree: 16384 / 2,
+        swapTotal: 16 * gib / 2,
+        swapFree: 16 * gib / 2,
         commitLimit: 0
       };
       response.push(data);

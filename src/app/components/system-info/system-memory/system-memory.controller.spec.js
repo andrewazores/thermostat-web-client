@@ -100,12 +100,12 @@ describe('SystemMemoryController', () => {
           systemId: 'foo-systemId',
           agentId: 'mock-agentId',
           timeStamp: Date.now(),
-          total: 16384,
+          total: 16 * 1024 * 1024,
           free: 0,
-          buffers: 1,
-          cached: 2,
-          swapTotal: 3,
-          swapFree: 4,
+          buffers: 1 * 1024,
+          cached: 2 * 1024,
+          swapTotal: 3 * 1024,
+          swapFree: 4 * 1024,
           commitLimit: 0
         }
       }
@@ -248,12 +248,12 @@ describe('SystemMemoryController', () => {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
               timeStamp: timestamp,
-              total: 16384,
+              total: 16 * 1024 * 1024 * 1024,
               free: 0,
-              buffers: 1,
-              cached: 2,
-              swapTotal: 3,
-              swapFree: 4,
+              buffers: 1 * 1024 * 1024,
+              cached: 2 * 1024 * 1024,
+              swapTotal: 3 * 1024 * 1024,
+              swapFree: 4 * 1024 * 1024,
               commitLimit: 0
             }
           ]
@@ -265,9 +265,9 @@ describe('SystemMemoryController', () => {
       });
       controller.lineData.should.deepEqual({
         xData: ['timestamp', timestamp],
-        yData0: ['Total Memory', 16384],
+        yData0: ['Total Memory', 16 * 1024],
         yData1: ['Free Memory', 0],
-        yData2: ['Used Memory', 16384],
+        yData2: ['Used Memory', 16 * 1024],
         yData3: ['Total Swap', 3],
         yData4: ['Free Swap', 4],
         yData5: ['Buffers', 1]
