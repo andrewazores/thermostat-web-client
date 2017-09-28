@@ -1,8 +1,9 @@
 <div class="row panel panel-default" style="position: sticky; top: 60px; z-index: 1">
   <div class="panel-body">
     <ol class="breadcrumb" style="margin-top: 0px; margin-bottom: 0px;">
+      <li>Thermostat</li>
       <li><a ui-sref="jvmList({ '#': $ctrl.systemId })" translate>systemInfo.JVM_LIST_BREADCRUMB</a></li>
-      <li><a ui-sref="systemInfo({ systemId: $ctrl.systemId })">{{$ctrl.systemInfo.hostname || $ctrl.systemId}}</a></li>
+      <li class="lead">{{$ctrl.systemInfo.hostname || $ctrl.systemId}}</li>
     </ol>
   </div>
 </div>
