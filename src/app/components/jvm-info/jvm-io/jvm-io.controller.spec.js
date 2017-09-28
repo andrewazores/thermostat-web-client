@@ -40,6 +40,9 @@ describe('JvmIoController', () => {
         getJvmIoData: sinon.stub().returns({
           then: svcPromise
         }),
+        getHistoricalData: sinon.stub().returns({
+          then: svcPromise
+        }),
         promise: svcPromise
       };
       interval = sinon.stub().returns('intervalMock');
@@ -83,13 +86,13 @@ describe('JvmIoController', () => {
     should.exist(ctrl);
   });
 
-  describe('init', () => {
-    it('should set refresh rate to 1 second', () => {
-      ctrl.refreshRate.should.equal('1000');
+  describe('properties', () => {
+    it('should set refresh rate to 10 seconds', () => {
+      ctrl.refreshRate.should.equal('10000');
     });
 
-    it('should set data age limit to 30 seconds', () => {
-      ctrl.dataAgeLimit.should.equal('30000');
+    it('should set data age limit to 10 minutes', () => {
+      ctrl.dataAgeLimit.should.equal('600000');
     });
 
     it('should use translations', () => {
@@ -104,6 +107,20 @@ describe('JvmIoController', () => {
         'jvmIo.metrics.readSysCalls',
         'jvmIo.metrics.writeSysCalls',
       ]);
+    });
+  });
+
+  describe('$onInit ()', () => {
+    beforeEach(() => {
+      ctrl.$onInit();
+    });
+
+    it('should load historical data', () => {
+      svc.getHistoricalData.should.be.calledOnce();
+    });
+
+    it('should start periodic live updates', () => {
+      interval.should.be.calledOnce();
     });
   });
 
@@ -137,50 +154,57 @@ describe('JvmIoController', () => {
 
   describe('$onDestroy', () => {
     it('should do nothing if controller is not started', () => {
-      ctrl._stop();
-      interval.cancel.should.be.calledOnce();
+      interval.cancel.should.not.be.called();
       ctrl.$onDestroy();
-      interval.cancel.should.be.calledOnce();
+      interval.cancel.should.not.be.called();
     });
 
     it('should stop the controller if already started', () => {
       ctrl._start();
-      interval.cancel.should.be.calledOnce();
+      interval.cancel.should.not.be.called();
       ctrl.$onDestroy();
-      interval.cancel.should.be.calledTwice();
+      interval.cancel.should.be.calledOnce();
     });
   });
 
   describe('refreshRate', () => {
     it('should set interval and disable if <= 0', () => {
-      interval.should.be.calledOnce();
+      interval.should.not.be.called();
       ctrl.refreshRate = 10000;
-      interval.cancel.should.be.calledOnce();
-      interval.should.be.calledTwice();
-      interval.secondCall.should.be.calledWith(sinon.match.func, 10000);
+      interval.cancel.should.not.be.called();
+      interval.should.be.calledOnce();
+      interval.should.be.calledWith(sinon.match.func, 10000);
       ctrl.refreshRate = -1;
-      interval.cancel.should.be.calledTwice();
-      interval.should.be.calledTwice();
+      interval.cancel.should.be.calledOnce();
+      interval.should.be.calledOnce();
     });
 
     it('should reflect changes in getter', () => {
-      ctrl.refreshRate.should.equal('1000');
+      ctrl.refreshRate.should.equal('10000');
       ctrl.refreshRate = 2000;
       ctrl.refreshRate.should.equal('2000');
     });
   });
 
   describe('dataAgeLimit', () => {
-    it('should cause a data trim on change', () => {
-      sinon.spy(ctrl, '_trimData');
-      ctrl._trimData.should.not.be.called;
+    it('should cause a data clear on change', () => {
+      sinon.spy(ctrl, '_clearData');
+      ctrl._clearData.should.not.be.called;
       ctrl.dataAgeLimit = 10000;
-      ctrl._trimData.should.be.calledOnce();
-      ctrl._trimData.restore();
+      ctrl._clearData.should.be.calledOnce();
+      ctrl._clearData.restore();
+    });
+
+    it('should cause a historical data load on change', () => {
+      sinon.spy(ctrl, '_loadHistoricalData');
+      ctrl._loadHistoricalData.should.not.be.called;
+      ctrl.dataAgeLimit = 10000;
+      ctrl._loadHistoricalData.should.be.calledOnce();
+      ctrl._loadHistoricalData.restore();
     });
 
     it('should reflect changes in getter', () => {
-      ctrl.dataAgeLimit.should.equal('30000');
+      ctrl.dataAgeLimit.should.equal('600000');
       ctrl.dataAgeLimit = 10000;
       ctrl.dataAgeLimit.should.equal('10000');
     });
@@ -188,15 +212,15 @@ describe('JvmIoController', () => {
 
   describe('_start', () => {
     it('should perform updates on an interval', () => {
-      interval.should.be.calledOnce();
+      interval.should.not.be.called();
       ctrl._start();
-      interval.should.be.calledTwice();
-      interval.secondCall.should.be.calledWith(sinon.match.func, 1000);
+      interval.should.be.calledOnce();
+      interval.should.be.calledWith(sinon.match.func, 10000);
 
-      let func = interval.args[1][0];
-      svc.getJvmIoData.should.be.calledOnce();
+      let func = interval.args[0][0];
+      svc.getJvmIoData.should.not.be.called();
       func();
-      svc.getJvmIoData.should.be.calledTwice();
+      svc.getJvmIoData.should.be.calledOnce();
     });
   });
 
@@ -204,37 +228,57 @@ describe('JvmIoController', () => {
     it('should do nothing if not started', () => {
       interval.cancel.should.not.be.called();
       ctrl._stop();
-      interval.cancel.should.be.calledOnce();
-      interval.cancel.should.be.calledWith('intervalMock');
-      ctrl._stop();
-      interval.cancel.should.be.calledOnce();
+      interval.cancel.should.not.be.called();
+    });
+  });
+
+  describe('_loadHistoricaldata', () => {
+    it('should add update data to chart data', () => {
+      ctrl._loadHistoricalData();
+      svc.promise.should.be.calledOnce();
+      svc.promise.should.be.calledWith(sinon.match.func);
+      let stamp = Date.now();
+      svc.promise.args[0][0](
+        [
+          {
+            timeStamp: { $numberLong: (stamp - 10000).toString() },
+            charactersRead: { $numberLong: '1000000' },
+            charactersWritten: { $numberLong: '500000' },
+            readSysCalls: { $numberLong: '100' },
+            writeSysCalls: { $numberLong: '50' }
+          },
+          {
+            timeStamp: { $numberLong: stamp.toString() },
+            charactersRead: { $numberLong: '1000001' },
+            charactersWritten: { $numberLong: '500001' },
+            readSysCalls: { $numberLong: '101' },
+            writeSysCalls: { $numberLong: '51' }
+          }
+        ]
+      );
+      ctrl.config.data.rows.should.deepEqual([
+        ['date', 'characters read', 'characters written', 'read sys calls', 'write sys calls'],
+        [(stamp - 10000), 1000000, 500000, 100, 50],
+        [stamp, 1000001, 500001, 101, 51]
+      ]);
     });
   });
 
   describe('_update', () => {
-    it('should do nothing if jvmId not yet bound', () => {
-      svc.getJvmIoData.should.not.be.called();
-      delete ctrl.jvmId;
-      ctrl._update();
-      svc.getJvmIoData.should.not.be.called();
-    });
-
     it('should add update data to chart data', () => {
       ctrl._update();
       svc.promise.should.be.calledOnce();
       svc.promise.should.be.calledWith(sinon.match.func);
       let stamp = Date.now();
-      svc.promise.args[0][0]({
-        data: {
-          response: [{
-            timeStamp: { $numberLong: stamp.toString() },
-            charactersRead: { $numberLong: '1000000' },
-            charactersWritten: { $numberLong: '500000' },
-            readSysCalls: { $numberLong: '100' },
-            writeSysCalls: { $numberLong: '50' }
-          }]
+      svc.promise.args[0][0](
+        {
+          timeStamp: { $numberLong: stamp.toString() },
+          charactersRead: { $numberLong: '1000000' },
+          charactersWritten: { $numberLong: '500000' },
+          readSysCalls: { $numberLong: '100' },
+          writeSysCalls: { $numberLong: '50' }
         }
-      });
+      );
       ctrl.config.data.rows.should.deepEqual([
         ['date', 'characters read', 'characters written', 'read sys calls', 'write sys calls'],
         [stamp, 1000000, 500000, 100, 50]
@@ -245,7 +289,7 @@ describe('JvmIoController', () => {
   describe('_trimData', () => {
     it('should remove datasets older than dataAgeLimit', () => {
       let now = Date.now();
-      let expired = now - 60000;
+      let expired = now - ctrl._dataAgeLimit - 1;
       ctrl.config.data.rows.push([
         expired, 1, 1, 1, 1
       ]);

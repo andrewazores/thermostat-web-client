@@ -40,9 +40,15 @@ class JvmIoController {
     this._dateFormat = DATE_FORMAT;
     this._metricToNumber = metricToNumberFilter;
 
-    this._refreshRate = 1000;
-    this._dataAgeLimit = 30000;
-    this._makeChartConfig().then(() => this._start());
+    this._refreshRate = 10000;
+    this._dataAgeLimit = 600000;
+
+    this._makeChartConfig();
+  }
+
+  $onInit() {
+    this._loadHistoricalData();
+    this._start();
   }
 
   $onDestroy () {
@@ -50,7 +56,7 @@ class JvmIoController {
   }
 
   _makeChartConfig () {
-    return this._translate([
+    this._translate([
       'jvmIo.chart.X_LABEL',
       'jvmIo.chart.Y1_LABEL',
       'jvmIo.chart.Y2_LABEL',
@@ -133,8 +139,9 @@ class JvmIoController {
   }
 
   set dataAgeLimit (val) {
+    this._clearData();
     this._dataAgeLimit = val;
-    this._trimData();
+    this._loadHistoricalData();
   }
 
   get dataAgeLimit () {
@@ -144,7 +151,6 @@ class JvmIoController {
   _start () {
     this._stop();
     this._refresh = this._interval(() => this._update(), this._refreshRate);
-    this._update();
   }
 
   _stop () {
@@ -152,6 +158,11 @@ class JvmIoController {
       this._interval.cancel(this._refresh);
       delete this._refresh;
     }
+  }
+
+  _clearData () {
+    let firstRow = this.config.data.rows[0];
+    this.config.data.rows = [firstRow];
   }
 
   _trimData () {
@@ -162,21 +173,26 @@ class JvmIoController {
     }
   }
 
+  _loadHistoricalData () {
+    this._svc.getHistoricalData(this.jvmId, Date.now() - this._dataAgeLimit).then(updates =>
+      updates.forEach(update => this._processUpdateRow(update)));
+  }
+
   _update () {
-    if (!angular.isDefined(this.jvmId)) {
-      return;
-    }
-    this._svc.getJvmIoData(this.jvmId).then(res => {
-      let update = res.data.response[0];
-      this.config.data.rows.push([
-        this._metricToNumber(update.timeStamp),
-        this._metricToNumber(update.charactersRead),
-        this._metricToNumber(update.charactersWritten),
-        this._metricToNumber(update.readSysCalls),
-        this._metricToNumber(update.writeSysCalls),
-      ]);
+    this._svc.getJvmIoData(this.jvmId).then(update => {
+      this._processUpdateRow(update);
       this._trimData();
     });
+  }
+
+  _processUpdateRow (update) {
+    this.config.data.rows.push([
+      this._metricToNumber(update.timeStamp),
+      this._metricToNumber(update.charactersRead),
+      this._metricToNumber(update.charactersWritten),
+      this._metricToNumber(update.readSysCalls),
+      this._metricToNumber(update.writeSysCalls),
+    ]);
   }
 }
 
