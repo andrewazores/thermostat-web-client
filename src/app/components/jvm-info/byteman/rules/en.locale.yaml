@@ -17,3 +17,4 @@ byteman:
       DO
       send("foo-marker", "action", "{{mainClass}}.main() called");
       ENDRULE
+    COMMAND_CHANNEL_REQUEST_FAILED_TITLE: Command failed.

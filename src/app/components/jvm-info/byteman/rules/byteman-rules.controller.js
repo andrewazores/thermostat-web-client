@@ -35,6 +35,11 @@ class BytemanRulesController {
     this._translate = $translate;
     this._svc = bytemanService;
 
+    this.showErr = false;
+    this.errMessage = '';
+
+    this._translate('byteman.rules.COMMAND_CHANNEL_REQUEST_FAILED_TITLE').then(title => this.errTitle = title);
+
     this.loadedRule = '';
   }
 
@@ -60,13 +65,37 @@ class BytemanRulesController {
     if (!this.loadedRule) {
       return;
     }
-    return this._svc.unloadRules(this.systemId, this.jvmId)
-      .then(() => this._updateRules());
+    return this._svc.unloadRules(this.systemId, this.jvmId).then(
+      response => {
+        if (response.status) {
+          this.showErr = false;
+        } else {
+          this.showErr = true;
+          this.errMessage = response.reason;
+        }
+      },
+      failure => {
+        this.showErr = true;
+        this.errMessage = failure;
+      }
+    ).finally(() => this._updateRules());
   }
 
   push () {
-    return this._svc.loadRule(this.systemId, this.jvmId, this.ruleText)
-      .then(() => this._updateRules());
+    return this._svc.loadRule(this.systemId, this.jvmId, this.ruleText).then(
+      response => {
+        if (response.status) {
+          this.showErr = false;
+        } else {
+          this.showErr = true;
+          this.errMessage = response.reason;
+        }
+      },
+      failure => {
+        this.showErr = true;
+        this.errMessage = failure;
+      }
+    ).finally(() => this._updateRules());
   }
 
   pull () {

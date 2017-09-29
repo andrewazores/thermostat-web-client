@@ -39,6 +39,9 @@ describe('BytemanController', () => {
     };
 
     translate = sinon.stub();
+    translate.withArgs('byteman.rules.COMMAND_CHANNEL_REQUEST_FAILED_TITLE').returns({
+      then: sinon.stub().yields('Request Failed')
+    });
     translate.then = sinon.stub();
     translate.returns({ then: translate.then });
 
@@ -60,6 +63,10 @@ describe('BytemanController', () => {
   });
 
   describe('$onInit ()', () => {
+    it('should set error message title', () => {
+      ctrl.errTitle.should.equal('Request Failed');
+    });
+
     it('should load injected rules', () => {
       svc.getLoadedRules.should.not.be.called();
       svc.getLoadedRules.returns({
@@ -107,10 +114,52 @@ describe('BytemanController', () => {
         then: sinon.stub().yields('')
       });
       svc.unloadRules.returns({
-        then: sinon.stub().yields()
+        then: sinon.stub().yields({
+          status: true,
+          reason: ''
+        }).returns({
+          finally: sinon.stub().yields()
+        })
       });
       ctrl.unload();
       ctrl.loadedRule.should.equal('');
+    });
+
+    it('should set error flag if request succeeds with non-OK response', () => {
+      svc.getLoadedRules.returns({
+        then: sinon.stub().yields('fake rule')
+      });
+      ctrl.refresh();
+      svc.unloadRules.returns({
+        then: sinon.stub().yields({
+          status: false,
+          reason: 'some error message'
+        }).returns({
+          finally: sinon.stub().yields()
+        })
+      });
+
+      ctrl.unload();
+
+      ctrl.showErr.should.be.true();
+      ctrl.errMessage.should.equal('some error message');
+    });
+
+    it('should set error flag if request fails', () => {
+      svc.getLoadedRules.returns({
+        then: sinon.stub().yields('fake rule')
+      });
+      ctrl.refresh();
+      svc.unloadRules.returns({
+        then: sinon.stub().callsArgWith(1, 'some error message').returns({
+          finally: sinon.stub().yields()
+        })
+      });
+
+      ctrl.unload();
+
+      ctrl.showErr.should.be.true();
+      ctrl.errMessage.should.equal('some error message');
     });
   });
 
@@ -119,7 +168,12 @@ describe('BytemanController', () => {
       const injectedRule = 'injected rule';
       ctrl.ruleText = injectedRule;
       svc.loadRule.returns({
-        then: sinon.stub().yields()
+        then: sinon.stub().yields({
+          status: true,
+          reason: ''
+        }).returns({
+          finally: sinon.stub().yields()
+        })
       });
       svc.getLoadedRules.returns({
         then: sinon.stub().yields(injectedRule)
@@ -127,6 +181,52 @@ describe('BytemanController', () => {
 
       ctrl.push();
 
+      ctrl.showErr.should.be.false();
+      svc.loadRule.should.be.calledOnce();
+      svc.loadRule.should.be.calledWith(stateParams.systemId, stateParams.jvmId, injectedRule);
+      ctrl.loadedRule.should.equal(injectedRule);
+    });
+
+    it('should set error flag if request succeeds with non-OK response', () => {
+      const injectedRule = 'injected rule';
+      ctrl.ruleText = injectedRule;
+      svc.loadRule.returns({
+        then: sinon.stub().yields({
+          status: false,
+          reason: 'some error message'
+        }).returns({
+          finally: sinon.stub().yields()
+        })
+      });
+      svc.getLoadedRules.returns({
+        then: sinon.stub().yields(injectedRule)
+      });
+
+      ctrl.push();
+
+      ctrl.showErr.should.be.true();
+      ctrl.errMessage.should.equal('some error message');
+      svc.loadRule.should.be.calledOnce();
+      svc.loadRule.should.be.calledWith(stateParams.systemId, stateParams.jvmId, injectedRule);
+      ctrl.loadedRule.should.equal(injectedRule);
+    });
+
+    it('should set error flag if request fails', () => {
+      const injectedRule = 'injected rule';
+      ctrl.ruleText = injectedRule;
+      svc.loadRule.returns({
+        then: sinon.stub().callsArgWith(1, 'some error message').returns({
+          finally: sinon.stub().yields()
+        })
+      });
+      svc.getLoadedRules.returns({
+        then: sinon.stub().yields(injectedRule)
+      });
+
+      ctrl.push();
+
+      ctrl.showErr.should.be.true();
+      ctrl.errMessage.should.equal('some error message');
       svc.loadRule.should.be.calledOnce();
       svc.loadRule.should.be.calledWith(stateParams.systemId, stateParams.jvmId, injectedRule);
       ctrl.loadedRule.should.equal(injectedRule);
@@ -171,9 +271,10 @@ describe('BytemanController', () => {
         then: sinon.stub().yields('com.example.FooClass')
       });
       translate.then.yields('rule template');
-      ctrl.generateTemplate();
       translate.should.be.calledOnce();
-      translate.should.be.calledWith('byteman.rules.RULE_TEMPLATE', { mainClass: 'com.example.FooClass' });
+      ctrl.generateTemplate();
+      translate.should.be.calledTwice();
+      translate.secondCall.should.be.calledWith('byteman.rules.RULE_TEMPLATE', { mainClass: 'com.example.FooClass' });
       ctrl.ruleText.should.equal('rule template');
     });
   });

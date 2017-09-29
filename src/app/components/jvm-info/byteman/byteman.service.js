@@ -137,7 +137,8 @@ class BytemanService {
             status: success.payload.respType.value === this._cmdChan.responseCodes.OK.value,
             reason: success.payload.respType.message
           });
-        }
+        },
+        defer.reject
       );
     });
 
