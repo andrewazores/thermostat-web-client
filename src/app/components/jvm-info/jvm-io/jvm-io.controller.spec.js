@@ -52,8 +52,8 @@ describe('JvmIoController', () => {
         'jvmIo.metrics.timestamp': 'date',
         'jvmIo.metrics.charactersRead': 'characters read',
         'jvmIo.metrics.charactersWritten': 'characters written',
-        'jvmIo.metrics.readSysCalls': 'read sys calls',
-        'jvmIo.metrics.writeSysCalls': 'write sys calls'
+        'jvmIo.metrics.readSyscalls': 'read sys calls',
+        'jvmIo.metrics.writeSyscalls': 'write sys calls'
       };
       let translateThenThen = sinon.stub().yields();
       translate = sinon.stub().returns({
@@ -104,8 +104,8 @@ describe('JvmIoController', () => {
         'jvmIo.metrics.timestamp',
         'jvmIo.metrics.charactersRead',
         'jvmIo.metrics.charactersWritten',
-        'jvmIo.metrics.readSysCalls',
-        'jvmIo.metrics.writeSysCalls',
+        'jvmIo.metrics.readSyscalls',
+        'jvmIo.metrics.writeSyscalls',
       ]);
     });
   });
@@ -244,15 +244,15 @@ describe('JvmIoController', () => {
             timeStamp: { $numberLong: (stamp - 10000).toString() },
             charactersRead: { $numberLong: '1000000' },
             charactersWritten: { $numberLong: '500000' },
-            readSysCalls: { $numberLong: '100' },
-            writeSysCalls: { $numberLong: '50' }
+            readSyscalls: { $numberLong: '100' },
+            writeSyscalls: { $numberLong: '50' }
           },
           {
             timeStamp: { $numberLong: stamp.toString() },
             charactersRead: { $numberLong: '1000001' },
             charactersWritten: { $numberLong: '500001' },
-            readSysCalls: { $numberLong: '101' },
-            writeSysCalls: { $numberLong: '51' }
+            readSyscalls: { $numberLong: '101' },
+            writeSyscalls: { $numberLong: '51' }
           }
         ]
       );
@@ -275,8 +275,8 @@ describe('JvmIoController', () => {
           timeStamp: { $numberLong: stamp.toString() },
           charactersRead: { $numberLong: '1000000' },
           charactersWritten: { $numberLong: '500000' },
-          readSysCalls: { $numberLong: '100' },
-          writeSysCalls: { $numberLong: '50' }
+          readSyscalls: { $numberLong: '100' },
+          writeSyscalls: { $numberLong: '50' }
         }
       );
       ctrl.config.data.rows.should.deepEqual([

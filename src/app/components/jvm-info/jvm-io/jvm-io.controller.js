@@ -64,8 +64,8 @@ class JvmIoController {
       'jvmIo.metrics.timestamp',
       'jvmIo.metrics.charactersRead',
       'jvmIo.metrics.charactersWritten',
-      'jvmIo.metrics.readSysCalls',
-      'jvmIo.metrics.writeSysCalls',
+      'jvmIo.metrics.readSyscalls',
+      'jvmIo.metrics.writeSyscalls',
     ]).then(translations => {
       this.config = {
         type: 'line',
@@ -112,8 +112,8 @@ class JvmIoController {
               translations['jvmIo.metrics.timestamp'],
               translations['jvmIo.metrics.charactersRead'],
               translations['jvmIo.metrics.charactersWritten'],
-              translations['jvmIo.metrics.readSysCalls'],
-              translations['jvmIo.metrics.writeSysCalls']
+              translations['jvmIo.metrics.readSyscalls'],
+              translations['jvmIo.metrics.writeSyscalls']
             ]
           ]
         }
@@ -121,8 +121,8 @@ class JvmIoController {
       this.config.data.axes = {};
       this.config.data.axes[translations['jvmIo.metrics.charactersRead']] = 'y';
       this.config.data.axes[translations['jvmIo.metrics.charactersWritten']] = 'y';
-      this.config.data.axes[translations['jvmIo.metrics.readSysCalls']] = 'y2';
-      this.config.data.axes[translations['jvmIo.metrics.writeSysCalls']] = 'y2';
+      this.config.data.axes[translations['jvmIo.metrics.readSyscalls']] = 'y2';
+      this.config.data.axes[translations['jvmIo.metrics.writeSyscalls']] = 'y2';
     });
   }
 
@@ -190,8 +190,8 @@ class JvmIoController {
       this._metricToNumber(update.timeStamp),
       this._metricToNumber(update.charactersRead),
       this._metricToNumber(update.charactersWritten),
-      this._metricToNumber(update.readSysCalls),
-      this._metricToNumber(update.writeSysCalls),
+      this._metricToNumber(update.readSyscalls),
+      this._metricToNumber(update.writeSyscalls),
     ]);
   }
 }

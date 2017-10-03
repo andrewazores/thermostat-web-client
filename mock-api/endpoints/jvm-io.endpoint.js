@@ -26,8 +26,8 @@ function jvmIo (server) {
         timeStamp: { $numberLong: date.toString() },
         charactersRead: { $numberLong: _.floor(date / 10000000).toString() },
         charactersWritten: { $numberLong: _.floor((date / 12000000)).toString() },
-        readSysCalls: { $numberLong: _.floor(date / 20000000).toString() },
-        writeSysCalls: { $numberLong: _.floor(date / 30000000).toString() }
+        readSyscalls: { $numberLong: _.floor(date / 20000000).toString() },
+        writeSyscalls: { $numberLong: _.floor(date / 30000000).toString() }
       };
       response.push(data);
     }
