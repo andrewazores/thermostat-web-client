@@ -12,6 +12,9 @@ var host = process.env.MOCKAPI_HOST || '0.0.0.0';
 var app = express();
 expressWs(app);
 app.use(cors());
+
+// express-ws does not work when basicAuth is enabled. If testing command channel
+// (or other websocket) functionality, temporarily remove the configuration below.
 app.use(basicAuth({
   users: {
     'client': 'client-pwd'
