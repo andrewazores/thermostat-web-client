@@ -21,14 +21,14 @@ function systemMemory (server) {
       var data = {
         systemId: systemId,
         agentId: 'foo-agentId',
-        timeStamp: new Date().getTime(),
-        total: 16 * gib,
-        free: _.round(Math.random() * (16 * gib / 4)),
-        buffers: 16 * gib / 32,
-        cached: 0,
-        swapTotal: 16 * gib / 2,
-        swapFree: 16 * gib / 2,
-        commitLimit: 0
+        timeStamp: { $numberLong: Date.now().toString() },
+        total: { $numberLong: (16 * gib).toString() },
+        free: { $numberLong: (_.round(Math.random() * (16 * gib / 4))).toString() },
+        buffers: { $numberLong: (16 * gib / 32).toString() },
+        cached: { $numberLong: '0' },
+        swapTotal: { $numberLong: (16 * gib / 2).toString() },
+        swapFree: { $numberLong: (16 * gib / 2).toString() },
+        commitLimit: { $numberLong: '0' }
       };
       response.push(data);
     }

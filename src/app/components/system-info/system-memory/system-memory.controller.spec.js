@@ -100,13 +100,13 @@ describe('SystemMemoryController', () => {
           systemId: 'foo-systemId',
           agentId: 'mock-agentId',
           timeStamp: Date.now(),
-          total: 16 * 1024 * 1024,
-          free: 0,
-          buffers: 1 * 1024,
-          cached: 2 * 1024,
-          swapTotal: 3 * 1024,
-          swapFree: 4 * 1024,
-          commitLimit: 0
+          total: { $numberLong: (16 * 1024 * 1024).toString() },
+          free: { $numberLong: '0' },
+          buffers: { $numberLong: (1 * 1024).toString() },
+          cached: { $numberLong: (2 * 1024).toString() },
+          swapTotal: { $numberLong: (3 * 1024).toString() },
+          swapFree: { $numberLong: (4 * 1024).toString() },
+          commitLimit: { $numberLong: '0' }
         }
       }
     });
@@ -248,13 +248,13 @@ describe('SystemMemoryController', () => {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
               timeStamp: timestamp,
-              total: 16 * 1024 * 1024 * 1024,
-              free: 0,
-              buffers: 1 * 1024 * 1024,
-              cached: 2 * 1024 * 1024,
-              swapTotal: 3 * 1024 * 1024,
-              swapFree: 4 * 1024 * 1024,
-              commitLimit: 0
+              total: { $numberLong: (16 * 1024 * 1024 * 1024).toString() },
+              free: { $numberLong: '0' },
+              buffers: { $numberLong: (1 * 1024 * 1024).toString() },
+              cached: { $numberLong: (2 * 1024 * 1024).toString() },
+              swapTotal: { $numberLong: (3 * 1024 * 1024).toString() },
+              swapFree: { $numberLong: (4 * 1024 * 1024).toString() },
+              commitLimit: { $numberLong: '0' }
             }
           ]
         }
@@ -296,26 +296,26 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timeStamp: timestampA,
-              total: 16384,
-              free: 0,
-              buffers: 0,
-              cached: 0,
-              swapTotal: 0,
-              swapFree: 0,
-              commitLimit: 0
+              timeStamp: { $numberLong: timestampA.toString() },
+              total: { $numberLong: '16384' },
+              free: { $numberLong: '0' },
+              buffers: { $numberLong: '0' },
+              cached: { $numberLong: '0' },
+              swapTotal: { $numberLong: '0' },
+              swapFree: { $numberLong: '0' },
+              commitLimit: { $numberLong: '0' }
             },
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timeStamp: timestampB,
-              total: 16384,
-              free: 0,
-              buffers: 0,
-              cached: 0,
-              swapTotal: 0,
-              swapFree: 0,
-              commitLimit: 0
+              timeStamp: { $numberLong: timestampB.toString() },
+              total: { $numberLong: '16384' },
+              free: { $numberLong: '0' },
+              buffers: { $numberLong: '0' },
+              cached: { $numberLong: '0' },
+              swapTotal: { $numberLong: '0' },
+              swapFree: { $numberLong: '0' },
+              commitLimit: { $numberLong: '0' }
             }
           ]
         }
@@ -334,14 +334,14 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timeStamp: timestampA,
-              total: 16384,
-              free: 0,
-              buffers: 0,
-              cached: 0,
-              swapTotal: 0,
-              swapFree: 0,
-              commitLimit: 0
+              timeStamp: { $numberLong: timestampA.toString() },
+              total: { $numberLong: '16384' },
+              free: { $numberLong: '0' },
+              buffers: { $numberLong: '0' },
+              cached: { $numberLong: '0' },
+              swapTotal: { $numberLong: '0' },
+              swapFree: { $numberLong: '0' },
+              commitLimit: { $numberLong: '0' }
             }
           ]
         }
@@ -352,14 +352,14 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timeStamp: timestampB,
-              total: 16384,
-              free: 0,
-              buffers: 0,
-              cached: 0,
-              swapTotal: 0,
-              swapFree: 0,
-              commitLimit: 0
+              timeStamp: { $numberLong: timestampB.toString() },
+              total: { $numberLong: '16384' },
+              free: { $numberLong: '0' },
+              buffers: { $numberLong: '0' },
+              cached: { $numberLong: '0' },
+              swapTotal: { $numberLong: '0' },
+              swapFree: { $numberLong: '0' },
+              commitLimit: { $numberLong: '0' }
             }
           ]
         }
@@ -372,21 +372,21 @@ describe('SystemMemoryController', () => {
     it('should remove data that is older than dataAgeLimit', () => {
       controller.dataAgeLimit = 30000;
       let timestampA = Date.now() - 30001;
-      let timestampB = Date.now;
+      let timestampB = Date.now();
       controller._processData({
         data: {
           response: [
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timeStamp: timestampA,
-              total: 16384,
-              free: 0,
-              buffers: 0,
-              cached: 0,
-              swapTotal: 0,
-              swapFree: 0,
-              commitLimit: 0
+              timeStamp: { $numberLong: timestampA.toString() },
+              total: { $numberLong: '16384' },
+              free: { $numberLong: '0' },
+              buffers: { $numberLong: '0' },
+              cached: { $numberLong: '0' },
+              swapTotal: { $numberLong: '0' },
+              swapFree: { $numberLong: '0' },
+              commitLimit: { $numberLong: '0' }
             }
           ]
         }
@@ -397,14 +397,14 @@ describe('SystemMemoryController', () => {
             {
               systemId: 'foo-systemId',
               agentId: 'mock-agentId',
-              timeStamp: timestampB,
-              total: 16384,
-              free: 0,
-              buffers: 0,
-              cached: 0,
-              swapTotal: 0,
-              swapFree: 0,
-              commitLimit: 0
+              timeStamp: { $numberLong: timestampB.toString() },
+              total: { $numberLong: '16384' },
+              free: { $numberLong: '0' },
+              buffers: { $numberLong: '0' },
+              cached: { $numberLong: '0' },
+              swapTotal: { $numberLong: '0' },
+              swapFree: { $numberLong: '0' },
+              commitLimit: { $numberLong: '0' }
             }
           ]
         }

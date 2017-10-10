@@ -31,13 +31,14 @@ import service from './system-memory.service.js';
 
 class SystemMemoryController {
   constructor (systemMemoryService, $interval, pfUtils,
-    dateFilter, DATE_FORMAT, $translate) {
+    dateFilter, DATE_FORMAT, $translate, metricToNumberFilter) {
     'ngInject';
     this._svc = systemMemoryService;
     this._interval = $interval;
     this._dateFilter = dateFilter;
     this._dateFormat = DATE_FORMAT;
     this._translate = $translate;
+    this._metricToNumber = metricToNumberFilter;
 
     this._refreshRate = 1000;
     this._dataAgeLimit = 30000;
@@ -145,21 +146,21 @@ class SystemMemoryController {
   _processData (resp) {
     for (let i = resp.data.response.length - 1; i >= 0; i--) {
       let data = resp.data.response[i];
-      let free = data.free;
-      let total = data.total;
+      let free = this._metricToNumber(data.free);
+      let total = this._metricToNumber(data.total);
       let used = total - free;
       let usage = Math.round((used) / total * 100);
 
       let mib = 1024 * 1024;
       // update the memory time series chart
       this.lineConfig.axis.y.max = total / mib;
-      this.lineData.xData.push(data.timeStamp);
+      this.lineData.xData.push(this._metricToNumber(data.timeStamp));
       this.lineData.yData0.push(total / mib);
       this.lineData.yData1.push(free / mib);
       this.lineData.yData2.push(used / mib);
-      this.lineData.yData3.push(data.swapTotal / mib);
-      this.lineData.yData4.push(data.swapFree / mib);
-      this.lineData.yData5.push(data.buffers / mib);
+      this.lineData.yData3.push(this._metricToNumber(data.swapTotal) / mib);
+      this.lineData.yData4.push(this._metricToNumber(data.swapFree) / mib);
+      this.lineData.yData5.push(this._metricToNumber(data.buffers) / mib);
       this._trimData();
 
       // update the memory donut chart
