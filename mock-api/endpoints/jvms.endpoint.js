@@ -54,8 +54,9 @@ function jvmList (server) {
           agentId: 'foo-agentId',
           jvmId: req.params.jvmId,
           mainClass: 'c.r.t.A',
-          startTime: Date.now() - 5000000 + _.round(Math.random() * 1000000),
-          stopTime: -1,
+          startTime: { $numberLong: (Date.now() - 5000000 + _.round(Math.random() * 1000000)).toString() },
+          stopTime: { $numberLong: '-1' },
+          lastUpdated: { $numberLong: Date.now().toString() },
           isAlive: true,
           jvmPid: _.round(Math.random() * 2048) + 512,
           javaVersion: '1.9',
@@ -77,8 +78,7 @@ function jvmList (server) {
             }
           ],
           uid: _.floor(Math.random() * 800),
-          username: 'thermostat-user',
-          lastUpdated: Date.now().toString()
+          username: 'thermostat-user'
         }]
       }
     ));

@@ -36,7 +36,7 @@
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.UID</td>
-                  <td>{{$ctrl.jvmInfo.uid}}</td>
+                  <td>{{$ctrl.jvmInfo.uid | metricToNumber }}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.JVM_ID</td>
@@ -48,15 +48,15 @@
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.START_TIME</td>
-                  <td>{{$ctrl.jvmInfo.startTime | date:"medium"}}</td>
+                  <td>{{$ctrl.jvmInfo.startTime | metricToNumber | date:"medium"}}</td>
                 </tr>
                 <tr ng-show="!$ctrl.jvmInfo.isAlive">
                   <td translate>jvmInfo.table.STOP_TIME</td>
-                  <td>{{$ctrl.jvmInfo.stopTime | date:"medium"}}</td>
+                  <td>{{$ctrl.jvmInfo.stopTime | metricToNumber | date:"medium"}}</td>
                 </tr>
                 <tr ng-show="$ctrl.jvmInfo.isAlive">
                   <td translate>jvmInfo.table.LAST_UPDATED</td>
-                  <td>{{$ctrl.jvmInfo.lastUpdated | date:"medium"}}</td>
+                  <td>{{$ctrl.jvmInfo.lastUpdated | metricToNumber | date:"medium"}}</td>
                 </tr>
                 <tr>
                   <td translate>jvmInfo.table.JVM_PID</td>
