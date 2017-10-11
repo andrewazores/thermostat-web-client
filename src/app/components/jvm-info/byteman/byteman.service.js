@@ -42,6 +42,9 @@ class BytemanService {
     this._http = $http;
     this._gatewayUrl = gatewayUrl;
     this._cmdChan = commandChannelService;
+
+    this._mainClassCache = new Map();
+    this._listenPortCache = new Map();
   }
 
   getLoadedRules (jvmId) {
@@ -62,7 +65,14 @@ class BytemanService {
   }
 
   getJvmMainClass (systemId, jvmId) {
-    return this._getJvmInfo(systemId, jvmId).then(res => res.mainClass);
+    if (this._mainClassCache.has(jvmId)) {
+      return this._q(resolve => resolve(this._mainClassCache.get(jvmId)));
+    }
+    return this._getJvmInfo(systemId, jvmId).then(res => {
+      let mainclass = res.mainClass;
+      this._mainClassCache.set(jvmId, mainclass);
+      return mainclass;
+    });
   }
 
   getMetrics (jvmId, oldestLimit) {
@@ -160,11 +170,16 @@ class BytemanService {
   }
 
   _getListenPort (jvmId) {
+    if (this._listenPortCache.has(jvmId)) {
+      return this._q(resolve => resolve(this._listenPortCache.get(jvmId)));
+    }
     return this._getBytemanStatus(jvmId).then(res => {
       if (!res) {
         return INITIAL_LISTEN_PORT;
       }
-      return res.listenPort;
+      let port = res.listenPort;
+      this._listenPortCache.set(jvmId, port);
+      return port;
     });
   }
 }

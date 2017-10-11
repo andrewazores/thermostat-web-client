@@ -319,5 +319,58 @@ describe('BytemanService', () => {
     });
   });
 
-});
+  describe('caching', () => {
+    it('should cache jvm mainClass', done => {
+      let response = {
+        response: [
+          {
+            mainClass: 'com.example.FooClass'
+          }
+        ]
+      };
+      let requestHandler = httpBackend.expectGET('http://example.com:1234/jvms/0.0.1/systems/foo-systemId/jvms/foo-jvmId')
+        .respond(() => {
+          requestHandler.respond(500);
+          return [200, response];
+        });
+      svc.getJvmMainClass('foo-systemId', 'foo-jvmId').then(res => {
+        res.should.equal(response.response[0].mainClass);
+        httpBackend.resetExpectations();
 
+        svc.getJvmMainClass('foo-systemId', 'foo-jvmId').then(res => {
+          res.should.equal(response.response[0].mainClass);
+          done();
+        });
+      });
+      httpBackend.flush();
+      scope.$apply();
+    });
+
+    it('should cache jvm listenport', done => {
+      let response = {
+        response: [
+          {
+            listenPort: 9999
+          }
+        ]
+      };
+      let requestHandler = httpBackend.expectGET('http://example.com:1234/jvm-byteman/0.0.1/status/jvms/foo-jvmId')
+        .respond(() => {
+          requestHandler.respond(500);
+          return [200, response];
+        });
+      svc._getListenPort('foo-jvmId').then(res => {
+        res.should.equal(response.response[0].listenPort);
+        httpBackend.resetExpectations();
+
+        svc._getListenPort('foo-jvmId').then(res => {
+          res.should.equal(response.response[0].listenPort);
+          done();
+        });
+      });
+      httpBackend.flush();
+      scope.$apply();
+    });
+  });
+
+});
