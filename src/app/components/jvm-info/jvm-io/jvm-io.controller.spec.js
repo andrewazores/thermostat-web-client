@@ -40,9 +40,6 @@ describe('JvmIoController', () => {
         getJvmIoData: sinon.stub().returns({
           then: svcPromise
         }),
-        getHistoricalData: sinon.stub().returns({
-          then: svcPromise
-        }),
         promise: svcPromise
       };
       interval = sinon.stub().returns('intervalMock');
@@ -116,7 +113,7 @@ describe('JvmIoController', () => {
     });
 
     it('should load historical data', () => {
-      svc.getHistoricalData.should.be.calledOnce();
+      svc.getJvmIoData.should.be.calledOnce();
     });
 
     it('should start periodic live updates', () => {
@@ -218,9 +215,9 @@ describe('JvmIoController', () => {
       interval.should.be.calledWith(sinon.match.func, 10000);
 
       let func = interval.args[0][0];
-      svc.getJvmIoData.should.not.be.called();
-      func();
       svc.getJvmIoData.should.be.calledOnce();
+      func();
+      svc.getJvmIoData.should.be.calledTwice();
     });
   });
 
@@ -271,13 +268,15 @@ describe('JvmIoController', () => {
       svc.promise.should.be.calledWith(sinon.match.func);
       let stamp = Date.now();
       svc.promise.args[0][0](
-        {
-          timeStamp: { $numberLong: stamp.toString() },
-          charactersRead: { $numberLong: '1000000' },
-          charactersWritten: { $numberLong: '500000' },
-          readSyscalls: { $numberLong: '100' },
-          writeSyscalls: { $numberLong: '50' }
-        }
+        [
+          {
+            timeStamp: { $numberLong: stamp.toString() },
+            charactersRead: { $numberLong: '1000000' },
+            charactersWritten: { $numberLong: '500000' },
+            readSyscalls: { $numberLong: '100' },
+            writeSyscalls: { $numberLong: '50' }
+          }
+        ]
       );
       ctrl.config.data.rows.should.deepEqual([
         ['date', 'characters read', 'characters written', 'read sys calls', 'write sys calls'],

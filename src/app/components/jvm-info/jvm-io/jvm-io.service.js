@@ -35,23 +35,14 @@ class JvmIoService {
     this._gatewayUrl = gatewayUrl;
   }
 
-  getHistoricalData (jvmId, since) {
+  getJvmIoData (jvmId, since) {
     let params = {
-      sort: '-timeStamp',
+      sort: '+timeStamp',
       limit: 0,
       query: `timeStamp>=${since}`
     };
     return this._http.get(urlJoin(this._gatewayUrl, 'jvm-io', '0.0.1', 'jvms', jvmId), { params: params })
       .then(res => res.data.response);
-  }
-
-  getJvmIoData (jvmId) {
-    let params = {
-      sort: '-timeStamp',
-      limit: 1
-    };
-    return this._http.get(urlJoin(this._gatewayUrl, 'jvm-io', '0.0.1', 'jvms', jvmId), { params: params })
-      .then(res => res.data.response[0]);
   }
 }
 

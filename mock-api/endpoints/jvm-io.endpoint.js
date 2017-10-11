@@ -5,21 +5,18 @@ function jvmIo (server) {
   server.app.get('/jvm-io/0.0.1/jvms/:jvmId', function (req, res) {
     server.logRequest('jvm-io', req);
 
-    var limit = req.query.limit;
     var jvmId = req.params.jvmId;
+    var limit = req.query.limit;
+    var query = req.query.query;
 
-    var count;
-    if (limit == 0) {
-      count = 60;
-    } else if (limit == 1) {
-      count = 0;
-    } else {
-      count = 0;
-    }
+    var since = query.split('timeStamp>=')[1];
+    var now = Date.now();
+    var elapsed = now - since;
+    var count = _.floor(elapsed / 2000);
 
     var response = [];
     for (var i = count; i >= 0; i--) {
-      let date = Date.now() - (i * 10000);
+      let date = now - (i * 2000);
       let data = {
         agentId: 'foo-agentId',
         jvmId: jvmId,
@@ -31,7 +28,6 @@ function jvmIo (server) {
       };
       response.push(data);
     }
-    console.log(response);
 
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(

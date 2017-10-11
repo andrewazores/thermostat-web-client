@@ -43,11 +43,12 @@ class JvmIoController {
     this._refreshRate = 10000;
     this._dataAgeLimit = 600000;
 
+    this._lastUpdate = this._getCurrentTimestamp();
+
     this._makeChartConfig();
   }
 
   $onInit() {
-    this._loadHistoricalData();
     this._start();
   }
 
@@ -150,11 +151,13 @@ class JvmIoController {
 
   _start () {
     this._stop();
+    this._loadHistoricalData();
     this._refresh = this._interval(() => this._update(), this._refreshRate);
   }
 
   _stop () {
     if (angular.isDefined(this._refresh)) {
+      this._clearData();
       this._interval.cancel(this._refresh);
       delete this._refresh;
     }
@@ -166,21 +169,31 @@ class JvmIoController {
   }
 
   _trimData () {
-    let now = Date.now();
+    let now = this._getCurrentTimestamp();
     let limit = now - this._dataAgeLimit;
-    while (this.config.data.rows.length > 1 && this.config.data.rows[1][0] < limit) {
-      this.config.data.rows.splice(1, 1);
+    let spliceCount = 1;
+    for (; spliceCount < this.config.data.rows.length; spliceCount++) {
+      let sample = this.config.data.rows[spliceCount];
+      let sampleAge = sample[0];
+      if (sampleAge >= limit) {
+        break;
+      }
     }
+    this.config.data.rows.splice(1, spliceCount - 1);
   }
 
   _loadHistoricalData () {
-    this._svc.getHistoricalData(this.jvmId, Date.now() - this._dataAgeLimit).then(updates =>
-      updates.forEach(update => this._processUpdateRow(update)));
+    this._svc.getJvmIoData(this.jvmId, this._getCurrentTimestamp() - this._dataAgeLimit).then(updates => {
+      this._clearData();
+      this._lastUpdate = this._getCurrentTimestamp();
+      updates.forEach(update => this._processUpdateRow(update));
+    });
   }
 
   _update () {
-    this._svc.getJvmIoData(this.jvmId).then(update => {
-      this._processUpdateRow(update);
+    this._svc.getJvmIoData(this.jvmId, this._lastUpdate).then(updates => {
+      this._lastUpdate = this._getCurrentTimestamp();
+      updates.forEach(update => this._processUpdateRow(update));
       this._trimData();
     });
   }
@@ -193,6 +206,10 @@ class JvmIoController {
       this._metricToNumber(update.readSyscalls),
       this._metricToNumber(update.writeSyscalls),
     ]);
+  }
+
+  _getCurrentTimestamp () {
+    return Date.now();
   }
 }
 
