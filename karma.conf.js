@@ -63,6 +63,18 @@ module.exports = function (config) {
 
     port: 9876,
 
+    singleRun: true,
+
+    captureTimeout: 60000, // one minute
+
+    browserDisconnectTimeout: 60000,
+
+    browserDisconnectTolerance: 3,
+
+    browserNoActivityTimeout: 60000,
+
+    retryLimit: 3,
+
     colors: true,
 
     browsers: ['PhantomJS'],
@@ -75,8 +87,6 @@ module.exports = function (config) {
 
     webpackMiddleware: {
       noInfo: 'errors-only'
-    },
-
-    singleRun: true
+    }
   });
 };
