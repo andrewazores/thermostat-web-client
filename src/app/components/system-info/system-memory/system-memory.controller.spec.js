@@ -175,8 +175,8 @@ describe('SystemMemoryController', () => {
           data: {
             response: [
               {
-                total: tup[0],
-                free: tup[1]
+                total: { $numberLong: tup[0].toString() },
+                free: { $numberLong: tup[1].toString() }
               }
             ]
           }

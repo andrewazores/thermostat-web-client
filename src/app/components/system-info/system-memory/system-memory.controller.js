@@ -230,8 +230,8 @@ class SystemMemoryController {
     return new Promise(resolve =>
       this._svc.getMemoryInfo(this.systemId).then(resp => {
         let data = resp.data.response[0];
-        let free = data.free;
-        let total = data.total;
+        let free = this._metricToNumber(data.free);
+        let total = this._metricToNumber(data.total);
         let used = total - free;
         let usage = Math.round(used / total * 100);
         resolve(usage);
