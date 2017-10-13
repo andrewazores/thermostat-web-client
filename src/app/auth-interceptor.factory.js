@@ -26,11 +26,15 @@
  */
 
 import authModule from 'components/auth/auth.module.js';
+import servicesModule from 'shared/services/services.module.js';
 
 let name = 'authInterceptorFactory';
 
 export default angular
-  .module(name, [authModule])
+  .module(name, [
+    authModule,
+    servicesModule
+  ])
   .factory(name, ($q, authService) => {
     'ngInject';
     return {

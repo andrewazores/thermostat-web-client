@@ -26,16 +26,18 @@
  */
 
 import big from 'big.js';
+import filtersModule from './filters.module.js';
 
 describe('bigIntToString filter', () => {
 
-  beforeEach(angular.mock.module('app.filters'));
-
   let fn;
-  beforeEach(angular.mock.inject(bigIntToStringFilter => {
-    'ngInject';
-    fn = bigIntToStringFilter;
-  }));
+  beforeEach(() => {
+    angular.mock.module(filtersModule);
+    angular.mock.inject(bigIntToStringFilter => {
+      'ngInject';
+      fn = bigIntToStringFilter;
+    });
+  });
 
   it('should convert big int to string', () => {
     fn(big(100)).should.equal('100');
@@ -46,7 +48,7 @@ describe('bigIntToString filter', () => {
   });
 
   it('should fail on object input', () => {
-    (() => fn({ foo: 'bar' })).should.throw(/undefined is not a constructor/);
+    (() => fn({ foo: 'bar' })).should.throw();
   });
 
   it('should treat undefined as 0', () => {

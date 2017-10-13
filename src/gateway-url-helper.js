@@ -25,21 +25,21 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
-
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
+export function DetermineGatewayUrl () {
+  return new Promise(resolve => {
+    $.get('/gatewayurl')
+      .done(res => {
+        window.tmsGatewayUrl = res.gatewayUrl;
+      })
+      .fail(() => {
+        let url = require('url');
+        let parsed = url.parse(window.location.href);
+        let gateway = {
+          protocol: parsed.protocol,
+          host: parsed.host
+        };
+        window.tmsGatewayUrl = url.format(gateway);
+      })
+      .always(() => resolve());
+  });
 }
-
-export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
-  .name;

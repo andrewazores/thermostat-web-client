@@ -30,7 +30,7 @@ import * as url from 'url';
 
 const CLIENT_REQUEST_TYPE = 2;
 
-class CommandChannelService {
+export class CommandChannelService {
   constructor ($q, authService, commandChannelUrl, webSocketFactory, $translate) {
     'ngInject';
     this._sequence = 1;
@@ -122,6 +122,8 @@ class CommandChannelService {
   }
 }
 
-angular
-  .module(servicesModule)
-  .service('commandChannelService', CommandChannelService);
+export function init () {
+  angular
+    .module(servicesModule)
+    .service('commandChannelService', CommandChannelService);
+}

@@ -25,6 +25,7 @@
  * exception statement from your version.
  */
 
+import serviceModule from './kill-vm.service.js';
 import servicesModule from 'shared/services/services.module.js';
 
 describe('KillVmService', () => {
@@ -36,6 +37,7 @@ describe('KillVmService', () => {
       'ngInject';
       $provide.value('commandChannelService', commandChannel);
     });
+    angular.mock.module(serviceModule);
     angular.mock.inject((killVmService, $rootScope, $q) => {
       'ngInject';
       scope = $rootScope;

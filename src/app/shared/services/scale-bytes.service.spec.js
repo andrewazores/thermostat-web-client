@@ -25,15 +25,19 @@
  * exception statement from your version.
  */
 
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
+
 describe('ScaleBytesService', () => {
 
-  beforeEach(angular.mock.module('app.services'));
-
   let svc;
-  beforeEach(angular.mock.inject(scaleBytesService => {
-    'ngInject';
-    svc = scaleBytesService;
-  }));
+  beforeEach(() => {
+    angular.mock.module(servicesModule);
+    initServices();
+    angular.mock.inject(scaleBytesService => {
+      'ngInject';
+      svc = scaleBytesService;
+    });
+  });
 
   it('should exist', () => {
     should.exist(svc);

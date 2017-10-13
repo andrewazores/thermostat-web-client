@@ -27,7 +27,7 @@
 
 import authModule from 'components/auth/auth.module.js';
 
-class AppController {
+class AppRootController {
   constructor ($scope, environment, authService, $translate) {
     'ngInject';
     this.env = environment;
@@ -38,9 +38,9 @@ class AppController {
   }
 
   $onInit () {
-    angular.element('logoutButton').removeAttr('hidden');
+    angular.element(document.querySelector('#logoutButton')).removeAttr('hidden');
     if (this.env !== 'production') {
-      angular.element('envHeader').removeAttr('hidden');
+      angular.element(document.querySelector('#envHeader')).removeAttr('hidden');
     }
 
     this._updateUsernameLabel();
@@ -78,8 +78,7 @@ class AppController {
 
 }
 
-let name = 'AppController';
 export default angular
-  .module(name, [authModule])
-  .controller(name, AppController)
+  .module('appRoot.controller', [authModule])
+  .controller('AppRootController', AppRootController)
   .name;

@@ -34,7 +34,7 @@ import big from 'big.js';
  * @param {Object} metric e.g., '{ $numberLong: metric }'
  * @return {Big number Object}
  */
-class MetricToBigIntService {
+export class MetricToBigIntService {
   constructor () {
     this.big = big;
   }
@@ -51,6 +51,8 @@ class MetricToBigIntService {
   }
 }
 
-angular
-  .module('app.services')
-  .service('metricToBigIntService', MetricToBigIntService);
+export function init () {
+  angular
+    .module('app.services')
+    .service('metricToBigIntService', MetricToBigIntService);
+}

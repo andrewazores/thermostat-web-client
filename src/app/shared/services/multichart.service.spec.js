@@ -25,13 +25,14 @@
  * exception statement from your version.
  */
 
-import servicesModule from 'shared/services/services.module.js';
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
 
 describe('MultichartService', () => {
 
   let svc, translate;
   beforeEach(() => {
     angular.mock.module(servicesModule);
+    initServices();
     translate = sinon.stub().returns({
       then: sinon.stub().yields()
     });

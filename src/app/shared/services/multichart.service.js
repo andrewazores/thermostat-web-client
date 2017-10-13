@@ -28,7 +28,7 @@
 import servicesModule from 'shared/services/services.module.js';
 import _ from 'lodash';
 
-class MultiChartService {
+export class MultichartService {
   constructor ($q, $translate) {
     this.q = $q;
     this.translate = $translate;
@@ -174,6 +174,8 @@ class MultiChartService {
   }
 }
 
-angular
-  .module(servicesModule)
-  .service('multichartService', MultiChartService);
+export function init () {
+  angular
+    .module(servicesModule)
+    .service('multichartService', MultichartService);
+}

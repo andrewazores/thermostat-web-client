@@ -25,21 +25,34 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
+import * as sinon from 'sinon';
 
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
-}
+import { FormatBytesPipe } from './format-bytes.pipe';
+import { Metric } from './metric';
+import { ScaleBytesService } from '../services/scale-bytes.service'
 
-export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
-  .name;
+describe('FormatBytesPipe', () => {
+
+  let pipe: FormatBytesPipe;
+  let svc: ScaleBytesService;
+  beforeEach(() => {
+    svc = {
+      format: sinon.stub().returns({
+        result: 100,
+        scale: 2,
+        unit: 'KiB'
+      }),
+      metricToBigInt: null,
+      sizes: ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'],
+    };
+    pipe = new FormatBytesPipe(svc);
+  });
+
+  it('should delegate to service', () => {
+    svc.format.should.not.be.called();
+    pipe.transform({ $numberLong: '2' }).should.equal('100 KiB');
+    svc.format.should.be.calledOnce();
+    svc.format.should.be.calledWithMatch({ $numberLong: '2' });
+  });
+
+});

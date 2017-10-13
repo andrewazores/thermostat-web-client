@@ -27,7 +27,7 @@
 
 import servicesModule from 'shared/services/services.module.js';
 
-class LocalStorageService {
+export class LocalStorageService {
 
   constructor ($window) {
     'ngInject';
@@ -57,6 +57,8 @@ class LocalStorageService {
 
 }
 
-angular
-  .module(servicesModule)
-  .service('localStorage', LocalStorageService);
+export function init () {
+  angular
+    .module(servicesModule)
+    .service('localStorage', LocalStorageService);
+}

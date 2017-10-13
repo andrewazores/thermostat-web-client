@@ -25,49 +25,56 @@
  * exception statement from your version.
  */
 
+import controllerModule from './jvm-gc.controller.js';
+import filtersModule from 'shared/filters/filters.module.js';
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
+
 describe('JvmGcController', () => {
 
-  beforeEach(angular.mock.module('app.filters'));
-  beforeEach(angular.mock.module('jvmGc.controller'));
-
   let interval, dateFilterStub, dateFormatSpy, svc, promise, ctrl, translate, sanitizeService;
-  beforeEach(inject(($controller) => {
-    'ngInject';
+  beforeEach(() => {
+    angular.mock.module(filtersModule);
+    angular.mock.module(servicesModule);
+    initServices();
+    angular.mock.module(controllerModule);
+    angular.mock.inject(($controller) => {
+      'ngInject';
 
-    dateFilterStub = sinon.stub().returns('mockDate');
-    dateFormatSpy = {
-      time: {
-        medium: sinon.spy()
-      }
-    };
+      dateFilterStub = sinon.stub().returns('mockDate');
+      dateFormatSpy = {
+        time: {
+          medium: sinon.spy()
+        }
+      };
 
-    interval = sinon.stub().returns('interval-sentinel');
-    interval.cancel = sinon.spy();
+      interval = sinon.stub().returns('interval-sentinel');
+      interval.cancel = sinon.spy();
 
-    promise = { then: sinon.spy() };
-    svc = { getJvmGcData: sinon.stub().returns(promise) };
+      promise = { then: sinon.spy() };
+      svc = { getJvmGcData: sinon.stub().returns(promise) };
 
-    sanitizeService = { sanitize: sinon.spy() };
+      sanitizeService = { sanitize: sinon.spy() };
 
-    translate = sinon.stub().returns({
-      then: sinon.stub().yields({
-        'jvmGc.chart.UNITS': 'microseconds',
-        'jvmGc.chart.X_AXIS_LABEL': 'timestamp',
-        'jvmGc.chart.Y_AXIS_LABEL': 'elapsed'
-      })
+      translate = sinon.stub().returns({
+        then: sinon.stub().yields({
+          'jvmGc.chart.UNITS': 'microseconds',
+          'jvmGc.chart.X_AXIS_LABEL': 'timestamp',
+          'jvmGc.chart.Y_AXIS_LABEL': 'elapsed'
+        })
+      });
+
+      ctrl = $controller('JvmGcController', {
+        $stateParams: { jvmId: 'foo-jvmId' },
+        $interval: interval,
+        dateFilter: dateFilterStub,
+        DATE_FORMAT: dateFormatSpy,
+        jvmGcService: svc,
+        sanitizeService: sanitizeService,
+        $translate: translate
+      });
+      ctrl.$onInit();
     });
-
-    ctrl = $controller('JvmGcController', {
-      $stateParams: { jvmId: 'foo-jvmId' },
-      $interval: interval,
-      dateFilter: dateFilterStub,
-      DATE_FORMAT: dateFormatSpy,
-      jvmGcService: svc,
-      sanitizeService: sanitizeService,
-      $translate: translate
-    });
-    ctrl.$onInit();
-  }));
+  });
 
   it('should exist', () => {
     should.exist(ctrl);

@@ -26,11 +26,14 @@
  */
 
 import controllerModule from './about.controller.js';
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
 
 describe('AboutController', () => {
 
   let ctrl, authSvc;
   beforeEach(() => {
+    angular.mock.module(servicesModule);
+    initServices();
     angular.mock.module(controllerModule);
     angular.mock.inject($controller => {
       'ngInject';

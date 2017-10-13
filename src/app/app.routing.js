@@ -79,4 +79,4 @@ function transitionHook ($q, $transitions, $state, authService) {
 appRouter.run(transitionHook);
 export default appRouter.name;
 
-export { errorRouter, errorRouting, transitionHook };
+export { defaultState, errorRouter, errorRouting, transitionHook };

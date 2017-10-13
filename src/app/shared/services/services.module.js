@@ -35,5 +35,10 @@ export default angular
   ])
   .name;
 
-let req = require.context('./', true, /\.service\.js/);
-req.keys().map(req);
+export function init () {
+  let req = require.context('./', true, /\.service\.js/);
+  req.keys().map(key => {
+    let mod = req(key);
+    mod.init();
+  });
+}

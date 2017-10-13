@@ -25,55 +25,21 @@
  * exception statement from your version.
  */
 
-import {config} from './components/auth/auth.module.js';
+import { NgModule } from "@angular/core";
+import { ServicesModule } from "../services/services.module";
 
-describe('AppModule', () => {
+import { ExtractClassPipe } from "./extract-class.pipe";
+import { FormatBytesPipe } from "./format-bytes.pipe";
 
-  beforeEach(angular.mock.module('appModule'));
-
-  let state;
-  beforeEach(angular.mock.module($provide => {
-    'ngInject';
-
-    state = {
-      go: sinon.spy(),
-      href: sinon.spy(),
-      current: {
-        name: 'fooState'
-      },
-      params: {}
-    };
-
-    $provide.value('$state', state);
-  }));
-
-  // this is actually provided by the auth.module pseudo-module - see auth.module.spec.js
-  describe('auth bootstrap', () => {
-
-    let svc;
-    beforeEach(() => {
-      let mockKeycloakProvider = require('./components/auth/keycloak.stub.js');
-      config('production', () => {}, mockKeycloakProvider());
-
-      inject(authService => {
-        'ngInject';
-        svc = authService;
-      });
-    });
-
-    it('should provide an authService', () => {
-      should.exist(svc);
-
-      svc.should.have.property('status');
-      svc.should.have.property('login');
-      svc.should.have.property('logout');
-      svc.should.have.property('refresh');
-
-      svc.status.should.be.a.Function();
-      svc.login.should.be.a.Function();
-      svc.logout.should.be.a.Function();
-      svc.refresh.should.be.a.Function();
-    });
-  });
-
-});
+@NgModule({
+  declarations: [
+    ExtractClassPipe,
+    FormatBytesPipe,
+  ],
+  exports: [
+    ExtractClassPipe,
+    FormatBytesPipe,
+  ],
+  imports: [ ServicesModule ],
+})
+export class FiltersModule {}

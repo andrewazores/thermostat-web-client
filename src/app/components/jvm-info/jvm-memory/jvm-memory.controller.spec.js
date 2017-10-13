@@ -25,46 +25,54 @@
  * exception statement from your version.
  */
 
+import controllerModule from './jvm-memory.controller.js';
+import filtersModule from 'shared/filters/filters.module.js';
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
+
 describe('JvmMemory controller', () => {
 
-  beforeEach(angular.mock.module('jvmMemory.controller'));
-
   let interval, memSvc, scaleSvc, promise, ctrl, sanitizeSvc;
-  beforeEach(inject($controller => {
-    'ngInject';
+  beforeEach(() => {
+    angular.mock.module(filtersModule);
+    angular.mock.module(servicesModule);
+    initServices();
+    angular.mock.module(controllerModule);
+    angular.mock.inject($controller => {
+      'ngInject';
 
-    interval = sinon.stub().returns('interval-sentinel');
-    interval.cancel = sinon.spy();
+      interval = sinon.stub().returns('interval-sentinel');
+      interval.cancel = sinon.spy();
 
-    promise = {
-      then: sinon.spy()
-    };
-    memSvc = {
-      getJvmMemory: sinon.stub().returns(promise)
-    };
-    scaleSvc = {
-      format: sinon.stub().returns({
-        scale: 1024 * 1024,
-        unit: 'MiB'
-      })
-    };
+      promise = {
+        then: sinon.spy()
+      };
+      memSvc = {
+        getJvmMemory: sinon.stub().returns(promise)
+      };
+      scaleSvc = {
+        format: sinon.stub().returns({
+          scale: 1024 * 1024,
+          unit: 'MiB'
+        })
+      };
 
-    sanitizeSvc = {
-      sanitize: sinon.stub().returns('sanitized-mock')
-    };
+      sanitizeSvc = {
+        sanitize: sinon.stub().returns('sanitized-mock')
+      };
 
-    ctrl = $controller('JvmMemoryController', {
-      $stateParams: { jvmId: 'foo-jvmId' },
-      $interval: interval,
-      jvmMemoryService: memSvc,
-      scaleBytesService: scaleSvc,
-      sanitizeService: sanitizeSvc
+      ctrl = $controller('JvmMemoryController', {
+        $stateParams: { jvmId: 'foo-jvmId' },
+        $interval: interval,
+        jvmMemoryService: memSvc,
+        scaleBytesService: scaleSvc,
+        sanitizeService: sanitizeSvc
+      });
+      ctrl.$onInit();
+
+      sinon.spy(ctrl, '_update');
+      sinon.spy(ctrl, '_stop');
     });
-    ctrl.$onInit();
-
-    sinon.spy(ctrl, '_update');
-    sinon.spy(ctrl, '_stop');
-  }));
+  });
 
   afterEach(() => {
     ctrl._update.restore();

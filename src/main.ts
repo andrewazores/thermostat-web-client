@@ -25,21 +25,16 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
+import './rx-subject.stub.ts';
+import 'zone.js';
+import 'reflect-metadata';
 
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
-}
+import { UpgradeModule } from '@angular/upgrade/static';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from './app/app.module';
 
-export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
-  .name;
+import { DetermineGatewayUrl } from './gateway-url-helper.js';
+
+DetermineGatewayUrl().then(() => {
+  platformBrowserDynamic().bootstrapModule(AppModule);
+});

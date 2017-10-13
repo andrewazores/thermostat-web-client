@@ -27,7 +27,7 @@
 
 import * as url from 'url';
 
-export function cmdChanUrl (gatewayUrl) {
+export function cmdChanUrl (gatewayUrl = window.tmsGatewayUrl) {
   if (!gatewayUrl) {
     throw new Error('gatewayUrl could not be determined');
   }
@@ -43,10 +43,15 @@ export function cmdChanUrl (gatewayUrl) {
   return url.format(parsed);
 };
 
-export default angular
-  .module('configModule', [])
-  .constant('environment', process.env.NODE_ENV)
-  .constant('debug', process.env.DEBUG)
-  .value('gatewayUrl', window.tmsGatewayUrl)
-  .value('commandChannelUrl', cmdChanUrl(window.tmsGatewayUrl))
-  .name;
+let modName = 'configModule';
+let mod = angular.module(modName, []);
+export default modName;
+
+/* istanbul ignore next */
+export function init () {
+  mod
+    .constant('environment', process.env.NODE_ENV)
+    .constant('debug', process.env.DEBUG)
+    .value('gatewayUrl', window.tmsGatewayUrl)
+    .factory('commandChannelUrl', cmdChanUrl);
+}

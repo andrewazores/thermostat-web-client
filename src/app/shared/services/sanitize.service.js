@@ -27,7 +27,7 @@
 
 import servicesModule from 'shared/services/services.module.js';
 
-class SanitizeService {
+export class SanitizeService {
   sanitize (str) {
     if (!str) {
       return;
@@ -41,6 +41,8 @@ class SanitizeService {
   }
 }
 
-angular
-  .module(servicesModule)
-  .service('sanitizeService', SanitizeService);
+export function init () {
+  angular
+    .module(servicesModule)
+    .service('sanitizeService', SanitizeService);
+}

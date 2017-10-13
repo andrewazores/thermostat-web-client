@@ -27,96 +27,11 @@
 
 describe('ConfigModule', () => {
 
-  beforeEach(() => {
-    angular.mock.module('configModule');
-  });
-
-  describe('environment', () => {
-    let _environment;
-    beforeEach(inject(environment => {
-      'ngInject';
-
-      _environment = environment;
-    }));
-
-    it('should be exported', () => {
-      should.exist(_environment);
-    });
-
-    it('should be readonly', done => {
-      try {
-        _environment.foo = 'bar';
-      } catch (e) {
-        e.message.should.equal('Attempted to assign to readonly property.');
-        done();
-      }
-    });
-  });
-
-  describe('debug', () => {
-    let _debug;
-    beforeEach(inject(debug => {
-      'ngInject';
-
-      _debug = debug;
-    }));
-
-    it('should be exported', () => {
-      should.exist(_debug);
-    });
-
-    it('should be readonly', done => {
-      try {
-        _debug.foo = 'bar';
-      } catch (e) {
-        e.message.should.equal('Attempted to assign to readonly property.');
-        done();
-      }
-    });
-  });
-
-  describe('gatewayUrl', () => {
-    let _gatewayUrl;
-    beforeEach(inject(gatewayUrl => {
-      'ngInject';
-
-      _gatewayUrl = gatewayUrl;
-    }));
-
-    it('should be exported', () => {
-      should.exist(_gatewayUrl);
-    });
-
-    it('should be readonly', done => {
-      try {
-        _gatewayUrl.foo = 'bar';
-      } catch (e) {
-        e.message.should.equal('Attempted to assign to readonly property.');
-        done();
-      }
-    });
-  });
-
   describe('commandChannelUrl', () => {
     let fn = require('./config.module.js').cmdChanUrl;
-    let _commandChannelUrl;
-    beforeEach(inject(commandChannelUrl => {
-      'ngInject';
 
-      _commandChannelUrl = commandChannelUrl;
-    }));
-
-    it('should be exported', () => {
-      should.exist(_commandChannelUrl);
-    });
-
-    it('should be readonly', done => {
-      try {
-        _commandChannelUrl.foo = 'bar';
-      } catch (e) {
-        e.message.should.equal('Attempted to assign to readonly property.');
-        done();
-      }
+    it('should use window.tmsGatewayUrl if none specified', () => {
+      fn().should.equal('ws://localhost:8888/');
     });
 
     it('should yield ws:// URL when gateway URL is http://', () => {
@@ -127,9 +42,9 @@ describe('ConfigModule', () => {
       fn('https://example.com:8888/').should.equal('wss://example.com:8888/');
     });
 
-    it('should throw error when gateway URL is undefined', done => {
+    it('should throw error when gateway URL is falsy', done => {
       try {
-        fn(undefined);
+        fn(null);
       } catch (e) {
         e.message.should.equal('gatewayUrl could not be determined');
         done();

@@ -39,8 +39,7 @@ import 'angular-patternfly/node_modules/patternfly/node_modules/datatables.net-s
 import 'angularjs-datatables/dist/angular-datatables.min.js';
 import 'angularjs-datatables/dist/plugins/select/angular-datatables.select.min.js';
 
-import {default as authModule, config as authModBootstrap} from 'components/auth/auth.module.js';
-import authInterceptorFactory from './auth-interceptor.factory.js';
+import {default as authModule, config as authModSetup} from 'components/auth/auth.module.js';
 
 require.ensure([], () => {
   require('angular-patternfly/node_modules/datatables.net-dt/css/jquery.dataTables.css');
@@ -50,9 +49,16 @@ require.ensure([], () => {
   require('scss/app.scss');
 });
 
+const angApp = 'appModule';
+export default angApp;
+
+/* istanbul ignore next */
 function initializeApplication () {
+  require('shared/services/services.module.js').init();
+  require('shared/config/config.module.js').init();
+  let authInterceptorFactory = require('./auth-interceptor.factory.js').default;
   return angular
-    .module('appModule', [
+    .module(angApp, [
       'ui.router',
       'ui.bootstrap',
       'patternfly',
@@ -60,10 +66,10 @@ function initializeApplication () {
       'patternfly.table',
       angularTranslate,
       authModule,
+      authInterceptorFactory,
       // non-core modules
       require('./app.routing.js').default,
-      require('./app.controller.js').default,
-      authInterceptorFactory
+      require('./app-root.component.js').default
     ])
     .config($httpProvider => {
       'ngInject';
@@ -91,25 +97,9 @@ function initializeApplication () {
 }
 
 /* istanbul ignore next */
-if (window.tmsGatewayUrl) {
-  let appModule = initializeApplication();
-  authModBootstrap(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule])));
-} else {
-  $.get('/gatewayurl')
-    .done(res => {
-      window.tmsGatewayUrl = res.gatewayUrl;
-    })
-    .fail(() => {
-      let url = require('url');
-      let parsed = url.parse(window.location.href);
-      let gateway = {
-        protocol: parsed.protocol,
-        host: parsed.host
-      };
-      window.tmsGatewayUrl = url.format(gateway);
-    })
-    .always(() => {
-      let appModule = initializeApplication();
-      authModBootstrap(process.env.NODE_ENV, () => angular.element(() => angular.bootstrap(document, [appModule])));
-    });
+export function doInit () {
+  return new Promise((resolve, reject) => {
+    let appModule = initializeApplication();
+    authModSetup(process.env.NODE_ENV, () => resolve());
+  });
 }

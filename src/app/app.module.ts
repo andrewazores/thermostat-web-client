@@ -25,21 +25,44 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
+import * as angular from "angular";
+import { default as angApp, doInit } from "./ang-app.module.js";
 
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
+import {
+  NgModule,
+  Inject,
+  forwardRef
+} from "@angular/core";
+
+import { BrowserModule } from "@angular/platform-browser";
+import { HttpClientModule } from "@angular/common/http";
+import { UpgradeModule } from "@angular/upgrade/static";
+import { UpgradeAdapter } from "@angular/upgrade";
+
+import { ServicesModule } from "./shared/services/services.module";
+import { FiltersModule } from "./shared/filters/filters.module";
+
+const upgradeAdapter = new UpgradeAdapter(forwardRef(() => AppModule));
+@NgModule({
+  declarations: [],
+  imports: [
+    // Angular core modules
+    BrowserModule,
+    HttpClientModule,
+    UpgradeModule,
+
+    ServicesModule,
+    FiltersModule,
+  ]
+})
+export class AppModule {
+
+  constructor(@Inject(UpgradeModule) private upgradeModule: UpgradeModule) {}
+
+  public ngDoBootstrap() {
+    doInit().then(() => {
+      this.upgradeModule.bootstrap(document.body, [angApp], { strictDi: true });
+    });
+  }
+
 }
-
-export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
-  .name;

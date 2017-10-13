@@ -144,6 +144,14 @@ describe('ErrorRouting', () => {
         fn({ name: 'login' }).should.be.false();
       });
 
+      it('should match non-auth\'d transitions', () => {
+        authSvc.status = () => false;
+        transitions.onBefore.args[1][0].should.have.ownProperty('to');
+        let fn = transitions.onBefore.args[1][0].to;
+        fn.should.be.a.Function();
+        fn({ name: 'foo' }).should.be.true();
+      });
+
       it('should provide a transition function', () => {
         transitions.onBefore.args[1][1].should.be.a.Function();
       });
@@ -174,6 +182,15 @@ describe('ErrorRouting', () => {
 
         authSvc.goToLogin.should.be.calledOnce();
       });
+    });
+  });
+
+  describe('defaultState', () => {
+    it('should add a \'default\' state which redirects to jvmList', () => {
+      stateProvider.state.should.be.calledOnce();
+      module.defaultState(stateProvider);
+      stateProvider.state.should.be.calledTwice();
+      stateProvider.state.secondCall.should.be.calledWithMatch('default', { redirectTo: 'jvmList' });
     });
   });
 

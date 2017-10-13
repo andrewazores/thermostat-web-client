@@ -25,21 +25,31 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
+import { NgModule } from "@angular/core";
 
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
-}
+import {
+  commandChannelServiceProvider,
+  extractClassServiceProvider,
+  localStorageServiceProvider,
+  metricToBigIntServiceProvider,
+  multichartServiceProvider,
+  sanitizeServiceProvider,
+  scaleBytesServiceProvider,
+  webSocketFactoryProvider,
+} from "./ajs-upgraded-providers";
 
-export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
-  .name;
+@NgModule({
+  declarations: [],
+  imports: [],
+  providers: [
+    commandChannelServiceProvider,
+    extractClassServiceProvider,
+    localStorageServiceProvider,
+    metricToBigIntServiceProvider,
+    multichartServiceProvider,
+    sanitizeServiceProvider,
+    scaleBytesServiceProvider,
+    webSocketFactoryProvider,
+  ],
+})
+export class ServicesModule {}

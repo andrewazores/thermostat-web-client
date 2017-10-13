@@ -25,21 +25,27 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
+import * as sinon from 'sinon';
 
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
-}
+import { ExtractClassPipe } from './extract-class.pipe';
+import { ExtractClassService } from "../services/extract-class.service";
 
-export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
-  .name;
+describe('ExtractClassPipe', () => {
+
+  let pipe: ExtractClassPipe;
+  let svc: ExtractClassService;
+  beforeEach(() => {
+    svc = {
+      extract: sinon.stub().returns('svc-result')
+    };
+    pipe = new ExtractClassPipe(svc);
+  });
+
+  it('should delegate to service', () => {
+    svc.extract.should.not.be.called();
+    pipe.transform('foo', true).should.equal('svc-result');
+    svc.extract.should.be.calledOnce();
+    svc.extract.should.be.calledWith('foo', true);
+  });
+
+});

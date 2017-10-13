@@ -25,21 +25,8 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
+export type Metric = IMongoLong;
 
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
+export interface IMongoLong {
+  $numberLong: string;
 }
-
-export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
-  .name;

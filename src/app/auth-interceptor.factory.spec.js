@@ -25,10 +25,13 @@
  * exception statement from your version.
  */
 
+import factoryModule from './auth-interceptor.factory.js';
+
 describe('authInterceptorFactory', () => {
 
   let authSvc, refreshPromise, interceptor;
   beforeEach(() => {
+    angular.mock.module(factoryModule);
     angular.mock.module('authModule', $provide => {
       'ngInject';
 

@@ -25,7 +25,10 @@
  * exception statement from your version.
  */
 
-describe('AppController', () => {
+import { default as authModule, config } from './components/auth/auth.module.js';
+import controllerModule from './app-root.controller.js';
+
+describe('AppRootController', () => {
 
   beforeEach(angular.mock.module($provide => {
     'ngInject';
@@ -41,7 +44,11 @@ describe('AppController', () => {
     $provide.value('localStorage', localStorage);
   }));
 
-  beforeEach(angular.mock.module('AppController'));
+  beforeEach(() => {
+    angular.mock.module(authModule);
+    config();
+    angular.mock.module(controllerModule);
+  });
 
   ['testing', 'development', 'production'].forEach(env => {
     describe(env, () => {
@@ -64,7 +71,7 @@ describe('AppController', () => {
           )
         });
 
-        ctrl = $controller('AppController', {
+        ctrl = $controller('AppRootController', {
           environment: env,
           $scope: scope,
           authService: authService,
@@ -100,7 +107,7 @@ describe('AppController', () => {
         )
       });
 
-      ctrl = $controller('AppController', {
+      ctrl = $controller('AppRootController', {
         environment: 'testing',
         $scope: scope,
         authService: authService,
@@ -138,7 +145,7 @@ describe('AppController', () => {
         )
       });
 
-      ctrl = $controller('AppController', {
+      ctrl = $controller('AppRootController', {
         $scope: scope,
         environment: 'testing',
         authService: authService,

@@ -25,21 +25,22 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
+import {
+  Inject,
+  Pipe,
+  PipeTransform,
+} from "@angular/core";
+import { ScaleBytesService } from "../services/scale-bytes.service";
+import { Metric } from "./metric";
 
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
+@Pipe({
+  name: "formatBytes",
+})
+export class FormatBytesPipe implements PipeTransform {
+  constructor(@Inject(ScaleBytesService) private svc: ScaleBytesService) {}
+
+  public transform(value: Metric): string {
+    const scale = this.svc.format(value);
+    return scale.result + " " + scale.unit;
+  }
 }
-
-export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
-  .name;

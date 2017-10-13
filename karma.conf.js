@@ -25,11 +25,12 @@
  * exception statement from your version.
  */
 
+var webpackConfig = require('./webpack.config');
 module.exports = function (config) {
   config.set({
     basePath: '',
 
-    frameworks: ['mocha', 'should-sinon', 'sinon', 'should'],
+    frameworks: ['mocha', 'should-sinon', 'sinon', 'should', 'karma-typescript'],
 
     files: [
       'src/app/components/auth/keycloak.stub.js',
@@ -41,7 +42,7 @@ module.exports = function (config) {
       'src/tests.webpack.js': ['webpack', 'sourcemap']
     },
 
-    reporters: ['mocha', 'beep', 'junit', 'coverage-istanbul'],
+    reporters: ['mocha', 'beep', 'junit', 'coverage-istanbul', 'karma-typescript'],
 
     junitReporter: {
       outputDir: 'test-reports'
@@ -66,7 +67,11 @@ module.exports = function (config) {
 
     browsers: ['PhantomJS'],
 
-    webpack: require('./webpack.config'),
+    webpack: {
+      module: webpackConfig.module,
+      resolve: webpackConfig.resolve,
+      devtool: webpackConfig.devtool
+    },
 
     webpackMiddleware: {
       noInfo: 'errors-only'

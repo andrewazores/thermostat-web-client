@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-import servicesModule from 'shared/services/services.module.js';
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
 
 describe('localStorage', () => {
 
@@ -47,6 +47,7 @@ describe('localStorage', () => {
     });
 
     angular.mock.module(servicesModule);
+    initServices();
 
     angular.mock.inject(localStorage => {
       'ngInject';

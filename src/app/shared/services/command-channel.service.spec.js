@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-import servicesModule from 'shared/services/services.module.js';
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
 import configModule from 'shared/config/config.module.js';
 
 describe('CommandChannelService', () => {
@@ -66,6 +66,7 @@ describe('CommandChannelService', () => {
       $provide.constant('commandChannelUrl', 'ws://foo-host:1234');
     });
     angular.mock.module(servicesModule);
+    initServices();
     angular.mock.module($provide => {
       'ngInject';
       $provide.value('authService', authService);

@@ -25,21 +25,20 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
+import {
+  Inject,
+  Pipe,
+  PipeTransform,
+} from "@angular/core";
+import { ExtractClassService } from "../services/extract-class.service";
 
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
+@Pipe({
+  name: "extractClass",
+})
+export class ExtractClassPipe implements PipeTransform {
+  constructor(@Inject(ExtractClassService) private svc: ExtractClassService) {}
+
+  public transform(value: string, includePkg: boolean): string {
+    return this.svc.extract(value, includePkg);
+  }
 }
-
-export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
-  .name;

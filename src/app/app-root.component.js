@@ -25,21 +25,12 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
-
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
-}
+import controller from './app-root.controller.js';
 
 export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
+  .module('appRoot.component', [controller])
+  .component('appRoot', {
+    controller: 'AppRootController',
+    template: require('./app-root.html')
+  })
   .name;

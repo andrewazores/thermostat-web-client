@@ -25,12 +25,14 @@
  * exception statement from your version.
  */
 
+import controllerModule from './jvm-info.controller.js';
+
 describe('JvmInfoController', () => {
 
-  beforeEach(angular.mock.module('jvmInfo.controller'));
+  beforeEach(angular.mock.module(controllerModule));
 
   let state, jvmInfoService, killVmService, ctrl, infoPromise, killPromise, systemInfoService, systemInfoPromise, translate;
-  beforeEach(inject($controller => {
+  beforeEach(angular.mock.inject($controller => {
     'ngInject';
 
     state = { go: sinon.spy() };

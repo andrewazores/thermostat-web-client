@@ -41,7 +41,7 @@ module.exports = function () {
   var config = {};
 
   config.entry = isTest ? void 0 : {
-    app: './src/app/app.module.js'
+    app: './src/main.ts'
   };
 
   config.resolve = {
@@ -59,11 +59,12 @@ module.exports = function () {
       'scss': 'assets/scss',
       'shared': path.resolve(__dirname, 'src', 'app', 'shared'),
       'templates': 'shared/templates'
-    }
+    },
+    extensions: [ '.ts', '.js' ]
   };
 
   config.output = isTest ? {} : {
-    path: __dirname + '/dist',
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
     chunkFilename: '[name].bundle.js'
   };
@@ -80,6 +81,10 @@ module.exports = function () {
     rules: [{
       test: /\.js$/,
       loader: 'babel-loader',
+      exclude: /node_modules/
+    }, {
+      test: /\.ts$/,
+      use: 'ts-loader?silent=true',
       exclude: /node_modules/
     }, {
       test: /\.scss$/,
@@ -101,6 +106,15 @@ module.exports = function () {
       test: /^(?!.*\.spec\.js$).*\.js$/,
       include: __dirname + '/src/app/',
       loaders: ['istanbul-instrumenter-loader', 'babel-loader']
+    }, {
+      test: /^(?!.*\.spec\.ts$).*\.ts$/,
+      include: __dirname + '/src/app/',
+      exclude: /(node_modules|\.spec\.ts$)/,
+      loader: 'istanbul-instrumenter-loader',
+      enforce: 'post',
+      options: {
+        esModules: true
+      }
     }]
   };
 

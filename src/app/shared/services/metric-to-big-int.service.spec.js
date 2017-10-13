@@ -26,18 +26,20 @@
  */
 
 import big from 'big.js';
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
 
 describe('MetricToBigIntService', () => {
 
   let svc;
-
-  beforeEach(angular.mock.module('app.services'));
-
-  beforeEach(inject(metricToBigIntService => {
-    'ngInject';
-    svc = metricToBigIntService;
-    sinon.spy(svc, 'big');
-  }));
+  beforeEach(() => {
+    angular.mock.module(servicesModule);
+    initServices();
+    angular.mock.inject(metricToBigIntService => {
+      'ngInject';
+      svc = metricToBigIntService;
+      sinon.spy(svc, 'big');
+    });
+  });
 
   afterEach(() => {
     svc.big.restore();

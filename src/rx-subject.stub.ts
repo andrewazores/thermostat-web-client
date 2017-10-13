@@ -25,21 +25,11 @@
  * exception statement from your version.
  */
 
-import filterModule from './filters.module.js';
+import { Operator } from 'rxjs/Operator';
+import { Observable } from 'rxjs/Observable';
 
-/**
- * Takes an integer and returns it as a string with 0 decimal places.
- * @param {Number}
- * @returns {String}
- */
-export function filterProvider () {
-  return val => {
-    val = val || 0;
-    return val.toFixed();
-  };
+declare module 'rxjs/Subject' {
+  interface Subject<T> {
+    lift<R>(operator: Operator<T, R>): Observable<R>;
+  }
 }
-
-export default angular
-  .module(filterModule)
-  .filter('bigIntToString', filterProvider)
-  .name;

@@ -25,9 +25,11 @@
  * exception statement from your version.
  */
 
+import controllerModule from './jvm-list.controller.js';
+
 describe('JvmListController', () => {
 
-  beforeEach(angular.mock.module('jvmList.controller'));
+  beforeEach(angular.mock.module(controllerModule));
 
   let rootScope, controller, jvmListSvc, systemInfoSvc, promise, location, state, timeout, translate;
 
@@ -76,7 +78,7 @@ describe('JvmListController', () => {
     };
   };
 
-  beforeEach(inject(($q, $rootScope, $controller) => {
+  beforeEach(angular.mock.inject(($q, $rootScope, $controller) => {
     'ngInject';
     rootScope = $rootScope;
     sinon.stub(angular, 'element').withArgs('#aliveOnlyState').returns({

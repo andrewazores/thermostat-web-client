@@ -28,7 +28,7 @@
 import servicesModule from './services.module.js';
 
 /* istanbul ignore next */
-class WebSocketFactory {
+export class WebSocketFactory {
   createSocket (connectUrl) {
     if ('WebSocket' in window) {
       return new WebSocket(connectUrl);
@@ -40,6 +40,8 @@ class WebSocketFactory {
   }
 }
 
-angular
-  .module(servicesModule)
-  .service('webSocketFactory', WebSocketFactory);
+export function init () {
+  angular
+    .module(servicesModule)
+    .service('webSocketFactory', WebSocketFactory);
+}
