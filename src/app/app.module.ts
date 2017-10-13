@@ -29,18 +29,18 @@ import * as angular from "angular";
 import { default as angApp, doInit } from "./ang-app.module.js";
 
 import {
-  NgModule,
+  forwardRef,
   Inject,
-  forwardRef
+  NgModule,
 } from "@angular/core";
 
-import { BrowserModule } from "@angular/platform-browser";
 import { HttpClientModule } from "@angular/common/http";
-import { UpgradeModule } from "@angular/upgrade/static";
+import { BrowserModule } from "@angular/platform-browser";
 import { UpgradeAdapter } from "@angular/upgrade";
+import { UpgradeModule } from "@angular/upgrade/static";
 
-import { ServicesModule } from "./shared/services/services.module";
 import { FiltersModule } from "./shared/filters/filters.module";
+import { ServicesModule } from "./shared/services/services.module";
 
 const upgradeAdapter = new UpgradeAdapter(forwardRef(() => AppModule));
 @NgModule({
@@ -53,7 +53,7 @@ const upgradeAdapter = new UpgradeAdapter(forwardRef(() => AppModule));
 
     ServicesModule,
     FiltersModule,
-  ]
+  ],
 })
 export class AppModule {
 
