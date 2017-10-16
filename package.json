@@ -16,6 +16,7 @@
     "@types/angular": "^1.6.32",
     "@types/big.js": "^3.2.0",
     "@types/core-js": "^0.9.43",
+    "@types/jquery": "^3.2.13",
     "@types/mocha": "^2.2.43",
     "@types/should": "^11.2.0",
     "@types/sinon": "^2.3.5",

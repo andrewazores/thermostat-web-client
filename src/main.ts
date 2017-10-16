@@ -25,15 +25,15 @@
  * exception statement from your version.
  */
 
-import './rx-subject.stub.ts';
-import 'zone.js';
-import 'reflect-metadata';
+import "./rx-subject.stub.ts";
+import "zone.js";
+import "reflect-metadata";
 
-import { UpgradeModule } from '@angular/upgrade/static';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { AppModule } from './app/app.module';
+import { UpgradeModule } from "@angular/upgrade/static";
+import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+import { AppModule } from "./app/app.module";
 
-import { DetermineGatewayUrl } from './gateway-url-helper.js';
+import { DetermineGatewayUrl } from "./gateway-url-helper";
 
 DetermineGatewayUrl().then(() => {
   platformBrowserDynamic().bootstrapModule(AppModule);

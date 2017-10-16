@@ -25,20 +25,22 @@
  * exception statement from your version.
  */
 
-export function DetermineGatewayUrl () {
-  return new Promise(resolve => {
-    $.get('/gatewayurl')
-      .done(res => {
-        window.tmsGatewayUrl = res.gatewayUrl;
+import * as $ from "jquery";
+
+export function DetermineGatewayUrl(): Promise<void> {
+  return new Promise<void>(resolve => {
+    $.get("/gatewayurl")
+      .done((res: any) => {
+        (<any>window).tmsGatewayUrl = res.gatewayUrl;
       })
       .fail(() => {
-        let url = require('url');
+        let url = require("url");
         let parsed = url.parse(window.location.href);
         let gateway = {
           protocol: parsed.protocol,
           host: parsed.host
         };
-        window.tmsGatewayUrl = url.format(gateway);
+        (<any>window).tmsGatewayUrl = url.format(gateway);
       })
       .always(() => resolve());
   });
