@@ -120,6 +120,14 @@ module.exports = function () {
 
   config.plugins = [];
 
+  // see https://github.com/angular/angular/issues/11580#issuecomment-327338189
+  config.plugins.push(
+    new webpack.ContextReplacementPlugin(
+      /(.+)?angular(\\|\/)core(.+)?/,
+      path.join(__dirname, 'src')
+    )
+  );
+
   config.plugins.push(
     new webpack.ProvidePlugin({
       $: 'jquery',
