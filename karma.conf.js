@@ -25,6 +25,8 @@
  * exception statement from your version.
  */
 
+var webpack = require('webpack');
+var path = require('path');
 var webpackConfig = require('./webpack.config');
 module.exports = function (config) {
   config.set({
@@ -82,7 +84,13 @@ module.exports = function (config) {
     webpack: {
       module: webpackConfig.module,
       resolve: webpackConfig.resolve,
-      devtool: webpackConfig.devtool
+      devtool: webpackConfig.devtool,
+      plugins: [
+        new webpack.ContextReplacementPlugin(
+          /(.+)?angular(\\|\/)core(.+)?/,
+          path.join(__dirname, 'src')
+        )
+      ]
     },
 
     webpackMiddleware: {
