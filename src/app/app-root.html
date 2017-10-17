@@ -5,7 +5,7 @@
     <nav class="navbar navbar-pf-vertical">
 
       <div class="navbar-header">
-        <a ui-sref="landing" class="navbar-brand">
+        <a ui-sref="default" class="clickable navbar-brand">
           <img class="navbar-brand-icon" src="~images/thermostat_logo_white_600px.png" height="57" alt="Thermostat"/>
         </a>
         <p hidden class="navbar-text label label-info infotip">{{$ctrl.env}}</p>
@@ -46,7 +46,7 @@
          update-active-items-on-click="true"
          >
          <div class="navbar-header">
-           <a ui-sref="landing" class="navbar-brand">
+           <a ui-sref="default" class="clickable navbar-brand">
              <img id="brandLogoImg" class="navbar-brand-icon" src="~images/thermostat_logo_white_600px.png" height="57" alt="Thermostat"/>
            </a>
         <p hidden id="envHeader" class="navbar-text label label-info infotip">{{$ctrl.env}}</p>
@@ -76,7 +76,7 @@
                </a>
                <ul class="dropdown-menu" aria-labelledby="userMenu">
                  <li><a ui-sref="user-prefs" translate>navbar.USER_PREFS</a></li>
-                 <li><a id="logoutButton" ng-click="$ctrl.logout()" style="cursor: pointer; cursor: hand" translate>navbar.LOGOUT</a></li>
+                 <li><a id="logoutButton" ng-click="$ctrl.logout()" class="clickable" translate>navbar.LOGOUT</a></li>
                </ul>
              </li>
 
