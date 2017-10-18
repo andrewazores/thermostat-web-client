@@ -25,161 +25,163 @@
  * exception statement from your version.
  */
 
+import controllerModule from './jvm-list.controller.js';
+
 describe('JvmListController', () => {
 
-  beforeEach(angular.mock.module('jvmList.controller'));
+  beforeEach(angular.mock.module(controllerModule));
 
-  let ctrl, svc, scope, promise, location, timeout, anchorScroll, translate;
-  beforeEach(inject(($q, $rootScope, $controller) => {
+  let rootScope, controller, jvmListSvc, systemInfoSvc, promise, location, state, timeout, translate;
+
+  let fooItem = {
+    hostname: 'foo',
+    systemId: 'foo',
+    timeCreated: { $numberLong: '1500000000000' },
+    jvms: [{
+      mainClass: 'fooClass'
+    }]
+  };
+
+  let barbazItem = {
+    hostname: 'barbaz',
+    systemId: 'barbaz',
+    timeCreated: { $numberLong: '1400000000000' },
+    jvms: [
+      {
+        mainClass: 'barClass'
+      },
+      {
+        mainClass: 'bazClass'
+      }
+    ]
+  };
+
+  let filters = [
+    {
+      id: 'hostname',
+      title: 'Hostname',
+      value: 'foo'
+    },
+    {
+      id: 'jvmName',
+      title: 'JVM MainClass Name',
+      value: 'fooClass'
+    }
+  ];
+
+  let generateSortConfig = (ascending, id) => {
+    return {
+      isAscending: ascending,
+      currentField: {
+        id: id
+      }
+    };
+  };
+
+  beforeEach(angular.mock.inject(($q, $rootScope, $controller) => {
     'ngInject';
+    rootScope = $rootScope;
     sinon.stub(angular, 'element').withArgs('#aliveOnlyState').returns({
       bootstrapSwitch: sinon.spy(),
       on: sinon.spy()
     });
-    scope = $rootScope;
     promise = $q.defer();
     location = {
-      hash: () => ''
+      hash: sinon.stub().returns('')
+    };
+    state = {
+      go: sinon.spy()
     };
     timeout = sinon.spy();
-    anchorScroll = sinon.spy();
     translate = sinon.stub().returns({
-      then: sinon.stub().yields()
+      then: sinon.stub().yields({})
     });
 
-    svc = {
+    jvmListSvc = {
       getSystems: sinon.stub().returns(promise.promise)
     };
-    ctrl = $controller('JvmListController', {
-      jvmListService: svc,
+    systemInfoSvc = {
+      getSystemInfo: sinon.stub().returns(promise.promise)
+    };
+    controller = $controller('JvmListController', {
+      jvmListService: jvmListSvc,
+      systemInfoService: systemInfoSvc,
       $location: location,
-      $scope: scope,
+      $state: state,
       $timeout: timeout,
-      $anchorScroll: anchorScroll,
       $translate: translate
     });
-    sinon.spy(ctrl, 'onload');
+    controller.$onInit();
+    sinon.spy(controller, 'applyFilters');
+    sinon.spy(controller, 'changeLocationHash');
+    sinon.spy(controller, 'compareFn');
+    sinon.spy(controller, 'matchesFilter');
+    sinon.spy(controller, 'matchesFilters');
+    sinon.spy(controller, 'sortItems');
+    sinon.spy(controller.items, 'sort');
   }));
 
   afterEach(() => {
-    ctrl.onload.restore();
     angular.element.restore();
   });
 
   it('should exist', () => {
-    should.exist(ctrl);
+    should.exist(controller);
   });
 
-  it('should set a title', () => {
-    ctrl.title.should.equal('JVM Listing');
-  });
-
-  describe('loadData', () => {
-    it('should set JVMs list and systemsOpen when service resolves', done => {
-      let data = {
-        response: [
-          {
-            systemId: 'foo'
-          },
-          {
-            systemId: 'bar'
-          }
-        ]
-      };
-      promise.resolve({ data: data });
-      scope.$apply();
-      ctrl.should.have.ownProperty('systems');
-      ctrl.systems.should.deepEqual(data.response);
-      ctrl.showErr.should.equal(false);
-      ctrl.systemsOpen.should.deepEqual({
-        foo: false,
-        bar: false
-      });
-      ctrl.onload.should.be.calledOnce();
-      done();
-    });
-
-    it('should set systemsOpen to true and anchorScroll if corresponding hash provided', done => {
-      let data = {
-        response: [
-          {
-            systemId: 'foo'
-          },
-          {
-            systemId: 'bar'
-          }
-        ]
-      };
-      location.hash = () => 'foo';
-      promise.resolve({ data: data });
-      scope.$apply();
-      ctrl.systemsOpen.should.deepEqual({
-        foo: true,
-        bar: false
-      });
-      ctrl.onload.should.be.calledOnce();
-      done();
-    });
-
-    it('should set systemsOpen to false for multiple results with no hash', done => {
-      let data = {
-        response: [
-          {
-            systemId: 'foo'
-          },
-          {
-            systemId: 'bar'
-          }
-        ]
-      };
-      promise.resolve({ data: data });
-      scope.$apply();
-      ctrl.systemsOpen.should.deepEqual({
-        foo: false,
-        bar: false
-      });
-      ctrl.onload.should.be.calledOnce();
-      done();
-    });
-
-    it('should set systemsOpen to true for singleton result', done => {
-      let data = {
-        response: [
-          {
-            systemId: 'foo'
-          }
-        ]
-      };
-      promise.resolve({ data: data });
-      scope.$apply();
-      ctrl.systemsOpen.should.deepEqual({
-        foo: true
-      });
-      ctrl.onload.should.be.calledOnce();
-      done();
-    });
-
-    it('should set error flag when service rejects', done => {
-      promise.reject();
-      scope.$apply();
-      ctrl.should.have.ownProperty('showErr');
-      ctrl.showErr.should.equal(true);
-      done();
+  describe('listConfig', () => {
+    it('should use a fn (changeLocationHash) for onClick attribute', () => {
+      let fn = controller.listConfig.onClick;
+      fn.should.be.a.Function();
+      fn('');
+      controller.changeLocationHash.should.be.calledOnce();
     });
   });
 
-  describe('onload', () => {
-    it('should call timeout with argument of anchorScroll', () => {
-      timeout.reset();
-      ctrl.onload();
-      timeout.should.be.calledWith(anchorScroll);
+  describe('jvmConfig', () => {
+    it('should navigate to state on click', () => {
+      state.go.should.not.be.called();
+      let fn = controller.jvmConfig.onClick;
+      fn.should.be.a.Function();
+      fn({
+        systemId: 'foo-systemId',
+        jvmId: 'foo-jvmId'
+      });
+      state.go.should.be.calledOnce();
+      state.go.should.be.calledWith('jvmInfo', sinon.match({ systemId: 'foo-systemId', jvmId: 'foo-jvmId' }));
     });
+  });
+
+  describe('changeLocationHash', () => {
+    it('should add system hostname to url when opened', () => {
+      let prevLocationHash = '';
+      controller.systemsOpen[fooItem.systemId] = false;
+      let result = controller.changeLocationHash(fooItem, prevLocationHash);
+      result.should.equal(fooItem.hostname);
+    });
+
+    it('should append system hostname if more than one open', () => {
+      let prevLocationHash = 'foo';
+      controller.systemsOpen[fooItem.systemId] = true;
+      let result = controller.changeLocationHash(barbazItem, prevLocationHash);
+      result.should.equal(fooItem.hostname + '+' + barbazItem.hostname);
+    });
+
+    it('should rebuild location hashes when list-view rows are closed', () => {
+      let prevLocationHash = 'foo+bar+baz';
+      controller.systemsOpen.foo = true;
+      controller.systemsOpen.bar = true;
+      controller.systemsOpen.baz = true;
+      let result = controller.changeLocationHash(fooItem, prevLocationHash);
+      result.should.equal('bar+baz');
+    });
+
   });
 
   describe('aliveOnly', () => {
     it('should default to true', () => {
-      ctrl.should.have.ownProperty('aliveOnly');
-      ctrl.aliveOnly.should.equal(true);
+      controller.should.have.ownProperty('aliveOnly');
+      controller.aliveOnly.should.equal(true);
     });
 
     it('should be bound to aliveOnlyState', () => {
@@ -195,14 +197,246 @@ describe('JvmListController', () => {
       stateWidget.on.should.be.calledOnce();
       stateWidget.on.should.be.calledWith('switchChange.bootstrapSwitch', sinon.match.func);
 
-      svc.getSystems.should.be.calledOnce();
-      svc.getSystems.firstCall.should.be.calledWith(true);
+      jvmListSvc.getSystems.should.be.calledOnce();
+      jvmListSvc.getSystems.firstCall.should.be.calledWith(true);
       let fn = stateWidget.on.args[0][1];
       fn(null, false);
-      ctrl.aliveOnly.should.equal(false);
-      svc.getSystems.should.be.calledTwice();
-      svc.getSystems.secondCall.should.be.calledWith(false);
+      controller.aliveOnly.should.equal(false);
+      jvmListSvc.getSystems.should.be.calledTwice();
+      jvmListSvc.getSystems.secondCall.should.be.calledWith(false);
       promise.resolve();
+    });
+  });
+
+  describe('loadData', () => {
+    it('should set JVMs list and systemsOpen when service resolves', done => {
+      let data = {
+        response: [
+          {
+            systemId: 'foo',
+            jvms: []
+          },
+          {
+            systemId: 'bar',
+            jvms: []
+          }
+        ]
+      };
+      promise.resolve({ data: data });
+      rootScope.$apply();
+      controller.should.have.ownProperty('systems');
+      controller.systems.should.deepEqual(data.response);
+      controller.showErr.should.equal(false);
+      controller.systemsOpen.should.deepEqual({
+        foo: false,
+        bar: false
+      });
+      controller.listConfig.itemsAvailable.should.be.True();
+      done();
+    });
+
+    it('should set systemsOpen to false for multiple results with no hash', done => {
+      let data = {
+        response: [
+          {
+            systemId: 'foo',
+            jvms: []
+          },
+          {
+            systemId: 'bar',
+            jvms: []
+          }
+        ]
+      };
+      promise.resolve({ data: data });
+      rootScope.$apply();
+      controller.systemsOpen.should.deepEqual({
+        foo: false,
+        bar: false
+      });
+      controller.listConfig.itemsAvailable.should.be.True();
+      done();
+    });
+
+    it('should set systemsOpen to true for singleton result', done => {
+      let data = {
+        response: [
+          {
+            systemId: 'foo',
+            jvms: []
+          }
+        ]
+      };
+      promise.resolve({ data: data });
+      rootScope.$apply();
+      controller.systemsOpen.should.deepEqual({
+        foo: true
+      });
+      controller.listConfig.itemsAvailable.should.be.True();
+      done();
+    });
+
+    it('should set error flag when service rejects', done => {
+      promise.reject();
+      rootScope.$apply();
+      controller.should.have.ownProperty('showErr');
+      controller.showErr.should.equal(true);
+      controller.listConfig.itemsAvailable.should.be.False();
+      done();
+    });
+
+    it('should append systemId to jvm items', done => {
+      let data = {
+        response: [
+          {
+            systemId: 'foo',
+            jvms: [{}]
+          }
+        ]
+      };
+      promise.resolve({ data: data });
+      rootScope.$apply();
+      controller.allItems[0].jvms[0].should.have.ownProperty('systemId');
+      controller.allItems[0].jvms[0].systemId.should.equal('foo');
+      controller.listConfig.itemsAvailable.should.be.True();
+      done();
+    });
+  });
+
+  describe('constructToolbarSettings', () => {
+    it('should use a function for filterConfig.onFilterChange', () => {
+      controller.items.length = 2;
+      let fn = controller.filterConfig.onFilterChange;
+      fn.should.be.a.Function();
+      let filter = {
+        id: 'hostname',
+        title: 'Hostname',
+        value: 'foobar'
+      };
+      fn(filter);
+      controller.applyFilters.should.be.calledOnce();
+      controller.toolbarConfig.filterConfig.resultsCount.should.equal(2);
+    });
+
+    it('should use fn sortItems() for sortConfig.onSortChange', () => {
+      let fn = controller.sortConfig.onSortChange;
+      fn.should.be.a.Function();
+      fn();
+      controller.sortItems.should.be.calledOnce();
+    });
+  });
+
+  describe('Filter and Sorting helper functions', () => {
+    it('matchesFilter should match hostnames', () => {
+      let filter = {
+        id: 'hostname',
+        title: 'Hostname',
+        value: 'foo'
+      };
+
+      controller.matchesFilter(fooItem, filter).should.equal(true);
+
+      filter.value = 'bar';
+      controller.matchesFilter(fooItem, filter).should.equal(false);
+
+      filter = {
+        id: 'jvmName',
+        title: 'JVM MainClass Name',
+        value: 'fooClass'
+      };
+      controller.matchesFilter(fooItem, filter).should.equal(true);
+
+      filter.value = 'barClass';
+      controller.matchesFilter(fooItem, filter).should.equal(false);
+    });
+
+    it('matchesFilter should match JVM mainclass names', () => {
+      let filter = {
+        id: 'jvmName',
+        title: 'JVM MainClass Name',
+        value: 'fooClass'
+      };
+      controller.matchesFilter(fooItem, filter).should.equal(true);
+
+      filter.value = 'barClass';
+      controller.matchesFilter(fooItem, filter).should.equal(false);
+    });
+
+    it('matchesFilter should return false if an invalid filter is supplied', () => {
+      let filter = {
+        id: 'fakeId',
+        title: 'fakeTitle',
+        value: 'fakeValue'
+      };
+      controller.matchesFilter(fooItem, filter).should.equal(false);
+    });
+
+    it('matchesFilters should delegate matching to matchesFilter', () => {
+      controller.matchesFilters(fooItem, filters).should.equal(true);
+      controller.matchesFilter.should.be.calledTwice();
+    });
+
+    it('matchesFilters should be false if at least one filter returns false', () => {
+      controller.matchesFilters(barbazItem, filters).should.equal(false);
+    });
+
+    it('applyFilters should delegate filtering to matchesFilters', () => {
+      controller.allItems = [fooItem, barbazItem];
+      controller.applyFilters(filters);
+      controller.matchesFilters.should.be.calledTwice();
+      controller.items[0].should.equal(controller.allItems[0]);
+      controller.items.length.should.equal(1);
+    });
+
+    it('sortItems should sort the array using the compareFn', () => {
+      controller.sortConfig = generateSortConfig(true, 'hostname');
+      controller.items = [fooItem, barbazItem];
+      controller.sortItems();
+      controller.compareFn.should.be.calledOnce();
+    });
+
+    describe('compareFn', () => {
+      it('compareFn should compare hostnames', () => {
+        controller.sortConfig = generateSortConfig(true, 'name');
+        let result = controller.compareFn(fooItem, barbazItem);
+        result.should.equal(1);
+      });
+
+      it('compareFn should compare by timeCreated', () => {
+        controller.sortConfig = generateSortConfig(true, 'timeCreated');
+        let result = controller.compareFn(fooItem, barbazItem);
+        result.should.equal(1);
+
+        result = controller.compareFn(barbazItem, fooItem);
+        result.should.equal(-1);
+      });
+
+      it('compareFn should compare by numJvms', () => {
+        controller.sortConfig = generateSortConfig(true, 'numJvms');
+
+        let result = controller.compareFn(fooItem, barbazItem);
+        result.should.equal(-1);
+
+        result = controller.compareFn(barbazItem, fooItem);
+        result.should.equal(1);
+      });
+
+      it('compareFn should allow for descending order', () => {
+        controller.sortConfig = generateSortConfig(false, 'numJvms');
+        controller.sortConfig.currentField.id = 'numJvms';
+        let result = controller.compareFn(fooItem, barbazItem);
+        result.should.equal(1);
+
+        result = controller.compareFn(barbazItem, fooItem);
+        result.should.equal(-1);
+      });
+
+      it('compareFn should return 0 if an invalid field id is supplied', () => {
+        controller.sortConfig = generateSortConfig(true, 'numJvms');
+        controller.sortConfig.currentField.id = 'fakeId';
+        let result = controller.compareFn(fooItem, barbazItem);
+        result.should.equal(0);
+      });
     });
   });
 

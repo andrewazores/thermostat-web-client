@@ -25,19 +25,32 @@
  * exception statement from your version.
  */
 
+import * as url from 'url';
+
 export default class KeycloakAuthService {
 
   constructor (keycloak) {
     this.keycloak = keycloak;
   }
 
-  login (user, pass, success = angular.noop) {
-    this.keycloak.login();
-    success();
+  set rootScope (rootScope) {
+    this._rootScope = rootScope;
   }
 
-  logout () {
+  login () {
+    // no-op
+  }
+
+  goToLogin (promise) {
+    this.keycloak.login();
+    this._rootScope.$broadcast('userLoginChanged');
+    promise.resolve();
+  }
+
+  logout (callback = angular.noop) {
+    this._rootScope.$broadcast('userLoginChanged');
     this.keycloak.logout();
+    callback();
   }
 
   status () {
@@ -49,8 +62,18 @@ export default class KeycloakAuthService {
     return this.keycloak.updateToken(300);
   }
 
-  get token () {
-    return this.keycloak.token;
+  get authHeader () {
+    return 'Bearer ' + this.keycloak.token;
+  }
+
+  get username () {
+    return this.keycloak.idTokenParsed.preferred_username;
+  }
+
+  getCommandChannelUrl (baseUrl) {
+    let parsed = url.parse(baseUrl);
+    parsed.query = { access_token: this.keycloak.token };
+    return url.format(parsed);
   }
 
 }

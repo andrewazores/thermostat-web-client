@@ -25,17 +25,20 @@
  * exception statement from your version.
  */
 
-import servicesModule from 'shared/services/services.module.js';
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
 import configModule from 'shared/config/config.module.js';
 
 describe('CommandChannelService', () => {
 
-  let svc, scope, webSocketFactory, translate;
+  let svc, scope, authService, webSocketFactory, translate;
   beforeEach(() => {
     let addEventListener = sinon.spy();
     let removeEventListener = sinon.spy();
     let send = sinon.spy();
     let close = sinon.spy();
+    authService = {
+      getCommandChannelUrl: sinon.stub().returns('http://foo:bar@example.com:1234/?token=fakeToken')
+    };
     webSocketFactory = {
       addEventListener: addEventListener,
       removeEventListener: removeEventListener,
@@ -63,8 +66,10 @@ describe('CommandChannelService', () => {
       $provide.constant('commandChannelUrl', 'ws://foo-host:1234');
     });
     angular.mock.module(servicesModule);
+    initServices();
     angular.mock.module($provide => {
       'ngInject';
+      $provide.value('authService', authService);
       $provide.value('webSocketFactory', webSocketFactory);
       $provide.value('$translate', translate);
     });
@@ -72,7 +77,6 @@ describe('CommandChannelService', () => {
       'ngInject';
       scope = $rootScope;
       svc = commandChannelService;
-      svc.setCredentials('', '');
     });
   });
 
@@ -98,7 +102,7 @@ describe('CommandChannelService', () => {
   describe('sendMessage', () => {
     it('should connect to correct command channel URL', () => {
       svc.sendMessage('foo', 'bar');
-      webSocketFactory.createSocket.should.be.calledWith('ws://foo-host:1234/foo');
+      webSocketFactory.createSocket.should.be.calledWith('http://foo:bar@example.com:1234/foo?token=fakeToken');
       scope.$apply();
     });
 
@@ -181,18 +185,9 @@ describe('CommandChannelService', () => {
 
   });
 
-  describe('auth credentials', () => {
-    it('should connect to websocket with basic auth credentials', () => {
-      svc.setCredentials('fooUser', 'fooPass');
-      svc.sendMessage('foo', 'bar');
-      webSocketFactory.createSocket.should.be.calledWith('ws://fooUser:fooPass@foo-host:1234/foo');
-    });
-
-    it('should connect to websocket with basic auth credentials and empty password', () => {
-      svc.setCredentials('fooUser', '');
-      svc.sendMessage('foo', 'bar');
-      webSocketFactory.createSocket.should.be.calledWith('ws://fooUser@foo-host:1234/foo');
-    });
+  it('should connect to websocket with credentials from authService', () => {
+    svc.sendMessage('foo', 'bar');
+    webSocketFactory.createSocket.should.be.calledWith('http://foo:bar@example.com:1234/foo?token=fakeToken');
   });
 
   describe('responseCodes', () => {

@@ -30,20 +30,13 @@ function config ($stateProvider) {
 
   $stateProvider.state('jvmInfo.jvmGc', {
     url: '/garbage-collection',
-    controller: 'JvmGcController as ctrl',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => resolve(require('./jvm-gc.html'))
-        )
-      );
-    },
+    component: 'jvmGc',
     resolve: {
-      loadJvmGc: (loadJvmInfo, $q, $ocLazyLoad) => {
+      lazyLoad: ($q, $ocLazyLoad) => {
         'ngInject';
         return $q(resolve => {
-          require.ensure(['./jvm-gc.module.js'], () => {
-            let module = require('./jvm-gc.module.js');
+          require.ensure(['./jvm-gc.component.js'], () => {
+            let module = require('./jvm-gc.component.js');
             $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });

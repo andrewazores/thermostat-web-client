@@ -1,0 +1,5 @@
+systemNetwork:
+  DISPLAY_NAME_COLUMN_LABEL: Display Name
+  INTERFACE_NAME_COLUMN_LABEL: Interface Name
+  IPV4_COLUMN_LABEL: IPv4 Address
+  IPV6_COLUMN_LABEL: IPv6 Address

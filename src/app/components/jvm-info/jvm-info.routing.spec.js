@@ -55,24 +55,8 @@ describe('JvmInfoRouting', () => {
       args[1].url.should.equal('/jvm-info/{systemId}/{jvmId}');
     });
 
-    it('template provider should return jvm-info.html', done => {
-      let providerFn = args[1].templateProvider[1];
-      providerFn.should.be.a.Function();
-      providerFn(q);
-      q.should.be.calledOnce();
-
-      let deferred = q.args[0][0];
-      deferred.should.be.a.Function();
-
-      let resolve = sinon.stub().callsFake(val => {
-        val.should.equal(require('./jvm-info.html'));
-        done();
-      });
-      deferred(resolve);
-    });
-
-    it('resolve should load jvm-info module', done => {
-      let resolveFn = args[1].resolve.loadJvmInfo[2];
+    it('resolve should load jvm-info component', done => {
+      let resolveFn = args[1].resolve.lazyLoad[2];
       resolveFn.should.be.a.Function();
       resolveFn(q, ocLazyLoad);
       q.should.be.calledOnce();
@@ -81,33 +65,13 @@ describe('JvmInfoRouting', () => {
       deferred.should.be.a.Function();
 
       let resolve = sinon.stub().callsFake(val => {
-        let mod = require('./jvm-info.module.js');
+        let mod = require('./jvm-info.component.js');
         ocLazyLoad.load.should.be.calledWith({ name: mod.default });
         val.should.equal(mod);
         done();
       });
       deferred(resolve);
     });
-  });
-
-  it('should resolve systemId state parameter', () => {
-    let resolveFn = args[1].resolve.systemId[1];
-    should.exist(resolveFn);
-    resolveFn.should.be.a.Function();
-
-    let expected = 'bar-systemId';
-    let res = resolveFn({ systemId: expected});
-    res.should.equal(expected);
-  });
-
-  it('should resolve jvmId state parameter', () => {
-    let resolveFn = args[1].resolve.jvmId[1];
-    should.exist(resolveFn);
-    resolveFn.should.be.a.Function();
-
-    let expected = 'foo-jvmId';
-    let res = resolveFn({ jvmId: expected});
-    res.should.equal(expected);
   });
 
 });

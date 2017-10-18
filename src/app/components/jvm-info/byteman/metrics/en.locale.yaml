@@ -1,0 +1,11 @@
+byteman:
+  metrics:
+    TIMESTAMP_COL_HEADER: Time Stamp
+    MARKER_COL_HEADER: Marker
+    NAME_COL_HEADER: Name
+    VALUE_COL_HEADER: Value
+
+    MAX_DATA_AGE_LABEL: Max Data Age
+    dataAge:
+      SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+      MINUTES: '{MINUTES, plural, =0{0 Minutes} one{1 Minute} other{# Minutes}}{DEFAULT, select, true{ (Default)} other{}}'

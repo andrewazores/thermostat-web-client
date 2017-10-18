@@ -1,50 +1,37 @@
 function jvmList (server) {
   var _ = require('lodash');
   server.init('jvms');
-  server.app.get('/jvms/0.0.1/tree', function (req, res, next) {
+  server.app.get('/jvms/0.0.1/tree', function (req, res) {
     server.logRequest('jvm-list', req);
     res.setHeader('Content-Type', 'application/json');
 
-    var limit = 4;
+    var systemLimit = 4;
     var aliveOnly = req.query.aliveOnly === 'true';
     var resp = [];
     if (req.query.limit) {
-      limit = parseInt(req.query.limit);
+      systemLimit = parseInt(req.query.limit);
       // 0 means no limit, so we'll default to 4
-      if (limit === 0) {
-        limit = 4;
+      if (systemLimit === 0) {
+        systemLimit = 4;
       }
     }
-    for (var i = 0; i < limit; i++) {
-      var jvms = [
-        {
-          'mainClass': 'c.r.t.A',
+    for (var i = 0; i < systemLimit; i++) {
+      var jvms = [];
+      for (var j = 0; j < systemLimit - i; j++) {
+        jvms.push({
+          'mainClass': 'c.r.t.' + i + '.' + j,
           'startTime': { $numberLong: (Date.now() - 10000000).toString() },
           'stopTime': { $numberLong: '-1' },
-          'jvmId': 'vm-0',
+          'jvmId': i + '-vm-' + j,
           'isAlive': true
-        },
-        {
-          'mainClass': 'c.r.t.B',
-          'startTime': { $numberLong: (Date.now() - 1500000).toString() },
-          'stopTime': { $numberLong: '-1' },
-          'jvmId': 'vm-1',
-          'isAlive': true
-        },
-        {
-          'mainClass': 'c.r.t.C',
-          'startTime': { $numberLong: (Date.now() - 25000000).toString() },
-          'stopTime': { $numberLong: '-1' },
-          'jvmId': 'vm-2',
-          'isAlive': true
-        }
-      ];
+        });
+      }
       if (!aliveOnly) {
         jvms.push({
-          'mainClass': 'c.r.t.D',
+          'mainClass': 'c.r.t.DeadVM',
           'startTime': { $numberLong: (Date.now() - 350000000).toString() },
           'stopTime': { $numberLong: Date.now().toString() },
-          'jvmId': 'vm-3',
+          'jvmId': i + '-vm-dead-',
           'isAlive': false
         });
       }
@@ -55,7 +42,6 @@ function jvmList (server) {
       resp.push(system);
     }
     res.send(JSON.stringify({ response: resp }));
-    next();
   });
 
   server.app.get('/jvms/0.0.1/systems/:systemId/jvms/:jvmId', function (req, res, next) {
@@ -68,8 +54,9 @@ function jvmList (server) {
           agentId: 'foo-agentId',
           jvmId: req.params.jvmId,
           mainClass: 'c.r.t.A',
-          startTime: Date.now() - 5000000 + _.round(Math.random() * 1000000),
-          stopTime: -1,
+          startTime: { $numberLong: (Date.now() - 5000000 + _.round(Math.random() * 1000000)).toString() },
+          stopTime: { $numberLong: '-1' },
+          lastUpdated: { $numberLong: Date.now().toString() },
           isAlive: true,
           jvmPid: _.round(Math.random() * 2048) + 512,
           javaVersion: '1.9',
@@ -91,8 +78,7 @@ function jvmList (server) {
             }
           ],
           uid: _.floor(Math.random() * 800),
-          username: 'thermostat-user',
-          lastUpdated: Date.now().toString()
+          username: 'thermostat-user'
         }]
       }
     ));

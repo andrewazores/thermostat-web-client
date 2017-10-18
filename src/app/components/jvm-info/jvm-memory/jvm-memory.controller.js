@@ -31,61 +31,70 @@ import filters from 'shared/filters/filters.module.js';
 import service from './jvm-memory.service.js';
 
 class JvmMemoryController {
-  constructor (jvmId, $scope, $interval, jvmMemoryService, metricToBigIntFilter,
+  constructor ($stateParams, $interval, jvmMemoryService, metricToBigIntFilter,
     bigIntToStringFilter, stringToNumberFilter, scaleBytesService, sanitizeService) {
     'ngInject';
 
-    this.jvmId = jvmId;
-    this.scope = $scope;
-    this.interval = $interval;
-    this.jvmMemoryService = jvmMemoryService;
+    this.jvmId = $stateParams.jvmId;
+    this._interval = $interval;
+    this._jvmMemoryService = jvmMemoryService;
+    this._sanitizeService = sanitizeService;
 
-    this.metricToBigInt = metricToBigIntFilter;
-    this.bigIntToString = bigIntToStringFilter;
-    this.stringToNumber = stringToNumberFilter;
-    this.scaleBytes = scaleBytesService;
-    this.scope.sanitize = sanitizeService.sanitize;
+    this._metricToBigInt = metricToBigIntFilter;
+    this._bigIntToString = bigIntToStringFilter;
+    this._stringToNumber = stringToNumberFilter;
+    this._scaleBytes = scaleBytesService;
+  }
 
-    this.scope.refreshRate = '2000';
-
+  $onInit () {
     this.metaspaceData = {
       used: 0,
       total: 0
     };
-
     this.metaspaceConfig = {
       chartId: 'metaspaceChart',
       units: 'B'
     };
-
     this.spaceConfigs = [];
-
     this.generationData = {};
 
-    this.scope.$watch('refreshRate', cur => this.setRefreshRate(cur));
+    this._refreshRate = 2000;
 
-    this.scope.$on('$destroy', () => this.cancel());
-
-    this.update();
+    this._start();
   }
 
-  cancel () {
-    if (angular.isDefined(this.refresh)) {
-      this.interval.cancel(this.refresh);
+  $onDestroy () {
+    this._stop();
+  }
+
+  _start () {
+    this._stop();
+    this._update();
+    this._refresh = this._interval(() => this._update(), this.refreshRate);
+  }
+
+  _stop () {
+    if (angular.isDefined(this._refresh)) {
+      this._interval.cancel(this._refresh);
+      delete this._refresh;
     }
   }
 
-  setRefreshRate (val) {
-    this.cancel();
-    if (val > 0) {
-      this.refresh = this.interval(() => this.update(), val);
-      this.update();
+  set refreshRate (val) {
+    this._stop();
+    this._refreshRate = parseInt(val);
+    if (this._refreshRate > 0) {
+      this._start();
     }
+  }
+
+  get refreshRate () {
+    return this._refreshRate.toString();
   }
 
   multichartMetaspace () {
     return new Promise(resolve =>
-      this.jvmMemoryService.getJvmMemory(this.jvmId).then(resp =>
+      this._jvmMemoryService.getJvmMemory(this.jvmId).then(resp =>
         resolve(this.convertMemStat(resp.data.response[0].metaspaceUsed))
       )
     );
@@ -93,7 +102,7 @@ class JvmMemoryController {
 
   multichartSpace (generationIndex, spaceIndex) {
     return new Promise(resolve =>
-      this.jvmMemoryService.getJvmMemory(this.jvmId).then(resp => {
+      this._jvmMemoryService.getJvmMemory(this.jvmId).then(resp => {
         generationIndex = parseInt(generationIndex);
         spaceIndex = parseInt(spaceIndex);
         let data = resp.data.response[0];
@@ -104,14 +113,20 @@ class JvmMemoryController {
     );
   }
 
-  update () {
-    this.jvmMemoryService.getJvmMemory(this.jvmId).then(resp => {
+  _update () {
+    this._jvmMemoryService.getJvmMemory(this.jvmId).then(resp => {
       let data = resp.data.response[0];
 
-      let metaspaceScale = this.scaleBytes.format(data.metaspaceUsed);
+      let metaspaceScale = this._scaleBytes.format(data.metaspaceUsed);
       this.metaspaceData.used = this.convertMemStat(data.metaspaceUsed, metaspaceScale.scale);
       this.metaspaceData.total = this.convertMemStat(data.metaspaceCapacity, metaspaceScale.scale);
-      this.metaspaceConfig.units = metaspaceScale.unit;
+
+      // re-assign chart config so that Angular picks up the change. If we only re-assign property values
+      // on the same config object, those config updates are not detected and do not reflect in the charts.
+      this.metaspaceConfig = {
+        chartId: this.metaspaceConfig.chartId,
+        units: metaspaceScale.unit
+      };
 
       for (let i = 0; i < data.generations.length; i++) {
         let generation = data.generations[i];
@@ -129,7 +144,7 @@ class JvmMemoryController {
         for (let j = 0; j < generation.spaces.length; j++) {
           let space = generation.spaces[j];
 
-          let genScale = this.scaleBytes.format(space.used);
+          let genScale = this._scaleBytes.format(space.used);
 
           if (gen.spaces.hasOwnProperty(space.index)) {
             gen.spaces[space.index].used = this.convertMemStat(space.used, genScale.scale);
@@ -143,14 +158,10 @@ class JvmMemoryController {
           }
 
           let spaceKey = 'gen-' + gen.index + '-space-' + space.index;
-          if (!this.spaceConfigs.hasOwnProperty(spaceKey)) {
-            this.spaceConfigs[spaceKey] = {
-              chartId: spaceKey,
-              units: genScale.unit
-            };
-          } else {
-            this.spaceConfigs[spaceKey].units = genScale.unit;
-          }
+          this.spaceConfigs[spaceKey] = {
+            chartId: spaceKey,
+            units: genScale.unit
+          };
         }
         this.generationData[i] = gen;
       }
@@ -158,11 +169,16 @@ class JvmMemoryController {
   }
 
   convertMemStat (stat, scale) {
-    let bigInt = this.metricToBigInt(stat, scale);
-    let str = this.bigIntToString(bigInt);
-    let num = this.stringToNumber(str);
+    let bigInt = this._metricToBigInt(stat, scale);
+    let str = this._bigIntToString(bigInt);
+    let num = this._stringToNumber(str);
     return _.ceil(num);
   }
+
+  sanitize (str) {
+    return this._sanitizeService.sanitize(str);
+  }
+
 }
 
 export default angular

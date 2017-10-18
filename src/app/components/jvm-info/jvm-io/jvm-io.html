@@ -1,0 +1,45 @@
+<div class="container-fluid">
+
+  <div class="row" style="margin-top:2vh">
+    <div class="col-xs-12 col-md-3">
+      <label for="refreshCombo" class="label label-info" translate>jvmIo.REFRESH_RATE_LABEL</label>
+      <select name="refreshCombo" class="combobox form-control" ng-model="$ctrl.refreshRate">
+        <option value="-1" translate>jvmIo.refresh.DISABLED</option>
+        <option value="5000" translate="jvmIo.refresh.SECONDS" translate-values="{ SECONDS: 5 }" translate-interpolation="messageformat"></option>
+        <option value="10000" selected translate="jvmIo.refresh.SECONDS" translate-values="{ SECONDS: 10, DEFAULT: true }" translate-interpolation="messageformat"></option>
+        <option value="30000" translate="jvmIo.refresh.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
+        <option value="60000" translate="jvmIo.refresh.SECONDS" translate-values="{ SECONDS: 60 }" translate-interpolation="messageformat"></option>
+      </select>
+    </div>
+
+    <div class="col-xs-12 col-md-3">
+      <label for="dataAgeCombo" class="label label-info" translate>jvmIo.MAX_DATA_AGE_LABEL</label>
+      <select name="dataAgeCombo" class="combobox form-control" ng-model="$ctrl.dataAgeLimit">
+        <option value="30000" translate="jvmIo.dataAge.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
+        <option value="60000" translate="jvmIo.dataAge.MINUTES" translate-values="{ MINUTES: 1 }" translate-interpolation="messageformat"></option>
+        <option value="300000" translate="jvmIo.dataAge.MINUTES" translate-values="{ MINUTES: 5 }" translate-interpolation="messageformat"></option>
+        <option value="600000" selected translate="jvmIo.dataAge.MINUTES" translate-values="{ MINUTES: 10, DEFAULT: true }" translate-interpolation="messageformat"></option>
+        <option value="900000" translate="jvmIo.dataAge.MINUTES" translate-values="{ MINUTES: 15 }" translate-interpolation="messageformat"></option>
+        <option value="1800000" translate="jvmIo.dataAge.MINUTES" translate-values="{ MINUTES: 30 }" translate-interpolation="messageformat"></option>
+      </select>
+    </div>
+  </div><!-- row -->
+
+  <div class="row row-cards-pf">
+    <div class="container-fluid container-cards-pf">
+
+      <div class="col-md-12">
+        <div class="card-pf card-pf-view">
+          <div class="card-pf-heading">
+            <label class="card-pf-title" translate>jvmIo.chart.TITLE</label>
+          </div>
+          <div ng-if="$ctrl.config" class="card-pf-body text-center">
+            <pf-c3-chart id="jvm-io-chart" config="$ctrl.config"></pf-c3-chart>
+          </div>
+        </div><!-- card-pf -->
+      </div><!-- col -->
+    </div><!-- container-cards-pf -->
+  </div><!-- row-cards-pf -->
+
+
+</div><!-- container-fluid -->

@@ -26,12 +26,16 @@
  */
 
 import big from 'big.js';
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
+import filtersModule from './filters.module.js';
 
 describe('metricToBigInt filter', () => {
 
   let fn;
   beforeEach(() => {
-    angular.mock.module('app.filters');
+    angular.mock.module(servicesModule);
+    initServices();
+    angular.mock.module(filtersModule);
     angular.mock.inject(metricToBigIntFilter => {
       'ngInject';
       fn = metricToBigIntFilter;

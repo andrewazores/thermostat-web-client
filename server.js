@@ -32,6 +32,7 @@ var express = require('express'),
 
 var port = process.env.PORT || 8080;
 var host = process.env.HOST || '0.0.0.0';
+var gatewayUrl = process.env.GATEWAY_URL || 'http://localhost:8888/';
 
 var app = express();
 app.use(cors());
@@ -44,4 +45,9 @@ app.set('host', host);
 
 app.listen(app.get('port'), app.get('host'), function () {
   console.info('Server started on http://' + app.get('host') + ':' + app.get('port'));
+});
+
+app.get('/gatewayurl', function (req, res, next) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify({ gatewayUrl: gatewayUrl }));
 });

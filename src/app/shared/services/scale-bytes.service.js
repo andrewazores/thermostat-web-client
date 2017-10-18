@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-class ScaleBytesService {
+export class ScaleBytesService {
   constructor (metricToBigIntService) {
     'ngInject';
     this.metricToBigInt = metricToBigIntService;
@@ -66,6 +66,8 @@ class ScaleBytesService {
   }
 }
 
-angular
-  .module('app.services')
-  .service('scaleBytesService', ScaleBytesService);
+export function init () {
+  angular
+    .module('app.services')
+    .service('scaleBytesService', ScaleBytesService);
+}

@@ -25,47 +25,38 @@
  * exception statement from your version.
  */
 
+import controllerModule from './jvm-info.controller.js';
+
 describe('JvmInfoController', () => {
 
-  beforeEach(angular.mock.module('jvmInfo.controller'));
+  beforeEach(angular.mock.module(controllerModule));
 
-  let scope, state, jvmInfoService, killVmService, ctrl, infoPromise, killPromise, translate;
-  beforeEach(inject($controller => {
+  let state, jvmInfoService, killVmService, ctrl, infoPromise, killPromise, systemInfoService, systemInfoPromise, translate;
+  beforeEach(angular.mock.inject($controller => {
     'ngInject';
 
-    scope = {
-      $watch: sinon.spy()
-    };
+    state = { go: sinon.spy() };
 
-    state = {
-      go: sinon.spy()
-    };
+    infoPromise = { then: sinon.stub() };
+    jvmInfoService = { getJvmInfo: sinon.stub().returns(infoPromise) };
 
-    infoPromise = {
-      then: sinon.stub()
-    };
-    jvmInfoService = {
-      getJvmInfo: sinon.stub().returns(infoPromise)
-    };
+    killPromise = { then: sinon.stub().returns({ finally: sinon.stub().yields() }) };
+    killVmService = { killVm: sinon.stub().returns(killPromise) };
 
-    killPromise = {
-      then: sinon.stub().returns({ finally: sinon.stub().yields() })
-    };
-    killVmService = {
-      killVm: sinon.stub().returns(killPromise)
-    };
+    systemInfoPromise = { then: sinon.stub() };
+    systemInfoService = { getSystemInfo: sinon.stub().returns(systemInfoPromise) };
 
-    translate = sinon.stub().returns({
-      then: sinon.stub().yields()
-    });
+    translate = sinon.stub().returns({ then: sinon.stub().yields() });
 
     ctrl = $controller('JvmInfoController', {
-      $scope: scope,
       $state: state,
-      systemId: 'bar-systemId',
-      jvmId: 'foo-jvmId',
+      $stateParams: {
+        systemId: 'bar-systemId',
+        jvmId: 'foo-jvmId'
+      },
       jvmInfoService: jvmInfoService,
       killVmService: killVmService,
+      systemInfoService: systemInfoService,
       $translate: translate
     });
   }));
@@ -107,6 +98,35 @@ describe('JvmInfoController', () => {
 
   it('should set showErr false on initialization', () => {
     ctrl.showErr.should.be.false();
+  });
+
+  describe('systemHostname property', () => {
+    let successHandler, mockResult;
+    beforeEach(() => {
+      systemInfoPromise.then.should.be.calledOnce();
+      systemInfoPromise.then.should.be.calledWith(sinon.match.func);
+      successHandler = systemInfoPromise.then.args[0][0];
+      mockResult = {
+        data: {
+          response: [
+            {
+              hostname: 'foo-hostname'
+            }
+          ]
+        }
+      };
+    });
+
+    it('should default to systemId', () => {
+      ctrl.should.have.ownProperty('systemHostname');
+      ctrl.systemHostname.should.equal('bar-systemId');
+    });
+
+    it('should be set to resolved data', () => {
+      successHandler(mockResult);
+      ctrl.should.have.ownProperty('systemHostname');
+      ctrl.systemHostname.should.equal('foo-hostname');
+    });
   });
 
   describe('killVm', () => {
@@ -165,21 +185,14 @@ describe('JvmInfoController', () => {
   });
 
   describe('combobox state navigation', () => {
-    it('should register a scope-watcher for comboValue', () => {
-      scope.$watch.should.be.calledWith(sinon.match('comboValue'), sinon.match.func);
-    });
-
     it('should go to root jvm-info state on empty selection', () => {
-      let func = scope.$watch.args[0][1];
-      state.go.should.not.be.called();
-      func('', '');
+      ctrl.subView = '';
       state.go.should.be.calledWith(sinon.match('jvmInfo'), sinon.match.has('jvmId', 'foo-jvmId'));
     });
 
     it('should go to specified jvm-info child state on non-empty selection', () => {
-      let func = scope.$watch.args[0][1];
-      state.go.should.not.be.called();
-      func('fooState', '');
+      ctrl.subView = 'fooState';
+      ctrl.subView.should.equal('fooState');
       state.go.should.be.calledWith(sinon.match('jvmInfo.fooState'), sinon.match.has('jvmId', 'foo-jvmId'));
     });
   });

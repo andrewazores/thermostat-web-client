@@ -25,7 +25,7 @@
  * exception statement from your version.
  */
 
-class ExtractClassService {
+export class ExtractClassService {
   extract (fullClassName = '', includePkg = false) {
 
     if (fullClassName.indexOf('.') === -1) {
@@ -57,6 +57,8 @@ class ExtractClassService {
   }
 }
 
-angular
-  .module('app.services')
-  .service('extractClassService', ExtractClassService);
+export function init () {
+  angular
+    .module('app.services')
+    .service('extractClassService', ExtractClassService);
+}

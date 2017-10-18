@@ -1,0 +1,58 @@
+<div class="system-memory-charts">
+  <div class="col-xs-12 col-sm-6 col-md-6">
+    <div class="card-pf card-pf-view">
+
+      <div class="card-pf-heading">
+        <label class="card-pf-title" translate>systemMemory.DONUT_CHART_LABEL</label>
+        <mc-add class="pull-right" svc-name="{{$ctrl.systemId}}-memory" get-fn="$ctrl.multichartFn()"></mc-add>
+      </div>
+
+      <div class="card-pf-body">
+        <pf-donut-pct-chart id="systemMemoryDonutChart" config="$ctrl.donutConfig" data="$ctrl.donutData"></pf-donut-pct-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-12 col-md-12">
+    <div class="card-pf card-pf-view">
+
+      <div class="card-pf-heading">
+        <label class="card-pf-title" translate>systemMemory.LINE_CHART_LABEL</label>
+      </div>
+
+      <div class="row" style="margin-top:2vh">
+        <!-- Metric Controls: Refresh Rate -->
+        <div class="col-xs-12 col-md-3">
+          <label for="refreshCombo" class="label label-info" translate>systemMemory.REFRESH_RATE_LABEL</label>
+          <select name="refreshCombo" class="combobox form-control" ng-model="$ctrl.refreshRate">
+            <option value="-1" translate>systemMemory.refresh.DISABLED</option>
+            <option value="1000" selected translate="systemMemory.refresh.SECONDS" translate-values="{ SECONDS: 1, DEFAULT: true }" translate-interpolation="messageformat"></option>
+            <option value="2000" translate="systemMemory.refresh.SECONDS" translate-values="{ SECONDS: 2 }" translate-interpolation="messageformat"></option>
+            <option value="5000" translate="systemMemory.refresh.SECONDS" translate-values="{ SECONDS: 5 }" translate-interpolation="messageformat"></option>
+            <option value="10000" translate="systemMemory.refresh.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+            <option value="30000" translate="systemMemory.refresh.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
+          </select>
+        </div>
+
+        <!-- Metric Controls: Max Data Age -->
+        <div class="col-xs-12 col-md-3">
+          <label for="dataAgeCombo" class="label label-info" translate>systemMemory.MAX_DATA_AGE_LABEL</label>
+          <select name="dataAgeCombo" class="combobox form-control" ng-model="$ctrl.dataAgeLimit">
+            <option value="10000" translate="systemMemory.dataAge.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+            <option value="30000" selected translate="systemMemory.dataAge.SECONDS" translate-values="{ SECONDS: 30, DEFAULT: true }" translate-interpolation="messageformat"></option>
+            <option value="60000" translate="systemMemory.dataAge.MINUTES" translate-values="{ MINUTES: 1 }" translate-interpolation="messageformat"></option>
+            <option value="300000" translate="systemMemory.dataAge.MINUTES" translate-values="{ MINUTES: 5 }" translate-interpolation="messageformat"></option>
+            <option value="900000" translate="systemMemory.dataAge.MINUTES" translate-values="{ MINUTES: 15 }" translate-interpolation="messageformat"></option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Line Chart -->
+      <div class="card-pf-body">
+        <pf-line-chart id="systemMemoryLineChart" config="$ctrl.lineConfig" chart-data="$ctrl.lineData" set-area-chart="false" show-x-axis="true" show-y-axis="true"></pf-line-chart>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -2,20 +2,9 @@ multicharts:
   BREADCRUMB: Multicharts
 
   ERR_TITLE: Invalid chart name.
-  ERR_MESSAGE: Chart names may contain alphanumeric characters, underscores, and hyphens.
+  ERR_MESSAGE: Chart names may contain alphanumeric characters, underscores, and hyphens and must not be empty.
 
   form:
     NAME: Name
     PLACEHOLDER: Enter new chart name
     SUBMIT_LABEL: Create Chart
-
-  chart:
-    X_AXIS_LABEL: timestamp
-    X_AXIS_DATA_TYPE: timestamp
-    REFRESH_RATE_LABEL: Refresh Rate
-    MAX_DATA_AGE_LABEL: Max Data Age
-    DELETE_LABEL: Delete
-
-    rename:
-      PLACEHOLDER: '@:multicharts.form.PLACEHOLDER'
-      SUBMIT_LABEL: Rename Chart

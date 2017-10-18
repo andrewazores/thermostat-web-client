@@ -25,11 +25,14 @@
  * exception statement from your version.
  */
 
+var webpack = require('webpack');
+var path = require('path');
+var webpackConfig = require('./webpack.config');
 module.exports = function (config) {
   config.set({
     basePath: '',
 
-    frameworks: ['mocha', 'should-sinon', 'sinon', 'should'],
+    frameworks: ['mocha', 'should-sinon', 'sinon', 'should', 'karma-typescript'],
 
     files: [
       'src/app/components/auth/keycloak.stub.js',
@@ -41,7 +44,7 @@ module.exports = function (config) {
       'src/tests.webpack.js': ['webpack', 'sourcemap']
     },
 
-    reporters: ['mocha', 'beep', 'junit', 'coverage-istanbul'],
+    reporters: ['mocha', 'beep', 'junit', 'coverage-istanbul', 'karma-typescript'],
 
     junitReporter: {
       outputDir: 'test-reports'
@@ -58,20 +61,46 @@ module.exports = function (config) {
       }
     },
 
+    client: {
+      mocha: {
+        timeout: 0
+      }
+    },
+
     exclude: [],
 
     port: 9876,
+
+    singleRun: true,
+
+    captureTimeout: 60000, // one minute
+
+    browserDisconnectTimeout: 60000,
+
+    browserDisconnectTolerance: 3,
+
+    browserNoActivityTimeout: 60000,
+
+    retryLimit: 3,
 
     colors: true,
 
     browsers: ['PhantomJS'],
 
-    webpack: require('./webpack.config'),
+    webpack: {
+      module: webpackConfig.module,
+      resolve: webpackConfig.resolve,
+      devtool: webpackConfig.devtool,
+      plugins: [
+        new webpack.ContextReplacementPlugin(
+          /(.+)?angular(\\|\/)core(.+)?/,
+          path.join(__dirname, 'src')
+        )
+      ]
+    },
 
     webpackMiddleware: {
       noInfo: 'errors-only'
-    },
-
-    singleRun: true
+    }
   });
 };

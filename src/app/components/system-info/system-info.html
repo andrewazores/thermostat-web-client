@@ -1,117 +1,79 @@
+<div class="row panel panel-default" style="position: sticky; top: 60px; z-index: 1">
+  <div class="panel-body">
+    <ol class="breadcrumb" style="margin-top: 0px; margin-bottom: 0px;">
+      <li>Thermostat</li>
+      <li><a ui-sref="jvmList({ '#': $ctrl.systemId })" translate>systemInfo.JVM_LIST_BREADCRUMB</a></li>
+      <li class="lead">{{$ctrl.systemInfo.hostname || $ctrl.systemId}}</li>
+    </ol>
+  </div>
+</div>
 <div class="container-fluid container-cards-pf">
-  <ol class="breadcrumb" style="margin-bottom: 0px;">
-    <li><a ui-sref="landing">Thermostat</a></li>
-    <li><a ui-sref="jvmList({ '#': ctrl.systemId })" translate>systemInfo.JVM_LIST_BREADCRUMB</a></li>
-    <li><a ui-sref="systemInfo({ systemId: ctrl.systemId })">{{ctrl.systemId}}</a></li>
-  </ol>
+  <customizable-error-message ng-show="$ctrl.showErr" dismissible="true" err-message="errMessage" err-title="errTitle"></customizable-error-message>
 
-  <customizable-error-message ng-show="ctrl.showErr" dismissible="true" err-message="errMessage" err-title="errTitle"></customizable-error-message>
-
-  <div ng-show="!ctrl.showErr">
+  <div ng-show="!$ctrl.showErr">
     <div class="row">
-      <div class="col-xs-12 col-lg-8">
-        <table class="table table-striped table-bordered">
-          <thead>
-            <tr>
-              <th translate>systemInfo.table.KEY_COLUMN_LABEL</th>
-              <th translate>systemInfo.table.VALUE_COLUMN_LABEL</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td translate>systemInfo.table.HOSTNAME</td>
-              <td>{{ctrl.systemInfo.hostname}}</td>
-            </tr>
-            <tr>
-              <td translate>systemInfo.table.OS</td>
-              <td>{{ctrl.systemInfo.osName}}</td>
-            </tr>
-            <tr>
-              <td translate>systemInfo.table.KERNEL</td>
-              <td>{{ctrl.systemInfo.osKernel}}</td>
-            </tr>
-            <tr>
-              <td translate>systemInfo.table.CPU</td>
-              <td translate="systemInfo.table.CPU_MODEL_FMT"
-                  translate-values="{ model: ctrl.systemInfo.cpuModel, coreCount: ctrl.systemInfo.cpuCount }"></td>
-            </tr>
-            <tr>
-              <td translate>systemInfo.table.MEMORY</td>
-              <td>{{ctrl.systemInfo.totalMemory | formatBytes}}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="col-xs-12 col-lg-12">
+        <div class="panel-group" id="accordion-markup">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="clickable" translate>systemInfo.infoTable.HEADER</a>
+              </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+              <table class="table table-fixed table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th translate>systemInfo.infoTable.KEY_COLUMN_LABEL</th>
+                    <th translate>systemInfo.infoTable.VALUE_COLUMN_LABEL</th>
+                  </tr>
+                </thead>
+                <tbody class="break-word-wrap">
+                  <tr>
+                    <td translate>systemInfo.infoTable.HOSTNAME</td>
+                    <td>{{$ctrl.systemInfo.hostname}}</td>
+                  </tr>
+                  <tr>
+                    <td translate>systemInfo.infoTable.OS</td>
+                    <td>{{$ctrl.systemInfo.osName}}</td>
+                  </tr>
+                  <tr>
+                    <td translate>systemInfo.infoTable.KERNEL</td>
+                    <td>{{$ctrl.systemInfo.osKernel}}</td>
+                  </tr>
+                  <tr>
+                    <td translate>systemInfo.infoTable.CPU</td>
+                    <td translate="systemInfo.infoTable.CPU_MODEL_FMT" translate-values="{ model: $ctrl.systemInfo.cpuModel, coreCount: $ctrl.systemInfo.cpuCount }"></td>
+                  </tr>
+                  <tr>
+                    <td translate>systemInfo.infoTable.MEMORY</td>
+                    <td>{{$ctrl.systemInfo.totalMemory | formatBytes}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" class="clickable" translate>systemInfo.networkTable.HEADER</a>
+              </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+              <system-network system-id="$ctrl.systemId"></system-network>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="row row-cards-pf">
       <div class="container container-cards-pf">
-        <!-- System-CPU Donut Chart -->
-        <div class="col-xs-12 col-md-6" ng-controller="SystemCpuController as ctrl">
-          <div class="card-pf card-pf-view">
-            <div class="card-pf-heading">
-              <label class="card-pf-title" translate>systemInfo.systemCpu.CHART_LABEL</label>
-              <mc-add class="pull-right" svc-name="{{systemId}}-cpu" get-fn="ctrl.multichartFn()"></mc-add>
-            </div>
-            <div class="card-pf-body">
-              <div pf-donut-pct-chart id="cpuChart" config="ctrl.config" data="ctrl.data"></div>
-            </div>
-          </div>
-        </div>
-        <div class="system-memory-charts" ng-controller="SystemMemoryController as ctrl">
-          <!-- System-Memory Donut Chart -->
-          <div class="col-xs-12 col-md-6">
-            <div class="card-pf card-pf-view">
-              <div class="card-pf-heading">
-                <label class="card-pf-title" translate>systemInfo.systemMemory.DONUT_CHART_LABEL</label>
-                <mc-add class="pull-right" svc-name="{{systemId}}-memory" get-fn="ctrl.multichartFn()"></mc-add>
-              </div>
-              <div class="card-pf-body">
-                <div pf-donut-pct-chart id="systemMemoryDonutChart" config="ctrl.donutConfig" data="ctrl.donutData"></div>
-              </div>
-            </div>
-          </div>
-          <!-- System-Memory Line Chart -->
-          <div class="col-xs-12 col-md-12">
-            <div class="card-pf card-pf-view">
-              <div class="card-pf-heading">
-                <label class="card-pf-title" translate>systemInfo.systemMemory.LINE_CHART_LABEL</label>
-              </div>
-              <!-- Metric Controls: Refresh Rate -->
-              <div class="row" style="margin-top:2vh">
-                <div class="col-xs-12 col-md-3">
-                  <label for="refreshCombo" class="label label-info" translate>systemInfo.systemMemory.REFRESH_RATE_LABEL</label>
-                  <select name="refreshCombo" class="combobox form-control" ng-model="refreshRate">
-                    <option value="-1">Disabled</option>
-                    <option value="1000">1 Second (Default)</option>
-                    <option value="2000">2 Seconds</option>
-                    <option value="5000">5 Seconds</option>
-                    <option value="10000">10 Seconds</option>
-                    <option value="30000">30 Seconds</option>
-                  </select>
-                </div>
-                <!-- Metric Controls: Max Data Age -->
-                <div class="col-xs-12 col-md-3">
-                  <label for="dataAgeCombo" class="label label-info" translate>systemInfo.systemMemory.MAX_DATA_AGE_LABEL</label>
-                  <select name="dataAgeCombo" class="combobox form-control" ng-model="dataAgeLimit">
-                    <option value="10000">10 Seconds</option>
-                    <option value="30000">30 Seconds (Default)</option>
-                    <option value="60000">1 Minute</option>
-                    <option value="300000">5 Minutes</option>
-                    <option value="600000">10 Minutes</option>
-                  </select>
-                </div>
-              </div>
-              <!-- Line Chart -->
-              <div class="card-pf-body">
-                <div pf-line-chart id="systemMemoryLineChart" config="ctrl.lineConfig" chart-data="ctrl.lineData" set-area-chart="false" show-x-axis="true" show-y-axis="true">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <system-cpu system-id="$ctrl.systemId"></system-cpu>
+        <system-memory system-id="$ctrl.systemId"></system-memory>
       </div>
     </div>
+
   </div>
 </div>
 <!-- /container -->

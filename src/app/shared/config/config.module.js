@@ -25,20 +25,33 @@
  * exception statement from your version.
  */
 
-export function cmdChanUrl (gatewayUrl) {
-  if (gatewayUrl.startsWith('http://')) {
-    return 'ws://' + gatewayUrl.substring(7);
-  } else if (gatewayUrl.startsWith('https://')) {
-    return 'wss://' + gatewayUrl.substring(8);
-  } else {
-    throw new Error('GATEWAY_URL protocol unknown');
+import * as url from 'url';
+
+export function cmdChanUrl (gatewayUrl = window.tmsGatewayUrl) {
+  if (!gatewayUrl) {
+    throw new Error('gatewayUrl could not be determined');
   }
+  let parsed = url.parse(gatewayUrl);
+  let protocol = parsed.protocol;
+  if (protocol === 'http:') {
+    parsed.protocol = 'ws:';
+  } else if (protocol === 'https:') {
+    parsed.protocol = 'wss:';
+  } else {
+    throw new Error('gatewayUrl protocol unknown');
+  }
+  return url.format(parsed);
 };
 
-export default angular
-  .module('configModule', [])
-  .constant('environment', process.env.NODE_ENV)
-  .constant('debug', process.env.DEBUG)
-  .constant('gatewayUrl', process.env.GATEWAY_URL)
-  .constant('commandChannelUrl', cmdChanUrl(process.env.GATEWAY_URL))
-  .name;
+let modName = 'configModule';
+let mod = angular.module(modName, []);
+export default modName;
+
+/* istanbul ignore next */
+export function init () {
+  mod
+    .constant('environment', process.env.NODE_ENV)
+    .constant('debug', process.env.DEBUG)
+    .value('gatewayUrl', window.tmsGatewayUrl)
+    .factory('commandChannelUrl', cmdChanUrl);
+}

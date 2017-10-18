@@ -1,5 +1,6 @@
 var express = require('express'),
   expressWs = require('express-ws'),
+  basicAuth = require('express-basic-auth'),
   cors = require('cors'),
   path = require('path'),
   fs = require('fs'),
@@ -11,6 +12,16 @@ var host = process.env.MOCKAPI_HOST || '0.0.0.0';
 var app = express();
 expressWs(app);
 app.use(cors());
+
+// express-ws does not work when basicAuth is enabled. If testing command channel
+// (or other websocket) functionality, temporarily remove the configuration below.
+app.use(basicAuth({
+  users: {
+    'client': 'client-pwd'
+  },
+  challenge: true,
+  unauthorizedResponse: fs.readFileSync(path.resolve(__dirname, '401.html'), 'utf8')
+}));
 
 app.set('port', port);
 app.set('host', host);
@@ -26,6 +37,7 @@ fs.readdir(endpoints, function (err, files) {
       console.info('[' + svc + '] requested');
       console.info('params: ' + JSON.stringify(req.params));
       console.info('query: ' + JSON.stringify(req.query));
+      console.info('authorization:' + JSON.stringify(req.headers.authorization));
       console.info('~~~~\n');
     }
   };

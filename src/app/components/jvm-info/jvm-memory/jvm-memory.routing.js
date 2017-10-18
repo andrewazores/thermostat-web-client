@@ -30,20 +30,13 @@ function config ($stateProvider) {
 
   $stateProvider.state('jvmInfo.jvmMemory', {
     url: '/memory',
-    controller: 'JvmMemoryController as ctrl',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => resolve(require('./jvm-memory.html'))
-        )
-      );
-    },
+    component: 'jvmMemory',
     resolve: {
-      loadJvmMemory: (loadJvmInfo, $q, $ocLazyLoad) => {
+      lazyLoad: ($q, $ocLazyLoad) => {
         'ngInject';
         return $q(resolve => {
-          require.ensure(['./jvm-memory.module.js'], () => {
-            let module = require('./jvm-memory.module.js');
+          require.ensure(['./jvm-memory.component.js'], () => {
+            let module = require('./jvm-memory.component.js');
             $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });

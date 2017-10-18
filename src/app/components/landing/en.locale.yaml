@@ -1,7 +1,0 @@
-landing:
-  WELCOME: Welcome
-  APP_TITLE: Thermostat.next() Web Client
-  NAVIGATION: Navigation
-  nav:
-    JVM_LISTING: JVM Listing
-    MULTICHARTS: Multicharts

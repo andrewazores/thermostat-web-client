@@ -28,7 +28,7 @@
 import servicesModule from 'shared/services/services.module.js';
 import _ from 'lodash';
 
-class MultiChartService {
+export class MultichartService {
   constructor ($q, $translate) {
     this.q = $q;
     this.translate = $translate;
@@ -71,6 +71,16 @@ class MultiChartService {
       ret[charts[i].svcName] = axis;
     }
     return ret;
+  }
+
+  getServicesForChart (chartName) {
+    if (!this.hasChart(chartName)) {
+      return [];
+    }
+    let charts = this.charts.get(chartName);
+    let res = [];
+    charts.forEach(chart => res.push(chart.svcName));
+    return res;
   }
 
   addChart (chartName) {
@@ -164,6 +174,8 @@ class MultiChartService {
   }
 }
 
-angular
-  .module(servicesModule)
-  .service('multichartService', MultiChartService);
+export function init () {
+  angular
+    .module(servicesModule)
+    .service('multichartService', MultichartService);
+}

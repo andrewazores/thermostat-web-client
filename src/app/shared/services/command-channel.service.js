@@ -26,20 +26,19 @@
  */
 
 import servicesModule from './services.module.js';
-import urlJoin from 'url-join';
+import * as url from 'url';
 
 const CLIENT_REQUEST_TYPE = 2;
 
-class CommandChannelService {
-  constructor ($q, webSocketFactory, $translate, commandChannelUrl) {
+export class CommandChannelService {
+  constructor ($q, authService, commandChannelUrl, webSocketFactory, $translate) {
     'ngInject';
     this._sequence = 1;
     this.q = $q;
+    this.authService = authService;
+    this.commandChannelUrl = commandChannelUrl;
     this.socketFactory = webSocketFactory;
     this.translate = $translate;
-    this._commandChannelUrl = commandChannelUrl;
-
-    this.setCredentials('bar-client-user', 'client-pwd');
 
     this._responseMessages = {};
     $translate([
@@ -65,29 +64,6 @@ class CommandChannelService {
     return Object.freeze(responseCodes);
   }
 
-  setCredentials (username, password) {
-    this.username = username;
-    this.password = password;
-  }
-
-  get commandChannelUrl () {
-    if (!angular.isDefined(this.username) || this.username === '') {
-      return this._commandChannelUrl;
-    }
-    let protocolDelimiterIndex = this._commandChannelUrl.indexOf('://');
-    let protocol = this._commandChannelUrl.substring(0, protocolDelimiterIndex + 3);
-    let url = this._commandChannelUrl.substring(protocol.length);
-
-    let credentials;
-    if (angular.isDefined(this.password) && this.password !== '') {
-      credentials = this.username + ':' + this.password;
-    } else {
-      credentials = this.username;
-    }
-
-    return protocol + credentials + '@' + url;
-  }
-
   get sequence () {
     let val = this._sequence;
     if (val === Number.MAX_SAFE_INTEGER) {
@@ -100,7 +76,11 @@ class CommandChannelService {
 
   sendMessage (connectPath, payload = {}) {
     let defer = this.q.defer();
-    let socket = this.socketFactory.createSocket(urlJoin(this.commandChannelUrl, connectPath));
+    let commandChannelUrl = this.authService.getCommandChannelUrl(this.commandChannelUrl);
+    let parsed = url.parse(commandChannelUrl);
+    parsed.pathname = connectPath;
+    commandChannelUrl = url.format(parsed);
+    let socket = this.socketFactory.createSocket(commandChannelUrl);
     if (!socket) {
       this.translate('services.commandChannel.WEBSOCKETS_NOT_SUPPORTED').then(s => defer.reject(s));
       return defer.promise;
@@ -142,6 +122,8 @@ class CommandChannelService {
   }
 }
 
-angular
-  .module(servicesModule)
-  .service('commandChannelService', CommandChannelService);
+export function init () {
+  angular
+    .module(servicesModule)
+    .service('commandChannelService', CommandChannelService);
+}

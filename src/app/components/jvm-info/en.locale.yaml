@@ -34,3 +34,6 @@ jvmInfo:
     NONE: None
     MEMORY: Memory Usage
     GC: Garbage Collection
+    CPU: CPU Usage
+    IO: File I/O
+    BYTEMAN: Byteman

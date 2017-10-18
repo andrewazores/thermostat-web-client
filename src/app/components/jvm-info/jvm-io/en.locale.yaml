@@ -1,0 +1,25 @@
+jvmIo:
+
+  REFRESH_RATE_LABEL: Refresh Rate
+  MAX_DATA_AGE_LABEL: Max Data Age
+
+  refresh:
+    DISABLED: Disabled
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+
+  dataAge:
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+    MINUTES: '{MINUTES, plural, =0{0 Minutes} one{1 Minute} other{# Minutes}}{DEFAULT, select, true{ (Default)} other{}}'
+
+  chart:
+    TITLE: JVM I/O
+    X_LABEL: Timestamp
+    Y1_LABEL: Characters
+    Y2_LABEL: System Calls
+
+  metrics:
+    timestamp: Date
+    charactersRead: Characters Read
+    charactersWritten: Characters Written
+    readSyscalls: Read System Calls
+    writeSyscalls: Write System Calls

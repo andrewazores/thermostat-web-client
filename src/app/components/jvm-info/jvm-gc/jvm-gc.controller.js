@@ -30,45 +30,68 @@ import filters from 'shared/filters/filters.module.js';
 import service from './jvm-gc.service.js';
 
 class JvmGcController {
-  constructor (jvmId, $scope, $interval, dateFilter, DATE_FORMAT,
+  constructor ($stateParams, $interval, dateFilter, DATE_FORMAT,
     metricToNumberFilter, jvmGcService, sanitizeService, $translate) {
     'ngInject';
-    this.jvmId = jvmId;
-    this.scope = $scope;
+    this.jvmId = $stateParams.jvmId;
     this.interval = $interval;
     this.dateFilter = dateFilter;
     this.dateFormat = DATE_FORMAT;
     this.metricToNumberFilter = metricToNumberFilter;
     this.jvmGcService = jvmGcService;
-    this.scope.sanitize = sanitizeService.sanitize;
+    this.sanitizeService = sanitizeService;
     this.translate = $translate;
+  }
 
-    this.scope.refreshRate = '1000';
-    this.scope.dataAgeLimit = '30000';
-
-    this.scope.$watch('refreshRate', (cur, prev) => this.setRefreshRate(cur));
-    this.scope.$watch('dataAgeLimit', () => this.trimData());
-
-    this.scope.$on('$destroy', () => this.stop());
-
+  $onInit () {
     this.collectors = [];
     this.chartConfigs = {};
     this.chartData = {};
     this.collectorData = new Map();
     this.constructChartData();
 
-    this.update(parseInt($scope.dataAgeLimit) / parseInt($scope.refreshRate));
+    this._refreshRate = 1000;
+    this._dataAgeLimit = 30000;
+
+    this.start();
+  }
+
+  $onDestroy () {
+    this.stop();
   }
 
   start () {
-    this.setRefreshRate(this.scope.refreshRate);
+    this.stop();
+    this.update();
+    this._refresh = this.interval(() => this.update(), this.refreshRate);
   }
 
   stop () {
-    if (angular.isDefined(this.refresh)) {
-      this.interval.cancel(this.refresh);
-      delete this.refresh;
+    if (angular.isDefined(this._refresh)) {
+      this.interval.cancel(this._refresh);
+      delete this._refresh;
     }
+  }
+
+  set refreshRate (val) {
+    this.stop();
+    this._refreshRate = parseInt(val);
+    if (this._refreshRate > 0) {
+      this.start();
+    }
+  }
+
+  get refreshRate () {
+    return this._refreshRate.toString();
+  }
+
+  set dataAgeLimit (val) {
+    this._dataAgeLimit = val;
+    this.trimData();
+  }
+
+  get dataAgeLimit () {
+    return this._dataAgeLimit.toString();
   }
 
   makeConfig (collector) {
@@ -121,21 +144,13 @@ class JvmGcController {
     });
   }
 
-  setRefreshRate (val) {
-    this.stop();
-    if (val > 0) {
-      this.refresh = this.interval(() => this.update(), val);
-      this.update();
-    }
-  }
-
   trimData() {
     for (let entry of this.collectorData) {
       let collector = entry[0];
       let samples = entry[1];
 
       let now = Date.now();
-      let oldestLimit = now - parseInt(this.scope.dataAgeLimit);
+      let oldestLimit = now - parseInt(this.dataAgeLimit);
 
       while (true) {
         let oldest = samples[0];
@@ -169,8 +184,8 @@ class JvmGcController {
     }
   }
 
-  update (limit = 1) {
-    this.jvmGcService.getJvmGcData(this.jvmId, limit)
+  update () {
+    this.jvmGcService.getJvmGcData(this.jvmId)
       .then(resp => this.processData(resp), angular.noop);
   }
 
@@ -224,6 +239,10 @@ class JvmGcController {
     this.trimData();
 
     this.constructChartData();
+  }
+
+  sanitize (input) {
+    return this.sanitizeService.sanitize(input);
   }
 
   multichartFn (collector) {

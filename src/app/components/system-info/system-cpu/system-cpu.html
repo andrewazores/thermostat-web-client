@@ -1,0 +1,11 @@
+<div class="col-xs-12 col-sm-6 col-md-6">
+  <div class="card-pf card-pf-view">
+    <div class="card-pf-heading">
+      <label class="card-pf-title" translate>systemCpu.CHART_LABEL</label>
+      <mc-add class="pull-right" svc-name="{{$ctrl.systemId}}-cpu" get-fn="$ctrl.multichartFn()"></mc-add>
+    </div>
+    <div class="card-pf-body">
+      <pf-donut-pct-chart id="cpuChart" config="$ctrl.config" data="$ctrl.data"></pf-donut-pct-chart>
+    </div>
+  </div>
+</div>

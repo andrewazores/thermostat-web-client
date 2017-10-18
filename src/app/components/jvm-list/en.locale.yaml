@@ -1,8 +1,22 @@
 jvmList:
-  BREADCRUMB: '@:landing.nav.JVM_LISTING'
-  ALIVE_ONLY: Alive Only
-  SYSTEM_CARD_LABEL: Monitored System
-  CREATED_ON: <strong>Created On</strong> {{date}}
+  BREADCRUMB: JVM Listing
+  ALIVE_ONLY: Alive JVMs Only
+  SYSTEM_INFO_LABEL: System Information
+  START_TIME_LIST: Start Time:&#160;{{date}}
 
   ERR_TITLE: Unable to retrieve data.
   ERR_MESSAGE: Error while retrieving Thermostat JVM Listing.
+  
+  HOSTNAME_TITLE: 'Hostname'
+
+  filterConfig:
+    HOSTNAME_PLACEHOLDER: Filter by System Hostname...
+    JVM_NAME_TITLE: JVM MainClass Name
+    JVM_NAME_PLACEHOLDER: Filter by JVM Class Name...
+
+  sortConfig:  
+    TIME_CREATED_TITLE: 'Host: Time Created'
+    NUM_JVMS_TITLE: 'Host: Number of JVMs'
+
+  jvmEntry:
+    JVM_INFO_LINK: JVM Information

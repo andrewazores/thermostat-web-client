@@ -27,27 +27,38 @@
 
 import filters from 'shared/filters/filters.module.js';
 import service from './jvm-info.service.js';
+import systemService from 'components/system-info/system-info.service.js';
 
 class JvmInfoController {
-  constructor ($scope, $state, systemId, jvmId, jvmInfoService, killVmService, $translate) {
+  constructor ($state, $stateParams, jvmInfoService, killVmService, systemInfoService, $translate) {
     'ngInject';
-    this.systemId = systemId;
-    this.jvmId = jvmId;
+    this._state = $state;
+    this.systemId = $stateParams.systemId;
+    this.jvmId = $stateParams.jvmId;
     this.jvmInfoService = jvmInfoService;
     this.killVmService = killVmService;
+    this.systemInfoService = systemInfoService;
     this.jvmInfo = {};
     this.showErr = false;
     $translate('jvmInfo.killVm.FAIL_MSG_TITLE').then(s => this.errTitle = s);
 
-    $scope.$watch('comboValue', cur => {
-      if (cur === '') {
-        $state.go('jvmInfo', { systemId: systemId, jvmId: jvmId });
-      } else {
-        $state.go('jvmInfo.' + cur, { systemId: systemId, jvmId: jvmId });
-      }
-    });
+    this.systemHostname = this.systemId;
+    systemInfoService.getSystemInfo(this.systemId).then(res => this.systemHostname = res.data.response[0].hostname);
 
     this.update();
+  }
+
+  set subView (val) {
+    this._subView = val;
+    if (val === '') {
+      this._state.go('jvmInfo', { systemId: this.systemId, jvmId: this.jvmId });
+    } else {
+      this._state.go('jvmInfo.' + val, { systemId: this.systemId, jvmId: this.jvmId });
+    }
+  }
+
+  get subView () {
+    return this._subView;
   }
 
   update () {
@@ -86,7 +97,8 @@ export default angular
     'patternfly',
     'ui.bootstrap',
     filters,
-    service
+    service,
+    systemService
   ])
   .controller('JvmInfoController', JvmInfoController)
   .name;

@@ -1,0 +1,17 @@
+jvmCpu:
+  CARD_TITLE: JVM CPU Usage
+  REFRESH_RATE_LABEL: Refresh Rate
+  MAX_DATA_AGE_LABEL: Max Data Age
+
+  chart:
+    UNITS: '%'
+    X_AXIS_LABEL: timestamp
+    Y_AXIS_LABEL: utilization
+
+  refresh:
+    DISABLED: Disabled
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+
+  dataAge:
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+    MINUTES: '{MINUTES, plural, =0{0 Minutes} one{1 Minute} other{# Minutes}}{DEFAULT, select, true{ (Default)} other{}}'

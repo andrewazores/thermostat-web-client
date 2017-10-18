@@ -1,0 +1,13 @@
+about:
+  ABOUT: About
+
+  OVERVIEW: <a href="http://icedtea.classpath.org/thermostat">Thermostat</a> is a free and open source distributed instrumentation tool for the Hotspot JVM.
+
+  VERSION: Version
+
+  WEB_CLIENT: Web Client
+
+  DOCUMENTATION: The <a href="http://icedtea.classpath.org/thermostat/documentation">documentation</a> helps you learn about Thermostat and start exploring its features.
+
+  ACCOUNT: Account
+  ACCOUNT_DETAIL: You are currently logged in under the user account <strong>{{username}}</strong>.

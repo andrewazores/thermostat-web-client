@@ -25,13 +25,14 @@
  * exception statement from your version.
  */
 
-import servicesModule from 'shared/services/services.module.js';
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
 
 describe('SanitizeService', () => {
 
   let svc;
   beforeEach(() => {
     angular.mock.module(servicesModule);
+    initServices();
     angular.mock.inject(sanitizeService => {
       'ngInject';
       svc = sanitizeService;

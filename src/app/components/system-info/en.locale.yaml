@@ -4,7 +4,8 @@ systemInfo:
   ERR_TITLE: Unable to retrieve data.
   ERR_MESSAGE: Error while retrieving system information.
 
-  table:
+  infoTable:
+    HEADER: System Information
     KEY_COLUMN_LABEL: Key
     VALUE_COLUMN_LABEL: Value
 
@@ -15,24 +16,5 @@ systemInfo:
     CPU_MODEL_FMT: '{{model}} ({{coreCount}} cores)'
     MEMORY: Memory
 
-  systemCpu:
-    CHART_LABEL: CPU Usage
-
-  systemMemory:
-    DONUT_CHART_LABEL: Memory Usage
-    LINE_CHART_LABEL: Memory
-    REFRESH_RATE_LABEL: Refresh Rate
-    MAX_DATA_AGE_LABEL: Max Data Age
-
-    X_AXIS_LABEL: Time
-    Y_AXIS_LABEL: Size (MiB)
-    TOOLTIP_FMT: '{{size}} MiB'
-
-    xAxisTypes:
-      TIMESTAMP: timestamp
-      TOTAL: Total Memory
-      FREE: Free Memory
-      USED: Used Memory
-      SWAP_TOTAL: Total Swap
-      SWAP_FREE: Free Swap
-      BUFFERS: Buffers
+  networkTable:
+    HEADER: Network Interfaces

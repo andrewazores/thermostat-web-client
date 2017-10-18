@@ -1,0 +1,39 @@
+<customizable-error-message ng-show="$ctrl.showErr" dismissible="true" err-title="$ctrl.errTitle" err-message="$ctrl.errMessage"></customizable-error-message>
+<div class="col-md-8">
+
+  <div class="row">
+    <div role="group" class="btn-group pull-right">
+      <button type="button" class="btn btn-secondary" ng-click="$ctrl.refresh()"><span class="fa fa-refresh"></span></button>
+      <button type="button" class="btn btn-secondary" ng-click="$ctrl.unload()" translate>byteman.rules.UNLOAD_BTN_LABEL</button>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="form-group col-md-6">
+      <label for="localRule" class="label label-info" translate>byteman.rules.LOCAL_RULE_LABEL</label>
+      <textarea name="localRule" class="form-control" ng-model="$ctrl.ruleText" rows="8"/>
+    </div>
+
+    <div role="group" class="btn-group col-md-1">
+      <button type="button" class="btn btn-default"
+                            ng-click="$ctrl.pull()" ng-disabled="!$ctrl.loadedRule" translate>byteman.rules.PULL_BTN_LABEL</button>
+      <button type="button" class="btn btn-default"
+                            ng-click="$ctrl.push()" ng-disabled="!$ctrl.ruleText.length" translate>byteman.rules.PUSH_BTN_LABEL</button>
+    </div>
+
+    <div class="form-group col-md-5">
+      <label for="remoteRule" class="label label-info" translate>byteman.rules.REMOTE_RULE_LABEL</label>
+      <textarea name="remoteRule" class="form-control"
+                                  translate-attr="{placeholder: 'byteman.rules.NO_RULES_LABEL'}" ng-model="$ctrl.loadedRule" rows="8" readonly/>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div role="group" class="btn-group pull-right">
+      <button type="button" class="btn btn-secondary" ng-click="$ctrl.generateTemplate()" translate>byteman.rules.GENERATE_RULE_BTN_LABEL</button>
+    </div>
+  </div>
+
+</div>

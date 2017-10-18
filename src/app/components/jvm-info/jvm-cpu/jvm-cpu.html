@@ -1,0 +1,46 @@
+<div class="container-fluid">
+
+  <div class="row" style="margin-top:2vh">
+    <div class="col-xs-12 col-md-3">
+      <label for="refreshCombo" class="label label-info" translate>jvmCpu.REFRESH_RATE_LABEL</label>
+      <select name="refreshCombo" class="combobox form-control" ng-model="$ctrl.refreshRate">
+        <option value="-1" translate>jvmCpu.refresh.DISABLED</option>
+        <option value="1000" translate="jvmCpu.refresh.SECONDS" translate-values="{ SECONDS: 1 }" translate-interpolation="messageformat"></option>
+        <option value="2000" selected translate="jvmCpu.refresh.SECONDS" translate-values="{ SECONDS: 2, DEFAULT: true }" translate-interpolation="messageformat"></option>
+        <option value="5000" translate="jvmCpu.refresh.SECONDS" translate-values="{ SECONDS: 5 }" translate-interpolation="messageformat"></option>
+        <option value="10000" translate="jvmCpu.refresh.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+        <option value="30000" translate="jvmCpu.refresh.SECONDS" translate-values="{ SECONDS: 30 }" translate-interpolation="messageformat"></option>
+      </select>
+    </div>
+
+    <div class="col-xs-12 col-md-3">
+      <label for="dataAgeCombo" class="label label-info" translate>jvmCpu.MAX_DATA_AGE_LABEL</label>
+      <select name="dataAgeCombo" class="combobox form-control" ng-model="$ctrl.dataAgeLimit">
+        <option value="10000" translate="jvmCpu.dataAge.SECONDS" translate-values="{ SECONDS: 10 }" translate-interpolation="messageformat"></option>
+        <option value="30000" selected translate="jvmCpu.dataAge.SECONDS" translate-values="{ SECONDS: 30, DEFAULT: true }" translate-interpolation="messageformat"></option>
+        <option value="60000" translate="jvmCpu.dataAge.MINUTES" translate-values="{ MINUTES: 1 }" translate-interpolation="messageformat"></option>
+        <option value="300000" translate="jvmCpu.dataAge.MINUTES" translate-values="{ MINUTES: 5 }" translate-interpolation="messageformat"></option>
+        <option value="900000" translate="jvmCpu.dataAge.MINUTES" translate-values="{ MINUTES: 15 }" translate-interpolation="messageformat"></option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row row-cards-pf">
+    <div class="container-fluid container-cards-pf">
+
+      <div class="col-md-12">
+        <div class="card-pf card-pf-view">
+          <div class="card-pf-heading">
+            <label class="card-pf-title" translate>jvmCpu.CARD_TITLE</label>
+          </div>
+          <div class="card-pf-body text-center">
+            <mc-add class="pull-right" svc-name="{{$ctrl.jvmId}}-cpu" get-fn="$ctrl.multichartFn()"></mc-add>
+            <pf-line-chart id="jvm-cpu-chart" config="$ctrl.config" chart-data="$ctrl.data"></pf-line-chart>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

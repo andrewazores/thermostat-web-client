@@ -55,24 +55,8 @@ describe('SystemInfoRouting', () => {
       args[1].url.should.equal('/system-info/{systemId}');
     });
 
-    it('template provider should return system-info.html', done => {
-      let providerFn = args[1].templateProvider[1];
-      providerFn.should.be.a.Function();
-      providerFn(q);
-      q.should.be.calledOnce();
-
-      let deferred = q.args[0][0];
-      deferred.should.be.a.Function();
-
-      let resolve = sinon.stub().callsFake(val => {
-        val.should.equal(require('./system-info.html'));
-        done();
-      });
-      deferred(resolve);
-    });
-
-    it('resolve should load system-info module', done => {
-      let resolveFn = args[1].resolve.loadSystemInfo[2];
+    it('resolve should load system-info component', done => {
+      let resolveFn = args[1].resolve.lazyLoad[2];
       resolveFn.should.be.a.Function();
       resolveFn(q, ocLazyLoad);
       q.should.be.calledOnce();
@@ -81,21 +65,12 @@ describe('SystemInfoRouting', () => {
       deferred.should.be.a.Function();
 
       let resolve = sinon.stub().callsFake(val => {
-        let mod = require('./system-info.module.js');
+        let mod = require('./system-info.component.js');
         ocLazyLoad.load.should.be.calledWith({ name: mod.default });
         val.should.equal(mod);
         done();
       });
       deferred(resolve);
-    });
-
-    it('resolve should provide systemId', () => {
-      let resolveFn = args[1].resolve.systemId[1];
-      resolveFn.should.be.a.Function();
-
-      let expected = 'foo-systemId';
-      let result = resolveFn({ systemId: expected });
-      result.should.be.exactly(expected);
     });
   });
 

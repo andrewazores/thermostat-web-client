@@ -26,33 +26,37 @@
  */
 
 import services from 'shared/services/services.module.js';
-import directives from 'shared/directives/directives.module.js';
+import components from 'shared/components/components.module.js';
 
 class MultiChartController {
-  constructor ($scope, multichartService, $translate) {
-    this.scope = $scope;
+  constructor (multichartService, $translate) {
     this.svc = multichartService;
     this.showErr = false;
+    this.newChartName = '';
 
-    $translate('multicharts.ERR_TITLE').then(s => this.scope.errTitle = s);
-    $translate('multicharts.ERR_MESSAGE').then(s => this.scope.errMessage = s);
+    $translate('multicharts.ERR_TITLE').then(s => this.errTitle = s);
+    $translate('multicharts.ERR_MESSAGE').then(s => this.errMessage = s);
   }
 
-  createChart (chartName) {
-    if (!chartName) {
-      return false;
+  createChart () {
+    if (!this.newChartName) {
+      this.showErr = true;
+      return;
     }
-    chartName = chartName.trim();
-    if (!this.isValid(chartName)) {
+    this.newChartName = this.newChartName.trim();
+    if (!this.isValid(this.newChartName)) {
       this.showErr = true;
       return;
     }
     this.showErr = false;
-    this.svc.addChart(chartName);
-    this.scope.newChartName = '';
-    let form = this.scope.newChartForm;
-    form.$setPristine();
-    form.$setUntouched();
+    this.svc.addChart(this.newChartName);
+    this.resetForm();
+  }
+
+  resetForm () {
+    this.newChartName = '';
+    this.form.$setPristine();
+    this.form.$setUntouched();
   }
 
   isValid (chartName) {
@@ -71,7 +75,7 @@ export default angular
   .module('multichartController', [
     'patternfly',
     services,
-    directives
+    components
   ])
   .controller('MultichartController', MultiChartController)
   .name;

@@ -25,11 +25,20 @@
  * exception statement from your version.
  */
 
+import authModule from 'components/auth/auth.module.js';
 import configModule from 'shared/config/config.module.js';
 
 export default angular
-  .module('app.services', [configModule])
+  .module('app.services', [
+    authModule,
+    configModule
+  ])
   .name;
 
-let req = require.context('./', true, /\.service\.js/);
-req.keys().map(req);
+export function init () {
+  let req = require.context('./', true, /\.service\.js/);
+  req.keys().map(key => {
+    let mod = req(key);
+    mod.init();
+  });
+}

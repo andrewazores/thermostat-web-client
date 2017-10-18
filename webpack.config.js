@@ -29,17 +29,19 @@
 
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CompressionPlugin = require('compression-webpack-plugin');
 var path = require('path');
 
 var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === 'test' || ENV === 'test-watch';
 var isProd = process.env.NODE_ENV === 'production';
+var isTesting = process.env.NODE_ENV === 'testing';
 
 module.exports = function () {
   var config = {};
 
   config.entry = isTest ? void 0 : {
-    app: './src/app/app.module.js'
+    app: './src/main.ts'
   };
 
   config.resolve = {
@@ -52,22 +54,24 @@ module.exports = function () {
       'bootstrap-switch': 'angular-patternfly/node_modules/patternfly/node_modules/bootstrap-switch',
 
       'assets': path.resolve(__dirname, 'src', 'assets'),
+      'components': path.resolve(__dirname, 'src', 'app', 'components'),
       'images': 'assets/images',
       'scss': 'assets/scss',
       'shared': path.resolve(__dirname, 'src', 'app', 'shared'),
       'templates': 'shared/templates'
-    }
+    },
+    extensions: [ '.ts', '.js' ]
   };
 
   config.output = isTest ? {} : {
-    path: __dirname + '/dist',
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
     chunkFilename: '[name].bundle.js'
   };
 
   if (isTest) {
     config.devtool = 'inline-source-map';
-  } else if (isProd) {
+  } else if (isProd || isTesting) {
     config.devtool = 'source-map';
   } else {
     config.devtool = 'eval-source-map';
@@ -77,6 +81,10 @@ module.exports = function () {
     rules: [{
       test: /\.js$/,
       loader: 'babel-loader',
+      exclude: /node_modules/
+    }, {
+      test: /\.ts$/,
+      use: 'ts-loader?silent=true',
       exclude: /node_modules/
     }, {
       test: /\.scss$/,
@@ -98,10 +106,27 @@ module.exports = function () {
       test: /^(?!.*\.spec\.js$).*\.js$/,
       include: __dirname + '/src/app/',
       loaders: ['istanbul-instrumenter-loader', 'babel-loader']
+    }, {
+      test: /^(?!.*\.spec\.ts$).*\.ts$/,
+      include: __dirname + '/src/app/',
+      exclude: /(node_modules|\.spec\.ts$)/,
+      loader: 'istanbul-instrumenter-loader',
+      enforce: 'post',
+      options: {
+        esModules: true
+      }
     }]
   };
 
   config.plugins = [];
+
+  // see https://github.com/angular/angular/issues/11580#issuecomment-327338189
+  config.plugins.push(
+    new webpack.ContextReplacementPlugin(
+      /(.+)?angular(\\|\/)core(.+)?/,
+      path.join(__dirname, 'src')
+    )
+  );
 
   config.plugins.push(
     new webpack.ProvidePlugin({
@@ -117,12 +142,11 @@ module.exports = function () {
   config.plugins.push(
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
-      DEBUG: false,
-      GATEWAY_URL: 'http://localhost:8888'
+      DEBUG: false
     })
   );
 
-  if (isProd) {
+  if ((isProd || isTesting) && !isTest) {
     config.plugins.push(
       new webpack.optimize.UglifyJsPlugin({
         sourceMap: true
@@ -140,12 +164,28 @@ module.exports = function () {
     );
   }
 
+  config.plugins.push(
+    new CompressionPlugin({
+      asset: '[path].gz[query]',
+      algorithm: 'gzip',
+      test: /\.js$/,
+      threshold: 10240,
+      minRatio: 0.8
+    })
+  );
+
   config.devServer = {
     host: '0.0.0.0',
     contentBase: './src/assets',
     stats: 'minimal',
     inline: true,
-    historyApiFallback: true
+    historyApiFallback: true,
+    setup: function (app) {
+      app.get('/gatewayurl', function (req, res, next) {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({ gatewayUrl: 'http://localhost:8888/' }));
+      });
+    }
   };
 
   return config;

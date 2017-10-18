@@ -54,20 +54,29 @@ req.keys().forEach(k => componentRoutingModules.push(req(k).default));
 
 let appRouter = angular.module('app.routing', componentRoutingModules);
 
-function transitionHook ($q, $transitions, authService) {
+function defaultState ($stateProvider) {
   'ngInject';
-  $transitions.onBefore({}, () => {
-    let defer = $q.defer();
-    authService.refresh()
-      .success(() => defer.resolve())
-      .error(() => {
-        defer.reject('Auth token update failed');
-        authService.login();
-      });
-    return defer.promise;
+  $stateProvider.state('default', {
+    redirectTo: 'jvmList'
   });
+}
+appRouter.config(defaultState);
+function transitionHook ($q, $transitions, $state, authService) {
+  'ngInject';
+  $transitions.onBefore({ to: '/' }, () => $state.target('jvmList'));
+
+  $transitions.onEnter({}, () => { authService.refresh() });
+
+  $transitions.onBefore(
+    { to: state => state.name !== 'about' && state.name !== 'login' && !authService.status() },
+    () => {
+      let defer = $q.defer();
+      authService.refresh().then(() => defer.resolve(), () => authService.goToLogin(defer));
+      return defer.promise;
+    }
+  );
 }
 appRouter.run(transitionHook);
 export default appRouter.name;
 
-export { errorRouter, errorRouting, transitionHook };
+export { defaultState, errorRouter, errorRouting, transitionHook };

@@ -1,4 +1,4 @@
 404:
   TITLE: 404 Not Found
   MESSAGE: Oops! The page you're looking for cannot be found.
-  LANDING_LINK_MSG: Click here to go to the landing page.
+  ROOT_LINK_MSG: Click here to go to the application root.

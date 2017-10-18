@@ -25,16 +25,19 @@
  * exception statement from your version.
  */
 
+import { default as servicesModule, init as initServices } from 'shared/services/services.module.js';
+
 describe('ExtractClassService', () => {
 
   let svc;
-
-  beforeEach(angular.mock.module('app.services'));
-
-  beforeEach(inject(extractClassService => {
-    'ngInject';
-    svc = extractClassService;
-  }));
+  beforeEach(() => {
+    angular.mock.module(servicesModule);
+    initServices();
+    angular.mock.inject(extractClassService => {
+      'ngInject';
+      svc = extractClassService;
+    });
+  });
 
   it('should return early if class name is bare', () => {
     svc.extract('className').should.equal('className');

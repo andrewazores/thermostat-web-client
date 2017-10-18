@@ -32,7 +32,7 @@ import filterModule from './filters.module.js';
  * @param {Number}
  * @returns {String}
  */
-function filterProvider () {
+export function filterProvider () {
   return val => {
     val = val || 0;
     return val.toFixed();

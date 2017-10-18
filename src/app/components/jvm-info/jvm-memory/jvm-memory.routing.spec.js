@@ -55,33 +55,17 @@ describe('JvmMemoryRouting', () => {
       args[1].url.should.equal('/memory');
     });
 
-    it('template provider should return jvm-memory.html', done => {
-      let providerFn = args[1].templateProvider[1];
-      providerFn.should.be.a.Function();
-      providerFn(q);
-      q.should.be.calledOnce();
-
-      let deferred = q.args[0][0];
-      deferred.should.be.a.Function();
-
-      let resolve = sinon.stub().callsFake(val => {
-        val.should.equal(require('./jvm-memory.html'));
-        done();
-      });
-      deferred(resolve);
-    });
-
     it('resolve should load jvm-memory module', done => {
-      let resolveFn = args[1].resolve.loadJvmMemory[3];
+      let resolveFn = args[1].resolve.lazyLoad[2];
       resolveFn.should.be.a.Function();
-      resolveFn({}, q, ocLazyLoad);
+      resolveFn(q, ocLazyLoad);
       q.should.be.calledOnce();
 
       let deferred = q.args[0][0];
       deferred.should.be.a.Function();
 
       let resolve = sinon.stub().callsFake(val => {
-        let mod = require('./jvm-memory.module.js');
+        let mod = require('./jvm-memory.component.js');
         ocLazyLoad.load.should.be.calledWith({ name: mod.default });
         val.should.equal(mod);
         done();

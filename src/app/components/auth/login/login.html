@@ -1,0 +1,44 @@
+<div class="login-pf">
+  <span id="badge">
+    <img src="~images/thermostat_icon_64px.svg" alt=" logo" />
+  </span>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div id="brand">
+          <img src="~images/thermostat_logotype_600px.svg" alt="Thermostat"/>
+        </div>
+      </div>
+      <div class="col-sm-7 col-md-6 col-lg-5 login">
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <label for="inputUsername" class="col-sm-2 col-md-2 control-label" translate>auth.USERNAME</label>
+            <div class="col-sm-10 col-md-10">
+              <input type="text" class="form-control" id="username" ng-model="$ctrl.username" placeholder="" tabindex="1"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword" class="col-sm-2 col-md-2 control-label" translate>auth.PASSWORD</label>
+            <div class="col-sm-10 col-md-10">
+              <input type="password" class="form-control" id="password" ng-model="$ctrl.password" placeholder="" tabindex="2"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-8 col-sm-offset-2 col-sm-6 col-md-offset-2 col-md-6">
+              <input name="rememberUser" type="checkbox" tabindex="3" ng-model="$ctrl.rememberUser"/>
+              <label for="rememberUser" translate>auth.REMEMBER_USERNAME_LABEL</label>
+              <span class="help-block" translate>auth.FORGOT_CREDENTIALS</span>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 submit">
+              <button id="kc-login" type="submit" class="btn btn-primary btn-lg" ng-click="$ctrl.login()" tabindex="4" translate>auth.LOGIN_BUTTON_LABEL</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-5 col-md-6 col-lg-7 details">
+        <p><strong translate>auth.WELCOME_TEXT</strong>
+          <br/>Thermostat NG ver. 1.0.0</p>
+      </div>
+    </div>
+  </div>
+</div>

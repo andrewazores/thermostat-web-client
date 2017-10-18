@@ -25,10 +25,36 @@
  * exception statement from your version.
  */
 
+import 'core-js/client/core.js';
+import 'zone.js/dist/zone.js';
+import 'zone.js/dist/long-stack-trace-zone.js';
+import 'zone.js/dist/proxy.js';
+import 'zone.js/dist/sync-test.js';
+import 'zone.js/dist/mocha-patch.js';
+import 'zone.js/dist/async-test.js';
+import 'zone.js/dist/fake-async-test.js';
+
 import 'angular';
+import 'angular-patternfly';
+import '@uirouter/angularjs';
+import angularTranslate from 'angular-translate';
+import 'angular-translate-interpolation-messageformat';
+import 'oclazyload';
+
 import 'angular-mocks/angular-mocks';
-import 'babel-polyfill';
 
-const context = require.context('./app', true, /\.js$/);
+import { getTestBed } from "@angular/core/testing";
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting
+} from "@angular/platform-browser-dynamic/testing";
 
-context.keys().forEach(context);
+getTestBed().initTestEnvironment(
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting()
+);
+
+window.tmsGatewayUrl = 'http://localhost:8888/';
+
+const testsContext = require.context('./app', true, /\.spec\.(js|ts)$/);
+testsContext.keys().forEach(testsContext);

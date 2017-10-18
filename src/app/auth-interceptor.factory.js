@@ -25,26 +25,29 @@
  * exception statement from your version.
  */
 
-import authModule from './components/auth/auth.module.js';
+import authModule from 'components/auth/auth.module.js';
+import servicesModule from 'shared/services/services.module.js';
 
 let name = 'authInterceptorFactory';
 
 export default angular
-  .module(name, [authModule])
+  .module(name, [
+    authModule,
+    servicesModule
+  ])
   .factory(name, ($q, authService) => {
     'ngInject';
     return {
       request: config => {
         var defer = $q.defer();
 
-        if (authService.token) {
+        if (authService.authHeader) {
           authService.refresh()
-            .success(() => {
+            .then(() => {
               config.headers = config.headers || {};
-              config.headers.Authorization = 'Bearer ' + authService.token;
+              config.headers.Authorization = authService.authHeader;
               defer.resolve(config);
-            })
-            .error(() => {
+            }, () => {
               defer.reject('Failed to refresh token');
             });
         }

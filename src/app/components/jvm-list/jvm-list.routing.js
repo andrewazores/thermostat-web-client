@@ -30,20 +30,13 @@ function config ($stateProvider) {
 
   $stateProvider.state('jvmList', {
     url: '/jvm-list',
-    templateProvider: $q => {
-      'ngInject';
-      return $q(resolve =>
-        require.ensure([], () => resolve(require('./jvm-list.html'))
-        )
-      );
-    },
-    controller: 'JvmListController as ctrl',
+    component: 'jvmList',
     resolve: {
-      loadJvmList: ($q, $ocLazyLoad) => {
+      lazyLoad: ($q, $ocLazyLoad) => {
         'ngInject';
         return $q(resolve => {
-          require.ensure(['./jvm-list.module.js'], () => {
-            let module = require('./jvm-list.module.js');
+          require.ensure(['./jvm-list.component.js'], () => {
+            let module = require('./jvm-list.component.js');
             $ocLazyLoad.load({ name: module.default });
             resolve(module);
           });

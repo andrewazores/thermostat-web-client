@@ -1,0 +1,27 @@
+systemMemory:
+
+  refresh:
+    DISABLED: Disabled
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+
+  dataAge:
+    SECONDS: '{SECONDS, plural, =0{0 Seconds} one{1 Second} other{# Seconds}}{DEFAULT, select, true{ (Default)} other{}}'
+    MINUTES: '{MINUTES, plural, =0{0 Minutes} one{1 Minute} other{# Minutes}}{DEFAULT, select, true{ (Default)} other{}}'
+
+  DONUT_CHART_LABEL: Memory Usage
+  LINE_CHART_LABEL: Memory
+  REFRESH_RATE_LABEL: Refresh Rate
+  MAX_DATA_AGE_LABEL: Max Data Age
+
+  X_AXIS_LABEL: Time
+  Y_AXIS_LABEL: Size (MiB)
+  TOOLTIP_FMT: '{{size}} MiB'
+
+  xAxisTypes:
+    TIMESTAMP: timestamp
+    TOTAL: Total Memory
+    FREE: Free Memory
+    USED: Used Memory
+    SWAP_TOTAL: Total Swap
+    SWAP_FREE: Free Swap
+    BUFFERS: Buffers
