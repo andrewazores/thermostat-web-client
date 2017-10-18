@@ -61,6 +61,12 @@ module.exports = function (config) {
       }
     },
 
+    client: {
+      mocha: {
+        timeout: 0
+      }
+    },
+
     exclude: [],
 
     port: 9876,
